@@ -28,7 +28,7 @@
 		<span
 			v-if="!is('line') && !is('gradient') && !is('relief')"
 			ref="backgroundx"
-			:style="stylesBackGround"
+			:style="stylesBackGround()"
 			class="vs-button-backgroundx vs-button--background"
 		>
 		</span>
@@ -56,10 +56,10 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from "vue";
+import { computed, defineComponent, getCurrentInstance, nextTick, ref } from "vue";
 import _color from "../../utils/color";
-import {Router} from "vue-router"
-let $vm = (<any>window).$vm;
+import {useRouter} from "vue-router";
+import { useVs } from "@/functions";
 
 export default defineComponent({
 	name: "VsButton",
@@ -119,7 +119,7 @@ export default defineComponent({
 		},
 		href: {
 			default: "",
-			type: [String, Object],
+			type: [String],
 		},
 		target: {
 			default: false,
@@ -130,10 +130,32 @@ export default defineComponent({
 			type: String,
 		},
 	},
-	setup: function(props){
+	emits: [
+		"routeErr",
+		"mouseover",
+		"mouseout",
+		"blur",
+		"click"
+	],
+	setup: function(props, context){
 
-		let isRTL = function(value) {
-			if ($vm.rtl) {
+		let isActive 	= ref(false);
+		let hoverx		= ref(false);
+		let leftBackgorund = ref(20);
+		let topBackgorund = ref(20);
+		let radio		= ref(0);
+		let time		= ref(0.3);
+		let timeOpacity = ref(0.3);
+		let opacity		= ref(1);
+
+		let btn = ref<HTMLButtonElement>();
+		let backgroundx = ref<HTMLSpanElement>();
+		let linex = ref<HTMLSpanElement>();		
+		const inst = getCurrentInstance();
+		let vs = useVs();
+
+		const isRTL = (value: string) => {
+			if (vs.rtl) {
 				return value;
 			} else {
 				if (value === "right") {
@@ -142,212 +164,217 @@ export default defineComponent({
 				if (value === "left") {
 					return "right";
 				}
+				return "right";
 			}
 		};
-		
-		let routerPush = function() {
-			router.push()
-		},
-		is(which) {
-			let type = this.type;
+		const routerPush = () => {
+			useRouter().push(props.to).catch((err) => {				
+				context.emit("routeErr", err);
+			});			
+		};
+		const is = (which) => {
+			let type = props.type;
 			return type == which;
-		},
-		mouseoverx(event) {
-			this.$emit("mouseover", event);
-			this.hoverx = true;
-		},
-		mouseoutx(event) {
-			this.$emit("mouseout", event);
-			this.hoverx = false;
-		},
-		blurButton(event) {
-			this.$emit("blur", event);
-			this.$nextTick(() => {
-				if (this.type == "border" || this.type == "flat") {
-					this.opacity = 0;
+		};
+		const mouseoverx = (event) => {
+			context.emit("mouseover", event);
+			hoverx.value = true;
+		};
+		const mouseoutx = (event) => {
+			context.emit("mouseout", event);
+			hoverx.value= false;
+		};
+		const blurButton = (event) => {
+			context.emit("blur", event);
+			nextTick(() => {
+				if (props.type == "border" || props.type == "flat") {
+					opacity.value = 0;
 					setTimeout(() => {
-						this.radio = 0;
+						radio.value = 0;
 					}, 150);
-					this.isActive = false;
+					isActive.value = false;
 				}
 			});
-		},
-		clickButton(event) {
-			this.$emit("click", event);
-			this.$nextTick(() => {
-				if (this.isActive) {
+		};
+		const clickButton = (event) => {
+			context.emit("click", event);
+			nextTick(() => {
+				if (isActive.value) {
 					return;
 				}
-				if (this.to) {
-					this.routerPush();
+				if (props.to) {
+					routerPush;
 				}
-				if (this.href) {
-					if (typeof this.href == "string") {
-						this.target
-							? window.open(this.href)
-							: (window.location.href = this.href);
-					} else {
-						this.target
-							? window.open(this.href.url)
-							: (window.location.href = this.href.url);
-					}
+				if (props.href) {
+					if (typeof props.href == "string") {
+						props.target
+							? window.open(props.href)
+							: (window.location.href = props.href);
+					} 
 				}
-				if (this.type == "border" || this.type == "flat") {
-					this.isActive = true;
+				if (props.type == "border" || props.type == "flat") {
+					isActive.value = true;
 				}
-				let btn = this.$refs.btn;
+								
 				let xEvent = event.offsetX;
 				let yEvent = event.offsetY;
-				let radio = btn.clientWidth * 3;
-				this.time =
-					btn.clientWidth /
-					(btn.clientWidth + (this.is("border") || this.is("flat") ? 70 : 20));
-				if (this.is("filled")) {
-					this.timeOpacity = this.time;
+				
+				let radio1 = btn.value?.clientWidth ? btn.value?.clientWidth * 3 : 3;
+				time.value =
+					(btn.value?.clientWidth ?? 1) /
+					(btn.value?.clientWidth ?? + (is("border") || is("flat") ? 70 : 20));
+				if (is("filled")) {
+					timeOpacity.value = time.value;
 				}
 
-				if (event.srcElement ? event.srcElement != btn : false) {
+				if (event.srcElement ? event.srcElement != btn.value : false) {
 					xEvent += event.target.offsetLeft;
 					yEvent += event.target.offsetTop;
 				}
-				this.leftBackgorund = xEvent;
-				this.topBackgorund = yEvent;
-				this.radio = radio;
-				if (this.is("filled")) {
-					this.opacity = 0;
+				leftBackgorund.value = xEvent;
+				topBackgorund.value = yEvent;
+				radio.value = radio1;
+				if (is("filled")) {
+					opacity.value = 0;
 				} else {
-					this.opacity = 1;
+					opacity.value = 1;
 				}
 
-				if (this.is("filled")) {
+				if (is("filled")) {
 					setTimeout(() => {
-						this.time = this.timeOpacity = this.radio = 0;
-						this.opacity = 1;
-						this.isActive = false;
-					}, this.time * 1100);
+						time.value= timeOpacity.value = radio.value = 0;
+						opacity.value = 1;
+						isActive.value = false;
+					}, time.value* 1100);
 				} else {
 					setTimeout(() => {
-						this.timeOpacity = 0.15;
-					}, this.time * 1100);
+						timeOpacity.value = 0.15;
+					}, time.value* 1100);
 				}
 			});
 		};
-		isColor() {
-			return _color.isColor(this.color);
+		const isColor = () => {
+			return _color.isColor(props.color);
 		};
-
-
-		let listeners = computed(() => {
-			return {				
-				onClick: (event) => clickButton(event),
-				blur: (event) => this.blurButton(event),
-				mouseover: (event) => this.mouseoverx(event),
-				mouseout: (event) => this.mouseoutx(event),
-			};
-		});
-
-		return {
-			isActive: false,
-			hoverx: false,
-			leftBackgorund: 20,
-			topBackgorund: 20,
-			radio: 0,
-			time: 0.3,
-			timeOpacity: 0.3,
-			opacity: 1,
-		}
-	},
-	data: () => ({
-	
-	}),
-	computed: {
-		listeners() {
-			
-		},
-		styles() {
-			if (this.is("filled")) {
+		const styles = () => {
+			if (is("filled")) {
 				return {
-					color: _color.getColor(this.textColor, 1),
-					background: _color.getColor(this.color, 1),
-					boxShadow: this.hoverx
-						? `0px 8px 25px -8px ${_color.getColor(this.color, 1)}`
+					color: _color.getColor(props.textColor, 1),
+					background: _color.getColor(props.color, 1),
+					boxShadow: hoverx.value
+						? `0px 8px 25px -8px ${_color.getColor(props.color, 1)}`
 						: null,
 				};
-			} else if (this.is("border") || this.is("flat")) {
+			} else if (is("border") || is("flat")) {
 				return {
-					border: `${this.is("flat") ? 0 : 1}px solid ${_color.getColor(
-						this.color,
+					border: `${is("flat") ? 0 : 1}px solid ${_color.getColor(
+						props.color,
 						1
 					)}`,
-					background: this.hoverx
-						? _color.getColor(this.color, 0.1)
+					background: hoverx.value
+						? _color.getColor(props.color, 0.1)
 						: "transparent",
 					color:
-						_color.getColor(this.textColor, 1) ||
-						_color.getColor(this.color, 1),
+						_color.getColor(props.textColor, 1) ||
+						_color.getColor(props.color, 1),
 				};
-			} else if (this.is("line")) {
+			} else if (is("line")) {
 				return {
 					color:
-						_color.getColor(this.textColor, 1) ||
-						_color.getColor(this.color, 1),
-					borderBottomWidth: this.linePosition == "bottom" ? `2px` : null,
-					borderColor: `${_color.getColor(this.color, 0.2)}`,
-					borderTopWidth: this.linePosition == "top" ? `2px` : null,
+						_color.getColor(props.textColor, 1) ||
+						_color.getColor(props.color, 1),
+					borderBottomWidth: props.linePosition == "bottom" ? `2px` : null,
+					borderColor: `${_color.getColor(props.color, 0.2)}`,
+					borderTopWidth: props.linePosition == "top" ? `2px` : null,
 				};
-			} else if (this.is("gradient")) {
+			} else if (is("gradient")) {
 				let backgroundx = `linear-gradient(${
-					this.gradientDirection
-				}, ${_color.getColor(this.color)} 0%, ${_color.getColor(
-					this.gradientColorSecondary,
+					props.gradientDirection
+				}, ${_color.getColor(props.color)} 0%, ${_color.getColor(
+					props.gradientColorSecondary,
 					1
 				)} 100%)`;
 				return {
 					background: backgroundx,
 				};
-			} else if (this.is("relief")) {
-				let color = _color.getColor(this.color, 1);
+			} else if (is("relief")) {
+				let color = _color.getColor(props.color, 1);
 				return {
-					background: _color.getColor(this.color, 1),
+					background: _color.getColor(props.color, 1),
 					boxShadow: `0 3px 0 0 ${_color.darken(color, -0.4)}`,
 				};
 			}
-		},
-		stylesBackGround() {
+		};
+		const stylesBackGround = () => {
 			let styles = {
 				background:
-					this.is("flat") || this.is("border")
-						? _color.getColor(this.color, 1, false)
+					is("flat") || is("border")
+						? _color.getColor(props.color, 1, false)
 						: null,
-				opacity: this.opacity,
-				left: `${this.leftBackgorund}px`,
-				top: `${this.topBackgorund}px`,
-				width: `${this.radio}px`,
-				height: `${this.radio}px`,
-				transition: `width ${this.time}s ease, height ${this.time}s ease, opacity ${this.timeOpacity}s ease`,
+				opacity: opacity.value,
+				left: `${leftBackgorund.value}px`,
+				top: `${topBackgorund.value}px`,
+				width: `${radio.value}px`,
+				height: `${radio.value}px`,
+				transition: `width ${time.value}s ease, height ${time.value}s ease, opacity ${timeOpacity.value}s ease`,
 			};
 
 			return styles;
-		},
-		styleLine() {
+		};
+		const styleLine = () => {
 			let lineOrigin = "50%";
-			if (this.lineOrigin == "left") {
+			if (props.lineOrigin == "left") {
 				lineOrigin = "0%";
-			} else if (this.lineOrigin == "right") {
+			} else if (props.lineOrigin == "right") {
 				lineOrigin = "auto";
 			}
 
 			let styles = {
-				top: this.linePosition == "top" ? "-2px" : "auto",
-				bottom: this.linePosition == "bottom" ? "-2px" : "auto",
-				background: _color.getColor(this.color, 1),
+				top: props.linePosition == "top" ? "-2px" : "auto",
+				bottom: props.linePosition == "bottom" ? "-2px" : "auto",
+				background: _color.getColor(props.color, 1),
 				left: lineOrigin,
 				right: lineOrigin == "auto" ? "0px" : null,
 				transform: lineOrigin == "50%" ? "translate(-50%)" : null,
 			};
 
 			return styles;
-		},
+		}
+
+		let listeners = computed(() => {
+			return {				
+				click: (event) => clickButton(event),
+				blur: (event) => blurButton(event),
+				mouseover: (event) => mouseoverx(event),
+				mouseout: (event) => mouseoutx(event),
+			};
+		});
+
+		return {
+			isActive,
+			hoverx,
+			leftBackgorund,
+			topBackgorund,
+			radio,
+			time,
+			timeOpacity,
+			opacity,
+			isRTL,
+			routerPush,
+			is,
+			mouseoverx,
+			mouseoutx,
+			blurButton,
+			clickButton,
+			isColor,
+			styles,
+			stylesBackGround,
+			styleLine,			
+			listeners,
+			btn,
+			backgroundx,
+			linex
+		}
 	}
 });
 </script>

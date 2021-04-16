@@ -15,14 +15,17 @@ export default (Vue : App, options: any) => {
         }
       }
     },
-    beforeCreate() {
-      // create $vs property if not exist
+    created() {
+      // create $vs property if not exist      
       if(!this.$vs) {
         // define $vs reactive properties        
         this.$vs = reactive(options);
+        (<any>window).$vs = this.$vs;
         // define $vs functions
         vsFunctions(this);
       }
+
+      
     },
     mounted() {
       // inject the direction class for the initial options
