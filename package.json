@@ -4,14 +4,23 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "build": "vue-cli-service build --target lib --name vuesax3 src/main.ts",
     "lint": "vue-cli-service lint"
   },
+  "main": "dist/vuesax3.common.js",
+  "unpkg": "dist/vuesax3.umd.min.js",
+  "jsdelivr": "dist/vuesax3.umd.min.js",
   "dependencies": {
+    "copy-webpack-plugin": "^8.1.1",
     "core-js": "^3.6.5",
-    "vue": "^3.0.0"
+    "node": "^15.14.0",
+    "ts-loader": "^8.1.0",
+    "vue": "^3.0.0",
+    "vue-router": "^4.0.6",
+    "vue-sfc-rollup": "^4.0.5"
   },
   "devDependencies": {
+    "@types/node": "^14.14.41",
     "@typescript-eslint/eslint-plugin": "^4.18.0",
     "@typescript-eslint/parser": "^4.18.0",
     "@vue/cli-plugin-babel": "~4.5.0",
