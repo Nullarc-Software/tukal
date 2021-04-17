@@ -8,42 +8,62 @@
 			<h3>Buttons:</h3>
 			<hr />
 			<vs-button type="filled" color="primary" style="margin-right: 10px">
-				Some text here
+				Simple Button
+			</vs-button>
+			<vs-button circle type="filled" color="primary" style="margin-right: 10px">
+				<vs-icon >home </vs-icon>
+			</vs-button>
+			<vs-button square type="filled" color="primary" style="margin-right: 10px">
+				Square Button
 			</vs-button>
 			<vs-button type="border" color="primary" style="margin-right: 10px">
-				Some text here
+				Border Only
 			</vs-button>
 			<vs-button type="flat" color="primary" style="margin-right: 10px">
-				Some text here
+				Flat 
 			</vs-button>
 			<vs-button type="line" color="primary" style="margin-right: 10px">
-				Some text here
+				Line Type
 			</vs-button>
 			<vs-button
 				type="gradient"
 				color="primary"
 				style="margin-right: 10px"
 			>
-				Some text here
+				Gradient
 			</vs-button>
 			<vs-button type="relief" color="primary" style="margin-right: 10px">
-				Some text here
+				Relief
 			</vs-button>
 			<vs-button loading type="filled" color="primary" style="margin-right: 10px">
-				Some text here
+				Loading
 			</vs-button>
 			<vs-button upload type="border" color="danger" style="margin-right: 10px">
-				Some text here
+				Upload
 			</vs-button>
 			<vs-button upload type="filled" color="primary" style="margin-right: 10px">
-				Some text here
+				Upload
 			</vs-button>
 			<vs-button type="filled" color="primary" style="margin-right: 10px">
-				Some text here
+				Animate
 				<template v-slot:animate>
 					<vs-icon >home </vs-icon>
 				</template>
 			</vs-button>
+			<vs-button-group>
+				<vs-button>
+				One
+				</vs-button>
+				<vs-button>
+				Two
+				</vs-button>
+				<vs-button>
+				Three
+				</vs-button>
+				<vs-button>
+				four
+				</vs-button>
+			</vs-button-group>
 		</div>
 		<div class="showcase-component">
 			<h3>Alerts:</h3>
@@ -233,8 +253,6 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "@vue/runtime-core";
-import vsButton from "./components/vsButton";
-import vsAlert from "./components/vsAlert";
 import * as components from "./components";
 
 export default defineComponent({

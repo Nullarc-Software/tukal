@@ -1,4 +1,4 @@
-export { default as vsButton } from './vsButton'
+export { vsButton, vsButtonGroup } from './vsButton'
 export { default as vsSelect } from './vsSelect'
 export { default as vsSwitch } from './vsSwitch'
 export { default as vsCheckbox } from './vsCheckBox'

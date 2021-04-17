@@ -11,10 +11,20 @@
 				isActive: isActive,
 				includeIcon: icon,
 				includeIconOnly: icon && !$slots.default,
-				'vs-radius': radius,
+				'vs-button--circle': circle,
+				'vs-button--square': square,
 				'vs-button--loading' : loading,
 				'vs-button--upload' : upload,
 				'vs-button--animate': !!$slots.animate,				
+			},
+			{ [`vs-button--default`] :
+				type!=='flat' &&
+				type!=='border' &&
+				type!=='gradient' &&
+				type!=='relief' &&
+				!transparent &&
+				!shadow &&
+				!floating
 			},
 			size,
 		]"
@@ -121,7 +131,11 @@ export default defineComponent({
 			default: false,
 			type: Boolean,
 		},
-		radius: {
+		circle: {
+			default: false,
+			type: Boolean,
+		},
+		square: {
 			default: false,
 			type: Boolean,
 		},

@@ -38,6 +38,10 @@
   &--loading
      pointer-events: none
      user-select: none
+  &--circle
+    border-radius: 50%
+  &--square
+    border-radius: 0px
   &.vs-button--animate:not(.vs-button--animate-inactive)
     .vs-button--text
         i
@@ -193,7 +197,15 @@
   &:active
     transform: translate(0,3px);
     box-shadow: none !important;
-
+.vs-button--default
+  background: -color(color, 1)
+  color: #fff
+  &.vs-button--active
+    box-shadow: 0px 10px 20px -10px -color(color, 1)
+    transform: translate(0,-3px)
+  &:hover
+    box-shadow: 0px 10px 20px -10px -color(color, 1)
+    transform: translate(0,-3px)
 .includeIcon
   display: flex;
   align-items: center;
