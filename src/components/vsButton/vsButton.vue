@@ -5,11 +5,16 @@
 		:class="[
 			`vs-button-${isColor() ? color : null}`,
 			`vs-button-${type}`,
+			{[`vs-button--animate-${animationType}`]: !!animationType},
+			{ [`vs-button--animate-inactive`] : !!animateInactive },
 			{
 				isActive: isActive,
 				includeIcon: icon,
 				includeIconOnly: icon && !$slots.default,
 				'vs-radius': radius,
+				'vs-button--loading' : loading,
+				'vs-button--upload' : upload,
+				'vs-button--animate': !!$slots.animate,				
 			},
 			size,
 		]"
@@ -47,11 +52,16 @@
 			class="vs-button--icon"
 		></vs-icon>
 
-		<span v-if="$slots.default" class="vs-button-text vs-button--text">
+		<div v-if="$slots.default" class="vs-button-text vs-button--text">
 			<slot />
-		</span>
+		</div>
+		<div v-if="$slots.animate" :class="[
+				'vs-button__animate', `vs-button__animate--${this.animationType}`]">
+			<slot name="animate" />
+		</div>
 
 		<span ref="linex" :style="styleLine" class="vs-button-linex" />
+		<div v-if="loading"  class="vs-button__loading" />
 	</button>
 </template>
 
@@ -131,6 +141,22 @@ export default defineComponent({
 			default: "button",
 			type: String,
 		},
+		loading : {
+			type: Boolean,
+			default: false
+		},
+		upload : {
+			type: Boolean,
+			default: false
+		},
+		animationType : {
+			type: String,
+			default: null
+		},
+		animateInactive :{
+			type : Boolean,
+			default: false
+		}
 	},
 	emits: [
 		"routeErr",
@@ -146,8 +172,8 @@ export default defineComponent({
 		let leftBackgorund = ref(20);
 		let topBackgorund = ref(20);
 		let radio		= ref(0);
-		let time		= ref(0.3);
-		let timeOpacity = ref(0.3);
+		let time		= ref(0.1);
+		let timeOpacity = ref(0.1);
 		let opacity		= ref(1);
 
 		let btn = ref<HTMLButtonElement>();
@@ -222,7 +248,7 @@ export default defineComponent({
 				let radio1 = btn.value?.clientWidth ? btn.value?.clientWidth * 3 : 3;
 				time.value =
 					(btn.value?.clientWidth ?? 1) /
-					(btn.value?.clientWidth ?? + (is("border") || is("flat") ? 70 : 20));
+					(btn.value?.clientWidth ?? 1 + (is("border") || is("flat") ? 70 : 20));
 				if (is("filled")) {
 					timeOpacity.value = time.value;
 				}
@@ -245,11 +271,11 @@ export default defineComponent({
 						time.value= timeOpacity.value = radio.value = 0;
 						opacity.value = 1;
 						isActive.value = false;
-					}, time.value* 1100);
+					}, time.value* 500);
 				} else {
 					setTimeout(() => {
 						timeOpacity.value = 0.15;
-					}, time.value* 1100);
+					}, time.value* 500);
 				}
 			});
 		};

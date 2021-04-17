@@ -11,5 +11,4 @@ if (typeof window !== 'undefined' && (<any>window).Vue) {
   vsComponent.install((<any>window).Vue)  
 }
 
-export default vsComponent;
 export {vsComponent as vsCollapse, vsComponent2 as vsCollapseItem};

@@ -29,6 +29,21 @@
 			<vs-button type="relief" color="primary" style="margin-right: 10px">
 				Some text here
 			</vs-button>
+			<vs-button loading type="filled" color="primary" style="margin-right: 10px">
+				Some text here
+			</vs-button>
+			<vs-button upload type="border" color="danger" style="margin-right: 10px">
+				Some text here
+			</vs-button>
+			<vs-button upload type="filled" color="primary" style="margin-right: 10px">
+				Some text here
+			</vs-button>
+			<vs-button type="filled" color="primary" style="margin-right: 10px">
+				Some text here
+				<template v-slot:animate>
+					<vs-icon >home </vs-icon>
+				</template>
+			</vs-button>
 		</div>
 		<div class="showcase-component">
 			<h3>Alerts:</h3>
@@ -176,10 +191,10 @@
 			</div>
 
 		</div>
-		<div class="showcase-component">
+		<div class="showcase-component" style="margin-top:100px">
 			<h3>Collapse:</h3>
 			<hr />
-			<vs-collapse accordion >
+			<vs-collapse accordion type="border" >
 			<vs-collapse-item>
 			<template v-slot:header>
 				Collapse item

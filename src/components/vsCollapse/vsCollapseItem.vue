@@ -14,11 +14,14 @@
 				<vs-icon :icon-pack="iconPack" :icon="iconArrow" />
 			</span>
 		</header>
+		
 		<div
 			ref="content"
 			:style="styleContent"
 			class="vs-collapse-item--content"
 		>
+			<hr style="border-top: 1px solid #ffffff55; margin-bottom: 5px"/>
+
 			<div class="con-content--item">
 				<slot />
 			</div>

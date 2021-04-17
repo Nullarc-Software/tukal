@@ -137,9 +137,9 @@ export default  defineComponent({
     };
 
     const isArrayIncludes = function() {
-      let modelx = props.value
+      let modelx = props.value as Array<any>
       let value = props.vsValue
-      return modelx.includes(value)
+      return modelx.includes(value);
     };
 
     const isArrayx = function() {

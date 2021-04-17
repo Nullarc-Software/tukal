@@ -21,6 +21,117 @@
     opacity $vs-disabled-opacity
     cursor: default
     pointer-events: none
+
+  &--upload
+    &:after
+      content: ''
+      position: absolute
+      width: 100%
+      height: 100%      
+      top: 0px
+      left: 0px
+      z-index: 1200
+      animation: btnupload .7s ease infinite
+      box-sizing: border-box
+      background: @background
+
+  &--loading
+     pointer-events: none
+     user-select: none
+  &.vs-button--animate:not(.vs-button--animate-inactive)
+    .vs-button--text
+        i
+          font-size: 1.15rem
+      &:hover
+        .vs-button--text
+          transform: translate(-150%)
+        .vs-button__animate
+          transform: translate(0%)
+      &.vs-button--animate-vertical
+        &:hover
+          .vs-button--text
+            transform: translate(0,-150%) !important
+            opacity: 0
+          .vs-button__animate
+            transform: translate(0%) !important
+      &.vs-button--animate-scale
+        &:hover
+          .vs-button--text
+            transform: scale(1.4) !important
+            opacity: 0
+          .vs-button__animate
+            opacity: 1
+            transform: scale(1)
+      &.vs-button--animate-rotate
+        &:hover
+          .vs-button--text
+            transform: rotate(180deg) !important
+            opacity: 0
+          .vs-button__animate
+            opacity: 1
+            transform:  rotate(0)
+      .vs-button--text
+        transition: transform .25s ease
+
+  &__animate
+    position: absolute
+    width: 100%
+    height: 100%
+    display: flex
+    align-items: center
+    justify-content: center
+    top: 0px
+    left: 0px
+    transition: transform .25s ease
+    transform: translate(100%)
+    pointer-events: none
+    &--vertical
+      transform: translate(0,100%)
+    &--scale
+      transform: scale(.5)
+      opacity: 0
+    &--rotate
+      transform: rotate(-180deg)
+      opacity: 0
+
+  .vs-button__loading
+    width: 100%
+    height: 100%
+    position: absolute
+    top: 0px
+    left: 0px
+    display: flex
+    align-items: center
+    justify-content: center
+    background-color: #00000088
+    border-radius: inherit
+    &:after
+      content: ''
+      width: 17px
+      height: 17px
+      border: 2px dotted rgba(255,255,255,.6)
+      border-top: 2px solid rgba(255,255,255, 0)
+      border-bottom: 2px solid rgba(255,255,255, 0)
+      border-right: 2px solid rgba(255,255,255, 0)
+      border-radius: 50%
+      position: absolute
+      animation: btnload .6s linear infinite
+      box-sizing: border-box
+    &:before
+      position: absolute
+      content: ''
+      width: 17px
+      height: 17px
+      border: 2px solid rgb(255,255,255)
+      border-top: 2px solid rgba(255,255,255, 0)
+      border-bottom: 2px solid rgba(255,255,255, 0)
+      border-right: 2px solid rgba(255,255,255, 0)
+      border-radius: 50%
+      animation: btnload .6s ease infinite
+      box-sizing: border-box
+
+  
+
 .vs-button--icon
   z-index: 100;
   display: block;
@@ -41,9 +152,9 @@
   color: inherit
   display: inline-block;
   transition: $vs-transition;
-&.vs-button-border
+.vs-button-border
   padding: 9px;
-&.vs-button-border,&.vs-button-flat
+.vs-button-border,&.vs-button-flat
   &.isActive
     .vs-button--text,.vs-button--icon
       color: rgb(255, 255, 255) !important
@@ -107,12 +218,12 @@ for colorx, i in $vs-colors
   .vs-button-{colorx}
     &.vs-button-filled //type filled
       // background: $vs-colors[colorx]
-      background: getColor(colorx) !important
+      background: getColor(colorx)
       &:hover
         box-shadow: 0px 8px 25px -8px getColor(colorx)
     &.vs-button-border,&.vs-button-flat //type border
-     border: 1px solid getColor(colorx)
-     background: transparent !important
+     border: 2px solid getColor(colorx)
+     background: getColor(colorx, .08) !important
      color: getColor(colorx)
      .vs-button--text
        &.isActive
@@ -124,6 +235,9 @@ for colorx, i in $vs-colors
        box-shadow:inset 0px 0px 60px 0px getColor(colorx);
     &.vs-button-flat //type flat
       border: none !important
+      background: getColor(colorx, .08) !important
+      &:hover
+        background: getColor(colorx, .15) !important
     &.vs-button-line // type line
       color: getColor(colorx)
       border-color: getColor(colorx, .2)
@@ -152,3 +266,20 @@ for colorx, i in $vs-colors
       } else {
         box-shadow: 0 -3px 0 0 rgba(0,0,0,.2) inset
       }
+    &.vs-button--upload
+      &:after
+        background: getColor(colorx, .4)
+
+
+
+
+@keyframes btnload
+  0%
+    transform: rotate(0deg)
+  100%
+    transform: rotate(360deg)
+@keyframes btnupload
+  0%
+    transform: translate(0, 110%)
+  100%
+    transform: translate(0, -110%)
