@@ -4,8 +4,12 @@ import vsTheme from './utils/theme'
 import DefineVuesaxMixin from './defineGlobalMixin'
 import vuesaxOptions from './utils/options'
 import { App } from '@vue/runtime-core'
+import  RootApp from "./App.vue"
+import { createApp } from '@vue/runtime-dom'
 
-const install = (Vue: App, options: any = {}) => {
+import "material-design-icons/iconfont/material-icons.css"
+
+const install = function(Vue : App, options : any = {}) {
   // set default options
   Object.keys(vuesaxOptions).forEach((prop) => {
 
@@ -30,6 +34,10 @@ const install = (Vue: App, options: any = {}) => {
   // Define vuesax functions and properties ($vs)
   DefineVuesaxMixin(Vue, options);
 }
+
+const appVm = createApp(RootApp);
+(<any>window).Vue = appVm
+appVm.mount("#app");
 
 if (typeof window !== 'undefined' && (<any>window).Vue) {
   install((<any>window).Vue)

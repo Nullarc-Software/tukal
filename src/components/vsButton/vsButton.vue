@@ -151,7 +151,6 @@ export default defineComponent({
 		let btn = ref<HTMLButtonElement>();
 		let backgroundx = ref<HTMLSpanElement>();
 		let linex = ref<HTMLSpanElement>();		
-		const inst = getCurrentInstance();
 		let vs = useVs();
 
 		const isRTL = (value: string) => {
