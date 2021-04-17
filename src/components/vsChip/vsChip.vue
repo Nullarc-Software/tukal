@@ -28,16 +28,20 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { computed, defineComponent } from '@vue/runtime-core';
 import _color from '../../utils/color'
 
-export default {
+export default defineComponent({
   name:'VsChip',
   props:{
     item:{
       type:Boolean,
     },
-    value:{},
+    value:{
+		default: null,
+		type: Array
+	},
     active:{
       type:Boolean,
       default:true,
@@ -71,37 +75,34 @@ export default {
       default: false
     }
   },
-  computed:{
-    styleChip () {
-      const background = this.transparent ? _color.getColor(this.color, .15) : _color.getColor(this.color, 1)
-      const color = this.transparent ? _color.getColor(this.color, 1) : this.color ? 'rgba(255,255,255,.9)' : 'rgba(0,0,0,.7)'
+  setup(props, context){
+
+	const styleChip = computed(() => {
+      const background = props.transparent ? _color.getColor(props.color, .15) : _color.getColor(props.color, 1);
+      const color = props.transparent ? _color.getColor(props.color, 1) : props.color ? 'rgba(255,255,255,.9)' : 'rgba(0,0,0,.7)';
 
       return {
         background: background,
         color: color
-      }
-    },
-    eliminado() {
-      if(this.item) {
-        return true
-      } else {
-        if(this.vsClosable) {
-          return this.value
-        } else {
-          return true
-        }
-      }
+      };
+    });
+
+	const closeChip = () => {
+      context.emit('input', false)
+      context.emit('click')
+    };
+
+    const remove = () => {
+      context.emit('vs-remove', false)
+      context.emit('input', false)
     }
-  },
-  methods:{
-    closeChip () {
-      this.$emit('input', false)
-      this.$emit('click')
-    },
-    remove(){
-      this.$emit('vs-remove', false)
-      this.$emit('input', false)
-    }
+
+	return {
+		styleChip,
+		closeChip,
+		remove
+	}
+
   }
-}
+});
 </script>
