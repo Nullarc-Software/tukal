@@ -50,9 +50,11 @@
 <script lang="ts">
 import { computed, defineComponent, getCurrentInstance, nextTick, onMounted, ref } from "vue";
 import _color from "../../utils/color";
+import VsIcon from "../vsIcon"
 
 export default defineComponent({
 	name: "VsAlert",
+	
 	props: {
 		active: {
 			type: [Boolean, String],
@@ -144,6 +146,9 @@ export default defineComponent({
 			enter,
 			leave
 		}
+	},
+	components: {
+		VsIcon
 	}
 });
 </script>

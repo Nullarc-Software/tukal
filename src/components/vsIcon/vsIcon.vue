@@ -9,10 +9,10 @@
   </i>
 </template>
 <script lang="ts">
-import { computed } from '@vue/runtime-core'
+import { computed, defineComponent } from '@vue/runtime-core'
 import _color from '../../utils/color'
 
-export default {
+export default defineComponent({
   name:'VsIcon',
   props:{
     icon: {
@@ -97,9 +97,6 @@ export default {
 		getBgColor,
 		getBgSize
 	}
-  },
-  computed:{
-    
-  },
-}
+  }
+});
 </script>

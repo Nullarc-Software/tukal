@@ -4,11 +4,11 @@
     :class="`vs-align-${align}`"
     class="vs-breadcrumb"
     aria-label="breadcrumb"
-    v-on="$listeners">
+    >
     <ol class="vs-breadcrumb--ol">
       <slot/>
       <li
-        v-for="item in items"
+        v-for="item in mutableItems"
         v-show="!hasSlot"
         :key="item.title"
         :class="{'vs-active':item.active,'disabled-link':item.disabled}"
@@ -42,14 +42,17 @@
   </nav>
 </template>
 
-<script>
+<script lang="ts">
+import { computed, defineComponent } from '@vue/runtime-core'
 import _color from '../../utils/color'
+import { useRoute, useRouter} from "vue-router"
 
-export default {
+export default defineComponent({
   name:'VsBreadcrumb',
   props:{
     items:{
-      type:Array
+      type:	Array,
+	  readOnly: false
     },
     separator:{
       type:String,
@@ -64,38 +67,55 @@ export default {
       default:'left'
     }
   },
-  computed: {
-    textClass() {
+  setup(props, context){
+	
+	const textClass = computed(() => {
       const classes = {}
-      if (_color.isColor(this.color)) {
-        classes[`vs-breadcrumb-text-${this.color}`] = true
+      if (_color.isColor(props.color)) {
+        classes[`vs-breadcrumb-text-${props.color}`] = true
       }
       return classes
-    },
-    textStyle() {
-      const style = {}
-      if (!_color.isColor(this.color)) {
-        style.color = _color.getColor(this.color)
+    });
+
+    const textStyle = computed(() => {
+      let style : any = {}
+      if (!_color.isColor(props.color)) {
+        style.color = _color.getColor(props.color)
       }
       return style
-    },
-    hasSlot () {
-      return !!this.$slots.default
-    }
-  },
-  created() {
-    if(this.items) {
-      this.items = this.items.map(item => {
-        if (typeof item.title === "function") {
-          return {
-            ...item,
-            title: item.title(this.$route.params)
-          }
-        }
+    });
 
-        return item
-      })
-    }
+    const hasSlot = computed(() => {
+      return !!context.slots.default
+    });
+
+	const mutableItems = computed(() => {
+
+		let newItems : typeof props.items;
+		if(props.items) {
+			newItems = props.items.map((item) => {
+
+				if (typeof (item as any).title === "function") {
+					return {
+						...(item as any),
+						title: (item as any).title(useRoute().params)
+					}
+				}
+
+				return item;
+			});
+		}
+
+		return newItems;
+
+	});
+
+	return {
+		textStyle,
+		textClass,
+		hasSlot,
+		mutableItems
+	}
   }
-}
+});
 </script>
