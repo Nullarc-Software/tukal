@@ -20,7 +20,6 @@ export default (Vue : App, options: any) => {
       if(!this.$vs) {
         // define $vs reactive properties        
         this.$vs = reactive(options);
-        (<any>window).$vs = this.$vs;
         // define $vs functions
         vsFunctions(this);
       }

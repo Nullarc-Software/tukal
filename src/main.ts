@@ -37,11 +37,11 @@ const install = function(Vue : App, options : any = {}) {
 
 const appVm = createApp(RootApp);
 (<any>window).Vue = appVm
-appVm.mount("#app");
-
 if (typeof window !== 'undefined' && (<any>window).Vue) {
   install((<any>window).Vue)
 }
+
+appVm.mount("#app");
 
 export default install
 

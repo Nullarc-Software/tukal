@@ -35,8 +35,10 @@
     </footer>
   </div>
 </template>
-<script>
-  export default {
+<script lang="ts">
+import { defineComponent } from "@vue/runtime-core"
+
+  export default defineComponent({
     name: 'VsCard',
     props:{
       actionable: {
@@ -48,10 +50,15 @@
         type: Boolean
       }
     },
-    methods: {
-      hasSlot(slot) {
-        return this.$slots[slot]
-      }
-    }
-  }
+	setup(props, context){
+
+		const hasSlot = function(slot) {
+			return context.slots[slot];
+		}
+
+		return {
+			hasSlot
+		}
+	}
+  });
 </script>

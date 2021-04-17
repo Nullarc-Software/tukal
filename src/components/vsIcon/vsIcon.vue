@@ -32,7 +32,7 @@ export default defineComponent({
       type: String
     },
     size: {
-      default: null,
+      default: "1rem",
       type: String
     },
     round: {

@@ -64,7 +64,7 @@
 			<vs-avatar text="Celebrimbor" />
 			<vs-avatar src="https://avatars.githubusercontent.com/u/13927773?v=4" size="large" text="Celebrimbor" />
 		</div>
-		<dir class="showcase-component">
+		<div class="showcase-component">
 			<h3>Breadcrumbs:</h3>
 			<hr />
 			<vs-breadcrumb
@@ -95,7 +95,56 @@
 				<li aria-current="page" class="active">Infos</li>
 			</vs-breadcrumb>
 
-		</dir>
+		</div>
+		<div class="showcase-component">
+			<h3>Cards:</h3>
+			<hr />
+			<vs-row vs-justify="center">
+				<vs-col type="flex" vs-justify="center" vs-align="center" vs-w="6">
+					<vs-card>
+					<template v-slot:header>
+						<h3>
+						Hello world !
+						</h3>
+					</template>
+					<div>
+						<span>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</span>
+					</div>
+					<template v-slot:footer>
+						<vs-row vs-justify="flex-end">
+							<vs-button type="gradient" color="danger" icon="favorite" style="margin:3px"></vs-button>
+							<vs-button color="primary" icon="turned_in_not" style="margin:3px"></vs-button>
+							<vs-button color="rgb(230,230,230)" color-text="rgb(50,50,50)" icon="settings" style="margin:3px"></vs-button>
+						</vs-row>
+					</template>
+					</vs-card>
+				</vs-col>
+			</vs-row>
+		</div>
+		<div class="showcase-component">
+			<h3>CheckBoxes:</h3>
+			<hr />
+			<vs-checkbox v-model:value="checkBox1" >{{checkBox1}}</vs-checkbox>
+			<div class="">
+				<ul class="centerx">
+				<li class="modelx">
+					{{checkBox2}}
+				</li>
+				<li>
+					<vs-checkbox v-model:value="checkBox2" vs-value="luis">Luis</vs-checkbox>
+				</li>
+				<li>
+					<vs-checkbox v-model:value="checkBox2" vs-value="carols">Carols</vs-checkbox>
+				</li>
+				<li>
+					<vs-checkbox v-model:value="checkBox2" vs-value="summer">Summer</vs-checkbox>
+				</li>
+				<li>
+					<vs-checkbox v-model:value="checkBox2" vs-value="lyon">Lyon</vs-checkbox>
+				</li>
+				</ul>
+			</div>
+		</div>
 	</div>
 </template>
 
@@ -111,11 +160,21 @@ export default defineComponent({
 	},
 	setup(props, context) {
 		let active1 = ref(true);
+		let checkBox1 = ref(false);
+		let checkBox2 = ref(["luis"]);
+
+		let justLog = function(){
+			console.log(checkBox1.value);
+		}
 
 		return {
 			active1,
+			checkBox1,
+			checkBox2,
+			justLog
 		};
-	},
+
+	}
 });
 </script>
 
@@ -124,5 +183,9 @@ export default defineComponent({
 		margin-bottom: 15px;
 		margin-left: 30px;
 		margin-top: 30px;
+	}
+
+	body{
+		background-color: whitesmoke;
 	}
 </style>

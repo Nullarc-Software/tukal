@@ -28,7 +28,7 @@
 		<span
 			v-if="!is('line') && !is('gradient') && !is('relief')"
 			ref="backgroundx"
-			:style="stylesBackGround()"
+			:style="stylesBackGround"
 			class="vs-button-backgroundx vs-button--background"
 		>
 		</span>
@@ -60,6 +60,8 @@ import { computed, defineComponent, getCurrentInstance, nextTick, ref } from "vu
 import _color from "../../utils/color";
 import {useRouter} from "vue-router";
 import { useVs } from "@/functions";
+import vsIcon from "../vsIcon";
+import $vs from "../../utils/options"
 
 export default defineComponent({
 	name: "VsButton",
@@ -151,10 +153,9 @@ export default defineComponent({
 		let btn = ref<HTMLButtonElement>();
 		let backgroundx = ref<HTMLSpanElement>();
 		let linex = ref<HTMLSpanElement>();		
-		let vs = useVs();
 
 		const isRTL = (value: string) => {
-			if (vs.rtl) {
+			if ($vs.rtl) {
 				return value;
 			} else {
 				if (value === "right") {
@@ -255,7 +256,7 @@ export default defineComponent({
 		const isColor = () => {
 			return _color.isColor(props.color);
 		};
-		const styles = () => {
+		const styles = computed(() => {
 			if (is("filled")) {
 				return {
 					color: _color.getColor(props.textColor, 1),
@@ -303,8 +304,8 @@ export default defineComponent({
 					boxShadow: `0 3px 0 0 ${_color.darken(color, -0.4)}`,
 				};
 			}
-		};
-		const stylesBackGround = () => {
+		});
+		const stylesBackGround = computed(() => {
 			let styles = {
 				background:
 					is("flat") || is("border")
@@ -319,7 +320,7 @@ export default defineComponent({
 			};
 
 			return styles;
-		};
+		});
 		const styleLine = () => {
 			let lineOrigin = "50%";
 			if (props.lineOrigin == "left") {
@@ -374,6 +375,9 @@ export default defineComponent({
 			backgroundx,
 			linex
 		}
+	},
+	components: {
+		vsIcon
 	}
 });
 </script>

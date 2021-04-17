@@ -4,7 +4,7 @@
     :style="avatarStyle"
     :class="avatarClass"
     class="con-vs-avatar"
-    v-on="$listeners">
+    >
     <div
       v-if="badge && badge > 0"
       :style="badgeStyle"
