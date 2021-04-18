@@ -75,8 +75,8 @@ export default defineComponent({
 		let content = ref<HTMLDivElement>();
 
 		//Inject components from parent to use in child
-		const accordion = inject<Ref<boolean>>("accordion");
-		const openHover = inject<Ref<boolean>>("openHover");
+		const accordion = inject<boolean>("accordion");
+		const openHover = inject<boolean>("openHover");
 		const closeAllItems = inject<Function>("closeAllItems");
 		const emitChange = inject<Function>("emitChange");
 
@@ -94,10 +94,10 @@ export default defineComponent({
 		};
 
 		const toggleContent = function() {
-			if (openHover?.value || props.disabled) return;
+			if (openHover || props.disabled) return;
 
-			if (accordion?.value) {
-				closeAllItems?.call(null, content);
+			if (accordion) {
+				closeAllItems?.call(null, content, maxHeight);
 			}
 
 			if (props.sst && !dataReady.value) {
@@ -124,13 +124,13 @@ export default defineComponent({
 		const mouseover = function() {
 			if (props.disabled) return;
 			let maxHeightx = content.value?.scrollHeight;
-			if (openHover?.value) {
+			if (openHover) {
 				maxHeight.value = `${maxHeightx}px`;
 			}
 		};
 
 		const mouseout = function() {
-			if (openHover?.value) {
+			if (openHover) {
 				maxHeight.value = `0px`;
 			}
 		}

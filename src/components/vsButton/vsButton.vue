@@ -21,10 +21,7 @@
 				type!=='flat' &&
 				type!=='border' &&
 				type!=='gradient' &&
-				type!=='relief' &&
-				!transparent &&
-				!shadow &&
-				!floating
+				type!=='relief' 				
 			},
 			size,
 		]"

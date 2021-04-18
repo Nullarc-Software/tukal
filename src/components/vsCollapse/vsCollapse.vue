@@ -29,13 +29,16 @@ export default defineComponent({
 		const emitChange = function () {
 			context.emit("change");
 		};
-		const closeAllItems = function (el) {
+		const closeAllItems = function (el, maxHeight) {
 			let children = collapse.value?.children;
 
 			if(children){
 				for(let item of children){
-					if((item as HTMLElement) !== el){
-						(item as HTMLElement).style.maxHeight = "0px";
+					item = item as HTMLElement;
+					if(item !== el.value.parentElement){
+						let ex = item.querySelector(".vs-collapse-item--content") as HTMLElement;
+						ex.style.maxHeight = "0px";
+						maxHeight.value = "0px";
 					}
 				}
 			}
