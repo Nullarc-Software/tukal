@@ -25,12 +25,16 @@
 			},
 			size,
 		]"
-		:style="[
+		:style="[			
 			styles,
 			{
 				width: /[px]/.test(size) ? `${size}` : null,
 				height: /[px]/.test(size) ? `${size}` : null,
 			},
+			{
+				width: width,
+				height: height
+			}
 		]"
 		:type="button"
 		class="vs-component vs-button"
@@ -167,6 +171,14 @@ export default defineComponent({
 		animateInactive :{
 			type : Boolean,
 			default: false
+		},
+		width: {
+			type: String,
+			default: null
+		},
+		height: {
+			type: String,
+			default: null
 		}
 	},
 	emits: [

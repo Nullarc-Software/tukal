@@ -9,6 +9,9 @@
 			<vs-button type="filled" color="primary" style="margin-right: 10px">
 				Simple Button
 			</vs-button>
+			<vs-button type="filled" color="secondary" style="margin-right: 10px">
+				Simple Button
+			</vs-button>
 			<vs-button
 				type="filled"
 				color="primary"
@@ -76,6 +79,9 @@
 			<vs-button upload type="border" color="danger" style="margin-right: 10px">
 				Upload
 			</vs-button>
+			<vs-button upload type="border" color="#00FF00" style="margin-right: 10px">
+				Upload
+			</vs-button>
 			<vs-button
 				upload
 				type="filled"
@@ -83,7 +89,7 @@
 				style="margin-right: 10px"
 			>
 				Upload
-			</vs-button>
+			</vs-button>			
 			<vs-button type="filled" color="primary" style="margin-right: 10px">
 				Animate
 				<template v-slot:animate>
@@ -109,19 +115,34 @@
 					four
 				</vs-button>
 			</vs-button-group>
-			<br/>
+			<br />
 			<vs-button-group>
-				<vs-button type="border"> 		
-					<vs-icon >edit</vs-icon>		
+				<vs-button type="border">
+					<vs-icon>edit</vs-icon>
 				</vs-button>
 				<vs-button type="border">
-					<vs-icon >format_color_text</vs-icon>						
-				</vs-button>
-				<vs-button type="border" >
-					<vs-icon >format_align_center</vs-icon>		
+					<vs-icon>format_color_text</vs-icon>
 				</vs-button>
 				<vs-button type="border">
-					<vs-icon >format_size</vs-icon>		
+					<vs-icon>format_align_center</vs-icon>
+				</vs-button>
+				<vs-button type="border">
+					<vs-icon>format_size</vs-icon>
+				</vs-button>
+			</vs-button-group>
+			<br />
+			<vs-button-group>
+				<vs-button type="border">
+					<vs-icon>edit</vs-icon>
+				</vs-button>
+				<div style="display:inline-block">
+					aaabbb
+				</div>
+				<vs-button type="border">
+					<vs-icon>format_align_center</vs-icon>
+				</vs-button>
+				<vs-button type="border">
+					<vs-icon>format_size</vs-icon>
 				</vs-button>
 			</vs-button-group>
 		</div>
@@ -361,6 +382,36 @@
 				</vs-collapse-item>
 			</vs-collapse>
 		</div>
+		<div class="showcase-component">
+			<h3 :test="null">Dialog:</h3>
+			<hr />
+			<vs-button @click="activeDialog = !activeDialog" >Open Dialog</vs-button>
+			<vs-dialog width="550px" not-center v-model:value="activeDialog">
+				<template v-slot:header>
+					<h4>Welcome to <b>Vuesax3</b></h4>
+					<vs-divider color="rgba(0,0,0,0.5)"/>
+				</template>
+
+				<div class="con-content" >
+					<p>
+						Vuesax3 is a relatively new framework with a refreshing design and in
+						the latest trends, vuesax based on vuejs which means that we go hand
+						in hand with one of the most popular javascript frameworks in the
+						world and with a huge community with which you will have all the
+						help and documentation to create and make your project
+					</p>
+				</div>
+
+				<template v-slot:footer>					
+					<vs-button  width="100px" style="margin:5px" @click="activeDialog = false">
+						Ok
+					</vs-button>		
+					<vs-button type="flat"  color="secondary" width="100px" >
+						Cancel
+					</vs-button>			
+				</template>
+			</vs-dialog>
+		</div>
 	</div>
 </template>
 
@@ -377,6 +428,7 @@ export default defineComponent({
 		let checkBox1 = ref(false);
 		let checkBox2 = ref(["luis"]);
 		let loading = ref(false);
+		let activeDialog = ref(false);
 
 		let justLoad = function() {
 			loading.value = !loading.value;
@@ -391,6 +443,7 @@ export default defineComponent({
 			checkBox2,
 			justLoad,
 			loading,
+			activeDialog
 		};
 	},
 });

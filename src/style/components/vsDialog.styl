@@ -1,155 +1,284 @@
-//animations
-.dialog-t-enter, .dialog-t-leave-to /* .dialog-t-leave-active below version 2.1.8 */ {
-  opacity: 0 !important;
+.vs-dialog-enter-active {
+	transition: all 0.25s ease;
+
+	.vs-dialog {
+		&:not(.vs-dialog--fullScreen) {
+			animation: rebound 0.4s;
+		}
+	}
 }
 
-//box dialog
-.dialog-t-enter .vs-dialog/* .fade-leave-active below version 2.1.8 */ {
-  transform: scale(.9) !important;
+.vs-dialog-leave-active {
+	transition: all 0.15s ease;
 
+	.vs-dialog {
+		transition: all 0.15s ease;
+	}
 }
-.dialog-t-leave-to .vs-dialog/* .fade-leave-active below version 2.1.8 */ {
-  transform: scale(.9) !important;
-  // animation: rebound .3s;
+
+.vs-dialog-enter, .vs-dialog-leave-to {
+	opacity: 0;
+
+	.vs-dialog {
+		transform: scale(0.7);
+		box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, $shadow-opacity);
+
+		&--fullScreen {
+			transform: translate(0, 8%) !important;
+		}
+	}
 }
 
 @keyframes rebound {
-    0%   {transform: scale(.9)}
-    50%   {transform: scale(1.08)}
-    100% {transform: scale(1)}
+	0% {
+		transform: scale(0.8);
+	}
+
+	40% {
+		transform: scale(1.08);
+	}
+
+	80% {
+		transform: scale(0.98);
+	}
+
+	100% {
+		transform: scale(1);
+	}
 }
 
+@keyframes reboundClick {
+	0% {
+		transform: scale(1);
+	}
 
-// cancel / text
-.dialog-t-enter .vs-dialog-cancel, .dialog-t-leave-to .vs-dialog-cancel {
-  border-radius: 50% !important;
-  propWithDir(transform, null, (8px -8px), scale(.5) !important)
-}
-.dialog-t-enter .vs-dialog-text, .dialog-t-leave-to .vs-dialog-text {
-  opacity: 0;
-  propWithDir(transform, null, (-15px 0px), !important)
-}
+	40% {
+		transform: scale(1.05);
+	}
 
-// line after
-.dialog-t-enter .after, .dialog-t-leave-to .after {
-  height: 0% !important
-}
-.dialog-t-enter header h3, .dialog-t-leave-to header h3 {
-  propWithDir(transform, null, (-50px 0px), !important)
-  opacity: 0;
+	80% {
+		transform: scale(0.96);
+	}
+
+	100% {
+		transform: scale(1);
+	}
 }
 
-// buttons
-.dialog-t-enter footer button, .dialog-t-leave-to footer button {
-  transform: translate(0,10px);
-  opacity: 0;
+.vs-dialog-content {
+	background: rgba(0, 0, 0, $background-opacity);
+	position: fixed;
+	left: 0px;
+	top: 0px;
+	z-index: $zindex-2;
+	display: flex;
+	align-items: flex-start;
+	justify-content: center;
+	width: 100%;
+	height: 100%;
+	max-height: 100vh;
+	overflow-y: auto;
+	overflow-x: hidden;
+	padding-top: 80px;
+	padding-bottom: 80px;
+
+	&.fullScreen {
+		padding: 0px;
+		overflow: hidden;
+	}
+
+	&.blur {
+		backdrop-filter: saturate(180%) blur(15px);
+	}
 }
 
+.vs-dialog {
+	background: getColor('background');
+	color: getColor('text');
+	position: relative;
+	min-width: 400px;
+	border-radius: $radius;
+	transition: all 0.25s ease;
+	box-shadow: 0px 5px 30px 0px rgba(0, 0, 0, $shadow-opacity);
+	max-width: 800px;
+	margin: auto;
 
+	&--notCenter {
+		.vs-dialog__header {
+			display: block;
+		}
+	}
 
-.con-vs-dialog
-  transition: all .2s;
-  width: 100%;
-  height: 100%;
-  position: fixed;
-  propWithDir(left, null, 0px);
-  top: 0px;
-  z-index: 30000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 1;
-  .vs-dialog-dark
-    width: 100%;
-    background: rgba(0, 0, 0, 0.4);
-    position: absolute;
-    propWithDir(left, null, 0px);
-    top: 0px;
-    height: 100%;
-    z-index: 10;
-    transition: all .250s ease;
-    opacity: 1;
-  .vs-dialog
-    transition: all .2s;
-    z-index: 100;
-    width: calc(100% - 20px);
-    margin: 10px;
-    max-width: 400px;
-    border-radius: 6px;
-    box-shadow: 0px 5px 20px 0px rgba(0, 0, 0, 0.1)
-    background: rgb(255, 255, 255);
-    animation: rebound .3s;
-    &.locked
-      // background: rgb(3, 41, 203) !important;
-      transform: scale(1.02);
-    .vs-dialog-text
-      padding: 10px;
-      font-size: 0.875em;
-      transition: all .23s ease .1s;
-    header
-      width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: rgb(248, 248, 248)
-      border-radius: 5px 5px;
-      position: relative;
-      .con-title-after
-        width: 100%;
-        position: relative;
-        overflow: hidden;
-        border-radius: 5px 5px 0px 0px;
-      span.after
-        transition: all .23s ease .1s;
-        position: absolute;
-        propWithDir(left, null, 0px);
-        top: 50%;
-        transform: translate(0,-50%);
-        width: 3px;
-        height: 100%;
-        display: block;
-      h3
-        transition: all .23s ease .1s;
-        padding: 8px;
-        propWithDir(padding, left, 12px)
-        // padding-left: 12px;
-        font-size: 1.2rem;
-        margin: 0px
-      .vs-dialog-cancel
-        transition: all .23s ease .1s;
-        position: relative;
-        padding: 8px;
-        cursor: pointer;
-        box-shadow: 0px 5px 20px 0px rgba(0, 0, 0, 0.1)
-        border-radius: 5px;
-        propWithDir(transform, null, (8px -8px))
-        background: rgb(255, 255, 255);
-        font-size: 1.25em;
-        &:hover
-          box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.1)
-          propWithDir(transform, null, (5px -5px))
-    footer
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      position: relative;
-      button
-        propWithDir(margin, left, 0px)
+	&__loading {
+		width: 100%;
+		position: absolute;
+		top: 0px;
+		left: 0px;
+		height: 100%;
+		border-radius: inherit;
+		background: getColor('background', 0.8);
+		z-index: 100;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 
-      &:before
-        content: '';
-        top: 0px;
-        left: 0px;
-        position: absolute;
-        width: 90%;
-        propWithDir(margin, left, 5%)
-        height: 1px;
-        background: rgba(0, 0, 0, 0.05);
+		&:after {
+			content: '';
+			position: absolute;
+			width: 30px;
+			height: 30px;
+			border-radius: inherit;
+			border: 2px solid getColor('color', 1);
+			border-top: 2px solid getColor('color', 0);
+			border-left: 2px solid getColor('color', 0);
+			border-bottom: 2px solid getColor('color', 0);
+			box-sizing: border-box;
+			transition: all 0.25s ease;
+			display: block;
+			box-shadow: 0px 0px 0px 0px getColor('color', 1);
+			animation: loadingDialog 0.6s ease infinite;
+		}
 
-for colorx, i in $vs-colors
-  .vs-dialog-{colorx}
-    .vs-dialog
-      .vs-dialog-header
-        color: getColor(colorx, 1)
-      .after
-        background: getColor(colorx, 1)
+		&:before {
+			content: '';
+			position: absolute;
+			width: 30px;
+			height: 30px;
+			border-radius: inherit;
+			border: 2px dashed getColor('color', 1);
+			border-top: 2px solid getColor('color', 0);
+			border-left: 2px solid getColor('color', 0);
+			border-bottom: 2px solid getColor('color', 0);
+			box-sizing: border-box;
+			transition: all 0.25s ease;
+			display: block;
+			box-shadow: 0px 0px 0px 0px getColor('color', 1);
+			animation: loadingDialog 0.6s linear infinite;
+		}
+	}
+
+	&--scroll {
+		.vs-dialog__content {
+			max-height: calc(80vh - 200px);
+			overflow: auto;
+		}
+	}
+
+	&--autoWidth {
+		width: auto !important;
+		min-width: auto !important;
+		max-width: auto !important;
+	}
+
+	&--square {
+		border-radius: 0px;
+
+		.vs-dialog__close {
+			border-radius: 0px;
+		}
+	}
+
+	&--notPadding {
+		.vs-dialog__footer {
+			padding: 0px;
+		}
+
+		.vs-dialog__content {
+			padding: 0px;
+			margin-bottom: 0px !important;
+		}
+
+		.vs-dialog__header {
+			padding: 0px;
+		}
+	}
+
+	&--rebound {
+		animation: reboundClick 0.3s !important;
+	}
+
+	&--fullScreen {
+		width: calc(100% - 30px) !important;
+		height: calc(100% - 30px) !important;
+		max-width: none !important;
+		max-height: none !important;
+	}
+
+	&__footer {
+		padding: 10px 16px;
+		padding-top: 0px;
+		display: flex;
+		align-items: center;
+		justify-content: flex-end
+	}
+
+	&__header {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 10px 16px;
+	}
+
+	&__content {
+		padding: 10px 16px;
+		width: 100%;
+		position: relative;
+		border-radius: inherit;
+
+		&.notFooter {
+			margin-bottom: 20px;
+		}
+	}
+
+	&__close {
+		--vsgetColor: var(--vs-text);
+		position: absolute;
+		top: -6px;
+		right: -6px;
+		padding: 0px;
+		margin: 0px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: inherit;
+		border-radius: 12px;
+		box-shadow: 0px 5px 20px 0px rgba(0, 0, 0, $shadow-opacity);
+		transition: all 0.25s ease;
+		z-index: 200;
+		border: 0px;
+
+		i {
+			width: 34px !important; 
+			height: 34px !important;
+			opacity: 0.7 !important;
+			padding: 10px;
+		}
+
+		&:hover {
+			box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, $shadow-opacity);
+			transform: translate(-2px, 2px);
+
+			i {
+				opacity: 1;
+			}
+		}
+	}
+}
+
+@keyframes loadingDialog {
+	0% {
+		transform: rotate(0);
+	}
+
+	100% {
+		transform: rotate(360deg);
+	}
+}
+
+@media (max-width: 600px) {
+	.vs-dialog {
+		min-width: calc(100vw - 20px);
+		max-width: calc(100vw - 20px);
+		margin: auto 10px;
+	}
+}
