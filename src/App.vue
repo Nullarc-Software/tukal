@@ -386,7 +386,7 @@
 			<h3 :test="null">Dialog:</h3>
 			<hr />
 			<vs-button @click="activeDialog = !activeDialog" >Open Dialog</vs-button>
-			<vs-dialog width="550px" not-center v-model:value="activeDialog">
+			<vs-dialog loading width="550px" not-center v-model:value="activeDialog">
 				<template v-slot:header>
 					<h4>Welcome to <b>Vuesax3</b></h4>
 					<vs-divider color="rgba(0,0,0,0.5)"/>
@@ -404,6 +404,32 @@
 
 				<template v-slot:footer>					
 					<vs-button  width="100px" style="margin:5px" @click="activeDialog = false">
+						Ok
+					</vs-button>		
+					<vs-button type="flat"  color="secondary" width="100px" >
+						Cancel
+					</vs-button>			
+				</template>
+			</vs-dialog>
+			<vs-button @click="activeDialog1 = !activeDialog1" >Open Dialog</vs-button>
+			<vs-dialog square scroll prevent-close width="550px" v-model:value="activeDialog1">
+				<template v-slot:header>
+					<h4>Welcome to <b>Vuesax3</b></h4>
+					<vs-divider color="rgba(0,0,0,0.5)"/>
+				</template>
+
+				<div class="con-content" >
+					<p>
+						Vuesax3 is a relatively new framework with a refreshing design and in
+						the latest trends, vuesax based on vuejs which means that we go hand
+						in hand with one of the most popular javascript frameworks in the
+						world and with a huge community with which you will have all the
+						help and documentation to create and make your project
+					</p>
+				</div>
+
+				<template v-slot:footer>					
+					<vs-button  width="100px" style="margin:5px" @click="activeDialog1 = false">
 						Ok
 					</vs-button>		
 					<vs-button type="flat"  color="secondary" width="100px" >
@@ -429,6 +455,8 @@ export default defineComponent({
 		let checkBox2 = ref(["luis"]);
 		let loading = ref(false);
 		let activeDialog = ref(false);
+		let activeDialog1 = ref(false);
+		let activeDialog2 = ref(false);
 
 		let justLoad = function() {
 			loading.value = !loading.value;
@@ -443,7 +471,9 @@ export default defineComponent({
 			checkBox2,
 			justLoad,
 			loading,
-			activeDialog
+			activeDialog,
+			activeDialog1,
+			activeDialog2,
 		};
 	},
 });
