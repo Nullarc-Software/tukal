@@ -6,7 +6,7 @@ export default defineComponent({
 	data(){
 		
 		let componentColor = ref('');
-		
+			
 		return {
 			componentColor,
 			getColor: Function,
@@ -38,7 +38,8 @@ export default defineComponent({
 		}
 	},
 	mounted() {
-		this.getColor = getColor(this.color);
+
+		this.getColor = getColor.bind(this);
 		this.getColorSecondary = getColor(this.colorSecondary);
 	}
 });

@@ -15,9 +15,10 @@ export default defineComponent({
 @import '../../style/sass/_mixins'
 
 .vs-button-group
-  display: flex
+  display: inline-flex
   align-items: center
   justify-content: center
+  margin: 5px
   .vs-button
     margin: 0px
   .vs-button:not(:last-of-type):not(:first-of-type)

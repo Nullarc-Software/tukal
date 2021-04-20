@@ -238,7 +238,7 @@
 						<template v-slot:footer>
 							<vs-row vs-justify="flex-end">
 								<vs-button
-									type="gradient"
+									gradient
 									color="danger"
 									icon
 									style="margin:3px"
@@ -246,10 +246,11 @@
 									<vs-icon>favorite</vs-icon>
 								</vs-button>
 								<vs-button
-									color="primary"
-									icon="turned_in_not"
+									color="primary"									
 									style="margin:3px"
-								></vs-button>
+								>
+									<vs-icon>turned_in_not</vs-icon>
+								</vs-button>
 								<vs-button
 									color="rgb(230,230,230)"
 									color-text="rgb(50,50,50)"

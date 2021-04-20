@@ -48,6 +48,7 @@
 		:style="{
 			['--vs-color']: color ? getColor : '',
 			['--vs-color-secondary']: colorSecondary ? getColorSecondary : '',
+			['--vs-color-secondary']: colorSecondary ? getColorSecondary : '',
 		}"
 		v-bind="$attrs"
 		v-on="listeners"
@@ -111,7 +112,8 @@ export default defineComponent({
 		animateInactive: { type: Boolean, default: false },
 		to: { type: String, default: null },
 		href: { type: String, default: null },
-		blank: { type: Boolean, default: false }
+		blank: { type: Boolean, default: false },
+		textColor: { type: String, default: null}
 		
 	},
 	emits: ["routeErr", "mouseover", "mouseout", "blur", "click"],
