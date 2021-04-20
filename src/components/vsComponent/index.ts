@@ -1,3 +1,4 @@
+import functionWrapper from "@/functions";
 import { defineComponent, ref } from "vue";
 import {getColor} from "../../utils"
 
@@ -6,10 +7,14 @@ export default defineComponent({
 	data(){
 		
 		let componentColor = ref('');
-			
+
+		let funcWrapper = function(color){
+			return getColor(color);
+		}
+		
 		return {
 			componentColor,
-			getColor: Function,
+			getColor: funcWrapper,
 			getColorSecondary: Function
 		}
 	},
@@ -24,7 +29,8 @@ export default defineComponent({
 		colorSecondary: {
 			type: String,
 			default: 'rgb(130, 207, 23)'
-		}
+		},
+		textColor: { type: String, default: null}
 	},
 	methods: {
 		isColorDark() {
@@ -39,7 +45,6 @@ export default defineComponent({
 	},
 	mounted() {
 
-		this.getColor = getColor.bind(this);
 		this.getColorSecondary = getColor(this.colorSecondary);
 	}
 });

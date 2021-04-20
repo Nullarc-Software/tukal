@@ -46,9 +46,11 @@
 			{ [`vs-button--floating`]: !!floating },
 		]"
 		:style="{
-			['--vs-color']: color ? getColor : '',
-			['--vs-color-secondary']: colorSecondary ? getColorSecondary : '',
-			['--vs-color-secondary']: colorSecondary ? getColorSecondary : '',
+			['--vs-color']: color ? getColor(color) : '',
+			['--vs-color-secondary']: colorSecondary ? getColor(colorSecondary) : '',
+			['--vs-color-text']: textColor ? getColor(textColor) : '',
+			width: width, 
+			height: height 
 		}"
 		v-bind="$attrs"
 		v-on="listeners"
@@ -113,7 +115,8 @@ export default defineComponent({
 		to: { type: String, default: null },
 		href: { type: String, default: null },
 		blank: { type: Boolean, default: false },
-		textColor: { type: String, default: null}
+		width: { type: String, default: null },
+		height: { type: String, default: null },
 		
 	},
 	emits: ["routeErr", "mouseover", "mouseout", "blur", "click"],
@@ -203,6 +206,7 @@ export default defineComponent({
   outline: none
   font-size: .8rem
   box-sizing: border-box
+  color: -getColor("color-text")
   &.vs-component-dark
     &.vs-button--transparent
       color: -getColor('text') !important
