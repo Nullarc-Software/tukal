@@ -1,18 +1,15 @@
 // Functions
 
-import vsNotifications from './vsNotifications'
 import vsLoading from './vsLoading'
-import vsDialog from './vsDialog'
 //theme
 import vsTheme from '../utils/theme'
 import { ComponentInternalInstance, getCurrentInstance } from '@vue/runtime-core'
 
 
-const vsFunctions = {
-	vsNotifications,
+const vsFunctions = {	
 	vsLoading,
 	vsTheme,
-	vsDialog
+	
 }
 
 export function useVs(): any {	

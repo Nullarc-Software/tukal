@@ -72,7 +72,7 @@ export default defineComponent({
 			if (parentColor) color.value = parentColor;
 		};
 		const giveColor = function(opacity = 1) {
-			return _color.rColor(color, opacity);
+			return _color.rColor(color.value, opacity);
 		};
 
 		onMounted(() => {

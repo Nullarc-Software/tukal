@@ -65,7 +65,6 @@ export { default as vsList } from './components/vsList'
 export { default as vsAvatar } from './components/vsAvatar'
 export { default as vsPagination } from './components/vsPagination'
 export { default as vsBreadcrumb } from './components/vsBreadcrumb'
-export { default as vsPrompt } from './components/vsPrompt'
 export { default as vsDivider } from './components/vsDivider'
 export { default as vsSpacer } from './components/vsSpacer'
 export { default as vsIcon } from './components/vsIcon'
@@ -77,6 +76,7 @@ export { default as vsDialog } from './components/vsDialog'
 export { default as vsTextarea } from './components/vsTextarea'
 export { vsCollapse, vsCollapseItem } from './components/vsCollapse'
 export { default as vsImages } from './components/vsImages'
+export { default as vsNotification } from './components/vsNotifications'
 //New Component import
 
 //layout

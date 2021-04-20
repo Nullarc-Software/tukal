@@ -1,4 +1,4 @@
-import vsComponent from '../../functions/vsDialog/index.vue'
+import vsComponent from './vsNotifications.vue'
 
 vsComponent.install = (vue: any) => {
   vue.component(vsComponent.name, vsComponent)

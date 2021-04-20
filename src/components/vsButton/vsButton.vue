@@ -1,432 +1,575 @@
-<template lang="html">
+<template>
 	<button
-		ref="btn"
-		v-bind="$attrs"
 		:class="[
-			`vs-button-${isColor() ? color : null}`,
-			`vs-button-${type}`,
-			{[`vs-button--animate-${animationType}`]: !!animationType},
-			{ [`vs-button--animate-inactive`] : !!animateInactive },
+			'vs-button',
+			// `vs-button--${color.replace('#', '')}`,
+			`vs-button--${componentColor}`,
+			`vs-button--size-${size}`,
+			{ [`vs-button--fff`]: color === '#fff' },
+			{ [`vs-button--active`]: !!active },
+			{ [`vs-button--active-disabled`]: !!activeDisabled },
+			{ [`vs-button--icon`]: !!icon },
+			{ [`vs-button--circle`]: !!circle },
+			{ [`vs-button--square`]: !!square },
+			{ [`vs-button--loading`]: !!loading },
+			{ [`vs-button--upload`]: !!upload },
+			{ [`vs-button--block`]: !!block },
+			{ [`vs-button--animate`]: !!$slots.animate },
+			{ [`vs-button--animate-${animationType}`]: !!animationType },
+			{ [`vs-button--animate-inactive`]: !!animateInactive },
+
+			// colors
 			{
-				isActive: isActive,
-				includeIcon: icon,
-				includeIconOnly: icon && !$slots.default,
-				'vs-button--circle': circle,
-				'vs-button--square': square,
-				'vs-button--loading' : loading,
-				'vs-button--upload' : upload,
-				'vs-button--animate': !!$slots.animate,				
+				[`vs-button--primary`]: !danger && !success && !warn && !dark && !'color',
 			},
-			{ [`vs-button--default`] :
-				type!=='flat' &&
-				type!=='border' &&
-				type!=='gradient' &&
-				type!=='relief' 				
+			{ [`vs-button--danger`]: !!danger },
+			{ [`vs-button--warn`]: !!warn },
+			{ [`vs-button--success`]: !!success },
+			{ [`vs-button--dark`]: !!dark },
+
+			{
+				[`vs-button--default`]:
+					!flat &&
+					!border &&
+					!gradient &&
+					!relief &&
+					!transparent &&
+					!shadow &&
+					!floating,
 			},
-			size,
+			{ [`vs-button--flat`]: !!flat },
+			{ [`vs-button--border`]: !!border },
+			{ [`vs-button--gradient`]: !!gradient },
+			{ [`vs-button--relief`]: !!relief },
+			{ [`vs-button--transparent`]: !!transparent },
+			{ [`vs-button--shadow`]: !!shadow },
+			{ [`vs-button--floating`]: !!floating },
 		]"
-		:style="[			
-			styles,
-			{
-				width: /[px]/.test(size) ? `${size}` : null,
-				height: /[px]/.test(size) ? `${size}` : null,
-			},
-			{
-				width: width,
-				height: height
-			}
-		]"
-		:type="button"
-		class="vs-component vs-button"
-		name="button"
+		:style="{
+			['--vs-color']: color ? getColor : '',
+			['--vs-color-secondary']: colorSecondary ? getColorSecondary : '',
+		}"
+		v-bind="$attrs"
 		v-on="listeners"
+		ref="button"
 	>
-		<span
-			v-if="!is('line') && !is('gradient') && !is('relief')"
-			ref="backgroundx"
-			:style="stylesBackGround"
-			class="vs-button-backgroundx vs-button--background"
-		>
-		</span>
-
-		<vs-icon
-			v-if="icon"
-			:style="{
-				order: iconAfter ? 2 : 0,
-				['margin-' + isRTL('left')]:
-					$slots.default && !iconAfter ? '5px' : '0px',
-				['margin-' + isRTL('right')]:
-					$slots.default && iconAfter ? '5px' : '0px',
-			}"
-			:icon-pack="iconPack"
-			:icon="icon"
-			class="vs-button--icon"
-		></vs-icon>
-
-		<div v-if="$slots.default" class="vs-button-text vs-button--text">
+		<div class="vs-button__content">
 			<slot />
 		</div>
-		<div v-if="$slots.animate" :class="[
-				'vs-button__animate', `vs-button__animate--${this.animationType}`]">
+		<div
+			v-if="$slots.animate"
+			:class="[
+				'vs-button__animate',
+				`vs-button__animate--${this.animationType}`,
+			]"
+		>
 			<slot name="animate" />
 		</div>
-
-		<span ref="linex" :style="styleLine" class="vs-button-linex" />
-		<div v-if="loading"  class="vs-button__loading" />
+		<div v-if="loading" class="vs-button__loading"></div>
 	</button>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, getCurrentInstance, nextTick, ref } from "vue";
+import {
+	computed,
+	defineComponent,
+	getCurrentInstance,
+	nextTick,
+	ref,
+} from "vue";
 import _color from "../../utils/color";
-import {useRouter} from "vue-router";
+import { useRouter } from "vue-router";
 import { useVs } from "@/functions";
 import vsIcon from "../vsIcon";
-import $vs from "../../utils/options"
+import vsComponent from "../vsComponent";
+
+import ripple, { rippleCut, rippleReverse } from "../../utils/ripple";
+import VSax3Options from "@/utils/options";
 
 export default defineComponent({
 	name: "VsButton",
+	extends: vsComponent,
 	inheritAttrs: false,
 	props: {
-		type: {
-			default: "filled",
-			type: String,
-		},
-		color: {
-			default: "primary",
-			type: String,
-		},
-		textColor: {
-			default: null,
-			type: String,
-		},
-		lineOrigin: {
-			default: "center",
-			type: String,
-		},
-		linePosition: {
-			default: "bottom",
-			type: String,
-		},
-		gradientDirection: {
-			default: "30deg",
-			type: String,
-		},
-		gradientColorSecondary: {
-			default: "primary",
-			type: String,
-		},
-		size: {
-			type: String,
-			default: null,
-		},
-		icon: {
-			type: String,
-			default: null,
-		},
-		iconPack: {
-			type: String,
-			default: "material-icons",
-		},
-		iconAfter: {
-			default: false,
-			type: Boolean,
-		},
-		circle: {
-			default: false,
-			type: Boolean,
-		},
-		square: {
-			default: false,
-			type: Boolean,
-		},
-		to: {
-			default: '',
-			type: [String, Object],
-		},
-		href: {
-			default: "",
-			type: [String],
-		},
-		target: {
-			default: false,
-			type: [Boolean, String],
-		},
-		button: {
-			default: "button",
-			type: String,
-		},
-		loading : {
-			type: Boolean,
-			default: false
-		},
-		upload : {
-			type: Boolean,
-			default: false
-		},
-		animationType : {
-			type: String,
-			default: null
-		},
-		animateInactive :{
-			type : Boolean,
-			default: false
-		},
-		width: {
-			type: String,
-			default: null
-		},
-		height: {
-			type: String,
-			default: null
-		}
+		ripple: { type: String, default: "" },
+		activeDisabled: { type: Boolean, default: false },
+		flat: { type: Boolean, default: false },
+		border: { type: Boolean, default: false },
+		gradient: { type: Boolean, default: false },
+		relief: { type: Boolean, default: false },
+		transparent: { type: Boolean, default: false },
+		shadow: { type: Boolean, default: false },
+		floating: { type: Boolean, default: false },
+		icon: { type: Boolean, default: false },
+		circle: { type: Boolean, default: false },
+		square: { type: Boolean, default: false },
+		size: { type: String, default: null },
+		loading: { type: Boolean, default: false },
+		upload: { type: Boolean, default: false },
+		block: { type: Boolean, default: false },
+		animationType: { type: String, default: "" },
+		animateInactive: { type: Boolean, default: false },
+		to: { type: String, default: null },
+		href: { type: String, default: null },
+		blank: { type: Boolean, default: false }
+		
 	},
-	emits: [
-		"routeErr",
-		"mouseover",
-		"mouseout",
-		"blur",
-		"click"
-	],
-	setup: function(props, context){
+	emits: ["routeErr", "mouseover", "mouseout", "blur", "click"],
+	setup: function(props, context) {
+		let rippleDir = ref("");
+		let componentColor = null;
+		let button = ref<HTMLButtonElement>();
 
-		let isActive 	= ref(false);
-		let hoverx		= ref(false);
-		let leftBackgorund = ref(20);
-		let topBackgorund = ref(20);
-		let radio		= ref(0);
-		let time		= ref(0.1);
-		let timeOpacity = ref(0.1);
-		let opacity		= ref(1);
-
-		let btn = ref<HTMLButtonElement>();
-		let backgroundx = ref<HTMLSpanElement>();
-		let linex = ref<HTMLSpanElement>();		
-
-		const isRTL = (value: string) => {
-			if ($vs.rtl) {
-				return value;
-			} else {
-				if (value === "right") {
-					return "left";
-				}
-				if (value === "left") {
-					return "right";
-				}
-				return "right";
+		const clickButton = function(event) {
+			if (props.to) {
+				useRouter().push(props.to);
+			} else if (props.href) {
+				window.open(props.href, (props.blank && "_blank") || "_self");
+				// console.log(this.blank && '_self')
 			}
-		};
-		const routerPush = () => {
-			useRouter().push(props.to).catch((err) => {				
-				context.emit("routeErr", err);
-			});			
-		};
-		const is = (which) => {
-			let type = props.type;
-			return type == which;
-		};
-		const mouseoverx = (event) => {
-			context.emit("mouseover", event);
-			hoverx.value = true;
-		};
-		const mouseoutx = (event) => {
-			context.emit("mouseout", event);
-			hoverx.value= false;
-		};
-		const blurButton = (event) => {
-			context.emit("blur", event);
-			nextTick(() => {
-				if (props.type == "border" || props.type == "flat") {
-					opacity.value = 0;
-					setTimeout(() => {
-						radio.value = 0;
-					}, 150);
-					isActive.value = false;
-				}
-			});
-		};
-		const clickButton = (event) => {
 			context.emit("click", event);
-			nextTick(() => {
-				if (isActive.value) {
-					return;
-				}
-				if (props.to) {
-					routerPush;
-				}
-				if (props.href) {
-					if (typeof props.href == "string") {
-						props.target
-							? window.open(props.href)
-							: (window.location.href = props.href);
-					} 
-				}
-				if (props.type == "border" || props.type == "flat") {
-					isActive.value = true;
-				}
-								
-				let xEvent = event.offsetX;
-				let yEvent = event.offsetY;
-				
-				let radio1 = btn.value?.clientWidth ? btn.value?.clientWidth * 3 : 3;
-				time.value =
-					(btn.value?.clientWidth ?? 1) /
-					(btn.value?.clientWidth ?? 1 + (is("border") || is("flat") ? 70 : 20));
-				if (is("filled")) {
-					timeOpacity.value = time.value;
-				}
-
-				if (event.srcElement ? event.srcElement != btn.value : false) {
-					xEvent += event.target.offsetLeft;
-					yEvent += event.target.offsetTop;
-				}
-				leftBackgorund.value = xEvent;
-				topBackgorund.value = yEvent;
-				radio.value = radio1;
-				if (is("filled")) {
-					opacity.value = 0;
-				} else {
-					opacity.value = 1;
-				}
-
-				if (is("filled")) {
-					setTimeout(() => {
-						time.value= timeOpacity.value = radio.value = 0;
-						opacity.value = 1;
-						isActive.value = false;
-					}, time.value* 500);
-				} else {
-					setTimeout(() => {
-						timeOpacity.value = 0.15;
-					}, time.value* 500);
-				}
-			});
 		};
-		const isColor = () => {
-			return _color.isColor(props.color);
+
+		const mousedown = (event) => {
+			if (rippleDir.value === "reverse") {
+				rippleReverse(event);
+			} else if (rippleDir.value === "cut") {
+				rippleCut(event);
+			} else {
+				if (props.flat) {
+					ripple(
+						event,
+						(componentColor || props.color || "primary") &&
+							!props.active &&
+							document.activeElement !== button.value
+							? "inherit"
+							: null,
+						props.flat &&
+							!props.active &&
+							document.activeElement !== button.value
+					);
+				} else {
+					ripple(event, null, false);
+				}
+			}
 		};
-		const styles = computed(() => {
-			if (is("filled")) {
-				return {
-					color: _color.getColor(props.textColor, 1),
-					background: _color.getColor(props.color, 1),
-					boxShadow: hoverx.value
-						? `0px 8px 25px -8px ${_color.getColor(props.color, 1)}`
-						: null,
-				};
-			} else if (is("border") || is("flat")) {
-				return {
-					border: `${is("flat") ? 0 : 1}px solid ${_color.getColor(
-						props.color,
-						1
-					)}`,
-					background: hoverx.value
-						? _color.getColor(props.color, 0.1)
-						: "transparent",
-					color:
-						_color.getColor(props.textColor, 1) ||
-						_color.getColor(props.color, 1),
-				};
-			} else if (is("line")) {
-				return {
-					color:
-						_color.getColor(props.textColor, 1) ||
-						_color.getColor(props.color, 1),
-					borderBottomWidth: props.linePosition == "bottom" ? `2px` : null,
-					borderColor: `${_color.getColor(props.color, 0.2)}`,
-					borderTopWidth: props.linePosition == "top" ? `2px` : null,
-				};
-			} else if (is("gradient")) {
-				let backgroundx = `linear-gradient(${
-					props.gradientDirection
-				}, ${_color.getColor(props.color)} 0%, ${_color.getColor(
-					props.gradientColorSecondary,
-					1
-				)} 100%)`;
-				return {
-					background: backgroundx,
-				};
-			} else if (is("relief")) {
-				let color = _color.getColor(props.color, 1);
-				return {
-					background: _color.getColor(props.color, 1),
-					boxShadow: `0 3px 0 0 ${_color.darken(color, -0.4)}`,
-				};
-			}
-		});
-		const stylesBackGround = computed(() => {
-			let styles = {
-				background:
-					is("flat") || is("border")
-						? _color.getColor(props.color, 1, false)
-						: null,
-				opacity: opacity.value,
-				left: `${leftBackgorund.value}px`,
-				top: `${topBackgorund.value}px`,
-				width: `${radio.value}px`,
-				height: `${radio.value}px`,
-				transition: `width ${time.value}s ease, height ${time.value}s ease, opacity ${timeOpacity.value}s ease`,
-			};
-
-			return styles;
-		});
-		const styleLine = () => {
-			let lineOrigin = "50%";
-			if (props.lineOrigin == "left") {
-				lineOrigin = "0%";
-			} else if (props.lineOrigin == "right") {
-				lineOrigin = "auto";
-			}
-
-			let styles = {
-				top: props.linePosition == "top" ? "-2px" : "auto",
-				bottom: props.linePosition == "bottom" ? "-2px" : "auto",
-				background: _color.getColor(props.color, 1),
-				left: lineOrigin,
-				right: lineOrigin == "auto" ? "0px" : null,
-				transform: lineOrigin == "50%" ? "translate(-50%)" : null,
-			};
-
-			return styles;
-		}
 
 		let listeners = computed(() => {
-			return {				
+			return {
 				click: (event) => clickButton(event),
-				blur: (event) => blurButton(event),
-				mouseover: (event) => mouseoverx(event),
-				mouseout: (event) => mouseoutx(event),
+				mousedown: (event) => mousedown(event),
 			};
 		});
 
 		return {
-			isActive,
-			hoverx,
-			leftBackgorund,
-			topBackgorund,
-			radio,
-			time,
-			timeOpacity,
-			opacity,
-			isRTL,
-			routerPush,
-			is,
-			mouseoverx,
-			mouseoutx,
-			blurButton,
 			clickButton,
-			isColor,
-			styles,
-			stylesBackGround,
-			styleLine,			
 			listeners,
-			btn,
-			backgroundx,
-			linex
-		}
+		};
 	},
 	components: {
-		vsIcon
-	}
+		vsIcon,
+	},
 });
 </script>
+
+<style lang="sass">
+
+@use "sass:color"
+@import '../../style/sass/_mixins'
+@import '../../style/sass/root'
+
+	
+.vs-button  
+  --vs-color-rotate: -var(--vs-primary)
+  --vs-color-darken: -var(--vs-primary)  
+  --vs-button-padding: 8px 12px
+  --vs-button-margin: 5px
+  --vs-button-border-radius: 12px
+  --vs-button-text-color: #fff
+  border: 0px
+  margin: 5px
+  border-radius: -var(button-border-radius)
+  transition: all .25s ease
+  position: relative
+  user-select: none
+  z-index: 1
+  overflow: hidden
+  display: inline-flex
+  align-items: center
+  justify-content: center
+  padding: 0px
+  outline: none
+  font-size: .8rem
+  box-sizing: border-box
+  &.vs-component-dark
+    &.vs-button--transparent
+      color: -getColor('text') !important
+  &--fff
+    &:focus
+      color: rgba(30,30,30,1) !important
+
+  &__content
+    padding: -var(button-padding)
+    width: 100%
+    display: flex
+    align-items: center
+    justify-content: center
+
+
+  &--active-disabled
+    pointer-events: none
+    opacity: .6
+
+  &:disabled
+    pointer-events: none
+    opacity: .35
+  &.vs-button--animate:not(.vs-button--animate-inactive)
+    .vs-button__content
+      i
+        font-size: 1.15rem
+    &:hover
+      .vs-button__content
+        transform: translate(-100%)
+      .vs-button__animate
+        transform: translate(0%)
+    &.vs-button--animate-vertical
+      &:hover
+        .vs-button__content
+          transform: translate(0,-100%) !important
+          opacity: 0
+        .vs-button__animate
+          transform: translate(0%) !important
+    &.vs-button--animate-scale
+      &:hover
+        .vs-button__content
+          transform: scale(1.4) !important
+          opacity: 0
+        .vs-button__animate
+          opacity: 1
+          transform: scale(1)
+    &.vs-button--animate-rotate
+      &:hover
+        .vs-button__content
+          transform: rotate(180deg) !important
+          opacity: 0
+        .vs-button__animate
+          opacity: 1
+          transform:  rotate(0)
+    .vs-button__content
+      transition: transform .25s ease
+
+  &__animate
+    position: absolute
+    width: 100%
+    height: 100%
+    display: flex
+    align-items: center
+    justify-content: center
+    top: 0px
+    left: 0px
+    transition: transform .25s ease
+    transform: translate(100%)
+    pointer-events: none
+    &--vertical
+      transform: translate(0,100%)
+    &--scale
+      transform: scale(.5)
+      opacity: 0
+    &--rotate
+      transform: rotate(-180deg)
+      opacity: 0
+
+  &--block
+    width: 100%
+    display: block
+
+  &--upload
+    &:after
+      content: ''
+      position: absolute
+      width: 100%
+      height: 100%
+      background: -getColor('color', .4)
+      top: 0px
+      left: 0px
+      z-index: 1200
+      animation: btnupload .7s ease infinite
+      box-sizing: border-box
+
+  &--loading
+     pointer-events: none
+     user-select: none
+
+  .vs-button__loading
+    width: 100%
+    height: 100%
+    position: absolute
+    top: 0px
+    left: 0px
+    display: flex
+    align-items: center
+    justify-content: center
+    background: -getColor('color', .8)
+    border-radius: inherit
+    &:after
+      content: ''
+      width: 17px
+      height: 17px
+      border: 2px dotted rgba(255,255,255,.6)
+      border-top: 2px solid rgba(255,255,255, 0)
+      border-bottom: 2px solid rgba(255,255,255, 0)
+      border-right: 2px solid rgba(255,255,255, 0)
+      border-radius: 50%
+      position: absolute
+      animation: btnload .6s linear infinite
+      box-sizing: border-box
+    &:before
+      position: absolute
+      content: ''
+      width: 17px
+      height: 17px
+      border: 2px solid rgb(255,255,255)
+      border-top: 2px solid rgba(255,255,255, 0)
+      border-bottom: 2px solid rgba(255,255,255, 0)
+      border-right: 2px solid rgba(255,255,255, 0)
+      border-radius: 50%
+      animation: btnload .6s ease infinite
+      box-sizing: border-box
+
+
+  // SIZE -----
+  &--size-xl
+    border-radius: 20px
+    .vs-button__content
+      padding: 15px 20px
+      font-size: 1.1rem
+  &--size-large
+    font-size: 1rem
+    border-radius: 15px
+    .vs-button__content
+      padding: 10px 15px
+  &--size-small
+    font-size: .75rem
+    border-radius: 9px
+    .vs-button__content
+      padding: 5px 10px
+  &--size-mini
+    font-size: .6rem
+    border-radius: 7px
+    .vs-button__content
+      padding: 3px 8px
+  // SIZE - CLOSE -----
+
+  &--circle
+    border-radius: 25px
+
+  &--square
+    border-radius: 0px
+
+  &--icon
+    display: flex
+    align-items: center
+    justify-content: center
+    .vs-button__content
+      padding: 8px 8px
+    i
+      font-size: 1.15rem
+
+  // Type Button Style
+
+.vs-button--default
+  @debug "divider offset: #{color}"
+  background: -getColor('color', 1)
+  color: #fff
+  &.vs-button--active
+    box-shadow: 0px 10px 20px -10px -getColor('color', 1)
+    transform: translate(0,-3px)
+  &:hover
+    box-shadow: 0px 10px 20px -10px -getColor('color', 1)
+    transform: translate(0,-3px)
+
+.vs-button--flat
+  background: -getColor('color', .15)
+  color: -getColor('color', 1)
+  &.vs-button--dark
+    color: -getColor(text, 1)
+  &:hover
+    background: -getColor('color', .25)
+  &:focus
+    color: #fff
+    background: -getColor('color', 1)
+    transition: all .25s ease, background .25s ease .25s
+  &.vs-button--active
+    background: -getColor('color', 1)
+    color: #fff
+
+.vs-button--floating
+  background: -getColor('color', 1)
+  color: #fff
+  box-shadow: 0px 8px 20px -6px -getColor('color', 1)
+  transform: translate(0,-3px)
+  &:hover
+    box-shadow: 0px 8px 20px -6px -getColor('color', 1)
+    transform: translate(0,-6px)
+  &:focus
+    transform: translate(0,0px)
+    box-shadow: 0px 0px 0px 0px -getColor('color', 1)
+  &.vs-button--active
+    transform: translate(0,0px)
+    box-shadow: 0px 0px 0px 0px -getColor('color', 1)
+
+.vs-button--border
+  background: -getColor('color', 0)
+  color: -getColor('color', 1)
+  &:before
+    content: ''
+    border: 2px solid -getColor('color', 1)
+    position: absolute
+    top: 0px
+    left: 0px
+    width: 100%
+    height: 100%
+    border-radius: inherit
+    background: transparent
+    pointer-events: none
+    transition: all .25s ease
+    box-sizing: border-box
+  &:hover
+    &:before
+      border: 2px solid -getColor('color', .5)
+  &:focus
+    color: #fff
+    background: -getColor('color', 1)
+  &.vs-button--active
+    background: -getColor('color', 1)
+    color: #fff
+
+.vs-button--gradient
+  background: -getColor('color')
+  color: #fff
+  overflow: hidden
+  &.vs-button--primary, &.vs-button--success
+    &::before
+      filter: hue-rotate(40deg)
+  &::before
+    content: ''
+    background: linear-gradient(30deg, -getColor('color', 1) 0%, -getColor('color-secondary', 0.6) 100%)
+    position: absolute
+    top: 0px
+    left: 0px
+    width: 100%
+    height: 100%
+    border-radius: inherit
+    pointer-events: none
+    transition: all .4s ease
+    z-index: -1
+    filter: hue-rotate(-40deg)
+    box-sizing: border-box
+
+  &:hover
+    transform: translate(0, -3px)
+    box-shadow: 0px 10px 20px -10px -getColor('color', .7)
+    &::before
+      opacity: 0
+      // transform: translate(50%, -50%)
+  &.vs-button--active
+    transform: translate(0, -3px)
+    box-shadow: 0px 10px 20px -10px rgba(0,0,0,.35)
+
+.vs-button--relief
+  background: -getColor('color')
+  color: #fff
+  overflow: hidden
+  transform: translate(0) scale(1,1)
+  .vs-button__content
+    transition: all .25s ease
+  &.vs-button--icon
+    &.vs-button--active
+      height: auto
+  &::before
+    content: ''
+    position: absolute
+    bottom: 0px
+    left: 0px
+    width: 100%
+    height: calc(100% - 3px)
+    border-radius: inherit
+    pointer-events: none
+    transition: all .4s ease
+    z-index: -1
+    filter: contrast(2) grayscale(.4)
+    border-bottom: 3px solid -getColor('color')
+    box-sizing: border-box
+  &:active
+    transform: translate(0,1px)
+    .vs-button__content
+      padding-bottom: 6px
+    &::before
+      border-bottom: 0px solid -getColor('color')
+  &.vs-button--active
+    transform: translate(0,1px)
+    .vs-button__content
+      padding-bottom: 6px
+    &::before
+      border-bottom: 0px solid -getColor('color')
+
+.vs-button--transparent
+  background: transparent
+  color: -getColor('color')
+  overflow: hidden
+  &::before
+    content: ''
+    background: -getColor('color', .1)
+    // background: -getColor('color', -var('background-opacity'))
+    position: absolute
+    bottom: 0px
+    left: 0px
+    width: 100%
+    height: 100%
+    border-radius: inherit
+    pointer-events: none
+    transition: all .25s ease
+    z-index: -1
+    transform: scale(.5)
+    opacity: 0
+    box-sizing: border-box
+  &:active:not(.vs-button--active)
+    &::before
+      transform: scale(.9) !important
+  &:hover
+    &::before
+      opacity: 1
+      transform: scale(1)
+  &.vs-button--active
+    &::before
+      background: -getColor('color', .2)
+      opacity: 1
+      transform: scale(1)
+
+.vs-button--shadow
+  background: -getColor('background')
+  color: -getColor('text')
+  overflow: hidden
+  box-shadow: 0px 0px 0px 0px rgba(0,0,0, -var(shadow-opacity))
+  &:active:not(.vs-button--active)
+    transform: translate(0,-1px)
+    box-shadow: 0px 5px 15px 0px rgba(0,0,0, -var(shadow-opacity)) !important
+  &:hover
+    transform: translate(0,-3px)
+    box-shadow: 0px 8px 25px 0px rgba(0,0,0, -var(shadow-opacity))
+  &.vs-button--active
+    transform: translate(0,-3px)
+    box-shadow: 0px 8px 25px 0px rgba(0,0,0, -var(shadow-opacity))
+
+@keyframes btnload
+  0%
+    transform: rotate(0deg)
+  100%
+    transform: rotate(360deg)
+
+@keyframes btnupload
+  0%
+    transform: translate(0, 110%)
+  100%
+    transform: translate(0,-110%)
+</style>

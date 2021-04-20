@@ -32,7 +32,7 @@ export default defineComponent({
       type: String
     },
     size: {
-      default: "1rem",
+      default: null,
       type: String
     },
     round: {
@@ -57,7 +57,8 @@ export default defineComponent({
         height: /(px)/.test(props.size) ? props.size : /(em)/.test(props.size) ? props.size : null,
         'font-size': /(px)/.test(props.size) ? props.size : /(em)/.test(props.size) ? props.size : null,
         color: getColor,
-        background: getBgColor
+        background: getBgColor,
+		cursor: "pointer"
       }
       return style
     });

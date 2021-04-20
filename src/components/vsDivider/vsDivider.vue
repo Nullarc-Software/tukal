@@ -138,7 +138,7 @@ export default defineComponent({
 		const textColor = computed(() => {
 			if (!_color.isColor(props.color)) {
 				return _color.getColor(
-					props.color !== "rgba(0, 0, 0,.1)" ? props.color : null
+					props.color !== "rgba(0, 0, 0,.1)" ? props.color : ""
 				);
 			}
 		});

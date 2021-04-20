@@ -1,0 +1,5 @@
+@function -getColor($color, $alpha: 1)
+  @return unquote("rgba(var(--vs-#{$color}), #{$alpha})")
+
+@function -var($var)
+  @return unquote("var(--vs-#{$var})")

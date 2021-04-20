@@ -1,13 +1,15 @@
 <template>
 	<div>
+		<component :is="notificationComponent" v-bind="notificationAttrs" @close="notificationComponent = null">
+		</component >
 		<h1 style="text-align:center">
 			Vuesax3 (Typescript + composition API Demo) - TheCelebrimbor - Github
 		</h1>
 		<div class="showcase-component">
 			<h3>Buttons:</h3>
-			<hr />
-			<vs-button type="filled" color="primary" style="margin-right: 10px">
-				Simple Button
+			<hr />			
+			<vs-button success >
+				Open Dialog
 			</vs-button>
 			<vs-button type="filled" color="secondary" style="margin-right: 10px">
 				Simple Button
@@ -52,19 +54,16 @@
 			>
 				Square Button
 			</vs-button>
-			<vs-button type="border" color="primary" style="margin-right: 10px">
+			<vs-button border color="primary" style="margin-right: 10px">
 				Border Only
 			</vs-button>
-			<vs-button type="flat" color="primary" style="margin-right: 10px">
+			<vs-button flat color="primary" style="margin-right: 10px">
 				Flat
-			</vs-button>
-			<vs-button type="line" color="primary" style="margin-right: 10px">
-				Line Type
-			</vs-button>
-			<vs-button type="gradient" color="primary" style="margin-right: 10px">
+			</vs-button>		
+			<vs-button gradient color="primary" style="margin-right: 10px">
 				Gradient
 			</vs-button>
-			<vs-button type="relief" color="primary" style="margin-right: 10px">
+			<vs-button relief color="primary" style="margin-right: 10px">
 				Relief
 			</vs-button>
 			<vs-button
@@ -241,9 +240,11 @@
 								<vs-button
 									type="gradient"
 									color="danger"
-									icon="favorite"
+									icon
 									style="margin:3px"
-								></vs-button>
+								>
+									<vs-icon>favorite</vs-icon>
+								</vs-button>
 								<vs-button
 									color="primary"
 									icon="turned_in_not"
@@ -442,8 +443,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "@vue/runtime-core";
+import { computed, defineComponent, ref } from "@vue/runtime-core";
 import * as components from "./components";
+import {vsButton} from "./components/vsButton"
+import vsNotification from "./components/vsNotifications"
 
 export default defineComponent({
 	components: {
@@ -456,7 +459,18 @@ export default defineComponent({
 		let loading = ref(false);
 		let activeDialog = ref(false);
 		let activeDialog1 = ref(false);
-		let activeDialog2 = ref(false);
+		let activeDialog2 = ref(false);		
+		let notifShow = ref(false);		
+		
+
+		let notificationComponent = ref(null);
+		let notificationAttrs : any = {
+			title: 'Documentation Vuesax 4.0+',
+            text: `These documents refer to the latest version of vuesax (4.0+),
+            to see the documents of the previous versions you can do it here 👉 Vuesax3.x`,			
+			
+			flat: false
+		};
 
 		let justLoad = function() {
 			loading.value = !loading.value;
@@ -474,6 +488,9 @@ export default defineComponent({
 			activeDialog,
 			activeDialog1,
 			activeDialog2,
+			notificationComponent,
+			notificationAttrs,			
+			notifShow
 		};
 	},
 });
