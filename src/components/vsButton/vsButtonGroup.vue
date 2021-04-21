@@ -4,7 +4,10 @@
 	</div>
 </template>
 <script lang="ts">
-import Vue, { defineComponent } from 'vue'
+import Vue, { createApp, createRenderer, defineComponent } from 'vue'
+import vsButton from "./vsButton.vue"
+
+
 export default defineComponent({
 	name: "VsButtonGroup"
 });

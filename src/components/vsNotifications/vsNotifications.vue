@@ -79,6 +79,10 @@ export default defineComponent({
 	name: "VsNotification",
 	extends: vsComponent,
 	props: {
+		notifId: {
+			type: Number,
+			default: 0
+		},
 		position: {
 			type: String,
 			default: "bottom-right"
@@ -193,12 +197,12 @@ export default defineComponent({
 		};
 
 		const handleClickClose = function() {
-			close();
 			if (props.clickClose) {
 				if (props.onClickClose) {
 					props.onClickClose();
 				}
 			}
+			close();
 		};
 
 		const beforeEnter = function(el: any) {
@@ -652,6 +656,13 @@ export default defineComponent({
       }
     }
   }
+}
+
+.vs-notification--light{
+	color : #000 !important;
+	i {
+		color:  #000 !important;
+	}
 }
 
 .vs-notification--dark {

@@ -1,22 +1,13 @@
 <template>
   <div>
-	<transition name="notification">
-		<component
-		:is="notificationComponent"
-		v-bind="notificationAttrs"
-		@close="notificationComponent = null"
-		>
-		</component>
-	</transition>
-
     <h1 style="text-align:center">
       Vuesax3 (Typescript + composition API Demo) - TheCelebrimbor - Github
     </h1>
     <div class="showcase-component">
       <h3>Buttons:</h3>
       <hr />
-      <vs-button success @click="notificationComponent = 'vs-notification'">
-        Open Dialog
+      <vs-button success @click="justLoad">
+        Open Notification
       </vs-button>
       <vs-button type="filled" color="secondary" style="margin-right: 10px">
         Simple Button
@@ -454,7 +445,7 @@
 import { computed, defineComponent, reactive, ref } from "@vue/runtime-core";
 import * as components from "./components";
 import { vsButton } from "./components/vsButton";
-import vsNotification from "./components/vsNotifications";
+import notification from "./components/vsNotifications";
 
 export default defineComponent({
   components: {
@@ -472,20 +463,22 @@ export default defineComponent({
     let opts: any = reactive([]);
 
     let notificationComponent = ref(null);
-    let notificationAttrs: any = {
-      title: "Documentation Vuesax 4.0+",
-      text: `These documents refer to the latest version of vuesax (4.0+),
-            to see the documents of the previous versions you can do it here 👉 Vuesax3.x`,
-      flat: false,
-	  color: "success",
-	  position: "top-center"
-    };
 
     let justLoad = function() {
-      loading.value = !loading.value;
-      setTimeout(() => {
-        loading.value = !loading.value;
-      }, 5000);
+
+		let notificationAttrs: any = {
+			title: "Documentation Vuesax 4.0+",
+			text: `These documents refer to the latest version of vuesax (4.0+),
+					to see the documents of the previous versions you can do it here 👉 Vuesax3.x`,
+			flat: false,
+			color: "light",
+			onClickClose : function(){
+				console.log("notif closed");
+			}
+		};
+
+		let notif = new notification(notificationAttrs);
+		//notif.unmount();
     };
 
     return {
@@ -498,7 +491,6 @@ export default defineComponent({
       activeDialog1,
       activeDialog2,
       notificationComponent,
-      notificationAttrs,
       notifShow,
       opts,
     };
