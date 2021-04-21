@@ -12,7 +12,7 @@
     <div class="showcase-component">
       <h3>Buttons:</h3>
       <hr />
-      <vs-button success>
+      <vs-button success @click="notificationComponent = 'vs-notification'">
         Open Dialog
       </vs-button>
       <vs-button type="filled" color="secondary" style="margin-right: 10px">
@@ -229,7 +229,7 @@
       <h3>Cards:</h3>
       <hr />
       <vs-card-group>
-        <vs-card v-for="card,key in 6" :key="key" @click="handleClick">
+        <vs-card type="2" v-for="card,key in 6" :key="key" @click="handleClick">
           <template #title>
             <h3>Pot with a plant</h3>
           </template>
@@ -473,7 +473,6 @@ export default defineComponent({
       title: "Documentation Vuesax 4.0+",
       text: `These documents refer to the latest version of vuesax (4.0+),
             to see the documents of the previous versions you can do it here 👉 Vuesax3.x`,
-
       flat: false,
     };
 

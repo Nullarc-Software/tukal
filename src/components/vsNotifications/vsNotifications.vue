@@ -1,270 +1,276 @@
 <template>
-	<transition
-		name="notification"
-		@before-enter="beforeEnter"
-		@enter="enter"
-		@leave="leave"
-	>
-		<div
-			:class="['vs-notification-parent', `vs-notification-parent--${position}`]"
-		>
-			<div
-				ref="notif"
-				:class="[					
-					{ 'vs-notification--border': border },
-					{ 'vs-notification--icon': icon },
-					{ 'vs-notification--onClick': onClick },
-					{ 'vs-notification--onClickClose': onClickClose },
-					{ 'vs-notification--flat': flat },
-					{ 'vs-notification--sticky': sticky },
-					{ 'vs-notification--square': square },
-					{ 'vs-notification--width-all': width == '100%' },
-					{ 'vs-notification--width-auto': width == 'auto' },
-					{ 'vs-notification--loading': loading },
-					{ 'vs-notification--notPadding': notPadding },					
-					`vs-notification--${isColor() ? color : null}`,
-					classNotification,
-				]"
-				class="vs-component vs-notification"
-				@click="clickNoti"
-			>
-				<div v-if="!loading && icon">
-					<vs-icon>{{ icon }} </vs-icon>
-				</div>
-				<div v-if="!loading" class="vs-notification__content">
-					<header v-if="title" class="vs-notification__content__header">
-						<h4>
-							{{ title }}
-						</h4>
-					</header>
-					<div v-if="text" class="vs-notification__content__text">
-						<p>{{ text }}</p>
-					</div>
-					<div v-if="content">
-						<component :is="content.component" v-bind="content.props">
-							<slot name="content" />
-						</component>
-					</div>
-				</div>
-				<button
-					v-if="buttonClose"
-					class="vs-notification__close"
-					@click="handleClickClose"
-				>
-					<vs-icon>close</vs-icon>
-				</button>
-				<div v-if="loading" class="vs-notification__loading"></div>
-				<div
-					class="vs-notification__progress"
-					:style="{ width: `${internalProgress}%` }"
-				></div>
-			</div>
-		</div>
-	</transition>
+  <transition
+    name="notification"
+    @before-enter="beforeEnter"
+    @enter="enter"
+    @leave="leave"
+  >
+    <div
+      :class="['vs-notification-parent', `vs-notification-parent--${position}`]"
+    >
+      <div
+        ref="notif"
+        :class="[
+          { 'vs-notification--border': border },
+          { 'vs-notification--icon': icon },
+          { 'vs-notification--onClick': onClick },
+          { 'vs-notification--onClickClose': onClickClose },
+          { 'vs-notification--flat': flat },
+          { 'vs-notification--sticky': sticky },
+          { 'vs-notification--square': square },
+          { 'vs-notification--width-all': width == '100%' },
+          { 'vs-notification--width-auto': width == 'auto' },
+          { 'vs-notification--loading': loading },
+          { 'vs-notification--notPadding': notPadding },
+          `vs-notification--${isColor() ? color : null}`,
+          classNotification,
+        ]"
+        :style="{
+          ['--vs-color']: color ? getColor(color) : '',
+          ['--vs-color-secondary']: colorSecondary
+            ? getColor(colorSecondary)
+            : '',
+          ['--vs-color-text']: textColor ? getColor(textColor) : '',
+        }"
+        class="vs-component vs-notification"
+        @click="clickNoti"
+      >
+        <div v-if="!loading && icon">
+          <vs-icon>{{ icon }} </vs-icon>
+        </div>
+        <div v-if="!loading" class="vs-notification__content">
+          <header v-if="title" class="vs-notification__content__header">
+            <h4>
+              {{ title }}
+            </h4>
+          </header>
+          <div v-if="text" class="vs-notification__content__text">
+            <p>{{ text }}</p>
+          </div>
+          <div v-if="content">
+            <component :is="content.component" v-bind="content.props">
+              <slot name="content" />
+            </component>
+          </div>
+        </div>
+        <button
+          v-if="buttonClose"
+          class="vs-notification__close"
+          @click="handleClickClose"
+        >
+          <vs-icon>close</vs-icon>
+        </button>
+        <div v-if="loading" class="vs-notification__loading"></div>
+        <div
+          class="vs-notification__progress"
+          :style="{ width: `${internalProgress}%` }"
+        ></div>
+      </div>
+    </div>
+  </transition>
 </template>
 
 <script lang="ts">
 import {
-	computed,
-	defineComponent,
-	nextTick,
-	onBeforeUnmount,
-	watch,
+  computed,
+  defineComponent,
+  nextTick,
+  onBeforeUnmount,
+  watch,
 } from "@vue/runtime-core";
 import vsIcon from "../vsIcon/vsIcon.vue";
 import _color from "../../utils/color";
 import { onMounted, ref, VNode } from "vue";
 import { Transition, TransitionGroup } from "vue";
+import vsComponent from "../vsComponent";
 
 export default defineComponent({
-	name: "VsNotification",
-	props: {
-		position: {
-			type: String,
-			default: "bottom-right",
-		},
-		isVisible: {
-			type: Boolean,
-			default: true,
-		},
-		content: {
-			type: Object,
-			default: null,
-		},
-		title: {
-			type: String,
-			default: null,
-		},
-		text: {
-			type: String,
-			default: null,
-		},
-		color: {
-			type: String,
-			default: "primary",
-		},		
-		border: {
-			type: String,
-			default: null,
-		},
-		icon: {
-			type: String,
-			default: null,
-		},
-		onClickClose: {
-			type: Function,
-			default: null,
-		},
-		onClick: {
-			type: Function,
-			default: null,
-		},
-		buttonClose: {
-			type: Boolean,
-			default: true,
-		},
-		flat: {
-			type: Boolean,
-			default: false,
-		},
-		onDestroy: {
-			type: Function,
-			default: null,
-		},
-		sticky: {
-			type: Boolean,
-			default: false,
-		},
-		square: {
-			type: Boolean,
-			default: false,
-		},
-		width: {
-			type: String,
-			default: null,
-		},
-		loading: {
-			type: Boolean,
-			default: false,
-		},
-		progressAuto: {
-			type: Boolean,
-			default: false,
-		},
-		progress: {
-			type: Number,
-			default: 0,
-		},
-		duration: {
-			type: Number,
-			default: 4000,
-		},
-		notPadding: {
-			type: Object,
-			default: null,
-		},
-		clickClose: {
-			type: Boolean,
-			default: false,
-		},
-		classNotification: {
-			type: String,
-			default: null,
-		},
-	},
-	components: {
-		vsIcon,
-		Transition,
-		TransitionGroup,
-	},
-	emits: ["close"],
-	setup(props, context) {
-		let internalProgress = ref(props.progress);
-		let intervalProgress = ref(0);
-		let notif = ref<HTMLDivElement>();
+  name: "VsNotification",
+  extends: vsComponent,
+  props: {
+    position: {
+      type: String,
+      default: "bottom-right",
+    },
+    isVisible: {
+      type: Boolean,
+      default: true,
+    },
+    content: {
+      type: Object,
+      default: null,
+    },
+    title: {
+      type: String,
+      default: null,
+    },
+    text: {
+      type: String,
+      default: null,
+    },
+    color: {
+      type: String,
+      default: "primary",
+    },
+    border: {
+      type: String,
+      default: null,
+    },
+    icon: {
+      type: String,
+      default: null,
+    },
+    onClickClose: {
+      type: Function,
+      default: null,
+    },
+    onClick: {
+      type: Function,
+      default: null,
+    },
+    buttonClose: {
+      type: Boolean,
+      default: true,
+    },
+    flat: {
+      type: Boolean,
+      default: false,
+    },
+    onDestroy: {
+      type: Function,
+      default: null,
+    },
+    sticky: {
+      type: Boolean,
+      default: false,
+    },
+    square: {
+      type: Boolean,
+      default: false,
+    },
+    width: {
+      type: String,
+      default: null,
+    },
+    loading: {
+      type: Boolean,
+      default: false,
+    },
+    progressAuto: {
+      type: Boolean,
+      default: false,
+    },
+    progress: {
+      type: Number,
+      default: 0,
+    },
+    duration: {
+      type: Number,
+      default: 4000,
+    },
+    notPadding: {
+      type: Object,
+      default: null,
+    },
+    clickClose: {
+      type: Boolean,
+      default: false,
+    },
+    classNotification: {
+      type: String,
+      default: null,
+    },
+  },
+  components: {
+    vsIcon,
+    Transition,
+    TransitionGroup,
+  },
+  emits: ["close"],
+  setup(props, context) {
+    let internalProgress = ref(props.progress);
+    let intervalProgress = ref(0);
+    let notif = ref<HTMLDivElement>();
 
-		const clickNoti = function() {
-			if (props.onClick) {
-				props.onClick();
-			}
-		};
+    const clickNoti = function() {
+      if (props.onClick) {
+        props.onClick();
+      }
+    };
 
-		const close = function() {
-			context.emit("close");
-		};
+    const close = function() {
+      context.emit("close");
+    };
 
-		const handleClickClose = function() {
-			close();
-			if (props.clickClose) {
-				if (props.onClickClose) {
-					props.onClickClose();
-				}
-			}
-		};
+    const handleClickClose = function() {
+      close();
+      if (props.clickClose) {
+        if (props.onClickClose) {
+          props.onClickClose();
+        }
+      }
+    };
 
-		const beforeEnter = function(el: any) {
-			el.style.maxHeight = `0px`;
-			el.style.padding = `0px 20px`;
-		};
+    const beforeEnter = function(el: any) {
+      el.style.maxHeight = `0px`;
+      el.style.padding = `0px 20px`;
+    };
 
-		const enter = function(el: any, done: any) {
-			const h = el.scrollHeight;
-			el.style.maxHeight = `${h + 40}px`;
-			if (window.innerWidth < 600) {
-				el.style.padding = `15px`;
-			} else {
-				el.style.padding = `20px`;
-			}
-			done();
-		};
+    const enter = function(el: any, done: any) {
+      const h = el.scrollHeight;
+      el.style.maxHeight = `${h + 40}px`;
+      if (window.innerWidth < 600) {
+        el.style.padding = `15px`;
+      } else {
+        el.style.padding = `20px`;
+      }
+      done();
+    };
 
-		const leave = function(el: any, done: any) {
-			setTimeout(() => {
-				done();
-			}, 250);
-		};
+    const leave = function(el: any, done: any) {
+      setTimeout(() => {
+        done();
+      }, 250);
+    };
 
-		const getProgress = computed(() => {
-			setInterval(() => {
-				internalProgress.value++;
-			}, 1);
-			return 20;
-		});
+    const getProgress = computed(() => {
+      setInterval(() => {
+        internalProgress.value++;
+      }, 1);
+      return 20;
+    });
 
-		const isColor = () => {
-			return _color.isColor(props.color);
-		};
-		onMounted(() => {
-			
+    const isColor = () => {
+      return _color.isColor(props.color);
+    };
+    onMounted(() => {
+      if (props.progressAuto) {
+        intervalProgress.value = setInterval(() => {
+          internalProgress.value++;
+        }, props.duration / 100);
+      }
+    });
 
-			if (props.progressAuto) {
-				intervalProgress.value = setInterval(() => {
-					internalProgress.value++;
-				}, props.duration / 100);
-			}
-		});
+    onBeforeUnmount(() => {
+      clearInterval(intervalProgress.value);
+    });
 
-		onBeforeUnmount(() => {
-			clearInterval(intervalProgress.value);
-		});
-
-		return {
-			internalProgress,
-			intervalProgress,
-			notif,
-			close,
-			handleClickClose,
-			beforeEnter,
-			enter,
-			leave,
-			getProgress,
-			clickNoti,
-			isColor
-		};
-	},
+    return {
+      internalProgress,
+      intervalProgress,
+      notif,
+      close,
+      handleClickClose,
+      beforeEnter,
+      enter,
+      leave,
+      getProgress,
+      clickNoti,
+      isColor,
+    };
+  },
 });
 </script>
-
 
 <style lang="sass">
 
@@ -335,7 +341,7 @@ export default defineComponent({
       transition: all .25s ease, transform .3s ease, max-height .25s ease, clip-path .5s ease .1s
       &.vs-notification--border
         border: 3px solid transparent
-        border-top: 3px solid color('border')
+        border-top: 3px solid -getColor('border')
     .notification-enter
       transform: translate(0,-25%)
       clip-path: circle(0% at 50% 0%) !important
@@ -357,7 +363,7 @@ export default defineComponent({
       transition: all .25s ease, transform .3s ease, max-height .25s ease, clip-path .5s ease .1s
       &.vs-notification--border
         border: 3px solid transparent
-        border-bottom: 3px solid color('border')
+        border-bottom: 3px solid -getColor('border')
     .notification-enter
       transform: translate(0,25%)
       clip-path: circle(0% at 50% 100%) !important
@@ -380,7 +386,7 @@ export default defineComponent({
       clip-path: circle(145% at 0% 50%)
       &.vs-notification--border
         border: 3px solid transparent
-        border-left: 3px solid color('border')
+        border-left: 3px solid -getColor('border')
     .notification-enter
       transform: translate(-25%)
       clip-path: circle(0% at 20% 35%) !important
@@ -397,7 +403,7 @@ export default defineComponent({
       clip-path: circle(145% at 0% 50%)
       &.vs-notification--border
         border: 3px solid transparent
-        border-left: 3px solid color('border')
+        border-left: 3px solid -getColor('border')
     .notification-enter
       transform: translate(-25%)
       clip-path: circle(0% at 20% 35%) !important
@@ -406,23 +412,24 @@ export default defineComponent({
         transform: translate(-10%)
 
 .vs-notification
-  --vs-color: var(--vs-background)
-  --vs-border: var(--vs-background)
+  --vs-color: -var(--vs-background)
+  --vs-border: -var(--vs-background)
   --vs-opacity: .6
   position: relative
   max-width: 340px
   width: 100%
   height: auto
   border-radius: 20px
-  box-shadow: 0px 10px 30px -5px rgba(0,0,0, var('shadow-opacity'))
+  box-shadow: 0px 10px 30px -5px rgba(0,0,0, -var('shadow-opacity'))
   overflow: hidden
   clip-path: circle(145% at 100% 50%)
-  background: color('color')
-  color: color('text')
+  background: -getColor('color')
+  color: -getColor('text')
   margin: 3px 10px
+  padding: 20px
   transition: all .25s ease, transform .3s ease .1s, max-height .25s ease, clip-path .5s ease .1s
   &:hover:not(&--flat)
-    box-shadow: 0px 0px 0px 0px rgba(0,0,0, var('shadow-opacity'))
+    box-shadow: 0px 0px 0px 0px rgba(0,0,0, -var('shadow-opacity'))
     transform: translate(0,3px)
   &--notPadding
     padding: 0px !important
@@ -450,24 +457,24 @@ export default defineComponent({
     margin-bottom: 0px
     border-radius: 20px 0px 0px 20px
   &--flat
-    box-shadow: 0px 0px 0px 0px rgba(0,0,0, var('shadow-opacity'))
-    background: color('background')
-    color: color('color') !important
+    box-shadow: 0px 0px 0px 0px rgba(0,0,0, -var('shadow-opacity'))
+    background: -getColor('background')
+    color: -getColor('color') !important
     &:hover
       &::after
-        background: color('color', .15)
+        background: -getColor('color', .15)
     .vs-notification__progress
-      background: color('color')
+      background: -getColor('color')
     .vs-notification__close
       --vs-color: inherit
     .vs-notification__content
-      color: color('color') !important
+      color: -getColor('color') !important
     &.vs-notification--border
       border: 0px solid transparent !important
-      border-right: 3px solid color('border') !important
+      border-right: 3px solid -getColor('border') !important
     &:after
       content: ''
-      background: color('color', .1)
+      background: -getColor('color', .1)
       width: 100%
       height: 100%
       border-radius: inherit
@@ -498,11 +505,11 @@ export default defineComponent({
 
   &.vs-notification--border
     border: 3px solid transparent
-    border-right: 3px solid color('border')
+    border-right: 3px solid -getColor('border')
   &__progress
     width: 0%
     height: 3px
-    background: color('text')
+    background: -getColor('text')
     position: absolute
     bottom: 0px
     left: 0px
@@ -517,7 +524,7 @@ export default defineComponent({
       position: absolute
       width: 100%
       height: 100%
-      border: 2px solid color('text')
+      border: 2px solid -getColor('text')
       border-radius: inherit
       border-top: 2px solid transparent
       border-left: 2px solid transparent
@@ -531,7 +538,7 @@ export default defineComponent({
       position: absolute
       width: 100%
       height: 100%
-      border: 2px dashed color('text')
+      border: 2px dashed -getColor('text')
       border-radius: inherit
       border-top: 2px solid transparent
       border-left: 2px solid transparent
@@ -540,7 +547,7 @@ export default defineComponent({
       opacity: .2
       content: ''
   &__close
-    --vs-color: var(--vs-text)
+    --vs-color: -var(--vs-text)
     position: absolute
     border: 0px
     background: transparent

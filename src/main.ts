@@ -1,5 +1,6 @@
 import * as vsComponents from './components/index'
 import './style/vuesax.styl'
+import './style/sass/vuesax.sass'
 import vsTheme from './utils/theme'
 import DefineVuesaxMixin from './defineGlobalMixin'
 import vuesaxOptions from './utils/options'
