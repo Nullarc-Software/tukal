@@ -1,11 +1,14 @@
 <template>
   <div>
-    <component
-      :is="notificationComponent"
-      v-bind="notificationAttrs"
-      @close="notificationComponent = null"
-    >
-    </component>
+	<transition name="notification">
+		<component
+		:is="notificationComponent"
+		v-bind="notificationAttrs"
+		@close="notificationComponent = null"
+		>
+		</component>
+	</transition>
+
     <h1 style="text-align:center">
       Vuesax3 (Typescript + composition API Demo) - TheCelebrimbor - Github
     </h1>
@@ -474,6 +477,8 @@ export default defineComponent({
       text: `These documents refer to the latest version of vuesax (4.0+),
             to see the documents of the previous versions you can do it here 👉 Vuesax3.x`,
       flat: false,
+	  color: "success",
+	  position: "top-center"
     };
 
     let justLoad = function() {
