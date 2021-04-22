@@ -470,15 +470,18 @@ export default defineComponent({
 			title: "Documentation Vuesax 4.0+",
 			text: `These documents refer to the latest version of vuesax (4.0+),
 					to see the documents of the previous versions you can do it here 👉 Vuesax3.x`,
-			flat: false,
-			color: "light",
+			flat: true,
 			onClickClose : function(){
 				console.log("notif closed");
-			}
+			},
+			color: "#7d33ff",
+			
 		};
 
 		let notif = new notification(notificationAttrs);
-		//notif.unmount();
+		notificationAttrs.position = "bottom-left";
+		notificationAttrs.color = "primary";
+		new notification(notificationAttrs);
     };
 
     return {
