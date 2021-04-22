@@ -438,6 +438,47 @@
         </template>
       </vs-dialog>
     </div>
+	<div class="showcase-component">
+		<h3>Input:</h3>
+      	<hr />
+		<vs-input id="inp1" v-model:value="inpValue" placeholder="Name" style="margin-top:10px" />
+		<br />
+		<vs-input
+        label="Full Name"
+        v-model:value="inpValue"
+        placeholder="Evan You"
+      />
+	  <br />
+	  <vs-input
+        label-placeholder="Country"
+        v-model="value"
+      />
+	  <br />
+	   <vs-input v-model="value1" placeholder="User name">
+        <template #icon>
+          <vs-icon>person</vs-icon>
+        </template>
+      </vs-input>
+
+      <vs-input type="password" icon-after v-model="value2" placeholder="Password">
+        <template #icon>
+          <vs-icon>person</vs-icon>
+        </template>
+      </vs-input>
+
+	  <br />
+	  <br />
+	  <vs-input v-model:value="inpValue" label="Example Regex Validation" placeholder="vuesax@gmail.com">
+        <template v-if="validEmail" #message-success>
+          Email Valid
+        </template>
+        <template v-if="!validEmail && inpValue !== ''" #message-danger>
+          Email Invalid
+        </template>
+      </vs-input>
+	  <br />
+	  <vs-input loading v-model="value" placeholder="Name" />
+	</div>
   </div>
 </template>
 
@@ -461,8 +502,12 @@ export default defineComponent({
     let activeDialog2 = ref(false);
     let notifShow = ref(false);
     let opts: any = reactive([]);
+	let inpValue = ref("");
 
     let notificationComponent = ref(null);
+	let validEmail = computed(function(){
+		return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(inpValue.value);
+	});
 
     let justLoad = function() {
 
@@ -474,6 +519,9 @@ export default defineComponent({
 			onClickClose : function(){
 				console.log("notif closed");
 			},
+			onclick : function(){
+				console.log("clicked");
+			},
 			color: "#7d33ff",
 			
 		};
@@ -481,6 +529,8 @@ export default defineComponent({
 		let notif = new notification(notificationAttrs);
 		notificationAttrs.position = "bottom-left";
 		notificationAttrs.color = "primary";
+		notificationAttrs.sticky = true;
+		notificationAttrs.flat = false;
 		new notification(notificationAttrs);
     };
 
@@ -496,6 +546,8 @@ export default defineComponent({
       notificationComponent,
       notifShow,
       opts,
+	  inpValue,
+	  validEmail
     };
   },
 });

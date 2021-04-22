@@ -31,7 +31,6 @@ class notification{
 		this.instanceList = [];
 	};
 	
-
 	close(){
 		notification.instanceList[this.currentId].unmount();
 	}
