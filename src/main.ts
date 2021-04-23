@@ -47,7 +47,7 @@ appVm.mount("#app");
 export default install
 
 export { vsButton, vsButtonGroup } from './components/vsButton'
-export { default as vsSelect } from './components/vsSelect'
+export { vsSelect, vsSelectOption, vsSelectOptionGroup  } from './components/vsSelect'
 export { default as vsSwitch } from './components/vsSwitch'
 export { default as vsCheckbox } from './components/vsCheckBox'
 export { default as vsRadio } from './components/vsRadio'

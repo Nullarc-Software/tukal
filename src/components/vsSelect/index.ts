@@ -1,6 +1,6 @@
 import vsComponent from './vsSelect.vue'
-import vsComponent2 from './vsSelectItem.vue'
-import vsComponent3 from './vsSelectGroup.vue'
+import vsComponent2 from './vsSelectOptionGroup.vue'
+import vsComponent3 from './vsSelectOption.vue'
 
 vsComponent.install = (vue: any) => {
   vue.component(vsComponent.name, vsComponent);
@@ -12,4 +12,4 @@ if (typeof window !== 'undefined' && (<any>window).Vue) {
   vsComponent.install((<any>window).Vue)  
 }
 
-export default vsComponent;
+export { vsComponent as vsSelect, vsComponent2 as vsSelectOption, vsComponent3 as vsSelectOptionGroup};

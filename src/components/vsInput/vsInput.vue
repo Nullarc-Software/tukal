@@ -149,6 +149,11 @@
 import { computed, defineComponent } from "@vue/runtime-core";
 import _color from "../../utils/color";
 import vsComponent from "../vsComponent";
+
+class InputConstants {
+	public static id = 0;
+}
+
 export default defineComponent({
     name: "VsInput",
     extends: vsComponent,
@@ -177,7 +182,7 @@ export default defineComponent({
 	],
     setup(props, context) {
         const getId = computed(() => {
-            return `vs-input--${props.id}`;
+            return `vs-input--${props.id || ++InputConstants.id}`;
         });
 
         const hasColor = computed(() => {

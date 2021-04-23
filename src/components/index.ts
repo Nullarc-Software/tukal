@@ -1,5 +1,5 @@
 export { vsButton, vsButtonGroup } from './vsButton'
-export { default as vsSelect } from './vsSelect'
+export { vsSelect, vsSelectOption, vsSelectOptionGroup } from './vsSelect'
 export { default as vsSwitch } from './vsSwitch'
 export { default as vsCheckbox } from './vsCheckBox'
 export { default as vsRadio } from './vsRadio'

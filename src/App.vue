@@ -66,7 +66,7 @@
       </vs-button>
       <vs-button
         :loading="loading"
-        @click="justLoad()"
+        @click="loading = true"
         type="filled"
         color="primary"
         style="margin-right: 10px"
@@ -478,6 +478,118 @@
       </vs-input>
 	  <br />
 	  <vs-input loading v-model="value" placeholder="Name" />
+	  <div style="margin: 10px">
+		  <vs-input
+				type="text"
+				v-model="value1"
+				label="Text"
+			/>
+			<vs-input
+				type="password"
+				v-model="value2"
+				label="Password"
+			/>
+			<vs-input
+				type="search"
+				v-model="value3"
+				label="Search"
+			/>
+			<vs-input
+				type="number"
+				v-model="value4"
+				label="Number"
+			/>
+			<vs-input
+				type="url"
+				v-model="value5"
+				label="Url"
+			/>
+			<vs-input
+				type="time"
+				v-model="value6"
+				label="time"
+			/>
+			<vs-input
+				type="date"
+				v-model="value7"
+				label="Date"
+			/>
+	  </div>
+	  <div style="margin:10px">
+		  <vs-input
+        primary
+        v-model="value"
+        state="primary"
+        placeholder="Primary" />
+
+      <vs-input state="success" success v-model="value2" placeholder="Success Icon">
+        <template #icon>
+          <vs-icon>person</vs-icon>
+        </template>
+      </vs-input>
+
+      <vs-input state="danger" danger icon-after v-model="value2" placeholder="Danger icon after">
+        <template #icon>
+          <vs-icon>person</vs-icon>
+        </template>
+      </vs-input>
+
+      <vs-input
+        warn
+        state="warn"
+        v-model="value4"
+        placeholder="Label Warn"
+        label="Warn" />
+
+      <vs-input
+        dark
+        state="dark"
+        v-model="value5"
+        label-placeholder="Dark" />
+
+		<vs-input border v-model="value" placeholder="Name" />
+
+      <vs-input color="#7d33ff" border type="password" v-model="value2" placeholder="Password">
+        <template #icon>
+          <vs-icon>person</vs-icon>
+        </template>
+      </vs-input>
+
+      <vs-input border warn type="email" icon-after v-model="value3" label-placeholder="Address">
+        <template #icon>
+          <vs-icon>person</vs-icon>
+        </template>
+      </vs-input>
+
+	  </div>
+	</div>
+	<div class="showcase-component">
+		<h4>Select:</h4>
+		<hr />	
+		<vs-select multiple placeholder="Select" v-model:value="selectValue">
+			<vs-option label="Test" value="1">
+				Test
+			</vs-option>
+			<vs-option label="Test1" value="2">
+				Test1
+			</vs-option>
+			<vs-option label="Javascript" value="3">
+				Javascript
+			</vs-option>
+			<vs-option disabled label="Sass" value="4">
+				Sass
+			</vs-option>
+			<vs-option label="Typescript" value="5">
+				Typescript
+			</vs-option>
+			<vs-option label="Webpack" value="6">
+				Webpack
+			</vs-option>
+			<vs-option label="Nodejs" value="7">
+				Nodejs
+			</vs-option>
+      	</vs-select>
+
 	</div>
   </div>
 </template>
@@ -503,6 +615,7 @@ export default defineComponent({
     let notifShow = ref(false);
     let opts: any = reactive([]);
 	let inpValue = ref("");
+	let selectValue = ref("");
 
     let notificationComponent = ref(null);
 	let validEmail = computed(function(){
@@ -547,7 +660,8 @@ export default defineComponent({
       notifShow,
       opts,
 	  inpValue,
-	  validEmail
+	  validEmail,
+	  selectValue
     };
   },
 });

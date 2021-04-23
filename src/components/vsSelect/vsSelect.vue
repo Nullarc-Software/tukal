@@ -1,522 +1,1217 @@
-<template lang="html">
-  <div
-    :class="{
-      'autocompletex':autocomplete,
-      'activeOptions':active,
-      'input-select-validate-success':success,
-      'input-select-validate-danger':danger,
-      'input-select-validate-warning':warning}"
-    :style="getWidth"
-    class="con-select">
-    <label
-      v-if="label"
-      ref="inputSelectLabel"
-      class="vs-select--label">{{ label }}</label>
-    <div class="input-select-con">
-      <!-- v-model="valueFilter" -->
-      <input
-        ref="inputselect"
-        v-bind="$attrs"
-        :readonly="!autocomplete"
-        class="input-select vs-select--input"
-        type="text"
-        @keydown.esc.stop.prevent="closeOptions"
-        v-on="listeners">
+<template>
+	<div
+		class="vs-select-content"
+		:style="{
+			['--vs-color']: color ? getColor(color) : ''
+		}"
+		:class="[
+			{ block: block },
+			// colors
+			{
+				[`vs-component--primary`]:
+					!danger && !success && !warn && !dark && !color
+			},
+			{ [`vs-component--danger`]: !!danger },
+			{ [`vs-component--warn`]: !!warn },
+			{ [`vs-component--success`]: !!success },
+			{ [`vs-component--dark`]: !!dark }
+		]"
+	>
+		<div
+			class="vs-select"
+			ref="select"
+			:class="[
+				`vs-select--state-${state}`,
+				{
+					'vs-select--disabled': disabled,
+					activeOptions: activeOptions,
+					loading: loading
+				}
+			]"
+			v-on="selectListener"
+		>
+			<input
+				:readonly="!filter && true"
+				:id="!multiple && uid"
+				class="vs-select__input"
+				ref="input"
+				:value="activeFilter ? textFilter : getValueLabel"
+				:class="[
+					{
+						multiple: multiple,
+						simple: !multiple && !filter
+					}
+				]"
+				v-bind="$attrs"
+				v-on="inputListener"
+			/>				
+			<label
+				v-if="!multiple && label"
+				class="vs-select__label"
+				:for="uid"
+				:class="{
+					'vs-select__label--placeholder': labelPlaceholder,
+					'vs-select__label--label': label,
+					'vs-select__label--hidden': value
+				}"
+			>
+				{{ labelPlaceholder || label }}
+			</label>
+			<label
+				v-if="!multiple && !labelPlaceholder"
+				ref="placeholder"
+				:for="uid"
+				class="vs-select__label"
+				:class="{ 'vs-select__label--hidden': value || textFilter }"
+			>
+				{{ placeholder }}
+			
+			</label>
+			<button
+				v-if="multiple"
+				class="vs-select__chips"
+				ref="chips"
+				v-on="chipsListener"
+			>
+				<component
+					:is="chip"
+					v-for="(chip, key) in getChips"
+					:key="key"
+				/>
+				<input
+					v-if="filter"
+					class="vs-select__chips__input"
+					ref="chipsInput"
+					:placeholder="placeholder"
+					:id="uid"
+					:value="textFilter"
+					v-on="chipsFilterListener"
+				/>
+			</button>
+			<transition name="vs-select">
+				<div
+					v-if="activeOptions"
+					class="vs-select__options"
+					ref="options"
+					:style="{
+						['--vs-color']: color ? getColor(color) : ''
+					}"
+					:class="[
+						{
+							isColorDark: isColorDark
+						},
+						// colors
+						{
+							[`vs-component--primary`]:
+								!danger && !success && !warn && !dark && !color
+						},
+						{ [`vs-component--danger`]: !!danger },
+						{ [`vs-component--warn`]: !!warn },
+						{ [`vs-component--success`]: !!success },
+						{ [`vs-component--dark`]: !!dark }
+					]"
+					@mouseleave="
+						() => {
+							this.targetSelect = false;
+							this.targetSelectInput = false;
+						}
+					"
+					@mouseenter="
+						() => {
+							this.targetSelect = true;
+							this.targetSelectInput = true;
+						}
+					"
+				>
+					<div class="vs-select__options__content" ref="content">
+						<div
+							v-if="notData"
+							class="vs-select__options__content__not-data"
+						>
+							<slot v-if="$slots.notData" name="notData" />
+							<span v-else> No Data Available </span>
+						</div>
+						<slot />
+					</div>
+				</div>
+			</transition>
+			<div v-if="loading" class="vs-select__loading" />
+			<vs-icon
+				@click="iconClicked"
+				class="vs-icon-arrow"
+				:class="{
+					'vs-select-icon-down': !activeOptions,
+					'vs-select-icon-up': activeOptions
+				}"
+			>
+				keyboard_arrow_down
+			</vs-icon>
+		</div>
 
-      <button
-        :class="{'activeBtnClear': activeBtnClear}"
-        class="icon-select-clear vs-select--icon-clear"
-        @click="clearValue">
-        <i class="material-icons">
-          close
-        </i>
-      </button>
-
-      <vs-icon
-        v-if="!activeBtnClear"
-        :icon-pack="iconPack"
-        :icon="icon"
-        class="icon-select vs-select--icon"
-      ></vs-icon>
-
-      <transition name="fadeselect">
-        <div
-          v-show="active"
-          ref="vsSelectOptions"
-          :style="cords"
-          :class="[`vs-select-${color}`,{'scrollx':scrollx}]"
-          class="vs-select--options">
-          <ul ref="ulx">
-            <slot/>
-          </ul>
-          <ul v-show="clear">
-            <li @click="filterItems(''),changeValue()" >
-              {{ noData }}
-            </li>
-          </ul>
-        </div>
-      </transition>
-    </div>
-
-    <transition-group
-      @before-enter="beforeEnter"
-      @enter="enter"
-      @leave="leave"
-    >
-      <div
-        v-if="success"
-        key="success"
-        class="con-text-validation">
-        <span class="span-text-validation span-text-validation-success">
-          {{
-            successText
-          }}
-        </span>
-      </div>
-      <div
-        v-else-if="danger"
-        key="danger"
-        class="con-text-validation span-text-validation-danger">
-        <span class="span-text-validation">
-          {{
-            dangerText
-          }}
-        </span>
-      </div>
-      <div
-        v-else-if="warning"
-        key="warning"
-        class="con-text-validation span-text-validation-warning">
-        <span class="span-text-validation">
-          {{
-            warningText
-          }}
-        </span>
-      </div>
-      <div
-        v-if="descriptionText"
-        key="description"
-        class="con-text-validation span-text-validation">
-        <span class="span-text-validation">
-          {{
-            descriptionText
-          }}
-        </span>
-      </div>
-    </transition-group>
-  </div>
+		<transition @before-enter="beforeEnter" @enter="enter" @leave="leave">
+			<div
+				v-if="$slots[`message-success`]"
+				class="vs-select__message vs-select__message--success"
+			>
+				<slot name="message-success" />
+			</div>
+		</transition>
+		<transition @before-enter="beforeEnter" @enter="enter" @leave="leave">
+			<div
+				v-if="$slots['message-danger']"
+				class="vs-select__message vs-select__message--danger"
+			>
+				<slot name="message-danger" />
+			</div>
+		</transition>
+		<transition @before-enter="beforeEnter" @enter="enter" @leave="leave">
+			<div
+				v-if="$slots[`message-warn`]"
+				class="vs-select__message vs-select__message--warn"
+			>
+				<slot name="message-warn" />
+			</div>
+		</transition>
+		<transition @before-enter="beforeEnter" @enter="enter" @leave="leave">
+			<div
+				v-if="$slots[`message-primary`]"
+				class="vs-select__message vs-select__message--primary"
+			>
+				<slot name="message-primary" />
+			</div>
+		</transition>
+	</div>
 </template>
 
-<script>
-import utils from "../../utils";
-export default {
-  name: "VsSelect",
-  props: {
-    value: {},
-    noData: {
-      default: "No data available",
-      type: String
-    },
-    maxSelected: {
-      default: null,
-      type: [Number, String]
-    },
-    autocomplete: {
-      default: false,
-      type: Boolean
-    },
-    color: {
-      default: "primary",
-      type: String
-    },
-    multiple: {
-      default: false,
-      type: Boolean
-    },
-    label: {
-      default: null,
-      type: [String]
-    },
-    success: {
-      default: false,
-      type: Boolean
-    },
-    danger: {
-      default: false,
-      type: Boolean
-    },
-    warning: {
-      default: false,
-      type: Boolean
-    },
-    successText: {
-      default: null,
-      type: String
-    },
-    dangerText: {
-      default: null,
-      type: String
-    },
-    warningText: {
-      default: null,
-      type: String
-    },
-    descriptionText: {
-      default: null,
-      type: String
-    },
-    iconPack: {
-      default: "material-icons",
-      type: String
-    },
-    icon: {
-      default: "keyboard_arrow_down",
-      type: String
-    },
-    iconClear: {
-      default: "close",
-      type: String
-    },
-    width: {
-      default: null,
-      type: String
-    }
-  },
-  data: () => ({
-    valueFilter: "",
-    active: false,
-    valuex: "",
-    clear: false,
-    scrollx: false,
-    cords: {},
-    filterx: false
-  }),
-  computed: {
-    activeBtnClear() {
-      return this.autocomplete && this.filterx;
-    },
-    getWidth() {
-      return this.width ? `width:${this.width};` : null;
-    },
-    parent() {
-      return this;
-    },
-    listeners() {
-      return {
-        ...this.$listeners,
-        blur: event => {
-          if (
-            this.autocomplete && event.relatedTarget
-              ? !event.relatedTarget.closest(".vs-select--options")
-              : false
-          ) {
-            this.closeOptions();
-          }
-          this.$emit("blur", event);
-        },
-        focus: event => {
-          this.$emit("focus", event);
-          if (event.keyCode ? event.keyCode : event.which) {
-            this.focus();
-          }
-        },
-        mouseup: () => {
-          this.focus();
-        },
-        input: event => {
-          if (this.autocomplete) {
-            this.$emit("input-change", event);
-          }
-        },
-        keyup: event => {
-          if (event.key == "ArrowDown" || event.key == "ArrowUp") {
-            event.preventDefault();
-            let childrens = this.$children.filter(item => {
-              return item.visible;
-            });
-            childrens[0].$el.querySelector(".vs-select--item").focus();
-          } else {
-            if (this.autocomplete) {
-              this.filterItems(event.target.value);
-            }
-          }
+<script lang="ts">
+import {
+	ref,
+	h,
+	computed,
+	nextTick,
+	defineComponent,
+	provide,
+	watch,
+	getCurrentInstance
+} from "vue";
+import vsComponent from "../vsComponent";
+import { insertBody, setCords } from "@/utils";
+import vsOption from "../vsSelect/vsSelectOption.vue";
 
-          this.$children.map(item => {
-            item.valueInputx = this.$refs.inputselect.value;
-          });
-        }
-      };
-    }
-  },
-  watch: {
-    value(event) {
-      this.valuex = this.value;
-      this.$emit("change", event);
-    },
-    active() {
-      this.$nextTick(() => {
-        if (this.active) {
-          utils.insertBody(this.$refs.vsSelectOptions);
-          setTimeout(() => {
-            this.$children.forEach(item => {
-              if (item.focusValue) {
-                item.focusValue();
-              }
-            });
-            if (this.$refs.ulx.scrollHeight >= 260) this.scrollx = true;
-          }, 100);
-        } else {
-          let [parent] = document.getElementsByTagName("body");
-          parent.removeChild(this.$refs.vsSelectOptions);
-        }
-      });
-    }
-  },
-  mounted() {
-    // this.$refs.inputselect.value = this.value
-    this.changeValue();
-    if (this.active) {
-      utils.insertBody(this.$refs.vsSelectOptions);
-    }
-  },
-  beforeDestroy() {
-    let [parent] = document.getElementsByTagName("body");
+class SelectConstants {
+	public static id = 0;
+}
 
-    if (this.active) {
-      this.closeOptions();
-    }
-    if (
-      parent &&
-      this.$refs.vsSelectOptions &&
-      this.$refs.vsSelectOptions.parentNode === parent
-    ) {
-      parent.removeChild(this.$refs.vsSelectOptions);
-    }
-  },
-  updated() {
-    if (!this.active) {
-      this.changeValue();
-    }
-  },
-  methods: {
-    clearValue() {
-      this.focus();
-      this.filterItems("");
-      this.changeValue();
-    },
-    addMultiple(value) {
-      let currentValues = this.value ? this.value : [];
-      if (currentValues.includes(value)) {
-        currentValues.splice(currentValues.indexOf(value), 1);
-        this.$emit("input", currentValues);
-        this.changeValue();
-        if (this.autocomplete) {
-          this.$refs.inputselect.focus();
-        }
-      } else {
-        if (this.autocomplete) {
-          currentValues.push(value);
-          this.$emit("input", currentValues);
-          this.filterItems("");
-          this.changeValue();
-          // this.$refs.inputselect.value += ','
-          this.$refs.inputselect.focus();
-        } else {
-          currentValues.push(value);
-          this.$emit("input", currentValues);
-          this.changeValue();
-        }
-      }
-    },
-    filterItems(value) {
-      if (value) {
-        this.filterx = true;
-      } else {
-        this.filterx = false;
-      }
-      let items = this.$children;
+export default defineComponent({
+	name: "VsSelect",
+	extends: vsComponent,
+	components: {
+		vsOption
+	},
+	props: {
+		value: {},
+		multiple: { type: Boolean, default: false },
+		filter: { type: Boolean, default: false },
+		placeholder: { type: String, default: "" },
+		labelPlaceholder: { type: String, default: "" },
+		label: { type: String, default: "" },
+		disabled: { type: Boolean, default: false },
+		collapseChips: { type: Boolean, default: false },
+		loading: { type: Boolean, default: false },
+		state: { type: String, default: null },
+		block: { type: Boolean, default: false }
+	},
+	provide() {
+		return {
+			textFilter: computed(() => this.textFilter.value),
+			uids: computed(() => this.uids),
+			hoverOption: computed(() => this.hoverOption),
+			parentSelect: this,
+			renderSelect: computed(() => this.renderSelect),
+			isMultiple: computed(() => this.multiple),
+			addChildOption: (child: any) => {
+				this.childOptions.push(child);
+			},
+			addUid: (uid: any) => {
+				this.uids.push(uid);
+			},
+			callSetHover: () => {
+				this.setHover();
+			},
+			onClickOption: (value: any, label: any) => {
+				this.onClickOption(value, label);
+			}
+		};
+	},
+	setup(props, context) {
+		let renderSelect = ref(false);
+		let activeOptions = ref(false);
+		let valueLabel = ref(null);
+		let hoverOption = ref(-1);
+		let uids = ref<any[]>([]);
+		let childOptions = ref<any[]>([]);
+		let targetSelect = ref(false);
+		let targetSelectInput = ref(false);
+		let targetClose = ref(false);
+		let activeFilter = ref(false);
+		let textFilter = ref<any>(null);
+		let childVisibles = ref(0);
 
-      items.forEach(item => {
-        if (item.$children.length > 0) {
-          items = [...items, ...item.$children];
-        }
-      });
+		//Template refs
+		let chips = ref<HTMLButtonElement>();
+		let chipsInput = ref<HTMLInputElement>();
+		let input = ref<HTMLInputElement>();
+		let options = ref<HTMLDivElement>();
+		let select = ref<HTMLDivElement>();
+		let content = ref<HTMLDivElement>();
 
-      items.map(item => {
-        if (!("text" in item)) return;
+		let uid = "select-" + ++SelectConstants.id;
+		let instance = getCurrentInstance();
 
-        let text = item.text;
+		const setHover = function() {
+			let index: number = -1;
+			childOptions.value.forEach((item: any, i: number) => {
+				if (item.value == props.value) {
+					index = i;
+				}
+			});
 
-        if (this.multiple) {
-          let valuesx = value.split(",");
-          valuesx.forEach(value_multi => {
-            if (text.toUpperCase().indexOf(value_multi.toUpperCase()) == -1) {
-              item.visible = false;
-            } else {
-              item.visible = true;
-            }
-          });
-        } else {
-          if (text.toUpperCase().indexOf(value.toUpperCase()) == -1) {
-            item.visible = false;
-          } else {
-            item.visible = true;
-          }
-        }
-      });
+			hoverOption.value = index;
+		};
 
-      let lengthx = items.filter(item => {
-        return item.visible;
-      });
+		const handleWindowClick = function(evt: any) {
+			if (!targetSelectInput.value) {
+				handleBlur();
+			}
 
-      if (lengthx.length == 0) {
-        this.clear = true;
-      } else {
-        this.clear = false;
-      }
+			if (props.filter && !activeOptions.value) {
+				activeFilter.value = false;
+			}
 
-      this.$nextTick(() => {
-        this.cords = this.changePosition();
-      });
-    },
-    changeValue() {
-      this.filterx = false;
-      if (this.multiple) {
-        let values = this.value ? this.value : [];
-        let options = this.$children;
+			if (
+				evt.target == input.value &&
+				activeOptions.value &&
+				!props.filter
+			) {
+				handleBlur();
+				setTimeout(() => {
+					input.value?.blur();
+				}, 100);
+			}
+		};
 
-        options.forEach(item => {
-          if (item.$children.length > 0) {
-            options = [...options, ...item.$children];
-          }
-        });
+		const handleBlur = function() {
+			nextTick(() => {
+				activeOptions.value = false;
+			});
+			context.emit("blur");
+			setHover();
+			window.removeEventListener("click", handleWindowClick);
+			if (activeOptions.value) {
+				textFilter.value = "";
+				if (!props.multiple) {
+					activeFilter.value = false;
+				}
+			}
+		};
 
-        let optionsValues = [];
-        values.forEach(item => {
-          options.forEach(item_option => {
-            if (item_option.value == item) {
-              let text = item_option.text;
-              text = text.replace("check_circle", "");
-              optionsValues.push(text.trim());
-            }
-          });
-        });
-        this.$refs.inputselect.value = optionsValues.toString();
-      } else {
-        if (this.$refs.inputselect) {
-          this.$refs.inputselect.value = this.valuex;
-        }
-      }
-    },
-    focus() {
-      this.active = true;
-      document.addEventListener('click', this.clickBlur);
-      this.setLabelClass(this.$refs.inputSelectLabel, true);
-      let inputx = this.$refs.inputselect;
-      if (this.autocomplete && this.multiple) {
-        setTimeout(() => {
-          if (inputx.value) {
-            this.$refs.inputselect.value = inputx.value += ",";
-          }
-          inputx.selectionStart = inputx.selectionEnd = 10000;
-        }, 10);
-      } else if (this.autocomplete && !this.multiple) {
-        this.$refs.inputselect.select();
-      }
+		const clickOption = function(value: any, label: any) {
+			if (props.multiple) {
+				const oldVal = [...(props.value as Array<any>)];
+				if (oldVal.indexOf(value) == -1) {
+					oldVal.push(value);
+				} else {
+					oldVal.splice(oldVal.indexOf(value), 1);
+				}
+				context.emit("update:value", oldVal);
+			} else {
+				context.emit("update:value", value);
+				valueLabel.value = label;
+			}
 
-      if (!this.autocomplete) {
-        if (
-          this.multiple ? this.value.length == 0 : !this.value || this.multiple
-        ) {
-          setTimeout(() => {
-            const el = this.$children[0].$el.querySelector(".vs-select--item");
-            if (el) el.focus();
-          }, 50);
-        }
-      }
-      this.$nextTick(() => {
-        this.cords = this.changePosition();
-      });
-    },
-    clickBlur(event) {
-      if (event.target === this.$refs.inputselect) {
-        return
-      }
-      let closestx = event.target.closest(".vs-select--option");
+			setTimeout(() => {
+				if (props.multiple && activeOptions.value) {
+					chips.value?.focus();
+				}
+			}, 10);
 
-      if (!closestx) {
-        this.closeOptions();
-        if (this.autocomplete) {
-          this.filterItems("");
-        }
-        this.changeValue();
-      }
-    },
-    closeOptions() {
-      this.active = false;
-      this.setLabelClass(this.$refs.inputSelectLabel, false);
-      document.removeEventListener("click", this.clickBlur);
-    },
-    changePosition() {
-      let elx = this.$refs.inputselect;
-      let content = this.$refs.vsSelectOptions;
-      let conditional = this.autocomplete;
-      let topx = 0;
-      let leftx = 0;
-      let widthx = 0;
-      let scrollTopx = window.pageYOffset || document.documentElement.scrollTop;
-      if (
-        elx.getBoundingClientRect().top + content.scrollHeight + 20 >=
-        window.innerHeight
-      ) {
-        topx =
-          elx.getBoundingClientRect().top +
-          elx.clientHeight +
-          scrollTopx -
-          content.scrollHeight;
-        if (conditional) {
-          topx = topx - elx.clientHeight - 5;
-        }
-      } else {
-        topx = conditional
-          ? elx.getBoundingClientRect().top + elx.clientHeight + scrollTopx + 5
-          : elx.getBoundingClientRect().top + scrollTopx;
-      }
+			if (!props.multiple) {
+				handleBlur();
+			}
+		};
 
-      leftx = elx.getBoundingClientRect().left;
-      widthx = elx.offsetWidth;
+		let onClickOption = function(value: any, label: any) {
+			clickOption(value, label);
+		};
 
-      let cords = {
-        left: `${leftx}px`,
-        top: `${topx}px`,
-        width: `${widthx}px`
-      };
+		//computeds
+		const getChips = computed(() => {
+			const chip = function(item: any, isCollapse: boolean) {
+				return h(
+					"span",
+					{
+						class: ["vs-select__chips__chip", { isCollapse }]
+					},
+					[
+						item.label,
+						!isCollapse &&
+							h(
+								"span",
+								{
+									class: "vs-select__chips__chip__close",
+									on: {
+										click: () => {
+											setTimeout(() => {
+												targetClose.value = false;
+											}, 100);
+											if (!activeOptions.value) {
+												chips.value?.blur();
+												if (props.filter) {
+													chipsInput.value?.blur();
+												}
+											}
+											clickOption(item.value, item.label);
+										},
+										mouseleave: () => {
+											targetClose.value = false;
+										},
+										mouseenter: () => {
+											targetClose.value = true;
+										}
+									}
+								},
+								[h("vs-icon", { hover: "less" }, ["close"])]
+							)
+					]
+				);
+			};
 
-      return cords;
-    },
-    beforeEnter(el) {
-      el.style.height = 0;
-    },
-    enter(el, done) {
-      let h = el.scrollHeight;
-      el.style.height = h + "px";
-      done();
-    },
-    leave: function(el) {
-      el.style.height = 0 + "px";
-    },
-    setLabelClass: function(label, focusing) {
-      if (!label) {
-        return;
-      }
+			let chipsarr: any[] = [];
+			if (Array.isArray(valueLabel.value)) {
+				for (let item of valueLabel.value as any) {
+					chipsarr.push(chip(item, false));
+				}
+			}
 
-      if (focusing) {
-        label.classList.add("input-select-label-" + this.color + "--active");
-        return;
-      }
+			if (props.collapseChips) {
+				chipsarr = [
+					chipsarr[0],
+					chipsarr.length > 1 &&
+						chip(
+							{ label: `+ ${chipsarr.length - 1}`, value: null },
+							true
+						)
+				];
+			}
 
-      label.classList.remove("input-select-label-" + this.color + "--active");
-    }
-  }
-};
+			return chipsarr;
+		});
+
+		const getValueLabel = computed(() => {
+			const valueLabelTemp: any = valueLabel.value;
+			let labels: any[] = [];
+			if (Array.isArray(valueLabelTemp)) {
+				valueLabelTemp.forEach((item: any) => {
+					labels.push(item.label);
+				});
+			} else {
+				labels = valueLabelTemp;
+			}
+
+			return labels;
+		});
+
+		const selectListener = computed(() => {
+			return {
+				mouseleave: (evt: any) => {
+					if (evt.relatedTarget !== options.value) {
+						targetSelectInput.value = false;
+						targetSelect.value = false;
+					}
+				},
+				mouseenter: () => {
+					targetSelectInput.value = true;
+				}
+			};
+		});
+
+		const handleKeydown = function(evt: any) {
+			const optionsTemp = options.value;
+			for (let index = 0; index < 300; index++) {
+				setTimeout(() => {
+					setCords(optionsTemp, select.value);
+				}, index);
+			}
+			if (evt.code == "ArrowDown") {
+				evt.preventDefault();
+				if (hoverOption.value < childOptions.value?.length - 1) {
+					hoverOption.value++;
+				} else {
+					hoverOption.value = 0;
+				}
+			} else if (evt.code == "ArrowUp") {
+				evt.preventDefault();
+				if (hoverOption.value > 0) {
+					hoverOption.value--;
+				} else {
+					hoverOption.value = childOptions.value?.length - 1;
+				}
+			} else if (evt.code == "Enter") {
+				evt.preventDefault();
+				if (hoverOption.value !== -1) {
+					if (!childOptions.value?.[hoverOption.value].disabled) {
+						clickOption(
+							childOptions.value?.[hoverOption.value].value,
+							childOptions.value?.[hoverOption.value].label
+						);
+						if (!props.multiple) {
+							handleBlur();
+							input.value?.blur();
+						}
+					}
+				}
+			}
+
+			if (hoverOption.value !== -1) {
+				(content.value as HTMLElement).scrollTop =
+					childOptions.value?.[hoverOption.value].$el.offsetTop - 66;
+			}
+		};
+
+		const inputListener = computed(() => {
+			return {
+				keydown: handleKeydown,
+				focus: (evt: Event) => {
+					activeOptions.value = true;
+					context.emit("focus", evt);
+					if (props.filter) {
+						activeFilter.value = true;
+					}
+					window.addEventListener("mousedown", handleWindowClick);
+				},
+				// blur: this.blur,
+				input: (evt: any) => {
+					textFilter.value = evt.target.value;
+				}
+			};
+		});
+
+		const chipsListener = computed(() => {
+			return {
+				keydown: handleKeydown,
+				focus: (evt: Event) => {
+					if (!targetClose.value) {
+						activeOptions.value = true;
+						context.emit("focus", evt);
+					}
+					if (props.filter && props.multiple) {
+						(chipsInput.value as HTMLElement).focus();
+					}
+				},
+				blur: blur
+			};
+		});
+
+		const chipsFilterListener = computed(() => {
+			return {
+				focus: (evt: Event) => {
+					if (!targetClose.value) {
+						activeOptions.value = true;
+						context.emit("focus", evt);
+					}
+				},
+				blur: blur,
+				input: (evt: any) => {
+					textFilter.value = evt.target.value;
+				}
+			};
+		});
+
+		const notData = computed(() => {
+			let newChildOptions = childOptions.value;
+
+			childOptions.value.forEach((option: any): any => {
+				if (!option.hiddenOption) {
+					newChildOptions.push(option);
+				}
+			});
+
+			newChildOptions = childOptions.value.filter(item => {
+				if (item.optionGroup) {
+					return !item.hiddenOptionGroup;
+				}
+				return true;
+			});
+
+			return newChildOptions.length == 0;
+		});
+
+		const iconClicked = function() {
+			if (activeOptions.value) {
+				activeOptions.value = false;
+			} else {
+				input.value?.focus();
+			}
+		};
+
+		const beforeEnter = function(el: any) {
+			el.style.height = 0;
+		};
+
+		const enter = function(el: any, done: any) {
+			let h = el.scrollHeight;
+			el.style.height = h - 1 + "px";
+			done();
+		};
+
+		const leave = function(el: any, done: any) {
+			el.style.minHeight = "0px";
+			el.style.height = "0px";
+		};
+
+		const insertOptions = function() {
+			const optionsTemp = options.value as HTMLElement;
+			insertBody(optionsTemp, document.body);
+			setCords(options.value, select.value);
+		};
+
+		watch(activeOptions, (val: boolean) => {
+			nextTick(() => {
+				if(val)
+					insertOptions();
+			});
+
+			uids.value = [];
+		});
+
+		return {
+			renderSelect,
+			activeOptions,
+			valueLabel,
+			hoverOption,
+			uids,
+			childOptions,
+			targetSelect,
+			targetSelectInput,
+			targetClose,
+			activeFilter,
+			textFilter,
+			childVisibles,
+			uid,
+			getChips,
+			selectListener,
+			inputListener,
+			getValueLabel,
+			chipsListener,
+			chipsFilterListener,
+			notData,
+			iconClicked,
+			chips,
+			chipsInput,
+			input,
+			options,
+			select,
+			content,
+			beforeEnter,
+			enter,
+			leave,
+			setHover,
+			onClickOption
+		};
+	}
+});
 </script>
+
+<style lang="scss">
+@import "../../style/sass/_mixins";
+
+@mixin state($color) {
+	.vs-select__input {
+		// border: 2px solid -getColor($color,.5)
+		background: -getColor($color, 0.05);
+		color: -getColor($color, 1);
+
+		&:hover {
+			// border: 2px solid -getColor($color, 0)
+			color: -getColor("text", 1);
+		}
+	}
+
+	.vs-select__chips {
+		background: -getColor($color, 0.05);
+		color: -getColor($color, 1);
+
+		&:hover {
+			&:after {
+				opacity: 0;
+			}
+		}
+
+		&:after {
+			width: calc(100% - 4px);
+			height: calc(100% - 4px);
+			content: "";
+			position: absolute;
+			top: 0px;
+			left: 0px;
+			border: 2px solid -getColor($color, 0.5);
+			border-radius: inherit;
+			transition: all 0.25s ease;
+		}
+	}
+
+	.vs-select__label {
+		color: -getColor($color, 1);
+	}
+
+	.vs-select__icon {
+		color: -getColor($color, 1);
+		background: -getColor($color, 0.1);
+		box-shadow: (-15px) 10px 10px -10px -getColor($color, 0.1);
+	}
+
+	.vs-icon-arrow {
+		&:after {
+			background: -getColor($color, 1);
+		}
+
+		&:before {
+			background: -getColor($color, 1);
+		}
+	}
+}
+
+.vs-select-enter-active {
+	transition: all 0.25s ease;
+}
+
+.vs-select-enter {
+	opacity: 0;
+	transform: translate(0, -10px);
+	transition: all 0.25s ease;
+	box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, -var(shadow-opacity));
+
+	&:after {
+		opacity: 0 !important;
+		box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, -var(shadow-opacity));
+	}
+}
+
+.vs-select-leave-active {
+	transition: all 0.25s ease;
+}
+
+.vs-select-leave-to {
+	opacity: 0;
+	transform: translate(0, -10px);
+	transition: all 0.25s ease;
+	box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, -var(shadow-opacity));
+
+	&.top {
+		transform: translate(0, 10px) !important;
+	}
+
+	&:after {
+		opacity: 0 !important;
+		box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, -var(shadow-opacity));
+	}
+}
+
+.vs-select-content {
+	width: 100%;
+	max-width: 200px;
+
+	&.block {
+		&.block {
+			max-width: 100%;
+		}
+	}
+}
+
+.vs-select {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 38px;
+	width: 100%;
+
+	&--state-success {
+		@include state("success");
+	}
+
+	&--state-danger {
+		@include state("danger");
+	}
+
+	&--state-warn {
+		@include state("warn");
+	}
+
+	&--state-dark {
+		@include state("dark");
+	}
+
+	&--state-primary {
+		@include state("primary");
+	}
+
+	&.loading {
+		pointer-events: none;
+
+		*:not(.vs-select__loading):not(.vs-select__label) {
+			opacity: 0.6;
+		}
+
+		.vs-select__label {
+			pointer-events: none !important;
+		}
+	}
+
+	&.top {
+		&.activeOptions {
+			.vs-select__input,
+			.vs-select__chips {
+				border-radius: 0px 0px 12px 12px !important;
+				box-shadow: 0px -5px 25px -4px
+					rgba(0, 0, 0, -var(shadow-opacity)) !important;
+			}
+		}
+	}
+
+	&--disabled {
+		opacity: 0.6;
+		pointer-events: none;
+
+		label {
+			pointer-events: none;
+		}
+	}
+
+	.vs-icon-arrow {
+		z-index: 600;
+		position: absolute;
+		right: 15px;
+		margin-top: -2px;
+		transition: all 0.25s ease;
+		pointer-events: auto;
+		cursor: pointer;
+	}
+
+	&.activeOptions {
+		.vs-icon-arrow {
+			transform: rotate(180deg);
+			margin-top: (-2px) !important;
+		}
+
+		.vs-select__input {
+			border-radius: 12px 12px 0px 0px;
+			background: -getColor("background");
+			box-shadow: 0px 5px 25px -4px rgba(0, 0, 0, -var(shadow-opacity));
+			transform: translate(0, -4px);
+			transition: all 0.25s ease, height 0s;
+			border: 2px solid transparent;
+			color: -getColor("text", 1);
+		}
+
+		.vs-select__chips {
+			border-radius: 12px 12px 0px 0px;
+			background: -getColor("background");
+			box-shadow: 0px 5px 25px -4px rgba(0, 0, 0, -var(shadow-opacity));
+			transform: translate(0, -4px);
+			transition: all 0.25s ease, height 0s;
+
+			&:after {
+				opacity: 0;
+			}
+		}
+
+		.vs-select__label--placeholder {
+			opacity: 1;
+			visibility: visible;
+			pointer-events: auto;
+			transform: translate(-3%, -28px) !important;
+			font-size: 0.75rem;
+			margin-top: 0px !important;
+		}
+
+		.vs-select__label {
+			margin-top: -4px;
+		}
+	}
+
+	&__input {
+		opacity: 1;
+		background: transparent;
+		padding: 7px 13px;
+		border: 2px solid transparent;
+		border-radius: 12px;
+		cursor: pointer;
+		transition: all 0.25s ease, height 0s;
+		background: -getColor("gray-2");
+		color: -getColor("text");
+		min-height: 38px;
+		padding-right: 30px;
+		width: 100%;
+
+		&.multiple {
+			color: transparent;
+			background: transparent;
+			pointer-events: none;
+		}
+
+		&.simple {
+			user-select: none;
+		}
+
+		&:focus {
+			border-radius: 12px 12px 0px 0px;
+			background: -getColor("background");
+			box-shadow: 0px 5px 25px -4px rgba(0, 0, 0, -var(shadow-opacity));
+			transform: translate(0, -4px);
+			transition: all 0.25s ease;
+
+			~ .vs-select__label--placeholder {
+				opacity: 1;
+				visibility: visible;
+				pointer-events: auto;
+				transform: translate(-3%, -28px) !important;
+				font-size: 0.75rem;
+				margin-top: 0px !important;
+			}
+		}
+
+		&:hover {
+			background: -getColor("background");
+			box-shadow: 0px 5px 25px -4px rgba(0, 0, 0, -var(shadow-opacity));
+			transform: translate(0, -4px);
+
+			~ .vs-select__label {
+				margin-top: -4px;
+			}
+
+			~ .vs-icon-arrow {
+				margin-top: -6px;
+			}
+		}
+	}
+
+	&__chips {
+		width: 100%;
+		height: auto;
+		position: absolute;
+		left: 0px;
+		background: -getColor("gray-2");
+		z-index: 300;
+		border-radius: 12px;
+		display: flex;
+		border: 0px;
+		display: flex;
+		align-items: flex-start;
+		justify-content: flex-start;
+		flex-wrap: wrap;
+		padding: 5px;
+		min-height: 38px;
+		transition: all 0.25s ease, height 0s;
+		padding-right: 26px;
+
+		&:focus {
+			border-radius: 12px 12px 0px 0px;
+			background: -getColor("background");
+			box-shadow: 0px 5px 25px -4px rgba(0, 0, 0, -var(shadow-opacity));
+			transform: translate(0, -4px);
+			transition: all 0.25s ease;
+		}
+
+		&:hover {
+			background: -getColor("background");
+			box-shadow: 0px 5px 25px -4px rgba(0, 0, 0, -var(shadow-opacity));
+			transform: translate(0, -4px);
+			transition: all 0.25s ease;
+
+			~ .vs-icon-arrow {
+				margin-top: -6px;
+				transition: all 0.25s ease;
+			}
+		}
+
+		&__input {
+			width: auto;
+			flex: 1;
+			max-width: 100%;
+			position: relative;
+			min-width: 0px;
+			border: 0px solid transparent;
+			background: transparent;
+			margin: 2px 3px;
+			min-width: 30px;
+
+			&::placeholder {
+				color: -getColor("text", 0.4);
+			}
+		}
+
+		&__chip {
+			flex: 0 1 auto;
+			position: relative;
+			background: -getColor("background");
+			border-radius: 10px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			padding: 0px 6px;
+			margin: 2px 3px;
+			padding-right: 10px;
+			font-size: 0.84rem;
+			border: 2px solid -getColor("gray-2");
+			box-sizing: border-box;
+			color: -getColor("text");
+
+			&.isCollapse {
+				padding-right: 6px !important;
+			}
+
+			&__close {
+				position: absolute;
+				top: -4px;
+				right: -4px;
+				width: 15px;
+				height: 15px;
+				background: -getColor("gray-4");
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				border-radius: 50%;
+				font-size: 0.75rem;
+				cursor: pointer;
+				transition: all 0.25s ease;
+
+				&:hover {
+					background: -getColor("danger");
+
+					.vs-icon-close {
+						--vs-color: var(--vs-background);
+
+						&:after {
+							width: 12px;
+							transform: rotate(180deg);
+						}
+
+						&:before {
+							width: 12px;
+							transform: rotate(180deg);
+						}
+					}
+				}
+
+				.vs-icon-close {
+					--vs-color: var(--vs-text);
+					transform: scale(0.5);
+				}
+			}
+		}
+	}
+
+	&__options {
+		--vs-color: var(--vs-primary);
+		position: absolute;
+		z-index: 99999;
+		background: -getColor("background");
+		padding: 5px;
+		border-radius: 0px 0px 12px 12px;
+		overflow: hidden;
+		box-shadow: 0px 10px 20px -5px rgba(0, 0, 0, -var(shadow-opacity));
+
+		&.top {
+			border-radius: 12px 12px 0px 0px;
+			box-shadow: 0px -10px 20px -5px rgba(0, 0, 0, -var(shadow-opacity));
+
+			&:after {
+				top: auto;
+				bottom: -10px;
+			}
+		}
+
+		&:after {
+			content: "";
+			position: absolute;
+			top: -10px;
+			width: 80%;
+			margin-left: 10%;
+			left: 0px;
+			height: 10px;
+			background: -getColor("background");
+			box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, -var(shadow-opacity));
+			z-index: 200;
+			transition: all 0.25s ease 0.05s;
+			opacity: 1;
+		}
+
+		&__content {
+			max-height: 200px;
+			overflow: auto;
+			height: auto;
+			z-index: 100;
+			transform: scale(1);
+			transition: all 0.25s ease;
+			position: relative;
+			scroll-behavior: smooth;
+
+			&__not-data {
+				font-size: 0.8rem;
+				text-align: center;
+				padding: 6px 10px;
+			}
+
+			&::-webkit-scrollbar {
+				width: 5px;
+				height: 5px;
+				display: block;
+				background: transparent;
+			}
+
+			&::-webkit-scrollbar-thumb {
+				background: -getColor("gray-3");
+				border-radius: 5px;
+			}
+		}
+	}
+
+	&__label {
+		position: absolute;
+		left: 14px;
+		font-size: 0.8rem;
+		transition: all 0.25s ease;
+		cursor: text;
+		user-select: none;
+		pointer-events: none;
+		width: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: flex-start;
+		opacity: 0.4;
+		z-index: 500;
+
+		// top: 10px
+		&--hidden {
+			opacity: 0;
+			visibility: hidden;
+
+			&.vs-select__label--placeholder {
+				opacity: 1;
+				visibility: visible;
+				pointer-events: auto;
+				transform: translate(-3%, -28px) !important;
+				font-size: 0.75rem;
+				margin-top: 0px !important;
+			}
+		}
+
+		&--label {
+			opacity: 1;
+			visibility: visible;
+			pointer-events: auto;
+			transform: translate(-3%, -28px) !important;
+			font-size: 0.75rem;
+			margin-top: 0px !important;
+		}
+	}
+
+	&__loading {
+		position: absolute;
+		width: 22px;
+		height: 22px;
+		right: 7px;
+		pointer-events: none;
+		border-radius: 50%;
+		box-sizing: border-box;
+		background: inherit;
+		cursor: default;
+		z-index: 600;
+
+		&:after {
+			box-sizing: border-box;
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			border: 2px solid -getColor("primary", 1);
+			border-radius: inherit;
+			border-top: 2px solid transparent;
+			border-left: 2px solid transparent;
+			border-right: 2px solid transparent;
+			animation: rotateInputLoading 0.8s ease infinite;
+			top: 0px;
+			content: "";
+		}
+
+		&:before {
+			box-sizing: border-box;
+			top: 0px;
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			border: 2px dashed -getColor("primary", 1);
+			border-radius: inherit;
+			border-top: 2px solid transparent;
+			border-left: 2px solid transparent;
+			border-right: 2px solid transparent;
+			animation: rotateInputLoading 0.8s linear infinite;
+			opacity: 0.2;
+			content: "";
+		}
+
+		& ~ .vs-icon-arrow {
+			opacity: 0 !important;
+		}
+	}
+
+	&__message {
+		font-size: 0.7rem;
+		position: relative;
+		padding: 0px 7px;
+		transition: all 0.25s ease;
+		overflow: hidden;
+
+		&--success {
+			color: -getColor("success", 1);
+		}
+
+		&--danger {
+			color: -getColor("danger", 1);
+		}
+
+		&--warn {
+			color: -getColor("warn", 1);
+		}
+
+		&--dark {
+			color: -getColor("dark", 1);
+		}
+
+		&--primary {
+			color: -getColor("primary", 1);
+		}
+	}
+}
+
+.vs-darken {
+	.vs-select__options {
+		&.isColorDark {
+			--vs-color: 0, 0, 0 !important;
+
+			.vs-select__option {
+				&:hover {
+					background: -getColor("color", 0.2);
+					color: -getColor("text");
+				}
+			}
+
+			.activeOption {
+				color: -getColor("text");
+				background: -getColor("color", 0.6);
+			}
+		}
+	}
+}
+
+</style>
