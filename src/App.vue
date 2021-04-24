@@ -566,7 +566,7 @@
 	<div class="showcase-component">
 		<h4>Select:</h4>
 		<hr />	
-		<vs-select multiple placeholder="Select" v-model:value="selectValue">
+		<vs-select label-placeholder="Label-placeholder" v-model:value="selectValue" style="margin: 10px">
 			<vs-option label="Test" value="1">
 				Test
 			</vs-option>
@@ -590,12 +590,42 @@
 			</vs-option>
       	</vs-select>
 
+		<vs-select
+        v-for="(color, i) in colors"
+        :key="i"
+        :state="color.color"
+        :label="color.color"
+        placeholder="Select"
+        v-model="color.value"
+      >
+        <vs-option label="Vuesax" value="1">
+          Vuesax
+        </vs-option>
+        <vs-option label="Vue" value="2">
+          Vue
+        </vs-option>
+        <vs-option label="Javascript" value="3">
+          Javascript
+        </vs-option>
+        <vs-option label="Sass" value="4">
+          Sass
+        </vs-option>
+        <vs-option label="Typescript" value="5">
+          Typescript
+        </vs-option>
+        <vs-option label="Webpack" value="6">
+          Webpack
+        </vs-option>
+        <vs-option label="Nodejs" value="7">
+          Nodejs
+        </vs-option>
+      </vs-select>
 	</div>
   </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, reactive, ref } from "@vue/runtime-core";
+import { computed, defineComponent, reactive, ref, watch } from "@vue/runtime-core";
 import * as components from "./components";
 import { vsButton } from "./components/vsButton";
 import notification from "./components/vsNotifications";
@@ -604,6 +634,30 @@ export default defineComponent({
   components: {
     ...components,
   },
+  data:  () => ({
+	  colors: [
+          {
+            color: 'primary',
+            value: '1'
+          },
+          {
+            color: 'danger',
+            value: '1'
+          },
+          {
+            color: 'success',
+            value: '2'
+          },
+          {
+            color: 'warn',
+            value: '3'
+          },
+          {
+            color: 'dark',
+            value: '4'
+          }
+        ]
+  }),
   setup(props, context) {
     let active1 = ref(true);
     let checkBox1 = ref(false);
@@ -615,7 +669,7 @@ export default defineComponent({
     let notifShow = ref(false);
     let opts: any = reactive([]);
 	let inpValue = ref("");
-	let selectValue = ref("");
+	let selectValue = ref([]);
 
     let notificationComponent = ref(null);
 	let validEmail = computed(function(){
@@ -647,6 +701,11 @@ export default defineComponent({
 		new notification(notificationAttrs);
     };
 
+	watch(selectValue, () => {
+
+		console.log(selectValue.value);
+	});
+
     return {
       active1,
       checkBox1,
@@ -674,6 +733,9 @@ export default defineComponent({
   margin-top: 30px;
 }
 
+.vs-select-content {
+	margin:20px
+}
 body {
   background-color: white;
 }

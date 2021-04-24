@@ -14,13 +14,14 @@
 		v-on="listeners"
 		:id="uid"
 	>
-		<vs-checkbox v-if="isMultiple">
+		<vs-checkbox v-if="isMultiple" v-model:value="isActive">
 			<slot />
 		</vs-checkbox>
 		<slot v-else />
 	</button>
 </template>
 <script lang="ts">
+import _ from "lodash";
 import {
 	computed,
 	defineComponent,
@@ -50,23 +51,25 @@ export default defineComponent({
 	setup(props, context) {
 		let activeOption = ref(false);
 		let hiddenOption = ref(false);
-		let uid = "option-" + ++SelectOptionConstants.id;
-		let myIndex = ref(0);
+		
+		let uid = "option-" + ++SelectOptionConstants.id;		
 
 		let textFilter = inject<String>("textFilter");
 		let uids = inject<Ref<any[]>>("uids");
+		let parentValue = inject<Ref<any>>("parentValue");
 		let hoverOption = inject<Number>("hoverOption");
-		let parent = inject<any>("parentSelect");
 		let renderSelect = inject<Ref<Boolean>>("renderSelect");
 		let multiple = inject<Ref<Boolean>>("isMultiple");
+		let targetSelect = inject<Ref<Boolean>>("targetSelect");
+		let targetClose = inject<Ref<Boolean>>("targetClose");
 
 		let callSetHover = inject<Function>("callSetHover");
 		let addUid = inject<Function>("addUid");
 		let addChildOption = inject<Function>("addChildOption");
 		let onClickOption = inject<Function>("onClickOption");
+		let updateActiveOptions = inject<Function>("updateActiveOptions");
 
-		let instance = getCurrentInstance();
-		console.log(instance?.parent?.vnode.el);
+		let instance = getCurrentInstance();		
 
 		watch(
 			() => textFilter as String,
@@ -88,11 +91,9 @@ export default defineComponent({
 
 
 		const isActive = computed(() => {
-			return typeof (parent.value as any) == "number"
-				? (parent.value as any) == props.value
-				: (parent.value as any).indexOf(
-						props.value
-				  ) !== -1;
+			return typeof parentValue?.value == "number"
+				? parentValue?.value == props.value
+				: _.find(parentValue?.value, { value: props.value, label: props.label }) !== undefined
 		});
 
 		const isHover = computed(() => {
@@ -105,16 +106,16 @@ export default defineComponent({
 
 		const listeners = computed(() => {
 			return {
-				mousedown: () => {
+				click: () => {
 					//console.log(this.value);					
-					onClickOption?.call(null, props.value, props.label);
+					onClickOption?.call(null, props.value, props.label);					
 				},
 				blur: () => {
 					if (
-						!(parent as any).targetSelect &&
-						!(parent as any).targetClose
+						!targetSelect?.value &&
+						!targetClose?.value
 					) {
-						(parent as any).activeOptions = false;
+						updateActiveOptions?.call(null, false)
 					}
 				}
 			};
@@ -137,7 +138,7 @@ export default defineComponent({
 			hiddenOption,
 			activeOption,
 			listeners,
-			uid
+			uid			
 		};
 	}
 });

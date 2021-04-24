@@ -46,13 +46,13 @@
 				v-on="inputListener"
 			/>				
 			<label
-				v-if="!multiple && label"
+				v-if="!multiple && (label || labelPlaceholder)"
 				class="vs-select__label"
 				:for="uid"
 				:class="{
 					'vs-select__label--placeholder': labelPlaceholder,
 					'vs-select__label--label': label,
-					'vs-select__label--hidden': value
+					'vs-select__label--hidden': isValue
 				}"
 			>
 				{{ labelPlaceholder || label }}
@@ -62,7 +62,7 @@
 				ref="placeholder"
 				:for="uid"
 				class="vs-select__label"
-				:class="{ 'vs-select__label--hidden': value || textFilter }"
+				:class="{ 'vs-select__label--hidden': isValue || textFilter }"
 			>
 				{{ placeholder }}
 			
@@ -74,9 +74,9 @@
 				v-on="chipsListener"
 			>
 				<component
-					:is="chip"
-					v-for="(chip, key) in getChips"
-					:key="key"
+					:is="item"
+					v-for="item of getChips"
+					:key="item"
 				/>
 				<input
 					v-if="filter"
@@ -197,6 +197,8 @@ import {
 import vsComponent from "../vsComponent";
 import { insertBody, setCords } from "@/utils";
 import vsOption from "../vsSelect/vsSelectOption.vue";
+import vsIcon from "../vsIcon/vsIcon.vue";
+import _ from "lodash"
 
 class SelectConstants {
 	public static id = 0;
@@ -240,13 +242,20 @@ export default defineComponent({
 			},
 			onClickOption: (value: any, label: any) => {
 				this.onClickOption(value, label);
-			}
+			},
+			updateActiveOptions: (value: boolean) => {
+				this.activeOptions = value;
+			},
+			targetSelect: computed(() => { return this.targetSelect}),
+			targetClose: computed(() => { return this.targetClose}),
+			parentValue: computed(() => { return this.value}),
+			
 		};
 	},
 	setup(props, context) {
 		let renderSelect = ref(false);
 		let activeOptions = ref(false);
-		let valueLabel = ref(null);
+		let valueLabel = ref<any>(null);
 		let hoverOption = ref(-1);
 		let uids = ref<any[]>([]);
 		let childOptions = ref<any[]>([]);
@@ -318,12 +327,13 @@ export default defineComponent({
 		const clickOption = function(value: any, label: any) {
 			if (props.multiple) {
 				const oldVal = [...(props.value as Array<any>)];
-				if (oldVal.indexOf(value) == -1) {
-					oldVal.push(value);
+				if (_.find(oldVal, {value: value, label: label}) === undefined) {
+					oldVal.push({value: value, label: label});
 				} else {
-					oldVal.splice(oldVal.indexOf(value), 1);
+					oldVal.splice(_.findIndex(oldVal, {value: value, label: label}), 1);
 				}
-				context.emit("update:value", oldVal);
+				context.emit("update:value", oldVal);				
+				valueLabel.value = oldVal;
 			} else {
 				context.emit("update:value", value);
 				valueLabel.value = label;
@@ -344,13 +354,27 @@ export default defineComponent({
 			clickOption(value, label);
 		};
 
+
+		let isValue = computed(() => {
+
+			if (Array.isArray(props.value))			
+				return props.value.length !== 0;	
+			else 
+				return !(_.isNull(props.value) && _.isUndefined(props.value));
+
+		});
 		//computeds
 		const getChips = computed(() => {
+
+			let id = 0;
+			let chipIds : number[] = [];
 			const chip = function(item: any, isCollapse: boolean) {
+				
 				return h(
 					"span",
 					{
-						class: ["vs-select__chips__chip", { isCollapse }]
+						class: ["vs-select__chips__chip", { isCollapse }],		
+						id: ++id
 					},
 					[
 						item.label,
@@ -359,28 +383,32 @@ export default defineComponent({
 								"span",
 								{
 									class: "vs-select__chips__chip__close",
-									on: {
-										click: () => {
-											setTimeout(() => {
-												targetClose.value = false;
-											}, 100);
-											if (!activeOptions.value) {
-												chips.value?.blur();
-												if (props.filter) {
-													chipsInput.value?.blur();
-												}
-											}
-											clickOption(item.value, item.label);
-										},
-										mouseleave: () => {
+									
+									onClick: () => {
+										setTimeout(() => {
 											targetClose.value = false;
-										},
-										mouseenter: () => {
-											targetClose.value = true;
+										}, 100);
+										if (!activeOptions.value) {
+											chips.value?.blur();
+											if (props.filter) {
+												chipsInput.value?.blur();
+											}
 										}
+										clickOption(item.value, item.label);
+									},
+									onMouseLeave: () => {
+										targetClose.value = false;
+									},
+									onMouseEnter: () => {
+										targetClose.value = true;
+									},
+									onMouseDown: (evt) => {
+										evt.stopPropagation();
+										
 									}
+									
 								},
-								[h("vs-icon", { hover: "less" }, ["close"])]
+								[h(vsIcon, { hover: "less", style:{ 'font-size':"0.5rem" } }, ["close"])]
 							)
 					]
 				);
@@ -389,7 +417,9 @@ export default defineComponent({
 			let chipsarr: any[] = [];
 			if (Array.isArray(valueLabel.value)) {
 				for (let item of valueLabel.value as any) {
-					chipsarr.push(chip(item, false));
+					let chipEl = chip(item, false);
+					Object.assign(chipEl, chipEl, { id: id});
+					chipsarr.push(chipEl);
 				}
 			}
 
@@ -507,6 +537,7 @@ export default defineComponent({
 					if (props.filter && props.multiple) {
 						(chipsInput.value as HTMLElement).focus();
 					}
+					window.addEventListener("mousedown", handleWindowClick);
 				},
 				blur: blur
 			};
@@ -616,7 +647,8 @@ export default defineComponent({
 			enter,
 			leave,
 			setHover,
-			onClickOption
+			onClickOption,
+			isValue
 		};
 	}
 });
@@ -639,8 +671,7 @@ export default defineComponent({
 
 	.vs-select__chips {
 		background: -getColor($color, 0.05);
-		color: -getColor($color, 1);
-
+		color: -getColor($color, 1);		
 		&:hover {
 			&:after {
 				opacity: 0;
@@ -725,6 +756,17 @@ export default defineComponent({
 		&.block {
 			max-width: 100%;
 		}
+	}
+}
+
+.vs-select__chips {
+	max-height: 50px;
+	overflow: auto;
+	&::-webkit-scrollbar {
+		width: 5px;
+		height: 5px;
+		display: block;
+		background: transparent;
 	}
 }
 
@@ -820,7 +862,6 @@ export default defineComponent({
 			box-shadow: 0px 5px 25px -4px rgba(0, 0, 0, -var(shadow-opacity));
 			transform: translate(0, -4px);
 			transition: all 0.25s ease, height 0s;
-
 			&:after {
 				opacity: 0;
 			}
