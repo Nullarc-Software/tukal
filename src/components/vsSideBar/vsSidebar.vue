@@ -1,151 +1,409 @@
 <template>
-  <transition name="vs-sidebar-animate">
-    <div
-      v-show="staticPosition || value"
-      ref="sidebarbackground"
-      class="vs-content-sidebar">
-      <div
-        v-if="!hiddenBackground"
-        class="vs-sidebar--background"></div>
-      <div
-        ref="sidebarContainer"
-        :class="[
-          `vs-sidebar-${color}`,
-          {
-            'vs-sidebar-parent': parent != 'body',
-            'vs-sidebar-staticPosition': staticPosition,
-            'vs-sidebar-position-right': positionRight,
-            'vs-sidebar-reduce': reduce,
-            'vs-sidebar-reduceNotRebound': reduceNotRebound,
-            'vs-sidebar-reduceNotHoverExpand': reduceNotHoverExpand
-          }
-        ]"
-        class="vs-sidebar">
-        <header
-          v-if="$slots.header"
-          class="vs-sidebar--header"
-        >
-          <slot name="header"></slot>
-        </header>
-
-        <div class="vs-sidebar--items">
-          <slot></slot>
-        </div>
-
-        <vs-spacer v-if="spacer"></vs-spacer>
-
-        <footer
-          v-if="$slots.footer"
-          class="vs-sidebar--footer"
-        >
-          <slot name="footer"></slot>
-        </footer>
-      </div>
-    </div>
-  </transition>
+	<div
+		:style="{
+			['--vs-color']: color ? getColor(color) : ''
+		}"
+		:class="[
+			'vs-sidebar-content',
+			{
+				reduce: reduceInternal,
+				open: open,
+				notLineActive: notLineActive,
+				square: square,
+				notShadow: notShadow,
+				textWhite: textWhite,
+				relative: relative,
+				absolute: absolute,
+				right: right
+			},
+			// colors
+			{ [`vs-component--primary`]: !!primary },
+			{ [`vs-component--danger`]: !!danger },
+			{ [`vs-component--warn`]: !!warn },
+			{ [`vs-component--success`]: !!success },
+			{ [`vs-component--dark`]: !!dark },
+			{ [`vs-component--is-color`]: !!isColor }
+		]"
+		v-on="listeners"
+		ref="sidebar"
+	>
+		
+			<div v-if="$slots.logo" class="vs-sidebar__logo">
+				<slot name="logo" />
+			</div>
+			<div v-if="$slots.header" class="vs-sidebar__header">
+				<slot name="header" />
+			</div>
+			<div class="vs-sidebar">
+				<slot />
+			</div>
+	
+			<div v-if="$slots.footer" class="vs-sidebar__footer">
+				<slot name="footer" />
+			</div>
+		
+	</div>
 </template>
-<script>
-export default {
-  name:'VsSidebar',
-  props:{
-    value:{
-      default: false
-    },
-    defaultIndex:{
-      default: null,
-      type: [String, Number]
-    },
-    color: {
-      default:'primary',
-      type: String
-    },
-    parent:{
-      default: null,
-      type: [String, Object]
-    },
-    spacer: {
-      default: false,
-      type: Boolean
-    },
-    staticPosition: {
-      default: false,
-      type: Boolean
-    },
-    positionRight: {
-      default: false,
-      type:Boolean
-    },
-    clickNotClose: {
-      default: false,
-      type: Boolean
-    },
-    reduce: {
-      default: false,
-      type: Boolean
-    },
-    reduceNotRebound:{
-      default: false,
-      type: Boolean
-    },
-    reduceNotHoverExpand: {
-      default: false,
-      type: Boolean
-    },
-    hiddenBackground: {
-      default:false,
-      type: Boolean
-    }
-  },
-  data: () => ({
-    currentIndex: 0
-  }),
-  watch:{
-    value() {
-      if(!this.clickNotClose) this.addEventClick()
-    }
-  },
-  created () {
-    this.currentIndex = this.defaultIndex
-  },
-  mounted () {
-    this.insertBody()
-  },
-  methods:{
-    getActive () {
-      return this.currentIndex
-    },
-    setIndexActive (index) {
-      this.currentIndex = index
-    },
-    addEventClick () {
-      this.$nextTick(() => {
-        let parentx = typeof this.parent == 'string' ? document.querySelector(this.parent) : this.parent
-        let element = parentx || window
-        if(this.value) {
-          setTimeout(() => {
-            element.addEventListener('click', this.closeSidebar)
-          }, 300)
+<script lang="ts">
+import { setColor } from "@/utils";
+import { computed, defineComponent, onMounted, ref, watch } from "vue";
+import vsComponent from "../vsComponent";
 
-        }
-      })
-    },
-    closeSidebar (evt) {
-      let parent = evt.target.closest('.vs-sidebar')
-      if (!parent) {
-        this.$emit('input', false)
-        let parentx = typeof this.parent == 'string' ? document.querySelector(this.parent) : this.parent
-        let element = parentx || window
-        element.removeEventListener('click', this.closeSidebar)
-      }
-    },
-    insertBody () {
-      if(this.parent) {
-        let elx = this.$refs.sidebarbackground
-        let parentx = typeof this.parent == 'string' ? document.querySelector(this.parent) : this.parent
-        parentx.insertBefore(elx, parentx.firstChild)
-      }
+export default defineComponent({
+	name: "VsSidebar",
+	extends: vsComponent,
+	props: {
+		value: {},
+		reduce: { default: false, type: Boolean },
+		hoverExpand: { default: false, type: Boolean },
+		open: { default: false, type: Boolean },
+		notLineActive: { default: false, type: Boolean },
+		square: { default: false, type: Boolean },
+		textWhite: { default: false, type: Boolean },
+		notShadow: { default: false, type: Boolean },
+		relative: { default: false, type: Boolean },
+		absolute: { default: false, type: Boolean },
+		right: { default: false, type: Boolean },
+		background: { default: "background", type: String }
+	},
+	emits: ["update:open", "update:value"],
+	provide() {
+		return {
+			parentValue: computed(() => this.value),
+			handleClickItem: this.handleClickItem,
+			reduce: computed(() => this.reduce)
+		};
+	},
+	setup(props, context) {
+		let staticWidth = ref(260);
+		let forceExpand = ref(false);
+		let reduceInternal = ref(false);
 
-    },
-  }
-}
+		let sidebar = ref<HTMLDivElement>();
+
+		const clickCloseSidebar = function(evt) {
+			if (!(evt.target as any).closest(".vs-sidebar-content")) {
+				context.emit("update:open", false);
+			}
+		};
+
+		const handleClickItem = function(id: string) {
+			context.emit("update:value", id);
+		};
+
+		const getValue = computed(() => {
+			return props.value;
+		});
+
+		const listeners = computed(() => {
+			return {
+				mouseenter: function() {
+					if (props.hoverExpand) reduceInternal.value = false;
+				},
+				mouseleave: function() {
+					if (props.hoverExpand) reduceInternal.value = true;
+				}
+			};
+		});
+
+		watch(
+			() => props.open,
+			(val: boolean) => {
+				if (val) {
+					setTimeout(() => {
+						window.addEventListener("click", clickCloseSidebar);
+					}, 200);
+				} else {
+					window.removeEventListener("click", clickCloseSidebar);
+				}
+			}
+		);
+
+		watch(
+			() => props.reduce,
+			(val: boolean) => {
+				reduceInternal.value = val;
+				const el: any = sidebar.value;
+				if (val) {
+					el.style.width = "50px";
+				} else {
+					el.style.width = `${staticWidth.value}px`;
+				}
+			}
+		);
+
+		watch(reduceInternal, (val: boolean) => {
+			const el: any = sidebar.value;
+			if (val) {
+				el.style.width = "50px";
+			} else {
+				el.style.width = `${staticWidth.value}px`;
+			}
+		});
+
+		watch(
+			() => props.background,
+			() => {
+				setColor("background", props.background, sidebar.value, true);
+			}
+		);
+
+		onMounted(() => {
+			staticWidth.value = sidebar.value?.offsetWidth as number;
+			reduceInternal.value = props.reduce;
+
+			if (props.background !== "background") {
+				setColor("background", props.background, sidebar.value, true);
+			}
+
+			if (props.textWhite) {
+				setColor("text", "#fff", sidebar.value, true);
+			}
+		});
+
+		return {
+			staticWidth,
+			forceExpand,
+			reduceInternal,
+			handleClickItem,
+			clickCloseSidebar,
+			listeners,
+			sidebar
+		};
+	}
+});
 </script>
+
+<style lang="scss">
+@import "../../style/sass/_mixins";
+
+.vs-sidebar-content {
+	--vs-color: var(--vs-primary);
+	position: fixed;
+	left: 0px;
+	top: 0px;
+	width: calc(100% - 50px);
+	max-width: 260px;
+	height: 100vh;
+	border-radius: 0px 30px 30px 0px;
+	color: -getColor("text");
+	box-shadow: 0px 0px 25px 0px rgba(0, 0, 0, -var("shadow-opacity"));
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	flex-direction: column;
+	z-index: 21000;
+	background: -getColor("background");
+	transition: all 0.25s ease;
+	transform: translate(-110%);
+	padding: 5px;
+
+	&.right {
+		left: auto;
+		right: 0px;
+		transform: translate(110%);
+
+		&.open {
+			transform: translate(0);
+		}
+
+		&.reduce {
+			.vs-sidebar__item {
+				&:hover {
+					.vs-sidebar__item__text-tooltip {
+						opacity: 1;
+						box-shadow: 1px 1px 5px 5px -getColor("background");
+						left: auto !important;
+						right: 60px !important;
+					}
+				}
+			}
+		}
+	}
+
+	&.absolute {
+		position: absolute !important;
+		z-index: 9001;
+		height: 100%;
+	}
+
+	&.relative {
+		position: relative !important;
+		z-index: 9001;
+		height: 100%;
+	}
+
+	&.textWhite {
+		.vs-sidebar__group__content {
+			&:after {
+				background: rgba(255, 255, 255, 0.4);
+			}
+		}
+
+		.vs-sidebar__item {
+			color: #ffffffaa !important;
+
+			&:after {
+				background: #fff !important;
+			}
+
+			&.active {
+				color: #fff !important;
+			}
+		}
+	}
+
+	&.notShadow {
+		box-shadow: none !important;
+	}
+
+	&.square {
+		border-radius: 0px;
+	}
+
+	&.notLineActive {
+		.vs-sidebar {
+			.vs-sidebar__item {
+				&:after {
+					display: none;
+				}
+			}
+		}
+	}
+
+	&.open {
+		transform: translate(0%);
+	}
+
+	&.reduce {
+		.vs-sidebar {
+			&__footer {
+				padding: 10px 0px;
+			}
+
+			&__header {
+				.vs-avatar-content {
+					width: 44px !important;
+					height: 44px !important;
+				}
+
+				opacity: 0;
+				transition: all 0.25s ease;
+				font-size: 0.9rem;
+			}
+
+			&__logo {
+				img {
+					width: 80%;
+				}
+			}
+		}
+
+		.vs-sidebar__item {
+			padding-left: 16px !important;
+			min-height: 47px;
+
+			&:not(.hasIcon) {
+				.vs-sidebar__item__text {
+					font-size: 0.5rem;
+				}
+			}
+
+			&.hasIcon {
+				.vs-sidebar__item__text {
+					transform: translate(-10px);
+					margin-left: -50px;
+				}
+			}
+
+			&__arrow {
+				position: absolute;
+				top: 10%;
+				animation: delayOpacity 0.6s ease;
+				width: 5px;
+				height: 5px;
+			}
+
+			&:hover {
+				.vs-sidebar__item__text-tooltip {
+					opacity: 1;
+					color: -getColor("background");
+					left: 60px;
+				}
+			}
+		}
+
+		.vs-sidebar__item.hasIcon {
+			padding: 0px !important;
+
+			&:after {
+				left: -6px;
+			}
+		}
+	}
+
+	.vs-sidebar__logo {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 100%;
+		padding: 25px 0px;
+		min-height: 80px;
+
+		img {
+			max-width: 120px;
+			max-height: 35px;
+		}
+	}
+
+	.vs-sidebar {
+		overflow-x: hidden;
+		width: 100%;
+		flex-grow: 1;
+		display: flex;
+		align-items: flex-start;
+		justify-content: flex-start;
+		flex-direction: column;
+
+		&::-webkit-scrollbar {
+			width: 0px;
+		}
+
+		&__header {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			width: 100%;
+			padding: 10px;
+		}
+
+		&__footer {
+			display: flex;
+			align-items: center;
+			justify-self: flex-start;
+			width: 100%;
+			padding: 10px;
+		}
+	}
+}
+
+.vs-sidebar__sticky_head {
+	position: sticky;
+	top: 0;
+}
+
+.vs-sidebar__sticky_tail {
+	position: sticky;
+	bottom : 0;
+}
+
+@keyframes delayOpacity {
+	0% {
+		opacity: 0;
+	}
+
+	100% {
+		opacity: 1;
+	}
+}
+</style>

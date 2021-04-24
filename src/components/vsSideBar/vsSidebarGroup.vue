@@ -1,98 +1,164 @@
 <template>
-  <div
-    :class="{'vs-sidebar-group-open' : openItems}"
-    class="vs-sidebar-group"
-    @mouseover="mouseover"
-    @mouseout="mouseout">
-    <h4 @click="clickGroup">{{ title }} <vs-icon>keyboard_arrow_down</vs-icon></h4>
-    <span class="vs-sidebar--tooltip">{{ title }}</span>
-    <ul
-      ref="items"
-      :style="styleItems"
-      class="vs-sidebar--group-items">
-      <slot></slot>
-    </ul>
-  </div>
+	<div
+		class="vs-sidebar__group"
+		:class="{ open: openState }"
+		ref="sidebar_group"
+	>
+		<div class="vs-sidebar__group__header" @click="openState = !openState">
+			<slot name="header" />
+		</div>
+		<transition @before-enter="beforeEnter" @enter="enter" @leave="leave">
+			<div
+				class="vs-sidebar__group__content"
+				ref="content"
+				name="show"
+				v-if="openState"
+			>
+				<slot  />
+			</div>
+		</transition>
+	</div>
 </template>
-<script>
-export default {
-  name:'VsSidebarGroup',
-  props: {
-    collapsed: {
-      default: false,
-      type: Boolean
-    },
-    title: {
-      default: null,
-      type: String
-    },
-    openHover: {
-      default: false,
-      type: Boolean
-    },
-    open: {
-      default: false,
-      type: Boolean
-    }
-  },
-  data: () => ({
-    maxHeight: '0px',
-    openItems: false
-  }),
-  computed:{
-    styleItems() {
-      return {
-        maxHeight: this.maxHeight
-      }
-    }
-  },
-  watch: {
-    maxHeight () {
-      this.openItems = this.maxHeight != '0px'
+<script lang="ts">
+import { defineComponent, inject, nextTick, onMounted, ref, watch } from "vue";
 
-    }
-  },
-  mounted () {
-    this.openItems = this.open
-    if(this.open) {
-      this.maxHeight = 'none'
-    }
-  },
-  methods:{
-    getActive () {
-      return this.$parent.getActive()
-    },
-    setIndexActive (index) {
-      this.$parent.setIndexActive(index)
-    },
-    clickGroup() {
-      if(!this.openHover) {
-        let scrollHeight = this.$refs.items.scrollHeight
-        if(this.maxHeight == '0px') {
-          this.maxHeight = `${scrollHeight}px`
-          setTimeout(() => {
-            this.maxHeight = 'none'
-          },300)
-        } else {
-          this.maxHeight = `${scrollHeight}px`
-          setTimeout(() => {
-            this.maxHeight = `${0}px`
-          }, 50)
-        }
-      }
-    },
-    mouseover() {
-      if(this.openHover) {
-        let scrollHeight = this.$refs.items.scrollHeight
-        this.maxHeight = `${scrollHeight}px`
-      }
-    },
-    mouseout() {
-      if(this.openHover) {
-        let scrollHeight = 0
-        this.maxHeight = `${scrollHeight}px`
-      }
-    }
-  }
-}
+export default defineComponent({
+	name: "VsSidebarGroup",
+	props: {
+		open: {
+			default: false,
+			type: Boolean
+		}
+	},
+	setup(props, context) {
+		let group = ref(true);
+		let openState = ref(false);
+		let sidebar_group = ref<HTMLDivElement>();
+		let content = ref<HTMLDivElement>();
+
+		let parentValue = inject<any>("parentValue");
+		let parentHandleClickItem = inject<Function>("handleClickItem");
+
+		const handleClickItem = function(id: string) {
+			parentHandleClickItem?.call(null, id);
+		};
+
+		const beforeEnter = function(el: any) {
+			el.style.height = 0;
+		};
+
+		const enter = function(el: any, done: any) {
+			const h = el.scrollHeight;
+			el.style.height = h - 1 + "px";
+			done();
+		};
+
+		const leave = function(el: any, done: any) {
+			el.style.minHeight = "0px";
+			el.style.height = "0px";
+		};
+
+		onMounted(() => {
+			if (sidebar_group.value?.querySelector(".active") || props.open) {
+				openState.value = true;
+			}
+		});
+
+		watch(
+			() => props.open,
+			(val: boolean) => {
+				nextTick(() => {
+					const h = content.value?.scrollHeight;					
+					if (group.value) {
+						if (val) {
+							//parent.$refs.content.style.height = `${parent.$refs.content.scrollHeight + h -1}px`;
+						} else {
+							//parent.$refs.content.style.height = `${parent.$refs.content.scrollHeight -h +1}px`;
+						}
+					}
+				});
+			}
+		);
+
+		return {
+			handleClickItem,
+			leave,
+			enter,
+			beforeEnter,
+			parentValue,
+			group,
+			openState
+		};
+	}
+});
 </script>
+
+<style lang="scss">
+@import "../../style/sass/_mixins";
+
+.vs-sidebar__group {
+	padding: 0px;
+	width: 100%;
+	min-width: 260px;
+	position: relative;
+
+	&.open {
+		.vs-sidebar__group__content {
+			&:after {
+				transform: translate(0);
+				opacity: 1;
+			}
+		}
+
+		> .vs-sidebar__group__header {
+			.vs-sidebar__item {
+				opacity: 1;
+			}
+
+			.vs-sidebar__item__arrow {
+				i {
+					transition: all 0.25s ease;
+					transform: rotate(180deg) !important;
+				}
+			}
+		}
+	}
+
+	&__header {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	&__content {
+		overflow: hidden;
+		transition: all 0.25s ease;
+		position: relative;
+
+		&:after {
+			content: "";
+			position: absolute;
+			left: 0px;
+			top: 0px;
+			background: -getColor("color", 0.3);
+			width: 4px;
+			height: 100%;
+			opacity: 0;
+			transition: all 0.25s ease;
+			transform: translate(-100%);
+			border-radius: 0px 10px 10px 0px;
+			z-index: 60;
+		}
+
+		.vs-sidebar__item {
+			background: -getColor("background");
+		}
+	}
+
+	> .vs-sidebar__group__header {
+		.vs-sidebar__item:hover {
+			padding-left: 0px;
+		}
+	}
+}
+</style>

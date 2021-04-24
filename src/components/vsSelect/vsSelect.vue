@@ -716,7 +716,7 @@ export default defineComponent({
 	transition: all 0.25s ease;
 }
 
-.vs-select-enter {
+.vs-select-enter-from {
 	opacity: 0;
 	transform: translate(0, -10px);
 	transition: all 0.25s ease;
@@ -751,7 +751,7 @@ export default defineComponent({
 .vs-select-content {
 	width: 100%;
 	max-width: 200px;
-
+	display: inline-flex;
 	&.block {
 		&.block {
 			max-width: 100%;

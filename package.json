@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
+    "inspect": "vue-cli-service inspect",
     "build": "vue-cli-service build --target lib --name vuesax3 src/main.ts",
     "lint": "vue-cli-service lint"
   },

@@ -13,4 +13,4 @@ if (typeof window !== 'undefined' && (<any>window).Vue) {
   vsComponent.install((<any>window).Vue)  
 }
 
-export default vsComponent;
+export { vsComponent as vsSidebar, vsComponent2 as vsSidebarItem, vsComponent3 as vsSidebarGroup};
