@@ -8,14 +8,14 @@
 		]"
 	>
 		<h5>
-			<slot name="title" />
-			<slot />
+			<slot name="title" />			
 		</h5>
+		<slot />
 	</div>
 </template>
 
 <script lang="ts">
-import { computed, getCurrentInstance, inject, ref, watch } from "vue";
+import { computed, getCurrentInstance, inject, Ref, ref, watch } from "vue";
 import _color from "../../utils/color";
 import vsComponent from "../vsComponent";
 export default {
@@ -38,12 +38,12 @@ export default {
 		let optionGroup = ref(true);
 		let textFilter = ref<String>();
 		let hiddenOptionGroup = ref(false);
+		let parentTextFilter = inject<Ref<String>>("textFilter");
 
-		let parentTextFilter = inject<String>("textFilter");
+		let onClickOption = inject<Function>("onClickOption");
 
-		let parent = getCurrentInstance()?.parent;
 		let clickOption = function(value: any, label: any) {
-			(parent as any).clickOption(value, label);
+			onClickOption?.call(null, value, label);
 		};
 
 		const labels = computed(() => {
@@ -57,12 +57,11 @@ export default {
 		});
 
 		watch(
-			() => parentTextFilter as String,
+			() => parentTextFilter?.value as String,
 			val => {
 				if (val) {
 					if (
-						labels.value.toLowerCase().indexOf(val.toLowerCase()) ===
-						-1
+						labels.value.toLowerCase().indexOf(val.toLowerCase()) === -1
 					) {
 						hiddenOptionGroup.value = true;
 					} else {

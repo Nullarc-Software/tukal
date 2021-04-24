@@ -225,7 +225,7 @@ export default defineComponent({
 	},
 	provide() {
 		return {
-			textFilter: computed(() => this.textFilter.value),
+			textFilter: computed(() => this.textFilter),
 			uids: computed(() => this.uids),
 			hoverOption: computed(() => this.hoverOption),
 			parentSelect: this,
@@ -263,7 +263,7 @@ export default defineComponent({
 		let targetSelectInput = ref(false);
 		let targetClose = ref(false);
 		let activeFilter = ref(false);
-		let textFilter = ref<any>(null);
+		let textFilter = ref<String>();
 		let childVisibles = ref(0);
 
 		//Template refs

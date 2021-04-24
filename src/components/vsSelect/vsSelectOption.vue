@@ -91,7 +91,7 @@ export default defineComponent({
 
 
 		const isActive = computed(() => {
-			return typeof parentValue?.value == "number"
+			return (typeof parentValue?.value == "number") || (typeof parentValue?.value == "string")
 				? parentValue?.value == props.value
 				: _.find(parentValue?.value, { value: props.value, label: props.label }) !== undefined
 		});
@@ -158,7 +158,7 @@ export default defineComponent({
   box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, -var(shadow-opacity));
   margin: 2px 0px;
   display: flex;
-  align-items: cneter;
+  align-items: center;
   justify-content: flex-start;
   overflow: hidden;
   opacity: 1;

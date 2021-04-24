@@ -589,6 +589,43 @@
 				Nodejs
 			</vs-option>
       	</vs-select>
+		  <vs-select
+        label="Group"
+        placeholder="Group"
+        v-model="value1"
+      >
+        <vs-option-group>
+          <template v-slot:title>
+            Vuejs
+          </template>
+          <vs-option label="Vuesax" value="1">
+            Vuesax
+          </vs-option>
+          <vs-option label="Vue" value="2">
+            Vue
+          </vs-option>
+          <vs-option label="Javascript" value="3">
+            Javascript
+          </vs-option>
+        </vs-option-group>
+        <vs-option-group>
+          <template v-slot:title>
+            Others
+          </template>
+          <vs-option label="Sass" value="4">
+            Sass
+          </vs-option>
+          <vs-option label="Typescript" value="5">
+            Typescript
+          </vs-option>
+          <vs-option label="Webpack" value="6">
+            Webpack
+          </vs-option>
+          <vs-option label="Nodejs" value="7">
+            Nodejs
+          </vs-option>
+        </vs-option-group>
+      </vs-select>
 
 		<vs-select
         v-for="(color, i) in colors"
@@ -598,6 +635,7 @@
         placeholder="Select"
         v-model="color.value"
       >
+	  
         <vs-option label="Vuesax" value="1">
           Vuesax
         </vs-option>
@@ -620,6 +658,7 @@
           Nodejs
         </vs-option>
       </vs-select>
+	  
 	</div>
   </div>
 </template>
