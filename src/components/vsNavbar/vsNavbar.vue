@@ -60,10 +60,10 @@
 </template>
 
 <script lang="ts">
-import { nextTick, onMounted, ref, watch } from "vue";
+import { defineComponent, nextTick, onMounted, ref, watch } from "vue";
 import _color from "../../utils/color";
 import vsComponent from "../vsComponent";
-export default {
+export default defineComponent({
 	name: "VsNavbar",
 	extends: vsComponent,
 	props: {
@@ -256,7 +256,7 @@ export default {
 
 		};
 	}
-};
+});
 </script>
 <style lang="scss">
 @import "../../style/sass/_mixins";

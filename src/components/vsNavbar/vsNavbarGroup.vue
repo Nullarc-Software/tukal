@@ -16,17 +16,7 @@ export default defineComponent({
 	name: "VsNavbarGroup",
 	extends: vsComponent,
 	setup(props, context) {
-		const setModel = function(id: any) {
-			const parent: any = this.$parent;
-			parent.setModel(id);
-		};
-		const setLeftLine = function() {
-			const parent: any = this.$parent;
-			const left = (this.$el as any).offsetLeft;
-			parent.setLeftLine(left);
-			const width = (this.$refs.item as any).scrollWidth;
-			parent.setWidthLine(width);
-		};
+	
 	}
 });
 </script>
