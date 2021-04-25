@@ -12,6 +12,11 @@
 import { computed, defineComponent } from '@vue/runtime-core'
 import _color from '../../utils/color'
 
+class IconPackConstants {
+
+	public static iconPackGlobal = "fa";
+}
+
 export default defineComponent({
   name:'VsIcon',
   props:{

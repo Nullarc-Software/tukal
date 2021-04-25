@@ -1,79 +1,365 @@
-<template lang="html">
-  <header
-    :style="[styleNavbar]"
-    :class="[`vs-navbar-${type}`, `vs-navbar-color-${color}`, {'collapse':collapse}]"
-    class="vs-navbar">
-    <div class="vs-navbar--header">
-      <button
-        :class="{'active-menu' : activeMenuResponsive}"
-        class="vs-navbar--btn-responsive"
-        @click="activeMenuResponsive = !activeMenuResponsive">
-        <span class="btn-responsive-line line--1"/>
-        <span class="btn-responsive-line line--2"/>
-        <span class="btn-responsive-line line--3"/>
-      </button>
-
-      <slot name="title">
-      </slot>
-    </div>
-
-    <div
-      :class="{'activeMenuResponsive' : activeMenuResponsive}"
-      class="vs-con-items">
-      <slot></slot>
-    </div>
-  </header>
+<template>
+	<div
+		v-if="open"
+		class="vs-navbar-content"
+		:style="{
+			['--vs-color']: color ? getColor(color) : ''
+		}"
+		:class="[
+			{
+				fixed: fixed,
+				shadow: shadow,
+				hidden: hidden,
+				shadowActive: shadowActive,
+				textWhite: textWhite,
+				paddingScroll: paddingScroll,
+				paddingScrollActive: paddingScrollActive,
+				vsNavbarSquare: square
+			},
+			// colors
+			{ [`vs-component--primary`]: !!primary },
+			{ [`vs-component--danger`]: !!danger },
+			{ [`vs-component--warn`]: !!warn },
+			{ [`vs-component--success`]: !!success },
+			{ [`vs-component--dark`]: !!dark },
+			{ [`vs-component--is-color`]: !!isColor }
+		]"
+		ref="navbarContent"
+	>
+		<div class="vs-navbar">
+			<div
+				v-if="leftCollapsed ? !collapsedForced : true"
+				class="vs-navbar__left"
+				ref="left"
+			>
+				<slot name="left" />
+			</div>
+			<div
+				v-if="centerCollapsed ? !collapsedForced : true"
+				class="vs-navbar__center"
+				ref="center"
+			>
+				<slot />
+			</div>
+			<div
+				v-if="rightCollapsed ? !collapsedForced : true"
+				class="vs-navbar__right"
+				ref="right"
+			>
+				<slot name="right" />
+			</div>
+		</div>
+		<div
+			:class="['vs-navbar__line', { notTransition: lineNotTransition }]"
+			:style="{
+				left: `${leftLine}px`,
+				width: `${widthLine}px`
+			}"
+		></div>
+	</div>
 </template>
 
-<script>
-import _color from '../../utils/color'
+<script lang="ts">
+import { nextTick, onMounted, ref, watch } from "vue";
+import _color from "../../utils/color";
+import vsComponent from "../vsComponent";
 export default {
-  name:'VsNavbar',
+	name: "VsNavbar",
+	extends: vsComponent,
+	props: {
+		fixed: { default: false, type: Boolean },
+		open: { default: true, type: Boolean },
+		shadow: { default: false, type: Boolean },
+		shadowScroll: { default: false, type: Boolean },
+		hideScroll: { default: false, type: Boolean },
+		textWhite: { default: false, type: Boolean },
+		square: { default: false, type: Boolean },
+		paddingScroll: { default: false, type: Boolean },
+		notLine: { default: false, type: Boolean },
+		leftCollapsed: { default: false, type: Boolean },
+		centerCollapsed: { default: false, type: Boolean },
+		rightCollapsed: { default: false, type: Boolean },
+		targetScroll: { type: String, default: null }
+	},
+	provide() {
+		return {
 
-  props:{
-    value:{},
-    type:{
-      default: null,
-      type: String
-    },
-    collapse:{
-      default:false,
-      type: Boolean
-    },
-    color:{
-      type:String,
-      default:'transparent',
-    },
-    activeTextColor: {
-      type:String,
-      default:'primary',
-    },
-    textColor: {
-      type:String,
-      default:'rgb(40,40,40)',
-    }
-  },
+			setLeftLine: this.setLeftLine,
+			setWidthLine: this.setWidthLine,
+			setModel: this.setModel
+		}
+	},
+	setup(props, context) {
+		let leftLine = ref(0);
+		let widthLine = ref(0);
+		let scrollTop = ref(0);
+		let collapsedWidth = ref(0);
+		let hidden = ref(false);
+		let shadowActive = ref(false);
+		let paddingScrollActive = ref(false);
+		let lineNotTransition = ref(false);
+		let collapsedForced = ref(false);
 
-  data:() => ({
-    activeMenuResponsive: false
-  }),
+		let navbarContent = ref<HTMLDivElement>();
+		let left = ref<HTMLDivElement>();
+		let right = ref<HTMLDivElement>();
+		let center = ref<HTMLDivElement>();
 
-  computed:{
-    styleNavbar () {
-      if(_color.isColor(this.color)) {
-        return {
-          background: `rgb(${_color.changeColor(this.color)})`
-        }
-      }
-      return {
-        background: _color.getColor(this.color)
-      }
-    }
-  },
-  methods: {
-    changeIndex (index) {
-      this.$emit('input', index)
-    }
-  }
-}
+		const setModel = function(id: string) {
+			context.emit("update:value", id);
+		};
+
+		watch(
+			[props.hideScroll, props.paddingScroll, props.shadowScroll],
+			() => {
+				handleScroll();
+			}
+		);
+
+		const setLeftLine = function(left: any, transition: boolean = true) {
+			if (!transition) {
+				lineNotTransition.value = true;
+			} else {
+				lineNotTransition.value = false;
+			}
+			nextTick(() => {
+				leftLine.value = left;
+			});
+		};
+
+		const setWidthLine = function(width: any) {
+			nextTick(() => {
+				widthLine.value = width;
+			});
+		};
+
+		const scroll = function(evt: any) {
+			const scrollTopTemp = props.targetScroll
+				? document.querySelector(props.targetScroll)?.scrollTop
+				: window.pageYOffset;
+			if (props.hideScroll) {
+				if (
+					Math.sign((scrollTopTemp as number) - scrollTop.value) === 1
+				) {
+					hidden.value = true;
+				} else {
+					hidden.value = false;
+				}
+			}
+
+			if (props.shadowScroll) {
+				if ((scrollTopTemp as number) > 0) {
+					shadowActive.value = true;
+				} else {
+					shadowActive.value = false;
+				}
+			}
+
+			if (props.paddingScroll) {
+				if ((scrollTopTemp as number) > 0) {
+					paddingScrollActive.value = true;
+				} else {
+					paddingScrollActive.value = false;
+				}
+			}
+			scrollTop.value = scrollTopTemp as number;
+		};
+
+		const handleScroll = function() {
+			if (props.hideScroll || props.shadowScroll || props.paddingScroll) {
+				if (props.targetScroll) {
+					const scrollElement = document.querySelector(
+						props.targetScroll
+					);
+					scrollElement?.addEventListener("scroll", scroll);
+				} else {
+					window.addEventListener("scroll", scroll);
+				}
+			}
+		};
+
+		const handleResize = function() {
+			const active: HTMLElement = navbarContent.value?.querySelector(
+				".vs-navbar__item.active"
+			) as HTMLElement;
+			if (active) {
+				setLeftLine(active.offsetLeft, false);
+			} else {
+				widthLine.value = 0;
+			}
+			const navbar: any = navbarContent.value;
+
+			if (
+				props.leftCollapsed ||
+				props.centerCollapsed ||
+				props.rightCollapsed
+			) {
+				if (navbar.offsetWidth < collapsedWidth.value) {
+					collapsedForced.value = true;
+				}
+			}
+
+			if (collapsedForced) {
+				context.emit("collapsed", true);
+			} else {
+				context.emit("collapsed", false);
+			}
+
+			if (navbar.offsetWidth < collapsedWidth.value) {
+				context.emit("collapsed", true);
+			} else {
+				context.emit("collapsed", false);
+				collapsedForced.value = false;
+			}
+		};
+
+		onMounted(() => {
+			setTimeout(() => {
+				const leftEl: any = left.value;
+				const centerEl: any = center.value;
+				const rightEl: any = right.value;
+				collapsedWidth.value =
+					leftEl.offsetWidth +
+					centerEl.offsetWidth +
+					rightEl.offsetWidth +
+					150;
+				const navbar: any = navbarContent.value;
+				if (navbar.offsetWidth < collapsedWidth.value) {
+					collapsedForced.value = true;
+					context.emit("collapsed", true);
+					widthLine.value = 0;
+					handleResize();
+				}
+			}, 150);
+
+			handleScroll();
+			window.addEventListener("resize", handleResize);
+		});
+
+		return {
+			leftLine,
+			widthLine,
+			scrollTop,
+			collapsedWidth,
+			hidden,
+			shadowActive,
+			paddingScrollActive,
+			lineNotTransition,
+			collapsedForced,
+			setModel,
+			setLeftLine,
+			setWidthLine,
+			navbarContent,
+			left,
+			right,
+			center
+
+		};
+	}
+};
 </script>
+<style lang="scss">
+@import "../../style/sass/_mixins";
+
+.vs-navbar-content {
+
+	--vs-color: var(--vs-background);
+	width: 100%;
+	position: absolute;
+	z-index: 9000;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	border-radius: 0px 0px 15px 15px;
+	background: -getColor("color");
+	transition: all 0.25s ease;
+	color: -getColor("text");
+
+	&.paddingScroll:not(.paddingScrollActive) {
+		padding-top: 20px;
+		padding-bottom: 20px;
+
+		.vs-navbar__group__items {
+			margin-bottom: -30px;
+		}
+	}
+
+	&.vsNavbarSquare {
+		border-radius: 0px;
+	}
+
+	&.textWhite {
+		color: #fff;
+
+		.vs-navbar__line {
+			background: #fff;
+		}
+
+		.vs-navbar__item {
+			&:before {
+				background: #fff;
+			}
+		}
+	}
+
+	&.fixed {
+		position: fixed !important;
+	}
+
+	&.shadow,
+	&.shadowActive {
+		box-shadow: 0px 5px 25px 0px rgba(0, 0, 0, -var("shadow-opacity"));
+	}
+
+	&.hidden {
+		transform: translate(0, -100%);
+	}
+}
+
+.vs-navbar {
+	width: 100%;
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0px 15px;
+	box-sizing: border-box;
+	min-height: 44px;
+
+	&__left {
+		display: inline-flex;
+		align-items: center;
+		justify-content: flex-start;
+		padding: 5px;
+		img {
+			width: 100px;
+		}
+	}
+
+	&__right {
+		display: inline-flex;
+		align-items: center;
+		justify-content: flex-end;
+	}
+
+	&__center {
+		display: inline-flex;
+		align-items: center;
+		justify-content: flex-start;
+	}
+
+	&__line {
+		position: absolute;
+		left: 0px;
+		bottom: 0px;
+		width: 100px;
+		background: -getColor("text");
+		height: 3px;
+		transition: all 0.25s ease;
+
+		&.notTransition {
+			transition: none !important;
+		}
+	}
+}
+</style>

@@ -9,6 +9,7 @@ import  RootApp from "./App.vue"
 import { createApp } from '@vue/runtime-dom'
 
 import "material-design-icons/iconfont/material-icons.css"
+import "@fortawesome/fontawesome-free/css/all.min.css"
 
 const install = function(Vue : App, options : any = {}) {
   // set default options
@@ -69,7 +70,7 @@ export { default as vsBreadcrumb } from './components/vsBreadcrumb'
 export { default as vsDivider } from './components/vsDivider'
 export { default as vsSpacer } from './components/vsSpacer'
 export { default as vsIcon } from './components/vsIcon'
-export { default as vsNavbar } from './components/vsNavbar'
+export { vsNavbar,vsNavbarGroup, vsNavbarItem } from './components/vsNavbar'
 export { vsSidebar, vsSidebarGroup, vsSidebarItem } from './components/vsSideBar'
 export { vsDropDown, vsDropDownItem } from './components/vsDropDown'
 export { default as vsTable } from './components/vsTable'
