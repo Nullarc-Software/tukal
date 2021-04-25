@@ -202,6 +202,7 @@ export default defineComponent({
 		left: auto;
 		right: 0px;
 		transform: translate(110%);
+		border-radius: 30px 0px 0px 30px;
 
 		&.open {
 			transform: translate(0);
