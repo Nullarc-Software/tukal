@@ -1,43 +1,36 @@
 <template lang="html">
   <div
     :style="{
-      'align-items':vsAlign,
-      'justify-content':vsJustify,
-      'display':vsType,
-      'overflow': vsType === 'block' ? 'hidden' : null,
-      'width':vsW*100/12+'%'}"
+        justifyContent: justify,
+        alignItems: align,
+        flexDirection: direction
+      }"
     class="vs-row">
     <slot/>
   </div>
 </template>
 
-<script>
-  export default {
-    name: 'VsRow',
-    props: {
-      vsType: {
-        default: 'flex',
-        type: String,
-      },
-      vsW: {
-        type: [Number, String],
-        default: 12,
-      },
-      vsJustify: {
-        type: String,
-        default: null,
-      },
-      vsAlign: {
-        type: String,
-        default: null,
-      },
-    }
-  }
+<script lang="ts">
+import { defineComponent } from "vue"
+
+export default defineComponent({
+	name: "VsRow",
+	props: {
+		w: { type: Number, default: 12 },
+		justify: { type: String, default: "flex-start" },
+		align: { type: String, default: "flex-start" },
+		direction: { type: String, default: "row" }
+	}
+});
 </script>
 
-<style lang="css">
-  .vs-row {
-    clear: both;
-    flex-flow: wrap;
-  }
+<style lang="scss">
+.vs-row {
+	width: 100%;
+	position: relative;
+	display: flex;
+	align-items: flex-start;
+	justify-content: flex-start;
+	flex-wrap: wrap;
+}
 </style>

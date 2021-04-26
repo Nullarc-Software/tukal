@@ -245,7 +245,7 @@
 					<template #title>
 						<h3>Pot with a plant</h3>
 					</template>
-					<template #img>
+					<template #content>
 						<img
 							src="https://th.bing.com/th/id/R00b6dcd72e6c6c971f848b5710a22b14?rik=GUdyoJYQFeNOvw&riu=http%3a%2f%2fbluefaqs.com%2fwp-content%2fuploads%2f2010%2f06%2fRandom-Images-Thumb.jpg&ehk=gjZ1zvnepp3KjV7sLM91JMR92J6tw3FWxn23GyDBcVI%3d&risl=&pid=ImgRaw"
 							alt=""
@@ -678,6 +678,37 @@
 					Nodejs
 				</vs-option>
 			</vs-select>
+			<vs-select
+				dropdown
+				placeholder="Dropdown"
+				v-model:value="selectValue"
+				style="margin: 10px"
+			>
+				<template #icon>
+					<vs-icon>home</vs-icon>
+				</template>
+				<vs-option label="Test" value="1">
+					Test
+				</vs-option>
+				<vs-option label="Test1" value="2">
+					Test1
+				</vs-option>
+				<vs-option label="Javascript" value="3">
+					Javascript <vs-icon>home</vs-icon>
+				</vs-option>
+				<vs-option disabled label="Sass" value="4">
+					Sass
+				</vs-option>
+				<vs-option label="Typescript" value="5">
+					Typescript
+				</vs-option>
+				<vs-option label="Webpack" value="6">
+					Webpack
+				</vs-option>
+				<vs-option label="Nodejs" value="7">
+					Nodejs
+				</vs-option>
+			</vs-select>
 			<vs-select label="Group" placeholder="Group" v-model="value1">
 				<vs-option-group>
 					<template v-slot:title>
@@ -860,7 +891,7 @@
 			<h4>Navbar:</h4>
 			<hr />
 			<vs-navbar
-				
+				left-aligned
 				fixed
 				:open="openNav"
 				v-model:value="navValue"
@@ -897,10 +928,7 @@
             <vs-navbar-item :active="navValue == 'Medium'" id="Medium">
               Medium
             </vs-navbar-item>
-				<template #right>
-					<vs-button success>Login</vs-button>
-					<vs-button danger>Get Started</vs-button>
-				</template>
+				
 			</vs-navbar>
 			<vs-button @click="openNav = !openNav"> Toggle Navbar </vs-button>
 		</div>

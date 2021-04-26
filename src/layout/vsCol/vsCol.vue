@@ -1,231 +1,83 @@
 <template lang="html">
   <div
-    :class="[
-      'vs-xs-'+vsXs,
-      'vs-sm-'+vsSm,
-      'vs-lg-'+vsLg,
-    ]"
+    class="vs-col"
 
     :style="{
-      'order':vsOrder,
-      'justify-content':vsJustify,
-      'display':vsType,
-      'align-items':vsAlign,
-      'margin-left':vsOffset*100/12+'%',
-      'width':vsW*100/12+'%'}"
-    class="vs-col">
+			order: order,
+			display: type,
+			justifyContent: justify
+		}"
+    :class="[
+        `vs-col--w-${w}`,
+        `vs-col--offset-${offset}`,
+        `vs-col--lg-${lg}`,
+        `vs-col--sm-${sm}`,
+        `vs-col--xs-${xs}`,
+      ]">
     <slot/>
   </div>
 </template>
 
-<script>
-  export default {
-    name: 'VsCol',
-    props: {
-      vsW: {
-        type: [Number, String],
-        default: 12,
-      },
-      vsXs: {
-        type: [Number, String],
-        default: ''
-      },
-      vsSm: {
-        type: [Number, String],
-        default: ''
-      },
-      vsLg: {
-        type: [Number, String],
-        default: ''
-      },
-      vsOffset: {
-        type: [Number, String],
-        default: 0
-      },
-      vsType: {
-        type: String,
-        default: null,
-      },
-      vsJustify: {
-        type: String,
-        default: null,
-      },
-      vsAlign: {
-        type: String,
-        default: null,
-      },
-      vsOrder: {
-        default: null,
-        type: [String, Number]
+<script lang="ts">
+import { defineComponent } from "vue"
+
+export default defineComponent({
+	name: "VsCol",
+	props: {
+		w: { type: [String, Number], default: "12" },
+		offset: { type: [String, Number], default: "0" },
+		order: { type: [String, Number], default: "0" },
+		lg: { type: [String, Number], default: "0" },
+		sm: { type: [String, Number], default: "0" },
+		xs: { type: [String, Number], default: "0" },
+		type: { type: String, default: "block" },
+		justify: { type: String, default: "flex-start" }
+	}
+});
+</script>
+
+<style lang="scss">
+
+$sizes: (1: 8.33%, 2: 16.66%, 3: 25%, 4: 33.33%, 5: 41.66%, 6: 50%, 7: 58.33%, 8: 66.66%, 9: 75%, 10: 83.33%, 11: 91.66%, 12: 100%);
+
+
+.vs-col {
+  width: 100%;
+  position: relative;
+
+  @each $num, $size in $sizes {
+    &--w-#{$num} {
+      width: $size;
+    }
+  }
+
+  @each $num, $size in $sizes {
+    &--offset-#{$num} {
+      margin-left: $size;
+    }
+  }
+
+  // responsive
+  @each $num, $size in $sizes {
+    &--lg-#{$num} {
+      width: $size;
+    }
+  }
+
+  @media (max-width: 900px) {
+    @each $num, $size in $sizes {
+      &--sm-#{$num} {
+        width: $size;
       }
     }
   }
-</script>
 
-<style lang="css">
-  .vs-col {
-    float: left;
-  }
-
-  .vs-lg-12 {
-    width: 100% !important;
-  }
-
-  .vs-lg-11 {
-    width: 91.66666666666667% !important;
-  }
-
-  .vs-lg-10 {
-    width: 83.33333333333333% !important;
-  }
-
-  .vs-lg-9 {
-    width: 75% !important;
-  }
-
-  .vs-lg-8 {
-    width: 66.66666666666667% !important;
-  }
-
-  .vs-lg-7 {
-    width: 58.33333333333333% !important;
-  }
-
-  .vs-lg-6 {
-    width: 50% !important;
-  }
-
-  .vs-lg-5 {
-    width: 41.66666666666667% !important;
-  }
-
-  .vs-lg-4 {
-    width: 33.33333333333333% !important;
-  }
-
-  .vs-lg-3 {
-    width: 25% !important;
-  }
-
-  .vs-lg-2 {
-    width: 16.66666666666667% !important;
-  }
-
-  .vs-lg-1 {
-    width: 8.333333333333333% !important;
-  }
-
-  .vs-lg-0 {
-    display: none !important;
-  }
-
-  @media only screen and (max-width: 900px) {
-    .vs-sm-12 {
-      width: 100% !important;
-    }
-
-    .vs-sm-11 {
-      width: 91.66666666666667% !important;
-    }
-
-    .vs-sm-10 {
-      width: 83.33333333333333% !important;
-    }
-
-    .vs-sm-9 {
-      width: 75% !important;
-    }
-
-    .vs-sm-8 {
-      width: 66.66666666666667% !important;
-    }
-
-    .vs-sm-7 {
-      width: 58.33333333333333% !important;
-    }
-
-    .vs-sm-6 {
-      width: 50% !important;
-    }
-
-    .vs-sm-5 {
-      width: 41.66666666666667% !important;
-    }
-
-    .vs-sm-4 {
-      width: 33.33333333333333% !important;
-    }
-
-    .vs-sm-3 {
-      width: 25% !important;
-    }
-
-    .vs-sm-2 {
-      width: 16.66666666666667% !important;
-    }
-
-    .vs-sm-1 {
-      width: 8.333333333333333% !important;
-    }
-
-    .vs-sm-0 {
-      display: none !important;
+  @media (max-width: 600px) {
+    @each $num, $size in $sizes {
+      &--xs-#{$num} {
+        width: $size;
+      }
     }
   }
-
-  @media only screen and (max-width: 600px) {
-    .vs-xs-12 {
-      width: 100% !important;
-    }
-
-    .vs-xs-11 {
-      width: 91.66666666666667% !important;
-    }
-
-    .vs-xs-10 {
-      width: 83.33333333333333% !important;
-    }
-
-    .vs-xs-9 {
-      width: 75% !important;
-    }
-
-    .vs-xs-8 {
-      width: 66.66666666666667% !important;
-    }
-
-    .vs-xs-7 {
-      width: 58.33333333333333% !important;
-    }
-
-    .vs-xs-6 {
-      width: 50% !important;
-    }
-
-    .vs-xs-5 {
-      width: 41.66666666666667% !important;
-    }
-
-    .vs-xs-4 {
-      width: 33.33333333333333% !important;
-    }
-
-    .vs-xs-3 {
-      width: 25% !important;
-    }
-
-    .vs-xs-2 {
-      width: 16.66666666666667% !important;
-    }
-
-    .vs-xs-1 {
-      width: 8.333333333333333% !important;
-    }
-
-    .vs-xs-0 {
-      display: none !important;
-    }
-  }
-
-
+}
 </style>

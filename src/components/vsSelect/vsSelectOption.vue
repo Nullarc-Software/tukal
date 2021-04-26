@@ -62,6 +62,7 @@ export default defineComponent({
 		let multiple = inject<Ref<Boolean>>("isMultiple");
 		let targetSelect = inject<Ref<Boolean>>("targetSelect");
 		let targetClose = inject<Ref<Boolean>>("targetClose");
+		let dropdown = inject<Ref<Boolean>>("dropdown");
 
 		let callSetHover = inject<Function>("callSetHover");
 		let addUid = inject<Function>("addUid");
@@ -107,8 +108,9 @@ export default defineComponent({
 		const listeners = computed(() => {
 			return {
 				click: () => {
-					//console.log(this.value);					
-					onClickOption?.call(null, props.value, props.label);					
+					//console.log(this.value);		
+					if(!dropdown?.value)			
+						onClickOption?.call(null, props.value, props.label);					
 				},
 				blur: () => {
 					if (
@@ -138,7 +140,8 @@ export default defineComponent({
 			hiddenOption,
 			activeOption,
 			listeners,
-			uid			
+			uid,
+			dropdown			
 		};
 	}
 });

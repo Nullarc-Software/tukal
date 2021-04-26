@@ -14,7 +14,8 @@
 			{ [`vs-component--danger`]: !!danger },
 			{ [`vs-component--warn`]: !!warn },
 			{ [`vs-component--success`]: !!success },
-			{ [`vs-component--dark`]: !!dark }
+			{ [`vs-component--dark`]: !!dark },
+			{ [`vs-component--dropdown`]: !!dropdown }
 		]"
 	>
 		<div
@@ -61,11 +62,11 @@
 				v-if="!multiple && !labelPlaceholder"
 				ref="placeholder"
 				:for="uid"
-				class="vs-select__label"
+				class="vs-select__label vs-select__placeholder"
 				:class="{ 'vs-select__label--hidden': isValue || textFilter }"
 			>
-				{{ placeholder }}
-			
+				{{ placeholder }}				
+				<slot name="icon" />
 			</label>
 			<button
 				v-if="multiple"
@@ -213,6 +214,7 @@ export default defineComponent({
 	props: {
 		value: {},
 		multiple: { type: Boolean, default: false },
+		dropdown: { type: Boolean, default: false },
 		filter: { type: Boolean, default: false },
 		placeholder: { type: String, default: "" },
 		labelPlaceholder: { type: String, default: "" },
@@ -225,6 +227,8 @@ export default defineComponent({
 	},
 	provide() {
 		return {
+
+			dropdown: computed(() => this.dropdown),
 			textFilter: computed(() => this.textFilter),
 			uids: computed(() => this.uids),
 			hoverOption: computed(() => this.hoverOption),
@@ -1156,7 +1160,7 @@ export default defineComponent({
 			font-size: 0.75rem;
 			margin-top: 0px !important;
 		}
-	}
+	}	
 
 	&__loading {
 		position: absolute;
@@ -1253,6 +1257,11 @@ export default defineComponent({
 			}
 		}
 	}
+}
+
+.vs-select-content:not(.vs-select--dropdown) .vs-select .vs-select__placeholder{
+	opacity: 1;
+	margin-left: 10px;
 }
 
 </style>

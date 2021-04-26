@@ -27,7 +27,7 @@
             type="checkbox"
             v-bind="$attrs"
             :checked="isChecked"
-            v-on="inpListeners"
+            v-on="inputListener"
             :class="['vs-switch__input']"
         />
         <div class="vs-switch__circle">
@@ -48,9 +48,11 @@
 <script lang="ts">
 import { computed, defineComponent } from "vue";
 import _color from "../../utils/color";
+import vsComponent from "../vsComponent";
 export default defineComponent({
     name: "VsSwitch",
     inheritAttrs: false,
+	extends: vsComponent,
     props: {
         value: { default: "" },
         val: { default: "" },
