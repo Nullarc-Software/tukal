@@ -1,7 +1,7 @@
 <template>
 	<button
 		class="vs-navbar__item"
-		:class="{ active: active }"
+		:class="{ active: active || internalActive }"
 		v-on="listeners"
 		ref="item"
 	>
@@ -16,10 +16,11 @@ import {
 	inject,
 	nextTick,
 	onMounted,
-	ref
+	ref,
+	watch
 } from "vue";
 import { useRouter } from "vue-router";
-import vsComponent from "../vsList";
+import vsComponent, { ComponentConstants } from "../vsComponent";
 
 export default defineComponent({
 	name: "VsNavbarItem",
@@ -31,19 +32,20 @@ export default defineComponent({
 		href: {},
 		target: { default: "_blank" }
 	},
+	emits: ["click"],
 	setup(props, context) {
 		let setLeftLine = inject<Function>("setLeftLine");
 		let setWidthLine = inject<Function>("setWidthLine");
 		let setModel = inject<Function>("setModel");
 		let item = ref<HTMLButtonElement>();
 		let instance = getCurrentInstance();
-
+		let internalActive = ref(false);
+		let router = ComponentConstants.router;		
 		let parentName = instance?.parent?.type.name;
-		console.log(instance);
 
 		const handleLine = function() {
 			nextTick(() => {
-				if (props.active) {
+				if (props.active || internalActive) {
 					
 					if(parentName == "VsNavbarGroup"){						
 						const left = instance?.parent?.vnode.el?.offsetLeft;
@@ -61,9 +63,16 @@ export default defineComponent({
 			});
 		};
 
+		watch(() => props.active, (val: boolean) => {
+
+			if(!val)
+				internalActive.value = false;
+
+		});
+
 		const handleClick = function() {
 			if (props.to) {
-				useRouter().push(props.to as any);
+				router.push(props.to as any);
 			} else if (props.href) {
 				window.open(props.href as string, props.target);
 			}
@@ -78,6 +87,7 @@ export default defineComponent({
 			return {
 				click: function(event) {
 					context.emit("click", event);
+					internalActive.value = true;
 					handleLine();
 					handleClick();
 					handleActive();
@@ -85,20 +95,39 @@ export default defineComponent({
 			};
 		});
 
+		const handleRouteChange = function(){
+			if(router.currentRoute.value.path === props.to){
+				internalActive.value = true;
+				handleLine();
+			}
+			else
+				internalActive.value = false;
+
+			
+		}
+
 		onMounted(() => {
-			setTimeout(() => {
-				if (props.active) {
+			setTimeout(() => {				
+
+				if (props.active || internalActive.value) {
 					handleLine();
 				}
 			}, 150);
 		});
+
+		if(router)
+		watch(router.currentRoute, () => {
+			handleRouteChange();
+		})
 
 		return {
 			handleLine,
 			handleClick,
 			handleActive,
 			item,
-			listeners
+			listeners,
+			handleRouteChange,
+			internalActive
 		};
 	}
 });

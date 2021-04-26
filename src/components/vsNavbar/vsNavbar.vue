@@ -3,18 +3,21 @@
 		v-if="open"
 		class="vs-navbar-content"
 		:style="{
-			['--vs-color']: color ? getColor(color) : ''
+			['--vs-color']: color ? getColor(color) : '',
+			'z-index': zIndex
 		}"
 		:class="[
 			{
 				fixed: fixed,
+				sticky: sticky,
 				shadow: shadow,
 				hidden: hidden,
 				shadowActive: shadowActive,
 				textWhite: textWhite,
 				paddingScroll: paddingScroll,
 				paddingScrollActive: paddingScrollActive,
-				vsNavbarSquare: square
+				vsNavbarSquare: square,
+				leftAligned: leftAligned
 			},
 			// colors
 			{ [`vs-component--primary`]: !!primary },
@@ -60,14 +63,22 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, nextTick, onMounted, ref, watch } from "vue";
+import { defineComponent, getCurrentInstance, nextTick, onMounted, ref, watch } from "vue";
 import _color from "../../utils/color";
 import vsComponent from "../vsComponent";
+
+class NavbarConstants{
+	public static zIndex = 9000;
+}
+
+
 export default defineComponent({
 	name: "VsNavbar",
 	extends: vsComponent,
 	props: {
 		fixed: { default: false, type: Boolean },
+		sticky: { default: false, type: Boolean },
+		leftAligned: { default: false, type: Boolean },
 		open: { default: true, type: Boolean },
 		shadow: { default: false, type: Boolean },
 		shadowScroll: { default: false, type: Boolean },
@@ -89,6 +100,7 @@ export default defineComponent({
 			setModel: this.setModel
 		}
 	},
+	emits: [ "collapsed", "update:value" ],
 	setup(props, context) {
 		let leftLine = ref(0);
 		let widthLine = ref(0);
@@ -104,13 +116,16 @@ export default defineComponent({
 		let left = ref<HTMLDivElement>();
 		let right = ref<HTMLDivElement>();
 		let center = ref<HTMLDivElement>();
+		let instance = getCurrentInstance();
+
+		let zIndex = NavbarConstants.zIndex--;
 
 		const setModel = function(id: string) {
-			context.emit("update:value", id);
+			context.emit("update:value", id);		
 		};
 
 		watch(
-			[props.hideScroll, props.paddingScroll, props.shadowScroll],
+			[ () => props.hideScroll, () => props.paddingScroll, () => props.shadowScroll],
 			() => {
 				handleScroll();
 			}
@@ -233,6 +248,7 @@ export default defineComponent({
 			}, 150);
 
 			handleScroll();
+			
 			window.addEventListener("resize", handleResize);
 		});
 
@@ -252,7 +268,8 @@ export default defineComponent({
 			navbarContent,
 			left,
 			right,
-			center
+			center,
+			zIndex
 
 		};
 	}
@@ -265,8 +282,7 @@ export default defineComponent({
 
 	--vs-color: var(--vs-background);
 	width: 100%;
-	position: absolute;
-	z-index: 9000;
+	position: relative;	
 	top: 0px;
 	left: 0px;
 	width: 100%;
@@ -302,8 +318,29 @@ export default defineComponent({
 		}
 	}
 
+	&.leftAligned {
+
+		.vs-navbar {
+			justify-content: left !important;
+
+			&__right{
+				margin-left: auto ;
+			}
+
+			&__center {
+				margin-left: 2%;
+			}
+
+		}
+		
+	}
+
 	&.fixed {
 		position: fixed !important;
+	}
+
+	&.sticky {
+		position: sticky !important;
 	}
 
 	&.shadow,
@@ -337,12 +374,14 @@ export default defineComponent({
 	}
 
 	&__right {
+		
 		display: inline-flex;
 		align-items: center;
 		justify-content: flex-end;
 	}
 
 	&__center {
+
 		display: inline-flex;
 		align-items: center;
 		justify-content: flex-start;

@@ -5,8 +5,6 @@ import vsTheme from './utils/theme'
 import DefineVuesaxMixin from './defineGlobalMixin'
 import vuesaxOptions from './utils/options'
 import { App } from '@vue/runtime-core'
-import  RootApp from "./App.vue"
-import { createApp } from '@vue/runtime-dom'
 
 import "material-design-icons/iconfont/material-icons.css"
 import "@fortawesome/fontawesome-free/css/all.min.css"
@@ -37,17 +35,9 @@ const install = function(Vue : App, options : any = {}) {
   DefineVuesaxMixin(Vue, options);
 }
 
-const appVm = createApp(RootApp);
-(<any>window).Vue = appVm
-if (typeof window !== 'undefined' && (<any>window).Vue) {
-  install((<any>window).Vue)
-}
+export default install;
 
-appVm.mount("#app");
-
-export default install
-
-/* export { vsButton, vsButtonGroup } from './components/vsButton'
+export { vsButton, vsButtonGroup } from './components/vsButton'
 export { vsSelect, vsSelectOption, vsSelectOptionGroup  } from './components/vsSelect'
 export { default as vsSwitch } from './components/vsSwitch'
 export { default as vsCheckbox } from './components/vsCheckBox'
@@ -78,12 +68,12 @@ export { default as vsDialog } from './components/vsDialog'
 export { default as vsTextarea } from './components/vsTextarea'
 export { vsCollapse, vsCollapseItem } from './components/vsCollapse'
 export { default as vsImages } from './components/vsImages'
-export { default as vsNotification } from './components/vsNotifications'
+export { default as notification } from './components/vsNotifications'
 //New Component import
 
 //layout
 export { default as vsRow } from './layout/vsRow'
-export { default as vsCol } from './layout/vsCol' */
+export { default as vsCol } from './layout/vsCol'
 
 
 

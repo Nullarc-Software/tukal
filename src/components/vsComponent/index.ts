@@ -1,6 +1,11 @@
 import functionWrapper from "@/functions";
-import { defineComponent, ref } from "vue";
+import { defineComponent, inject, ref } from "vue";
+import { Router } from "vue-router";
 import {getColor} from "../../utils"
+
+class ComponentConstants {
+	public static router : Router;
+}
 
 export default defineComponent({
 
@@ -12,10 +17,16 @@ export default defineComponent({
 			return getColor(color);
 		}
 		
+		let approuter = inject<Router>("appRouter");
+
+		if(approuter)
+			ComponentConstants.router = approuter;
+			
 		return {
 			componentColor,
 			getColor: funcWrapper,
-			getColorSecondary: Function
+			getColorSecondary: Function,	
+			approuter	
 		}
 	},
 	props: {
@@ -31,7 +42,7 @@ export default defineComponent({
 			default: 'rgb(130, 207, 23)'
 		},
 		textColor: { type: String, default: null}
-	},
+	},	
 	methods: {
 		isColorDark() {
 
@@ -48,3 +59,5 @@ export default defineComponent({
 		this.getColorSecondary = getColor(this.colorSecondary);
 	}
 });
+
+export {ComponentConstants}

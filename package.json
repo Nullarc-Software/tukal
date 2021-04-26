@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
+    "serve": "vue-cli-service serve src/main.ts",
     "inspect": "vue-cli-service inspect",
-    "build": "vue-cli-service build --target lib --name vuesax3 src/main.ts",
+    "build": "vue-cli-service build --mode development --target lib --name vuesax3 src/main.lib.ts",
     "lint": "vue-cli-service lint"
   },
   "main": "dist/vuesax3.common.js",
