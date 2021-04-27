@@ -12,9 +12,6 @@
   "unpkg": "dist/vuesax3.umd.min.js",
   "jsdelivr": "dist/vuesax3.umd.min.js",
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^5.15.3",
-    "@fortawesome/free-brands-svg-icons": "^5.15.3",
-    "@fortawesome/free-solid-svg-icons": "^5.15.3",
     "babel-loader": "^8.2.2",
     "copy-webpack-plugin": "^8.1.1",
     "core-js": "^3.6.5",

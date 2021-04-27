@@ -364,7 +364,7 @@ export default defineComponent({
 			if (Array.isArray(props.value))			
 				return props.value.length !== 0;	
 			else 
-				return !(_.isNull(props.value) && _.isUndefined(props.value));
+				return !(_.isNull(props.value) && !_.isUndefined(props.value));
 
 		});
 		//computeds
@@ -754,8 +754,10 @@ export default defineComponent({
 
 .vs-select-content {
 	width: 100%;
-	max-width: 200px;
+	max-width: 210px;
 	display: inline-flex;
+	margin:5px;
+	padding: 5px;
 	&.block {
 		&.block {
 			max-width: 100%;
