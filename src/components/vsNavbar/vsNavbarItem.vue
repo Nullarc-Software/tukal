@@ -79,7 +79,7 @@ export default defineComponent({
 		};
 
 		const handleActive = function() {			
-			setModel?.call(null, props.id);
+			setModel?.call(null, props.id, handleLine);
 			handleLine();
 		};
 
@@ -106,6 +106,11 @@ export default defineComponent({
 			
 		}
 
+		const handleResize = function(){
+			if(internalActive.value)
+				handleLine();
+		}
+
 		onMounted(() => {
 			setTimeout(() => {				
 
@@ -113,6 +118,8 @@ export default defineComponent({
 					handleLine();
 				}
 			}, 150);
+
+			
 		});
 
 		if(router)

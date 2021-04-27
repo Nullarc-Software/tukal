@@ -7,7 +7,6 @@ import vuesaxOptions from './utils/options'
 import { App } from '@vue/runtime-core'
 
 import "material-design-icons/iconfont/material-icons.css"
-import "@fortawesome/fontawesome-free/css/all.min.css"
 
 const install = function(Vue : App, options : any = {}) {
   // set default options

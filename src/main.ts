@@ -9,7 +9,6 @@ import  RootApp from "./App.vue"
 import { createApp } from '@vue/runtime-dom'
 
 import "material-design-icons/iconfont/material-icons.css"
-import "@fortawesome/fontawesome-free/css/all.min.css"
 
 const install = function(Vue : App, options : any = {}) {
   // set default options

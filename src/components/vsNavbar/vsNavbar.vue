@@ -116,12 +116,16 @@ export default defineComponent({
 		let left = ref<HTMLDivElement>();
 		let right = ref<HTMLDivElement>();
 		let center = ref<HTMLDivElement>();
-		let instance = getCurrentInstance();
-
+		let instance = getCurrentInstance();		
 		let zIndex = NavbarConstants.zIndex--;
 
-		const setModel = function(id: string) {
-			context.emit("update:value", id);		
+		let idToLineHandler: any = {};
+		let activeId = ""
+
+		const setModel = function(id: string, handleFunc: Function) {
+			context.emit("update:value", id);	
+			idToLineHandler[id]= handleFunc;
+			activeId = id;	
 		};
 
 		watch(
@@ -194,11 +198,13 @@ export default defineComponent({
 		};
 
 		const handleResize = function() {
+
 			const active: HTMLElement = navbarContent.value?.querySelector(
 				".vs-navbar__item.active"
 			) as HTMLElement;
-			if (active) {
-				setLeftLine(active.offsetLeft, false);
+
+			if (active) {				
+				idToLineHandler[activeId].call(null, null);
 			} else {
 				widthLine.value = 0;
 			}
@@ -248,8 +254,7 @@ export default defineComponent({
 			}, 150);
 
 			handleScroll();
-			
-			window.addEventListener("resize", handleResize);
+			window.addEventListener("resize", handleResize);					
 		});
 
 		return {

@@ -65,6 +65,10 @@ export default defineComponent({
   .vs-button:first-of-type {
     border-radius: 12px 0px 0px 12px;
   }
+
+   .vs-button:first-of-type:last-of-type {
+    border-radius: 12px 12px 12px 12px;
+  }
 }
 
 </style>
