@@ -193,7 +193,8 @@ import {
 	defineComponent,
 	provide,
 	watch,
-	getCurrentInstance
+	getCurrentInstance,
+	onMounted
 } from "vue";
 import vsComponent from "../vsComponent";
 import { insertBody, setCords } from "@/utils";
@@ -618,6 +619,14 @@ export default defineComponent({
 
 			uids.value = [];
 		});
+
+		onMounted(() => {
+
+			if(props.value){
+
+				valueLabel.value = props.value;
+			}			
+		})
 
 		return {
 			renderSelect,
