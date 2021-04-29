@@ -392,6 +392,7 @@ export default defineComponent({
 			let id = 0;
 			let chipIds: number[] = [];
 			const chip = function(item: any, isCollapse: boolean) {
+				
 				return h(
 					"span",
 					{
@@ -404,8 +405,7 @@ export default defineComponent({
 							h(
 								"span",
 								{
-									class: "vs-select__chips__chip__close",
-
+									class: "vs-select__chips__chip__close",									
 									onClick: () => {
 										setTimeout(() => {
 											targetClose.value = false;
@@ -435,7 +435,7 @@ export default defineComponent({
 											hover: "less",
 											style: { "font-size": "0.5rem" }
 										},
-										["close"]
+										() => { return "close"}
 									)
 								]
 							)
@@ -462,7 +462,7 @@ export default defineComponent({
 				];
 			}
 
-			return chipsarr;
+			return  chipsarr;
 		});
 
 		const getValue = function() {
