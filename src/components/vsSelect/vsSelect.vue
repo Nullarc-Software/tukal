@@ -691,8 +691,11 @@ export default defineComponent({
 		onMounted(() => {
 			//getValue();
 			
-			let reduced = _.reduce(instance?.slots.default?.(), function(result : any[], value, index) {
-						result.push({ label: value.props?.label, value: value.props?.value});
+			let children : any = instance?.slots.default?.();
+			if(children?.length == 1 && typeof children[0].type === "symbol")
+				children = children[0].children;
+			let reduced = _.reduce(children, function(result : any[], item, index) {
+						result.push({ label: item.props?.label, value: item.props?.value});
 						return result;
 				}, []);						
 
