@@ -11,11 +11,11 @@
 			}
 		]"
 		v-bind="$attrs"
-		v-on="listeners"
-		:id="uid"
+		v-on="listeners"		
+		ref="option"
 	>
-		<vs-checkbox v-if="isMultiple" v-model:value="isActive">
-			<slot />
+		<vs-checkbox v-if="isMultiple" v-model:value="isActive">			
+			<slot />			
 		</vs-checkbox>
 		<slot v-else />
 	</button>
@@ -30,12 +30,13 @@ import {
 	onMounted,
 	Ref,
 	ref,
+	unref,
 	watch
 } from "vue";
 
 import vsComponent from "../vsComponent";
 
-class SelectOptionConstants {
+export class SelectOptionConstants {
 	public static id = 0;
 }
 
@@ -50,14 +51,13 @@ export default defineComponent({
 	extends: vsComponent,	
 	setup(props, context) {
 		let activeOption = ref(false);
-		let hiddenOption = ref(false);
+		let hiddenOption = ref(false);		
+		let option = ref<HTMLButtonElement>();
 		
-		let uid = "option-" + ++SelectOptionConstants.id;		
-
-		let textFilter = inject<String>("textFilter");
+		let textFilter = inject<Ref<String>>("textFilter");
 		let uids = inject<Ref<any[]>>("uids");
 		let parentValue = inject<Ref<any>>("parentValue");
-		let hoverOption = inject<Number>("hoverOption");
+		let hoverOption = inject<Ref<Number>>("hoverOption");
 		let renderSelect = inject<Ref<Boolean>>("renderSelect");
 		let multiple = inject<Ref<Boolean>>("isMultiple");
 		let targetSelect = inject<Ref<Boolean>>("targetSelect");
@@ -70,10 +70,13 @@ export default defineComponent({
 		let onClickOption = inject<Function>("onClickOption");
 		let updateActiveOptions = inject<Function>("updateActiveOptions");
 
+		let uid = ++SelectOptionConstants.id;		
+
 		let instance = getCurrentInstance();		
 
+		if(textFilter)
 		watch(
-			() => textFilter as String,
+			textFilter,
 			val => {
 				if (val) {
 					if (
@@ -94,11 +97,11 @@ export default defineComponent({
 		const isActive = computed(() => {
 			return (typeof parentValue?.value == "number") || (typeof parentValue?.value == "string")
 				? parentValue?.value == props.value
-				: _.find(parentValue?.value, { value: props.value, label: props.label }) !== undefined
+				: _.find(parentValue?.value, (o) => { return o === props.value}) !== undefined
 		});
 
 		const isHover = computed(() => {
-			return uids?.value.indexOf(uid) == hoverOption;
+			return uids?.value.indexOf(uid) == hoverOption?.value;
 		});
 
 		const isMultiple = computed(() => {
@@ -125,7 +128,8 @@ export default defineComponent({
 
 		onMounted(() => {
 			if (!renderSelect?.value) {
-				addChildOption?.call(null, instance);
+				addChildOption?.call(null, props.disabled, props.value, props.label, option.value?.offsetTop );
+				console.log("added child: " + uid);
 			}
 			addUid?.call(null, uid);
 

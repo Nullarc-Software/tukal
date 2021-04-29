@@ -45,7 +45,7 @@
 				]"
 				v-bind="$attrs"
 				v-on="inputListener"
-			/>				
+			/>
 			<label
 				v-if="!multiple && (label || labelPlaceholder)"
 				class="vs-select__label"
@@ -65,7 +65,7 @@
 				class="vs-select__label vs-select__placeholder"
 				:class="{ 'vs-select__label--hidden': isValue || textFilter }"
 			>
-				{{ placeholder }}				
+				{{ placeholder }}
 				<slot name="icon" />
 			</label>
 			<button
@@ -74,11 +74,7 @@
 				ref="chips"
 				v-on="chipsListener"
 			>
-				<component
-					:is="item"
-					v-for="item of getChips"
-					:key="item"
-				/>
+				<component :is="item" v-for="item of getChips" :key="item" />
 				<input
 					v-if="filter"
 					class="vs-select__chips__input"
@@ -88,6 +84,7 @@
 					:value="textFilter"
 					v-on="chipsFilterListener"
 				/>
+				
 			</button>
 			<transition name="vs-select">
 				<div
@@ -198,9 +195,9 @@ import {
 } from "vue";
 import vsComponent from "../vsComponent";
 import { insertBody, setCords } from "@/utils";
-import vsOption from "../vsSelect/vsSelectOption.vue";
+import vsOption, { SelectOptionConstants } from "../vsSelect/vsSelectOption.vue";
 import vsIcon from "../vsIcon/vsIcon.vue";
-import _ from "lodash"
+import _ from "lodash";
 
 class SelectConstants {
 	public static id = 0;
@@ -224,11 +221,11 @@ export default defineComponent({
 		collapseChips: { type: Boolean, default: false },
 		loading: { type: Boolean, default: false },
 		state: { type: String, default: null },
-		block: { type: Boolean, default: false }
+		block: { type: Boolean, default: false },
+		selectItems: { type: Array, default: [] }
 	},
 	provide() {
 		return {
-
 			dropdown: computed(() => this.dropdown),
 			textFilter: computed(() => this.textFilter),
 			uids: computed(() => this.uids),
@@ -236,8 +233,13 @@ export default defineComponent({
 			parentSelect: this,
 			renderSelect: computed(() => this.renderSelect),
 			isMultiple: computed(() => this.multiple),
-			addChildOption: (child: any) => {
-				this.childOptions.push(child);
+			addChildOption: (disabled: boolean, value: any, label: string, offsetTop: number) => {
+				this.childOptions.push({
+					disabled,
+					value,
+					label,
+					offsetTop
+				});
 			},
 			addUid: (uid: any) => {
 				this.uids.push(uid);
@@ -251,10 +253,15 @@ export default defineComponent({
 			updateActiveOptions: (value: boolean) => {
 				this.activeOptions = value;
 			},
-			targetSelect: computed(() => { return this.targetSelect}),
-			targetClose: computed(() => { return this.targetClose}),
-			parentValue: computed(() => { return this.value}),
-			
+			targetSelect: computed(() => {
+				return this.targetSelect;
+			}),
+			targetClose: computed(() => {
+				return this.targetClose;
+			}),
+			parentValue: computed(() => {
+				return this.value;
+			})
 		};
 	},
 	setup(props, context) {
@@ -317,6 +324,8 @@ export default defineComponent({
 		const handleBlur = function() {
 			nextTick(() => {
 				activeOptions.value = false;
+				childOptions.value = [];
+				SelectOptionConstants.id = 0;
 			});
 			context.emit("blur");
 			setHover();
@@ -332,13 +341,28 @@ export default defineComponent({
 		const clickOption = function(value: any, label: any) {
 			if (props.multiple) {
 				const oldVal = [...(props.value as Array<any>)];
-				if (_.find(oldVal, {value: value, label: label}) === undefined) {
-					oldVal.push({value: value, label: label});
+				if (
+					_.indexOf(oldVal, value) === -1
+				) {
+					oldVal.push(value);
+
 				} else {
-					oldVal.splice(_.findIndex(oldVal, {value: value, label: label}), 1);
+					oldVal.splice(
+						_.indexOf(oldVal, value),
+						1
+					);
 				}
-				context.emit("update:value", oldVal);				
-				valueLabel.value = oldVal;
+
+				let labels = _.reduce(childOptions.value, function(result: any[], item, key){
+
+					if(_.indexOf(oldVal, item.value) !== -1)
+						result.push({value: item.value, label: item.label});
+					return result;
+				}, []);
+
+				context.emit("update:value", oldVal);
+				valueLabel.value = labels;
+
 			} else {
 				context.emit("update:value", value);
 				valueLabel.value = label;
@@ -359,26 +383,19 @@ export default defineComponent({
 			clickOption(value, label);
 		};
 
-
 		let isValue = computed(() => {
-
-			if (Array.isArray(props.value))			
-				return props.value.length !== 0;	
-			else 
-				return !(_.isNull(props.value) && !_.isUndefined(props.value));
-
+			if (Array.isArray(props.value)) return props.value.length !== 0;
+			else return !(_.isNull(props.value) && !_.isUndefined(props.value));
 		});
 		//computeds
 		const getChips = computed(() => {
-
 			let id = 0;
-			let chipIds : number[] = [];
+			let chipIds: number[] = [];
 			const chip = function(item: any, isCollapse: boolean) {
-				
 				return h(
 					"span",
 					{
-						class: ["vs-select__chips__chip", { isCollapse }],		
+						class: ["vs-select__chips__chip", { isCollapse }],
 						id: ++id
 					},
 					[
@@ -388,7 +405,7 @@ export default defineComponent({
 								"span",
 								{
 									class: "vs-select__chips__chip__close",
-									
+
 									onClick: () => {
 										setTimeout(() => {
 											targetClose.value = false;
@@ -407,13 +424,20 @@ export default defineComponent({
 									onMouseEnter: () => {
 										targetClose.value = true;
 									},
-									onMouseDown: (evt) => {
+									onMouseDown: evt => {
 										evt.stopPropagation();
-										
 									}
-									
 								},
-								[h(vsIcon, { hover: "less", style:{ 'font-size':"0.5rem" } }, ["close"])]
+								[
+									h(
+										vsIcon,
+										{
+											hover: "less",
+											style: { "font-size": "0.5rem" }
+										},
+										["close"]
+									)
+								]
 							)
 					]
 				);
@@ -422,8 +446,7 @@ export default defineComponent({
 			let chipsarr: any[] = [];
 			if (Array.isArray(valueLabel.value)) {
 				for (let item of valueLabel.value as any) {
-					let chipEl = chip(item, false);
-					Object.assign(chipEl, chipEl, { id: id});
+					let chipEl = chip(item, false);					
 					chipsarr.push(chipEl);
 				}
 			}
@@ -441,6 +464,28 @@ export default defineComponent({
 
 			return chipsarr;
 		});
+
+		const getValue = function() {
+			const options = childOptions.value;
+			const filterOptions = options.filter((option: any): boolean => {
+				return typeof props.value == "number" ||
+					typeof props.value == "string"
+					? props.value == option.value
+					: _.find(props.value as Array<any>, {
+							value: option.value
+					  }) !== undefined;
+			});
+
+			const label: any[] = [];
+			filterOptions.forEach((item: any) => {
+				label.push({
+					label: (item as any).label,
+					value: (item as any).value
+				});
+			});
+
+			valueLabel.value = label;
+		};
 
 		const getValueLabel = computed(() => {
 			const valueLabelTemp: any = valueLabel.value;
@@ -469,7 +514,7 @@ export default defineComponent({
 				}
 			};
 		});
-
+		
 		const handleKeydown = function(evt: any) {
 			const optionsTemp = options.value;
 			for (let index = 0; index < 300; index++) {
@@ -509,7 +554,8 @@ export default defineComponent({
 
 			if (hoverOption.value !== -1) {
 				(content.value as HTMLElement).scrollTop =
-					childOptions.value?.[hoverOption.value].$el.offsetTop - 66;
+					childOptions.value?.[hoverOption.value].offsetTop -
+					66;
 			}
 		};
 
@@ -564,7 +610,7 @@ export default defineComponent({
 		});
 
 		const notData = computed(() => {
-			let newChildOptions = childOptions.value;
+			let newChildOptions: any = [];
 
 			childOptions.value.forEach((option: any): any => {
 				if (!option.hiddenOption) {
@@ -613,20 +659,65 @@ export default defineComponent({
 
 		watch(activeOptions, (val: boolean) => {
 			nextTick(() => {
-				if(val)
-					insertOptions();
+				if (val) insertOptions();
 			});
 
 			uids.value = [];
 		});
 
+		const handleResize = function() {
+			const optionsTemp = options.value as HTMLElement;
+			if (!optionsTemp) {
+				return;
+			}
+			nextTick(() => {
+				setCords(optionsTemp, select.value);
+			});
+
+			for (let index = 0; index < 300; index++) {
+				setTimeout(() => {
+					setCords(optionsTemp, select.value);
+				}, index);
+			}
+		};
+
+		const handleScroll = function() {
+			const optionsTemp = options.value as HTMLElement;
+			if (optionsTemp) {
+				setCords(optionsTemp, select.value);
+			}
+		};
+
 		onMounted(() => {
+			//getValue();
+			
+			let reduced = _.reduce(instance?.slots.default?.(), function(result : any[], value, index) {
+						result.push({ label: value.props?.label, value: value.props?.value});
+						return result;
+				}, []);						
 
-			if(props.value){
+			//set the default value first. Since the list is not rendered to the dom, get it from the default slot.
+			if(!Array.isArray(props.value)){
 
-				valueLabel.value = props.value;
-			}			
-		})
+				let labelValue = _.find(reduced, {value: props.value});
+				if(labelValue)
+					valueLabel.value = labelValue.label;
+			}
+			else{
+
+				let newLabelValues :any[] = [];
+				props.value.forEach((value) => {
+					let labelValue = _.find(reduced, {value: value});
+					if(labelValue)
+						newLabelValues.push(labelValue);
+				});
+				
+				valueLabel.value = newLabelValues;	
+			}
+		
+			window.addEventListener("resize", handleResize);
+			window.addEventListener("scroll", handleScroll);
+		});
 
 		return {
 			renderSelect,
@@ -684,7 +775,7 @@ export default defineComponent({
 
 	.vs-select__chips {
 		background: -getColor($color, 0.05);
-		color: -getColor($color, 1);		
+		color: -getColor($color, 1);
 		&:hover {
 			&:after {
 				opacity: 0;
@@ -765,7 +856,7 @@ export default defineComponent({
 	width: 100%;
 	max-width: 210px;
 	display: inline-flex;
-	margin:5px;
+	margin: 5px;
 	padding: 5px;
 	&.block {
 		&.block {
@@ -1171,7 +1262,7 @@ export default defineComponent({
 			font-size: 0.75rem;
 			margin-top: 0px !important;
 		}
-	}	
+	}
 
 	&__loading {
 		position: absolute;
@@ -1270,9 +1361,10 @@ export default defineComponent({
 	}
 }
 
-.vs-select-content:not(.vs-select--dropdown) .vs-select .vs-select__placeholder{
+.vs-select-content:not(.vs-select--dropdown)
+	.vs-select
+	.vs-select__placeholder {
 	opacity: 1;
 	margin-left: 10px;
 }
-
 </style>
