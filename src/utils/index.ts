@@ -1,4 +1,6 @@
 import { transform } from "@babel/core"
+import { inject } from "@vue/runtime-core"
+import { Router } from "vue-router"
 
 // import * as consolee from 'consolee'
 
@@ -248,6 +250,10 @@ const setCordsPosition = (element: any, parent: any, position: string) => {
   }
 }
 
+const getRouter = () => {
+	return inject<Router>("appRouter") as Router;
+};
+
 export {
   setColor,
   getColor,
@@ -256,5 +262,6 @@ export {
   insertBody,
   removeBody,
   setCords,
-  setCordsPosition
+  setCordsPosition,
+  getRouter
 }

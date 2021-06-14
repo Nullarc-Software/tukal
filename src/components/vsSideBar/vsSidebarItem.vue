@@ -26,7 +26,7 @@
 import { defineComponent, inject, Ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import VsIcon from "../vsIcon/vsIcon.vue";
-import vsComponent from "../vsComponent";
+import vsComponent, { ComponentConstants } from "../vsComponent";
 
 export default defineComponent({
 	name: "VsSidebarItem",
@@ -46,7 +46,7 @@ export default defineComponent({
 
 		const handleClick = function() {
 			if (props.to) {
-				useRouter().push(props.to as any);
+				ComponentConstants.router.push(props.to as any);
 			} else if (props.href) {
 				window.open(props.href as string, props.target);
 			}

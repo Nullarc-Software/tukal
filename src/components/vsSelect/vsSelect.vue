@@ -353,8 +353,7 @@ export default defineComponent({
 					);
 				}
 
-				let labels = _.reduce(childOptions.value, function(result: any[], item, key){
-
+				let labels = _.reduce(childOptions.value, function(result: any[], item, key){					
 					if(_.indexOf(oldVal, item.value) !== -1)
 						result.push({value: item.value, label: item.label});
 					return result;

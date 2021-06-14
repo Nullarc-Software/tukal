@@ -149,7 +149,7 @@ export default defineComponent({
 		);
 
 		onMounted(() => {
-			staticWidth.value = sidebar.value?.offsetWidth as number;
+			staticWidth.value = sidebar.value?.offsetWidth as number + 15;
 			reduceInternal.value = props.reduce;
 
 			if (props.background !== "background") {
@@ -179,7 +179,7 @@ export default defineComponent({
 
 .vs-sidebar-content {
 	--vs-color: var(--vs-primary);
-	position: fixed;
+	position: relative;
 	left: 0px;
 	top: 0px;
 	width: calc(100% - 50px);

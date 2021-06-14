@@ -113,7 +113,7 @@
 		<div class="showcase-component">
 			<h3>Button Groups:</h3>
 			<hr />
-			<vs-button-group>
+			<vs-button-group fixed-height="40px">
 				<vs-button>
 					One
 				</vs-button>
@@ -622,10 +622,13 @@
 		<div class="showcase-component">
 			<h4>Select:</h4>
 			<hr />
+
 			<vs-select
+				multiple
 				label-placeholder="Label-placeholder"
 				v-model:value="selectValue"
 				style="margin: 10px"
+				filter
 			>
 				<vs-option label="Test" value="1">
 					Test
@@ -650,11 +653,12 @@
 				</vs-option>
 			</vs-select>
 
+
 			<vs-select
-				multiple
 				label-placeholder="Label-placeholder"
-				v-model:value="selectValue"
+				v-model:value="selectValue1"
 				style="margin: 10px"
+				filter
 			>
 				<vs-option label="Test" value="1">
 					Test
@@ -678,6 +682,39 @@
 					Nodejs
 				</vs-option>
 			</vs-select>
+
+			<!--
+
+				<vs-select
+				label-placeholder="Label-placeholder"
+				v-model:value="selectValue"
+				style="margin: 10px"
+				
+			>
+				<vs-option label="Test" value="1">
+					Test
+				</vs-option>
+				<vs-option label="Test1" value="2">
+					Test1
+				</vs-option>
+				<vs-option label="Javascript" value="3">
+					Javascript
+				</vs-option>
+				<vs-option disabled label="Sass" value="4">
+					Sass
+				</vs-option>
+				<vs-option label="Typescript" value="5">
+					Typescript
+				</vs-option>
+				<vs-option label="Webpack" value="6">
+					Webpack
+				</vs-option>
+				<vs-option label="Nodejs" value="7">
+					Nodejs
+				</vs-option>
+			</vs-select>
+				
+				
 			<vs-select
 				dropdown
 				placeholder="Dropdown"
@@ -714,7 +751,7 @@
 					<template v-slot:title>
 						Vuejs
 					</template>
-					<vs-option label="Vuesax" value="1">
+					<vs-option  value="1">
 						Vuesax
 					</vs-option>
 					<vs-option label="Vue" value="2">
@@ -751,7 +788,7 @@
 				placeholder="Select"
 				v-model="color.value"
 			>
-				<vs-option label="Vuesax" value="1">
+				<vs-option  value="1">
 					Vuesax
 				</vs-option>
 				<vs-option label="Vue" value="2">
@@ -772,20 +809,18 @@
 				<vs-option label="Nodejs" value="7">
 					Nodejs
 				</vs-option>
-			</vs-select>
+			</vs-select>-->
 		</div>
 		<div class="showcase-component">
 			<h4>Sidebar:</h4>
 			<hr />
 			<vs-button @click="isOpen = !isOpen"> Toggle Sidebar </vs-button>
-			<vs-sidebar
-				background="primary"
-				textWhite
+			<vs-sidebar				
 				reduce
 				sticky
 				absolute
 				v-model:value="sideBar"
-				hover-expand
+			
 				:open="isOpen"
 			>
 				<template #logo>
@@ -990,7 +1025,8 @@ export default defineComponent({
 		let opts: any = reactive([]);
 		let inpValue = ref("");
 		let navValue = ref("guide");
-		let selectValue = ref([]);
+		let selectValue = ref(["1", "3", "5"]);
+		let selectValue1 = ref("1");
 
 		let notificationComponent = ref(null);
 		let validEmail = computed(function() {
@@ -1044,7 +1080,8 @@ export default defineComponent({
 			sideBar,
 			isOpen,
 			navValue,
-			openNav
+			openNav,
+			selectValue1
 		};
 	}
 });
