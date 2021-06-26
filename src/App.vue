@@ -394,14 +394,14 @@
 				</template>
 
 				<div class="con-content">
-					<p>
+					
 						Vuesax3 is a relatively new framework with a refreshing
 						design and in the latest trends, vuesax based on vuejs
 						which means that we go hand in hand with one of the most
 						popular javascript frameworks in the world and with a
 						huge community with which you will have all the help and
 						documentation to create and make your project
-					</p>
+					
 				</div>
 
 				<template v-slot:footer>
@@ -462,6 +462,7 @@
 			<h3>Input:</h3>
 			<hr />
 			<vs-input
+			block
 				id="inp1"
 				v-model:value="inpValue"
 				placeholder="Name"
@@ -596,7 +597,7 @@
 			<h4>Select:</h4>
 			<hr />
 
-			<vs-select
+			<vs-select block
 				multiple
 				label-placeholder="Label-placeholder"
 				v-model:value="selectValue"
@@ -612,7 +613,7 @@
 				<vs-option label="Nodejs" value="7"> Nodejs </vs-option>
 			</vs-select>
 
-			<vs-select
+			<vs-select inline
 				placeholder="Label-placeholder for something soooooo longggg Label-placeholder for something soooooo longggg"
 				v-model:value="selectValue1"
 				style="margin: 10px"
@@ -627,7 +628,7 @@
 				<vs-option label="Nodejs" value="7"> Nodejs </vs-option>
 			</vs-select>
 
-			<vs-select
+			<vs-select inline
 				label-placeholder="Label-placeholder"
 				v-model:value="selectValue"
 				style="margin: 10px"
@@ -641,7 +642,7 @@
 				<vs-option label="Nodejs" value="7"> Nodejs </vs-option>
 			</vs-select>
 
-			<vs-select
+			<vs-select inline
 				dropdown
 				placeholder="Dropdown"
 				v-model:value="selectValue2"
@@ -657,7 +658,7 @@
 				<vs-option label="Webpack" value="6"> Webpack </vs-option>
 				<vs-option label="Nodejs" value="7"> Nodejs </vs-option>
 			</vs-select>
-			<vs-select label="Group" placeholder="Group" v-model="value1">
+			<vs-select inline label="Group" placeholder="Group" v-model="value1">
 				<vs-option-group>
 					<template v-slot:title> Vuejs </template>
 					<vs-option label="Vuesax" value="1"> Vuesax </vs-option>
@@ -677,7 +678,7 @@
 				</vs-option-group>
 			</vs-select>
 
-			<vs-select
+			<vs-select inline
 				v-for="(color, i) in colors"
 				:key="i"
 				:state="color.color"

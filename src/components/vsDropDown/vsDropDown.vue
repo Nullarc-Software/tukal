@@ -110,8 +110,9 @@ export default defineComponent({
 			if (typex == "click") {
 				if (props.vsTriggerClick || props.vsTriggerContextmenu) {
 					if (
+						evt.target &&
 						vsDropdownVisible.value &&
-						!evt.target.closest(".vs-dropdown--menu")
+						!evt.target?.closest(".vs-dropdown--menu")
 					) {
 						vsDropdownVisible.value = false;
 					} else {
@@ -120,19 +121,21 @@ export default defineComponent({
 					}
 				}
 			}
-
-			if (!props.vsTriggerClick && !props.vsTriggerContextmenu) {
+			else
+			{
+				if (!props.vsTriggerClick && !props.vsTriggerContextmenu) {
 				if (typex == "over") {
 					vsDropdownVisible.value = true;
 					console.log("over");
 				} 
 				else {
-					if (!menuHover.value) {
+					if ( !menuHover.value) {
 						vsDropdownVisible.value = false;
 						console.log("out");
 					}
 				}
 			}
+			}			
 		};
 
 		const changePositionMenu = function () {
@@ -225,6 +228,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+
+
 .dropdown-group-enter-active,
 .dropdown-group-leave-active {
 	transition: opacity 0.25s;

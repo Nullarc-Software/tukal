@@ -6,6 +6,7 @@
 		}"
 		:class="[
 			{ block: block },
+			{ inline: inline},
 			// colors
 			{
 				[`vs-component--primary`]:
@@ -213,6 +214,7 @@ export default defineComponent({
 		value: {},
 		multiple: { type: Boolean, default: false },
 		dropdown: { type: Boolean, default: false },
+		inline: { type: Boolean, default: false },
 		filter: { type: Boolean, default: false },
 		placeholder: { type: String, default: "" },
 		labelPlaceholder: { type: String, default: "" },
@@ -857,7 +859,13 @@ export default defineComponent({
 .vs-select-content {
 	width: 100%;
 	max-width: fit-content;
-	display: inline-flex;
+	display: flex;
+
+	&.inline{
+		display: inline-flex;
+	}
+
+
 	margin: 5px;
 	padding: 5px;
 	&.block {
