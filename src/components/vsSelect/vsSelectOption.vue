@@ -112,7 +112,7 @@ export default defineComponent({
 			return {
 				click: () => {
 					//console.log(this.value);		
-					if(!dropdown?.value)			
+				
 						onClickOption?.call(null, props.value, props.label);					
 				},
 				blur: () => {

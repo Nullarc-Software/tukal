@@ -65,6 +65,7 @@ export default defineComponent({
 		absolute: { default: false, type: Boolean },
 		right: { default: false, type: Boolean },
 		background: { default: "background", type: String }
+		
 	},
 	emits: ["update:open", "update:value"],
 	provide() {
@@ -182,9 +183,9 @@ export default defineComponent({
 	position: relative;
 	left: 0px;
 	top: 0px;
-	width: calc(100% - 50px);
+	width: 100%;
 	max-width: 260px;
-	height: 100vh;
+	height: 100%;
 	border-radius: 0px 30px 30px 0px;
 	color: -getColor("text");
 	box-shadow: 0px 0px 25px 0px rgba(0, 0, 0, -var("shadow-opacity"));

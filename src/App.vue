@@ -1,15 +1,13 @@
 <template>
-	<div style="position:relative; ">
-		<h1 style="text-align:cente; margin-top:50px">
+	<div style="position: relative">
+		<h1 style="text-align: cente; margin-top: 50px">
 			Vuesax3 (Typescript + composition API Demo) - TheCelebrimbor -
 			Github
 		</h1>
 		<div class="showcase-component">
 			<h3>Buttons:</h3>
 			<hr />
-			<vs-button success @click="justLoad">
-				Open Notification
-			</vs-button>
+			<vs-button success @click="justLoad"> Open Notification </vs-button>
 			<vs-button
 				type="filled"
 				color="secondary"
@@ -114,18 +112,10 @@
 			<h3>Button Groups:</h3>
 			<hr />
 			<vs-button-group fixed-height="40px">
-				<vs-button>
-					One
-				</vs-button>
-				<vs-button>
-					Two
-				</vs-button>
-				<vs-button>
-					Three
-				</vs-button>
-				<vs-button>
-					four
-				</vs-button>
+				<vs-button> One </vs-button>
+				<vs-button> Two </vs-button>
+				<vs-button> Three </vs-button>
+				<vs-button> four </vs-button>
 			</vs-button-group>
 			<br />
 			<vs-button-group>
@@ -147,9 +137,7 @@
 				<vs-button type="border">
 					<vs-icon>edit</vs-icon>
 				</vs-button>
-				<div style="display:inline-block">
-					aaabbb
-				</div>
+				<div style="display: inline-block">aaabbb</div>
 				<vs-button type="border">
 					<vs-icon>format_align_center</vs-icon>
 				</vs-button>
@@ -190,11 +178,11 @@
 			<h3>Avatar:</h3>
 			<hr />
 			<vs-avatar text="Celebrimbor" />
-			<vs-avatar
-				src="https://avatars.githubusercontent.com/u/13927773?v=4"
-				size="large"
-				text="Celebrimbor"
-			/>
+			<vs-avatar size="large">
+				<img
+					src="https://avatars.githubusercontent.com/u/13927773?v=4"
+				/>
+			</vs-avatar>
 		</div>
 		<div class="showcase-component">
 			<h3>Breadcrumbs:</h3>
@@ -203,20 +191,20 @@
 				:items="[
 					{
 						title: 'Dashboard',
-						url: 'dashboard'
+						url: 'dashboard',
 					},
 					{
 						title: 'Link 1',
-						url: 'link-1'
+						url: 'link-1',
 					},
 					{
 						title: 'Link 2',
-						disabled: true
+						disabled: true,
 					},
 					{
 						title: 'Active',
-						active: true
-					}
+						active: true,
+					},
 				]"
 			></vs-breadcrumb>
 
@@ -263,9 +251,7 @@
 						</vs-button>
 						<vs-button class="btn-chat" shadow primary>
 							<vs-icon>chat</vs-icon>
-							<span class="span">
-								54
-							</span>
+							<span class="span"> 54 </span>
 						</vs-button>
 					</template>
 				</vs-card>
@@ -339,14 +325,12 @@
 				</vs-chip>
 			</div>
 		</div>
-		<div class="showcase-component" style="margin-top:100px">
+		<div class="showcase-component" style="margin-top: 100px">
 			<h3>Collapse:</h3>
 			<hr />
 			<vs-collapse accordion type="border">
 				<vs-collapse-item>
-					<template v-slot:header>
-						Collapse item
-					</template>
+					<template v-slot:header> Collapse item </template>
 					Lorem ipsum dolor sit amet, consectetur adipiscing elit.
 					Quisque rhoncus eros tortor, non fringilla lectus cursus et.
 					Fusce vel nisi ante. Aliquam sit amet lectus pharetra,
@@ -363,9 +347,7 @@
 					eleifend metus.
 				</vs-collapse-item>
 				<vs-collapse-item>
-					<template v-slot:header>
-						Collapse item 2
-					</template>
+					<template v-slot:header> Collapse item 2 </template>
 					Nunc auctor et leo vitae suscipit. Nullam aliquet purus
 					scelerisque enim hendrerit tristique. Maecenas tincidunt dui
 					arcu, a aliquet nisl venenatis vitae. Praesent mauris
@@ -385,16 +367,12 @@
 					non ipsum vel maximus.
 				</vs-collapse-item>
 				<vs-collapse-item>
-					<template v-slot:header>
-						Collapse item 3
-					</template>
+					<template v-slot:header> Collapse item 3 </template>
 					Suspendisse aliquet condimentum diam, sed aliquam nisl
 					dapibus et. Aliquam euismod ullamcorper dolor eu
 				</vs-collapse-item>
 				<vs-collapse-item>
-					<template v-slot:header>
-						Collapse item 4
-					</template>
+					<template v-slot:header> Collapse item 4 </template>
 					Suspendisse aliquet condimentum diam, sed aliquam nisl
 					dapibus et. Aliquam euismod ullamcorper dolor eu imperdiet.
 					Nullam eget odio at magna gravida suscipit sed vestibulum
@@ -410,15 +388,9 @@
 			<vs-button @click="activeDialog = !activeDialog"
 				>Open Dialog</vs-button
 			>
-			<vs-dialog
-				loading
-				width="550px"
-				not-center
-				v-model:value="activeDialog"
-			>
+			<vs-dialog width="550px" v-model:value="activeDialog">
 				<template v-slot:header>
 					<h4>Welcome to <b>Vuesax3</b></h4>
-					<vs-divider color="rgba(0,0,0,0.5)" />
 				</template>
 
 				<div class="con-content">
@@ -435,8 +407,9 @@
 				<template v-slot:footer>
 					<vs-button
 						width="100px"
-						style="margin:5px"
+						style="margin: 5px"
 						@click="activeDialog = false"
+						block
 					>
 						Ok
 					</vs-button>
@@ -474,7 +447,7 @@
 				<template v-slot:footer>
 					<vs-button
 						width="100px"
-						style="margin:5px"
+						style="margin: 5px"
 						@click="activeDialog1 = false"
 					>
 						Ok
@@ -492,7 +465,7 @@
 				id="inp1"
 				v-model:value="inpValue"
 				placeholder="Name"
-				style="margin-top:10px"
+				style="margin-top: 10px"
 			/>
 			<br />
 			<vs-input
@@ -545,7 +518,7 @@
 				<vs-input type="time" v-model="value6" label="time" />
 				<vs-input type="date" v-model="value7" label="Date" />
 			</div>
-			<div style="margin:10px">
+			<div style="margin: 10px">
 				<vs-input
 					primary
 					v-model="value"
@@ -630,153 +603,77 @@
 				style="margin: 10px"
 				filter
 			>
-				<vs-option label="Test" value="1">
-					Test
-				</vs-option>
-				<vs-option label="Test1" value="2">
-					Test1
-				</vs-option>
-				<vs-option label="Javascript" value="3">
-					Javascript
-				</vs-option>
-				<vs-option disabled label="Sass" value="4">
-					Sass
-				</vs-option>
-				<vs-option label="Typescript" value="5">
-					Typescript
-				</vs-option>
-				<vs-option label="Webpack" value="6">
-					Webpack
-				</vs-option>
-				<vs-option label="Nodejs" value="7">
-					Nodejs
-				</vs-option>
+				<vs-option label="Test" value="1"> Test </vs-option>
+				<vs-option label="Test1" value="2"> Test1 </vs-option>
+				<vs-option label="Javascript" value="3"> Javascript </vs-option>
+				<vs-option disabled label="Sass" value="4"> Sass </vs-option>
+				<vs-option label="Typescript" value="5"> Typescript </vs-option>
+				<vs-option label="Webpack" value="6"> Webpack </vs-option>
+				<vs-option label="Nodejs" value="7"> Nodejs </vs-option>
 			</vs-select>
 
-
 			<vs-select
-				label-placeholder="Label-placeholder"
+				placeholder="Label-placeholder for something soooooo longggg Label-placeholder for something soooooo longggg"
 				v-model:value="selectValue1"
 				style="margin: 10px"
 				filter
 			>
-				<vs-option label="Test" value="1">
-					Test
-				</vs-option>
-				<vs-option label="Test1" value="2">
-					Test1
-				</vs-option>
-				<vs-option label="Javascript" value="3">
-					Javascript
-				</vs-option>
-				<vs-option disabled label="Sass" value="4">
-					Sass
-				</vs-option>
-				<vs-option label="Typescript" value="5">
-					Typescript
-				</vs-option>
-				<vs-option label="Webpack" value="6">
-					Webpack
-				</vs-option>
-				<vs-option label="Nodejs" value="7">
-					Nodejs
-				</vs-option>
+				<vs-option label="Test" value="1"> Test </vs-option>
+				<vs-option label="Test1" value="2"> Test1 </vs-option>
+				<vs-option label="Javascript" value="3"> Javascript </vs-option>
+				<vs-option disabled label="Sass" value="4"> Sass </vs-option>
+				<vs-option label="Typescript" value="5"> Typescript </vs-option>
+				<vs-option label="Webpack" value="6"> Webpack </vs-option>
+				<vs-option label="Nodejs" value="7"> Nodejs </vs-option>
 			</vs-select>
 
-			<!--
-
-				<vs-select
+			<vs-select
 				label-placeholder="Label-placeholder"
 				v-model:value="selectValue"
 				style="margin: 10px"
-				
 			>
-				<vs-option label="Test" value="1">
-					Test
-				</vs-option>
-				<vs-option label="Test1" value="2">
-					Test1
-				</vs-option>
-				<vs-option label="Javascript" value="3">
-					Javascript
-				</vs-option>
-				<vs-option disabled label="Sass" value="4">
-					Sass
-				</vs-option>
-				<vs-option label="Typescript" value="5">
-					Typescript
-				</vs-option>
-				<vs-option label="Webpack" value="6">
-					Webpack
-				</vs-option>
-				<vs-option label="Nodejs" value="7">
-					Nodejs
-				</vs-option>
+				<vs-option label="Test" value="1"> Test </vs-option>
+				<vs-option label="Test1" value="2"> Test1 </vs-option>
+				<vs-option label="Javascript" value="3"> Javascript </vs-option>
+				<vs-option disabled label="Sass" value="4"> Sass </vs-option>
+				<vs-option label="Typescript" value="5"> Typescript </vs-option>
+				<vs-option label="Webpack" value="6"> Webpack </vs-option>
+				<vs-option label="Nodejs" value="7"> Nodejs </vs-option>
 			</vs-select>
-				
-				
+
 			<vs-select
 				dropdown
 				placeholder="Dropdown"
-				v-model:value="selectValue"
+				v-model:value="selectValue2"
 				style="margin: 10px"
 			>
-				<template #icon>
-					<vs-icon>home</vs-icon>
-				</template>
-				<vs-option label="Test" value="1">
-					Test
-				</vs-option>
-				<vs-option label="Test1" value="2">
-					Test1
-				</vs-option>
+				<vs-option label="Test" value="1"> Test </vs-option>
+				<vs-option label="Test1" value="2"> Test1 </vs-option>
 				<vs-option label="Javascript" value="3">
 					Javascript <vs-icon>home</vs-icon>
 				</vs-option>
-				<vs-option disabled label="Sass" value="4">
-					Sass
-				</vs-option>
-				<vs-option label="Typescript" value="5">
-					Typescript
-				</vs-option>
-				<vs-option label="Webpack" value="6">
-					Webpack
-				</vs-option>
-				<vs-option label="Nodejs" value="7">
-					Nodejs
-				</vs-option>
+				<vs-option disabled label="Sass" value="4"> Sass </vs-option>
+				<vs-option label="Typescript" value="5"> Typescript </vs-option>
+				<vs-option label="Webpack" value="6"> Webpack </vs-option>
+				<vs-option label="Nodejs" value="7"> Nodejs </vs-option>
 			</vs-select>
 			<vs-select label="Group" placeholder="Group" v-model="value1">
 				<vs-option-group>
-					<template v-slot:title>
-						Vuejs
-					</template>
-					<vs-option  value="1">
-						Vuesax
-					</vs-option>
-					<vs-option label="Vue" value="2">
-						Vue
-					</vs-option>
+					<template v-slot:title> Vuejs </template>
+					<vs-option label="Vuesax" value="1"> Vuesax </vs-option>
+					<vs-option label="Vue" value="2"> Vue </vs-option>
 					<vs-option label="Javascript" value="3">
 						Javascript
 					</vs-option>
 				</vs-option-group>
 				<vs-option-group>
-					<template v-slot:title>
-						Others
-					</template>
-					<vs-option label="Sass" value="4">
-						Sass
-					</vs-option>
+					<template v-slot:title> Others </template>
+					<vs-option label="Sass" value="4"> Sass </vs-option>
 					<vs-option label="Typescript" value="5">
 						Typescript
 					</vs-option>
-					<vs-option label="Webpack" value="6">
-						Webpack
-					</vs-option>
-					<vs-option label="Nodejs" value="7">
-						Nodejs
-					</vs-option>
+					<vs-option label="Webpack" value="6"> Webpack </vs-option>
+					<vs-option label="Nodejs" value="7"> Nodejs </vs-option>
 				</vs-option-group>
 			</vs-select>
 
@@ -788,39 +685,41 @@
 				placeholder="Select"
 				v-model="color.value"
 			>
-				<vs-option  value="1">
-					Vuesax
-				</vs-option>
-				<vs-option label="Vue" value="2">
-					Vue
-				</vs-option>
-				<vs-option label="Javascript" value="3">
-					Javascript
-				</vs-option>
-				<vs-option label="Sass" value="4">
-					Sass
-				</vs-option>
-				<vs-option label="Typescript" value="5">
-					Typescript
-				</vs-option>
-				<vs-option label="Webpack" value="6">
-					Webpack
-				</vs-option>
-				<vs-option label="Nodejs" value="7">
-					Nodejs
-				</vs-option>
-			</vs-select>-->
+				<vs-option value="1"> Vuesax </vs-option>
+				<vs-option label="Vue" value="2"> Vue </vs-option>
+				<vs-option label="Javascript" value="3"> Javascript </vs-option>
+				<vs-option label="Sass" value="4"> Sass </vs-option>
+				<vs-option label="Typescript" value="5"> Typescript </vs-option>
+				<vs-option label="Webpack" value="6"> Webpack </vs-option>
+				<vs-option label="Nodejs" value="7"> Nodejs </vs-option>
+			</vs-select>
+		</div>
+		<div class="showcase-component">
+			<h4>Dropdown:</h4>
+			<hr />
+			aaa
+			<vs-dropdown vsTriggerClick>
+				<a class="a-icon">
+					Dropdown hover
+					<vs-icon class="" icon="expand_more"></vs-icon>
+				</a>
+
+				<vs-dropdown-menu>
+					<vs-dropdown-item> Option 1 </vs-dropdown-item>
+					<vs-dropdown-item> Option 2 </vs-dropdown-item>
+					<vs-dropdown-item divider> Option 3 </vs-dropdown-item>
+				</vs-dropdown-menu>
+			</vs-dropdown>
 		</div>
 		<div class="showcase-component">
 			<h4>Sidebar:</h4>
 			<hr />
 			<vs-button @click="isOpen = !isOpen"> Toggle Sidebar </vs-button>
-			<vs-sidebar				
+			<vs-sidebar
 				reduce
 				sticky
 				absolute
 				v-model:value="sideBar"
-			
 				:open="isOpen"
 			>
 				<template #logo>
@@ -829,9 +728,7 @@
 						alt=""
 					/>
 				</template>
-				<template #header>
-					Endpoint Nexus
-				</template>
+				<template #header> Endpoint Nexus </template>
 				<vs-sidebar-item id="home">
 					<template v-slot:icon>
 						<vs-icon>person</vs-icon>
@@ -885,11 +782,9 @@
 							badge-color="danger"
 							badge-position="top-right"
 						>
-							<i class="bx bx-bell"></i>
+							<i class="bx bx-bell"></i> 
 
-							<template #badge>
-								28
-							</template>
+							<template #badge> 28 </template>
 						</vs-avatar>
 
 						<vs-avatar>
@@ -902,24 +797,14 @@
 		<div class="showcase-component">
 			<h4>Switch:</h4>
 			<hr />
-			<vs-switch v-model="active">
-				Suscribe
-			</vs-switch>
+			<vs-switch v-model="active"> Suscribe </vs-switch>
 			<vs-switch v-model="active2">
-				<template #off>
-					Off
-				</template>
-				<template #on>
-					On
-				</template>
+				<template #off> Off </template>
+				<template #on> On </template>
 			</vs-switch>
 			<vs-switch v-model="active3">
-				<template #off>
-					default
-				</template>
-				<template #on>
-					Premium
-				</template>
+				<template #off> default </template>
+				<template #on> Premium </template>
 			</vs-switch>
 		</div>
 		<div class="showcase-component">
@@ -932,12 +817,18 @@
 				v-model:value="navValue"
 			>
 				<template #left>
-					<img src="https://vuesax.com/logos/logo-vuesax-logotipo-vuesax-png-3.png" alt="" />
+					<img
+						src="https://vuesax.com/logos/logo-vuesax-logotipo-vuesax-png-3.png"
+						alt=""
+					/>
 				</template>
 				<vs-navbar-group>
 					Docs
 					<template #items>
-						<vs-navbar-item :active="navValue == 'guide'" id="guide">
+						<vs-navbar-item
+							:active="navValue == 'guide'"
+							id="guide"
+						>
 							Guide
 						</vs-navbar-item>
 						<vs-navbar-item :active="navValue == 'docs'" id="docs">
@@ -951,19 +842,18 @@
 						</vs-navbar-item>
 					</template>
 				</vs-navbar-group>
-			 <vs-navbar-item :active="navValue == 'Github'" id="Github">
-              Github
-            </vs-navbar-item>
-            <vs-navbar-item :active="navValue == 'Discord'" id="Discord">
-              Discord
-            </vs-navbar-item>
-            <vs-navbar-item :active="navValue == 'Twitter'" id="Twitter">
-              Twitter
-            </vs-navbar-item>
-            <vs-navbar-item :active="navValue == 'Medium'" id="Medium">
-              Medium
-            </vs-navbar-item>
-				
+				<vs-navbar-item :active="navValue == 'Github'" id="Github">
+					Github
+				</vs-navbar-item>
+				<vs-navbar-item :active="navValue == 'Discord'" id="Discord">
+					Discord
+				</vs-navbar-item>
+				<vs-navbar-item :active="navValue == 'Twitter'" id="Twitter">
+					Twitter
+				</vs-navbar-item>
+				<vs-navbar-item :active="navValue == 'Medium'" id="Medium">
+					Medium
+				</vs-navbar-item>
 			</vs-navbar>
 			<vs-button @click="openNav = !openNav"> Toggle Navbar </vs-button>
 		</div>
@@ -976,7 +866,7 @@ import {
 	defineComponent,
 	reactive,
 	ref,
-	watch
+	watch,
 } from "@vue/runtime-core";
 import * as components from "./components";
 import { vsButton } from "./components/vsButton";
@@ -984,31 +874,31 @@ import notification from "./components/vsNotifications";
 
 export default defineComponent({
 	components: {
-		...components
+		...components,
 	},
 	data: () => ({
 		colors: [
 			{
 				color: "primary",
-				value: "1"
+				value: "1",
 			},
 			{
 				color: "danger",
-				value: "1"
+				value: "1",
 			},
 			{
 				color: "success",
-				value: "2"
+				value: "2",
 			},
 			{
 				color: "warn",
-				value: "3"
+				value: "3",
 			},
 			{
 				color: "dark",
-				value: "4"
-			}
-		]
+				value: "4",
+			},
+		],
 	}),
 	setup(props, context) {
 		let active1 = ref(true);
@@ -1026,28 +916,29 @@ export default defineComponent({
 		let inpValue = ref("");
 		let navValue = ref("guide");
 		let selectValue = ref(["1", "3", "5"]);
-		let selectValue1 = ref("1");
+		let selectValue2 = ref(null);
+		let selectValue1 = ref(null);
 
 		let notificationComponent = ref(null);
-		let validEmail = computed(function() {
+		let validEmail = computed(function () {
 			return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(
 				inpValue.value
 			);
 		});
 
-		let justLoad = function() {
+		let justLoad = function () {
 			let notificationAttrs: any = {
 				title: "Documentation Vuesax 4.0+",
 				text: `These documents refer to the latest version of vuesax (4.0+),
 					to see the documents of the previous versions you can do it here 👉 Vuesax3.x`,
 				flat: true,
-				onClickClose: function() {
+				onClickClose: function () {
 					console.log("notif closed");
 				},
-				onclick: function() {
+				onclick: function () {
 					console.log("clicked");
 				},
-				color: "#7d33ff"
+				color: "#7d33ff",
 			};
 
 			let notif = new notification(notificationAttrs);
@@ -1081,9 +972,10 @@ export default defineComponent({
 			isOpen,
 			navValue,
 			openNav,
-			selectValue1
+			selectValue1,
+			selectValue2,
 		};
-	}
+	},
 });
 </script>
 

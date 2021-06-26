@@ -760,7 +760,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import "../../style/sass/_mixins";
 
 @mixin state($color) {
@@ -856,7 +856,7 @@ export default defineComponent({
 
 .vs-select-content {
 	width: 100%;
-	max-width: 210px;
+	max-width: fit-content;
 	display: inline-flex;
 	margin: 5px;
 	padding: 5px;
