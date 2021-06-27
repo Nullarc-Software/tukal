@@ -10,7 +10,6 @@
 		@mouseover="hoverx = true"
 		@mouseout="hoverx = false"
 	>
-
 		<router-link
 			v-if="to"
 			:to="to"
@@ -45,7 +44,7 @@ import {
 } from "vue";
 import _color from "../../utils/color";
 export default defineComponent({
-	name: "VsDropdownItem",
+	name: "VsPopupItem",
 	inheritAttrs: false,
 	props: {
 		to: {},
@@ -61,8 +60,7 @@ export default defineComponent({
 	setup(props, context) {
 		let hoverx = ref(false);
 		let vsDropDownItem = ref(true);
-		let color = ref("");
-		let parent = inject<HTMLButtonElement>("parent");
+		let color = ref("");		
 		let parentColor = inject<string>("parentColor");
 
 		const closeParent = function () {

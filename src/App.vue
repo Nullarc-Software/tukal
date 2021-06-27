@@ -394,14 +394,12 @@
 				</template>
 
 				<div class="con-content">
-					
-						Vuesax3 is a relatively new framework with a refreshing
-						design and in the latest trends, vuesax based on vuejs
-						which means that we go hand in hand with one of the most
-						popular javascript frameworks in the world and with a
-						huge community with which you will have all the help and
-						documentation to create and make your project
-					
+					Vuesax3 is a relatively new framework with a refreshing
+					design and in the latest trends, vuesax based on vuejs which
+					means that we go hand in hand with one of the most popular
+					javascript frameworks in the world and with a huge community
+					with which you will have all the help and documentation to
+					create and make your project
 				</div>
 
 				<template v-slot:footer>
@@ -462,7 +460,7 @@
 			<h3>Input:</h3>
 			<hr />
 			<vs-input
-			block
+				block
 				id="inp1"
 				v-model:value="inpValue"
 				placeholder="Name"
@@ -597,7 +595,8 @@
 			<h4>Select:</h4>
 			<hr />
 
-			<vs-select block
+			<vs-select
+				block
 				multiple
 				label-placeholder="Label-placeholder"
 				v-model:value="selectValue"
@@ -613,7 +612,8 @@
 				<vs-option label="Nodejs" value="7"> Nodejs </vs-option>
 			</vs-select>
 
-			<vs-select inline
+			<vs-select
+				inline
 				placeholder="Label-placeholder for something soooooo longggg Label-placeholder for something soooooo longggg"
 				v-model:value="selectValue1"
 				style="margin: 10px"
@@ -628,7 +628,8 @@
 				<vs-option label="Nodejs" value="7"> Nodejs </vs-option>
 			</vs-select>
 
-			<vs-select inline
+			<vs-select
+				inline
 				label-placeholder="Label-placeholder"
 				v-model:value="selectValue"
 				style="margin: 10px"
@@ -642,7 +643,8 @@
 				<vs-option label="Nodejs" value="7"> Nodejs </vs-option>
 			</vs-select>
 
-			<vs-select inline
+			<vs-select
+				inline
 				dropdown
 				placeholder="Dropdown"
 				v-model:value="selectValue2"
@@ -658,7 +660,12 @@
 				<vs-option label="Webpack" value="6"> Webpack </vs-option>
 				<vs-option label="Nodejs" value="7"> Nodejs </vs-option>
 			</vs-select>
-			<vs-select inline label="Group" placeholder="Group" v-model="value1">
+			<vs-select
+				inline
+				label="Group"
+				placeholder="Group"
+				v-model="value1"
+			>
 				<vs-option-group>
 					<template v-slot:title> Vuejs </template>
 					<vs-option label="Vuesax" value="1"> Vuesax </vs-option>
@@ -678,7 +685,8 @@
 				</vs-option-group>
 			</vs-select>
 
-			<vs-select inline
+			<vs-select
+				inline
 				v-for="(color, i) in colors"
 				:key="i"
 				:state="color.color"
@@ -699,18 +707,16 @@
 			<h4>Dropdown:</h4>
 			<hr />
 			aaa
-			<vs-dropdown vsTriggerClick>
-				<a class="a-icon">
-					Dropdown hover
-					<vs-icon class="" icon="expand_more"></vs-icon>
-				</a>
-
-				<vs-dropdown-menu>
-					<vs-dropdown-item> Option 1 </vs-dropdown-item>
-					<vs-dropdown-item> Option 2 </vs-dropdown-item>
-					<vs-dropdown-item divider> Option 3 </vs-dropdown-item>
-				</vs-dropdown-menu>
-			</vs-dropdown>
+			<vs-popper arrow>
+					<button> click me </button>
+					<template #content>
+						<vs-popup-menu>
+							<vs-popup-item> Test </vs-popup-item>
+							<vs-popup-item> Test 1 </vs-popup-item>
+							<vs-popup-item divider> Test 2 </vs-popup-item>
+						</vs-popup-menu>
+					</template>		
+			</vs-popper>
 		</div>
 		<div class="showcase-component">
 			<h4>Sidebar:</h4>
@@ -783,7 +789,7 @@
 							badge-color="danger"
 							badge-position="top-right"
 						>
-							<i class="bx bx-bell"></i> 
+							<i class="bx bx-bell"></i>
 
 							<template #badge> 28 </template>
 						</vs-avatar>
@@ -865,6 +871,7 @@
 import {
 	computed,
 	defineComponent,
+	provide,
 	reactive,
 	ref,
 	watch,
@@ -872,10 +879,12 @@ import {
 import * as components from "./components";
 import { vsButton } from "./components/vsButton";
 import notification from "./components/vsNotifications";
+import Popper from "vue3-popper"
 
 export default defineComponent({
 	components: {
 		...components,
+		Popper
 	},
 	data: () => ({
 		colors: [
@@ -926,6 +935,8 @@ export default defineComponent({
 				inpValue.value
 			);
 		});
+
+		provide("appRouter", null);
 
 		let justLoad = function () {
 			let notificationAttrs: any = {

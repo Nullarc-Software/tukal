@@ -23,6 +23,7 @@
     "vue": "^3.0.0",
     "vue-router": "^4.0.6",
     "vue-sfc-rollup": "^4.0.5",
+    "vue3-popper": "^0.1.0",
     "webpack": "^4.46.0"
   },
   "devDependencies": {
