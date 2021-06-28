@@ -23,7 +23,7 @@
 	</button>
 </template>
 <script lang="ts">
-import { defineComponent, inject, ref, Ref, watch } from "vue";
+import { defineComponent, inject, onMounted, ref, Ref, watch } from "vue";
 import { RouteLocationMatched, useRouter } from "vue-router";
 import VsIcon from "../vsIcon/vsIcon.vue";
 import vsComponent, { ComponentConstants } from "../vsComponent";
@@ -39,7 +39,7 @@ export default defineComponent({
 		value: { type: String },
 		id: { type: String },
 		arrow: { type: Boolean },
-	},
+	},	
 	setup(props, context) {
 		let parentValue = inject<any>("parentValue");
 		let handleClickItem = inject<Function>("handleClickItem");
@@ -68,7 +68,7 @@ export default defineComponent({
 					return route.path === props.to;
 				})
 			) {
-				internalActive.value = true;
+				internalActive.value = true;				
 				if (props.id) {
 					handleClickItem?.call(null, props.id);
 				}
@@ -79,6 +79,13 @@ export default defineComponent({
 			watch(router.currentRoute, () => {
 				handleRouteChange();
 			});
+
+		onMounted(() => {
+
+			//Need to handle route when component mounted not just on route change
+			handleRouteChange();
+
+		});
 
 		return {
 			parentValue,

@@ -732,8 +732,7 @@
 			<vs-button @click="isOpen = !isOpen"> Toggle Sidebar </vs-button>
 			<vs-sidebar
 				reduce
-				sticky
-				absolute
+								
 				v-model:value="sideBar"
 				:open="isOpen"
 			>

@@ -26,6 +26,7 @@
 		]"
 		v-on="listeners"
 		ref="sidebar"
+		v-bind="$attrs"
 	>
 		
 			<div v-if="$slots.logo" class="vs-sidebar__logo">
@@ -398,6 +399,7 @@ export default defineComponent({
 			justify-content: center;
 			width: 100%;
 			padding: 10px;
+			padding-bottom: 20px;
 		}
 
 		&__footer {

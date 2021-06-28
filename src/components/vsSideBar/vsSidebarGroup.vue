@@ -14,7 +14,7 @@
 				name="show"
 				v-if="openState"
 			>
-				<slot  />
+				<slot />
 			</div>
 		</transition>
 	</div>
@@ -27,33 +27,32 @@ export default defineComponent({
 	props: {
 		open: {
 			default: false,
-			type: Boolean
-		}
+			type: Boolean,
+		},
 	},
 	setup(props, context) {
 		let group = ref(true);
 		let openState = ref(false);
 		let sidebar_group = ref<HTMLDivElement>();
 		let content = ref<HTMLDivElement>();
-
 		let parentValue = inject<any>("parentValue");
 		let parentHandleClickItem = inject<Function>("handleClickItem");
 
-		const handleClickItem = function(id: string) {
+		const handleClickItem = function (id: string) {
 			parentHandleClickItem?.call(null, id);
 		};
 
-		const beforeEnter = function(el: any) {
+		const beforeEnter = function (el: any) {
 			el.style.height = 0;
 		};
 
-		const enter = function(el: any, done: any) {
+		const enter = function (el: any, done: any) {
 			const h = el.scrollHeight;
 			el.style.height = h - 1 + "px";
 			done();
 		};
 
-		const leave = function(el: any, done: any) {
+		const leave = function (el: any, done: any) {
 			el.style.minHeight = "0px";
 			el.style.height = "0px";
 		};
@@ -68,7 +67,7 @@ export default defineComponent({
 			() => props.open,
 			(val: boolean) => {
 				nextTick(() => {
-					const h = content.value?.scrollHeight;					
+					const h = content.value?.scrollHeight;
 					if (group.value) {
 						if (val) {
 							//parent.$refs.content.style.height = `${parent.$refs.content.scrollHeight + h -1}px`;
@@ -87,19 +86,18 @@ export default defineComponent({
 			beforeEnter,
 			parentValue,
 			group,
-			openState
+			openState,
 		};
-	}
+	},
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import "../../style/sass/_mixins";
 
 .vs-sidebar__group {
 	padding: 0px;
-	width: 100%;
-	min-width: 260px;
+	
 	position: relative;
 
 	&.open {
@@ -111,11 +109,11 @@ export default defineComponent({
 		}
 
 		> .vs-sidebar__group__header {
-			.vs-sidebar__item {
+			::v-deep(.vs-sidebar__item) {
 				opacity: 1;
 			}
 
-			.vs-sidebar__item__arrow {
+			::v-deep(.vs-sidebar__item__arrow) {
 				i {
 					transition: all 0.25s ease;
 					transform: rotate(180deg) !important;
@@ -150,14 +148,19 @@ export default defineComponent({
 			z-index: 60;
 		}
 
-		.vs-sidebar__item {
+		::v-deep(.vs-sidebar__item) {
 			background: -getColor("background");
 		}
 	}
 
 	> .vs-sidebar__group__header {
-		.vs-sidebar__item:hover {
-			padding-left: 0px;
+		::v-deep(.vs-sidebar__item):hover:not(.hasIcon) {
+			padding-left: 20px;
+		}
+		::v-deep(.vs-sidebar__item){
+			&.hasIcon:hover{
+				padding-left: 5px;
+			}
 		}
 	}
 }
