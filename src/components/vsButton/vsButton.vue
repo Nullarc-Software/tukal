@@ -67,7 +67,7 @@
 			v-if="$slots.animate"
 			:class="[
 				'vs-button__animate',
-				`vs-button__animate--${this.animationType}`
+				`vs-button__animate--${animationType}`
 			]"
 		>
 			<slot name="animate" />
@@ -121,7 +121,8 @@ export default defineComponent({
 		blank: { type: Boolean, default: false },
 		inline: { type: Boolean, default: false },
 		width: { type: String, default: null },
-		height: { type: String, default: null }
+		height: { type: String, default: null },
+	
 	},
 	emits: ["routeErr", "mouseover", "mouseout", "blur", "click"],
 	setup: function(props, context) {
@@ -181,8 +182,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
-@use "sass:color";
+<style lang="scss" scoped>
 @import "../../style/sass/_mixins";
 @import "../../style/sass/root";
 
@@ -669,7 +669,7 @@ export default defineComponent({
 
 .vs-button--transparent {
 	background: transparent;
-	color: -getColor("color");
+	color: -getColor("text");
 	overflow: hidden;
 
 	&::before {

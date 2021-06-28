@@ -48,6 +48,14 @@
 				<vs-icon>home </vs-icon>
 			</vs-button>
 			<vs-button
+				circle
+				transparent
+				
+				style="margin-right: 10px"
+			>
+				<vs-icon>home </vs-icon>
+			</vs-button>
+			<vs-button
 				square
 				type="filled"
 				color="primary"

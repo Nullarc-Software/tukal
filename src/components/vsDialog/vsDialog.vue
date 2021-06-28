@@ -195,7 +195,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 
 @import "../../style/sass/_mixins";
 
@@ -448,6 +448,10 @@ export default defineComponent({
     transition: all 0.25s ease;
     z-index: 200;
     border: 0px;
+
+    ::v-deep(.vs-button__content){
+        padding: 2px !important;
+    }
 
     i {
       width: 34px;

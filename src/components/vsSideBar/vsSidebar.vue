@@ -64,15 +64,17 @@ export default defineComponent({
 		relative: { default: false, type: Boolean },
 		absolute: { default: false, type: Boolean },
 		right: { default: false, type: Boolean },
-		background: { default: "background", type: String }
+		background: { default: "background", type: String },
+		expanded: { default: false, type: Boolean},
+		fixedExpandWidth: { default: null, type: Number}
 		
 	},
-	emits: ["update:open", "update:value"],
+	emits: ["update:open", "update:value", "update:expanded"],
 	provide() {
 		return {
 			parentValue: computed(() => this.value),
 			handleClickItem: this.handleClickItem,
-			reduce: computed(() => this.reduce)
+			reduced: computed(() => this.reduceInternal)
 		};
 	},
 	setup(props, context) {
@@ -99,10 +101,16 @@ export default defineComponent({
 		const listeners = computed(() => {
 			return {
 				mouseenter: function() {
-					if (props.hoverExpand) reduceInternal.value = false;
+					if (props.hoverExpand){
+						reduceInternal.value = false;
+						context.emit("update:expanded", true);
+					} 						
 				},
 				mouseleave: function() {
-					if (props.hoverExpand) reduceInternal.value = true;
+					if (props.hoverExpand){
+						reduceInternal.value = true;
+						context.emit("update:expanded", false);
+					}						
 				}
 			};
 		});
@@ -150,8 +158,21 @@ export default defineComponent({
 		);
 
 		onMounted(() => {
-			staticWidth.value = sidebar.value?.offsetWidth as number + 15;
+
+			if(!props.fixedExpandWidth)
+				staticWidth.value = sidebar.value?.offsetWidth as number + 15;
+			else
+			{
+				staticWidth.value = props.fixedExpandWidth;	
+				if(sidebar.value)		
+					sidebar.value.style.width = `${staticWidth.value}px`;
+			}				
+
 			reduceInternal.value = props.reduce;
+
+			if(reduceInternal.value){
+				context.emit("update:expanded", false);
+			}
 
 			if (props.background !== "background") {
 				setColor("background", props.background, sidebar.value, true);

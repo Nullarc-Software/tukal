@@ -232,7 +232,7 @@ export default defineComponent({
   &.activeOption {
     background: -getColor("color", 0.05);
     color: -getColor("color", 1);
-    pointer-events: none;
+    
   }
 
   // &:last-child
