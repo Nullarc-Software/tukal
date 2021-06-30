@@ -2,7 +2,7 @@
 	<div :class="['vs-card-content', `type-${type}`]">
 		<div
 			class="vs-card"
-			:class="{ fitContent: fitContent, content: content }"
+			:class="{ fitContent: fitContent, content: content}"
 			v-bind="$attrs"
 		>
 			<div
@@ -41,7 +41,8 @@ export default defineComponent({
 		},
 		content: { type: Boolean, default: false },
 		fitContent: { type: Boolean, default: false },
-		backgroundColor: { type: String, default: "0x00000011" }
+		backgroundColor: { type: String, default: "0x00000011" },
+		
 	},
 	setup(props, context) {}
 });
@@ -264,7 +265,10 @@ export default defineComponent({
 			&:hover {
 				box-shadow: 0px 0px 0px 0px
 					rgba(0, 0, 0, -var("shadow-opacity"));
-				transform: translate(0, 5px);
+
+				&:not(.content) {
+					transform: translate(0, 5px);
+				}				
 
 				.vs-card__content {
 					img {

@@ -47,12 +47,7 @@
 			>
 				<vs-icon>home </vs-icon>
 			</vs-button>
-			<vs-button
-				circle
-				transparent
-				
-				style="margin-right: 10px"
-			>
+			<vs-button circle transparent style="margin-right: 10px">
 				<vs-icon>home </vs-icon>
 			</vs-button>
 			<vs-button
@@ -600,6 +595,17 @@
 			</div>
 		</div>
 		<div class="showcase-component">
+			<h4>Radio:</h4>
+			<hr />
+
+			<vs-radio v-model="picked" val="1" > <template #icon>
+          <vs-icon>person</vs-icon>
+        </template> Option A </vs-radio>
+			<vs-radio v-model="picked" val="2"> Option B </vs-radio>
+			<vs-radio disabled v-model="picked" val="3"> Option C </vs-radio>
+			<vs-radio v-model="picked" val="4"> Option D </vs-radio>
+		</div>
+		<div class="showcase-component">
 			<h4>Select:</h4>
 			<hr />
 
@@ -716,26 +722,21 @@
 			<hr />
 			aaa
 			<vs-popper arrow>
-					<button> click me </button>
-					<template #content>
-						<vs-popup-menu>
-							<vs-popup-item> Test </vs-popup-item>
-							<vs-popup-item> Test 1 </vs-popup-item>
-							<vs-popup-item divider> Test 2 </vs-popup-item>
-						</vs-popup-menu>
-					</template>		
+				<button>click me</button>
+				<template #content>
+					<vs-popup-menu>
+						<vs-popup-item> Test </vs-popup-item>
+						<vs-popup-item> Test 1 </vs-popup-item>
+						<vs-popup-item divider> Test 2 </vs-popup-item>
+					</vs-popup-menu>
+				</template>
 			</vs-popper>
 		</div>
 		<div class="showcase-component">
 			<h4>Sidebar:</h4>
 			<hr />
 			<vs-button @click="isOpen = !isOpen"> Toggle Sidebar </vs-button>
-			<vs-sidebar
-				reduce
-								
-				v-model:value="sideBar"
-				:open="isOpen"
-			>
+			<vs-sidebar reduce v-model:value="sideBar" :open="isOpen">
 				<template #logo>
 					<img
 						src="https://vuesax.com/logos/logo-vuesax-logotipo-vuesax-png-3.png"
@@ -821,6 +822,9 @@
 				<template #on> Premium </template>
 			</vs-switch>
 		</div>
+
+		
+
 		<div class="showcase-component">
 			<h4>Navbar:</h4>
 			<hr />
@@ -886,12 +890,12 @@ import {
 import * as components from "./components";
 import { vsButton } from "./components/vsButton";
 import notification from "./components/vsNotifications";
-import Popper from "vue3-popper"
+import Popper from "vue3-popper";
 
 export default defineComponent({
 	components: {
 		...components,
-		Popper
+		Popper,
 	},
 	data: () => ({
 		colors: [
@@ -972,6 +976,12 @@ export default defineComponent({
 			console.log(selectValue.value);
 		});
 
+		let picked = ref("1");
+
+		watch(picked, () => {
+			console.log("picked: " + picked);
+		})
+
 		return {
 			active1,
 			checkBox1,
@@ -993,6 +1003,8 @@ export default defineComponent({
 			openNav,
 			selectValue1,
 			selectValue2,
+			radios1: "luis",
+			picked
 		};
 	},
 });

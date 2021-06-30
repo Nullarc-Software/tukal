@@ -212,7 +212,12 @@ export default defineComponent({
 
 	&.vs-component-dark {
 		&.vs-button--transparent {
-			color: -getColor("text") !important;
+
+			@if variable-exists("--vs-color"){
+				color: -getColor("color") !important;
+			} @else {
+				color: -getColor("text") !important;
+			}			
 		}
 	}
 

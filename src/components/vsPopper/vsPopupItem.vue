@@ -61,26 +61,11 @@ export default defineComponent({
 		let hoverx = ref(false);
 		let vsDropDownItem = ref(true);
 		let color = ref("");		
-		let parentColor = inject<string>("parentColor");
-
-		const closeParent = function () {
-			if (props.disabled) return;
-			context.emit("update:vsDropdownVisible", false);
-		};
-		const changeColor = function () {
-			if (parentColor) color.value = parentColor;
-		};
+		
+			
 		const giveColor = function (opacity = 1) {
 			return _color.rColor(color.value, opacity);
-		};
-
-		onMounted(() => {
-			changeColor();
-		});
-
-		onUpdated(() => {
-			changeColor();
-		});
+		};		
 
 		return {
 			hoverx,

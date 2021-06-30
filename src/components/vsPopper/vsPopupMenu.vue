@@ -21,6 +21,7 @@ import {
 	defineComponent,
 	getCurrentInstance,
 	onBeforeUnmount,	
+	onMounted,	
 	reactive,
 	ref,
 	toRefs,
@@ -31,6 +32,7 @@ export default defineComponent({
 	components: {
 		Popper,
 	},
+	emits: ["remove", "shown"],
 	setup(props, context) {
 		let data = reactive({
 			dropdownVisible: false,
@@ -48,15 +50,16 @@ export default defineComponent({
 			context.emit("remove", instance);
 		});
 
+		onMounted(() => {
+			context.emit("shown", instance);
+		})
+
 		return {
 			...toRefs(data),
 			insertBody,
 			dropOptions,
 		};
-	},
-	beforeDestroy() {
-		this.$el.parentNode.removeChild(this.$el);
-	},
+	},	
 });
 </script>
 
