@@ -889,7 +889,7 @@ import {
 } from "@vue/runtime-core";
 import * as components from "./components";
 import { vsButton } from "./components/vsButton";
-import notification from "./components/vsNotifications";
+import notification, { notificationAttributes } from "./components/vsNotifications";
 import Popper from "vue3-popper";
 
 export default defineComponent({
@@ -950,22 +950,24 @@ export default defineComponent({
 		provide("appRouter", null);
 
 		let justLoad = function () {
-			let notificationAttrs: any = {
+			let notificationAttrs: notificationAttributes = {
 				title: "Documentation Vuesax 4.0+",
 				text: `These documents refer to the latest version of vuesax (4.0+),
 					to see the documents of the previous versions you can do it here 👉 Vuesax3.x`,
 				flat: true,
+				
 				onClickClose: function () {
 					console.log("notif closed");
 				},
-				onclick: function () {
+				onClick: function () {
 					console.log("clicked");
 				},
 				color: "#7d33ff",
+				progressAuto: true
 			};
 
 			let notif = new notification(notificationAttrs);
-			notificationAttrs.position = "bottom-left";
+			notificationAttrs.position = "top-center";
 			notificationAttrs.color = "primary";
 			notificationAttrs.sticky = true;
 			notificationAttrs.flat = false;
