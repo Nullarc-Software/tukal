@@ -5,6 +5,9 @@
 			:class="{ fitContent: fitContent, content: content}"
 			v-bind="$attrs"
 		>
+			<div v-if="type == '6'" class="vs-card__header">
+				<slot name="header" />
+			</div>
 			<div
 				v-if="$slots.content"
 				:class="['vs-card__content']"
@@ -278,6 +281,25 @@ export default defineComponent({
 			}
 		}
 	}
+
+	&.type-6 {
+		.vs-card {
+			&:hover {
+				box-shadow: 0px 0px 0px 0px
+					rgba(0, 0, 0, -var("shadow-opacity"));
+
+				&:not(.content) {
+					transform: translate(0, 5px);
+				}				
+
+				.vs-card__content {
+					img {
+						transform: scale(1.15);
+					}
+				}
+			}
+		}
+	}
 }
 
 .vs-card {
@@ -320,6 +342,12 @@ export default defineComponent({
 			margin: 0px;
 			font-size: 1.1rem;
 		}
+	}
+
+	&__header {
+		display: flex;
+		justify-content: flex-end;
+		padding: 5px;
 	}
 
 	&__interactions {
