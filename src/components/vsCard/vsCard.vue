@@ -1,8 +1,10 @@
 <template>
-	<div :class="['vs-card-content', `type-${type}`]">
+	<div class="vs-card-content" :class="{
+		[`type-${type}`]: true, 'fillParent' : fillParent}"
+		>
 		<div
 			class="vs-card"
-			:class="{ fitContent: fitContent, content: content}"
+			:class="{ fitContent: fitContent, content: content, fillParent: fillParent}"
 			v-bind="$attrs"
 		>
 			<div v-if="type == '6'" class="vs-card__header">
@@ -44,6 +46,7 @@ export default defineComponent({
 		},
 		content: { type: Boolean, default: false },
 		fitContent: { type: Boolean, default: false },
+		fillParent: { type: Boolean, default: false },
 		backgroundColor: { type: String, default: "0x00000011" },
 		
 	},
@@ -56,7 +59,12 @@ export default defineComponent({
 @import "../../style/sass/root";
 
 .vs-card-content {
-	--vs-color: var(--vs-primary);
+	--vs-color: var(--vs-primary);	
+
+	&.fillParent {
+		width: 100% !important;
+		height: 100% !important;
+	}
 
 	&.type-5 {
 		.vs-card {
@@ -283,7 +291,30 @@ export default defineComponent({
 	}
 
 	&.type-6 {
+
+		
 		.vs-card {
+
+			display: flex;
+			flex-direction: column;
+
+			&__content{
+				flex-grow: 1;
+				align-items: center;
+			}
+
+			&__text {
+				
+				bottom: 0;
+				display: flex;
+				flex-direction: column;
+				width: 100%;
+
+				.vs-card__title{
+					display: flex;
+				}
+			}
+
 			&:hover {
 				box-shadow: 0px 0px 0px 0px
 					rgba(0, 0, 0, -var("shadow-opacity"));
@@ -307,7 +338,7 @@ export default defineComponent({
 	color: -getColor("text");
 	width: 100%;
 
-	&:not(.fitContent) {
+	&:not(.fitContent):not(.fillParent) {
 		max-width: 350px;
 	}
 
@@ -384,10 +415,18 @@ export default defineComponent({
 		}
 	}
 
-	&:not(.fitContent) {
+	&:not(.fitContent):not(.fillParent) {
 		.vs-card__content {
 			max-height: 250px;
 		}
+	}
+
+	&.fillParent {
+		width: 100% !important;
+		height: 100% !important;
+
+		
+
 	}
 
 	&.fitContent {

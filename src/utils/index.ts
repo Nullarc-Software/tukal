@@ -112,6 +112,10 @@ const setColor = (colorName: string, color: string, el: any, addClass?: boolean)
   }
 }
 
+const getApplyColor = (color: string) => {
+  return `rgb(${getColor(color)})`;
+}
+
 const getColor = (color: string) => {
   function hexToRgb(hex: string) {
     const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i
@@ -263,5 +267,6 @@ export {
   removeBody,
   setCords,
   setCordsPosition,
-  getRouter
+  getRouter,
+  getApplyColor
 }

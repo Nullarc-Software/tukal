@@ -52,7 +52,7 @@
 			['--vs-color-secondary']: colorSecondary
 				? getColor(colorSecondary)
 				: '',
-			['--vs-color-text']: textColor ? getColor(textColor) : '',
+			['--vs-button-text-color']: textColor ? getColor(textColor) : '',
 			width: width,
 			height: height
 		}"
@@ -192,7 +192,7 @@ export default defineComponent({
 	--vs-button-padding: 8px 12px;
 	--vs-button-margin: 5px;
 	--vs-button-border-radius: 12px;
-	--vs-button-text-color: #fff;
+	--vs-button-text-color: 255, 255, 255;
 	border: 0px;
 	margin: 5px;
 	border-radius: -var(button-border-radius);
@@ -208,7 +208,7 @@ export default defineComponent({
 	outline: none;
 	font-size: 0.8rem;
 	box-sizing: border-box;
-	color: -getColor("color-text");
+	color: -getColor("button-text-color");
 
 	&.vs-component-dark {
 		&.vs-button--transparent {
@@ -471,7 +471,7 @@ export default defineComponent({
 	@debug "divider offset: #{color}";
 
 	background: -getColor("color", 1);
-	color: #fff;
+	color: -getColor("button-text-color", 1);
 
 	&.vs-button--active {
 		box-shadow: 0px 10px 20px -10px -getColor("color", 1);

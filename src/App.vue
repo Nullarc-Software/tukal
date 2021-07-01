@@ -10,7 +10,8 @@
 			<vs-button success @click="justLoad"> Open Notification </vs-button>
 			<vs-button
 				type="filled"
-				color="secondary"
+				color="danger"
+				textColor="#000"
 				style="margin-right: 10px"
 			>
 				Simple Button

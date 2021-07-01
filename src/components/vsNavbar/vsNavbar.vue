@@ -4,7 +4,7 @@
 		class="vs-navbar-content"
 		:style="{
 			['--vs-color']: color ? getColor(color) : '',
-			'z-index': zIndex
+			'z-index': zIndex,
 		}"
 		:class="[
 			{
@@ -17,7 +17,7 @@
 				paddingScroll: paddingScroll,
 				paddingScrollActive: paddingScrollActive,
 				vsNavbarSquare: square,
-				leftAligned: leftAligned
+				leftAligned: leftAligned,
 			},
 			// colors
 			{ [`vs-component--primary`]: !!primary },
@@ -25,7 +25,7 @@
 			{ [`vs-component--warn`]: !!warn },
 			{ [`vs-component--success`]: !!success },
 			{ [`vs-component--dark`]: !!dark },
-			{ [`vs-component--is-color`]: !!isColor }
+			{ [`vs-component--is-color`]: !!isColor },
 		]"
 		ref="navbarContent"
 	>
@@ -56,21 +56,27 @@
 			:class="['vs-navbar__line', { notTransition: lineNotTransition }]"
 			:style="{
 				left: `${leftLine}px`,
-				width: `${widthLine}px`
+				width: `${widthLine}px`,
 			}"
 		></div>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, getCurrentInstance, nextTick, onMounted, ref, watch } from "vue";
+import {
+	defineComponent,
+	getCurrentInstance,
+	nextTick,
+	onMounted,
+	ref,
+	watch,
+} from "vue";
 import _color from "../../utils/color";
 import vsComponent from "../vsComponent";
 
-class NavbarConstants{
+class NavbarConstants {
 	public static zIndex = 9000;
 }
-
 
 export default defineComponent({
 	name: "VsNavbar",
@@ -90,17 +96,16 @@ export default defineComponent({
 		leftCollapsed: { default: false, type: Boolean },
 		centerCollapsed: { default: false, type: Boolean },
 		rightCollapsed: { default: false, type: Boolean },
-		targetScroll: { type: String, default: null }
+		targetScroll: { type: String, default: null },
 	},
 	provide() {
 		return {
-
 			setLeftLine: this.setLeftLine,
 			setWidthLine: this.setWidthLine,
-			setModel: this.setModel
-		}
+			setModel: this.setModel,
+		};
 	},
-	emits: [ "collapsed", "update:value" ],
+	emits: ["collapsed", "update:value"],
 	setup(props, context) {
 		let leftLine = ref(0);
 		let widthLine = ref(0);
@@ -116,26 +121,30 @@ export default defineComponent({
 		let left = ref<HTMLDivElement>();
 		let right = ref<HTMLDivElement>();
 		let center = ref<HTMLDivElement>();
-		let instance = getCurrentInstance();		
+		let instance = getCurrentInstance();
 		let zIndex = NavbarConstants.zIndex--;
 
 		let idToLineHandler: any = {};
-		let activeId = ""
+		let activeId = "";
 
-		const setModel = function(id: string, handleFunc: Function) {
-			context.emit("update:value", id);	
-			idToLineHandler[id]= handleFunc;
-			activeId = id;	
+		const setModel = function (id: string, handleFunc: Function) {
+			context.emit("update:value", id);
+			idToLineHandler[id] = handleFunc;
+			activeId = id;
 		};
 
 		watch(
-			[ () => props.hideScroll, () => props.paddingScroll, () => props.shadowScroll],
+			[
+				() => props.hideScroll,
+				() => props.paddingScroll,
+				() => props.shadowScroll,
+			],
 			() => {
 				handleScroll();
 			}
 		);
 
-		const setLeftLine = function(left: any, transition: boolean = true) {
+		const setLeftLine = function (left: any, transition: boolean = true) {
 			if (!transition) {
 				lineNotTransition.value = true;
 			} else {
@@ -146,13 +155,13 @@ export default defineComponent({
 			});
 		};
 
-		const setWidthLine = function(width: any) {
+		const setWidthLine = function (width: any) {
 			nextTick(() => {
 				widthLine.value = width;
 			});
 		};
 
-		const scroll = function(evt: any) {
+		const scroll = function (evt: any) {
 			const scrollTopTemp = props.targetScroll
 				? document.querySelector(props.targetScroll)?.scrollTop
 				: window.pageYOffset;
@@ -184,7 +193,7 @@ export default defineComponent({
 			scrollTop.value = scrollTopTemp as number;
 		};
 
-		const handleScroll = function() {
+		const handleScroll = function () {
 			if (props.hideScroll || props.shadowScroll || props.paddingScroll) {
 				if (props.targetScroll) {
 					const scrollElement = document.querySelector(
@@ -197,13 +206,12 @@ export default defineComponent({
 			}
 		};
 
-		const handleResize = function() {
-
+		const handleResize = function () {
 			const active: HTMLElement = navbarContent.value?.querySelector(
 				".vs-navbar__item.active"
 			) as HTMLElement;
 
-			if (active) {				
+			if (active) {
 				idToLineHandler[activeId].call(null, null);
 			} else {
 				widthLine.value = 0;
@@ -236,25 +244,29 @@ export default defineComponent({
 
 		onMounted(() => {
 			setTimeout(() => {
-				const leftEl: any = left.value;
-				const centerEl: any = center.value;
-				const rightEl: any = right.value;
-				collapsedWidth.value =
-					leftEl.offsetWidth +
-					centerEl.offsetWidth +
-					rightEl.offsetWidth +
-					150;
-				const navbar: any = navbarContent.value;
-				if (navbar.offsetWidth < collapsedWidth.value) {
-					collapsedForced.value = true;
-					context.emit("collapsed", true);
-					widthLine.value = 0;
-					handleResize();
+				try {
+					const leftEl: any = left.value;
+					const centerEl: any = center.value;
+					const rightEl: any = right.value;
+					collapsedWidth.value =
+						leftEl.offsetWidth +
+						centerEl.offsetWidth +
+						rightEl.offsetWidth +
+						150;
+					const navbar: any = navbarContent.value;
+					if (navbar.offsetWidth < collapsedWidth.value) {
+						collapsedForced.value = true;
+						context.emit("collapsed", true);
+						widthLine.value = 0;
+						handleResize();
+					}
+				} catch (error) {
+					console.log(error);
 				}
 			}, 150);
 
 			handleScroll();
-			window.addEventListener("resize", handleResize);					
+			window.addEventListener("resize", handleResize);
 		});
 
 		return {
@@ -274,20 +286,18 @@ export default defineComponent({
 			left,
 			right,
 			center,
-			zIndex
-
+			zIndex,
 		};
-	}
+	},
 });
 </script>
 <style lang="scss">
 @import "../../style/sass/_mixins";
 
 .vs-navbar-content {
-
 	--vs-color: var(--vs-background);
 	width: 100%;
-	position: relative;	
+	position: relative;
 	top: 0px;
 	left: 0px;
 	width: 100%;
@@ -324,20 +334,17 @@ export default defineComponent({
 	}
 
 	&.leftAligned {
-
 		.vs-navbar {
 			justify-content: left !important;
 
-			&__right{
-				margin-left: auto ;
+			&__right {
+				margin-left: auto;
 			}
 
 			&__center {
 				margin-left: 2%;
 			}
-
 		}
-		
 	}
 
 	&.fixed {
@@ -379,14 +386,12 @@ export default defineComponent({
 	}
 
 	&__right {
-		
 		display: inline-flex;
 		align-items: center;
 		justify-content: flex-end;
 	}
 
 	&__center {
-
 		display: inline-flex;
 		align-items: center;
 		justify-content: flex-start;
