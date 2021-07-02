@@ -81,6 +81,10 @@ export default /*#__PURE__*/ defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		timeout: {
+			type: Number,
+			default: -1,
+		},
 		/**
 		 * Add an arrow to the popper
 		 */
@@ -145,6 +149,13 @@ export default /*#__PURE__*/ defineComponent({
 		watch(isOpen, (isOpen) => {
 			if (isOpen) {
 				emit("show:popper");
+
+				if(props.timeout > 0){
+					setTimeout(() => {
+						hide();
+					}, props.timeout);
+				}
+
 			} else {
 				emit("hide:popper");
 			}

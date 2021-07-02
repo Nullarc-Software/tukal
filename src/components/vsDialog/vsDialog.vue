@@ -164,7 +164,7 @@ export default defineComponent({
 		);
 
 		const click = function(evt) {
-			if (!evt.target.closest(".vs-dialog") && !props.preventClose) {
+			if (!evt.target.closest(".vs-dialog")  && !props.preventClose) {
 				context.emit("update:value", !props.value);
 				context.emit("close");
 			}

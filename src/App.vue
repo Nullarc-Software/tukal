@@ -937,7 +937,7 @@ export default defineComponent({
 		let opts: any = reactive([]);
 		let inpValue = ref("");
 		let navValue = ref("guide");
-		let selectValue = ref(["1", "3", "5"]);
+		let selectValue = ref([]);
 		let selectValue2 = ref(null);
 		let selectValue1 = ref(null);
 

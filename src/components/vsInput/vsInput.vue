@@ -396,7 +396,7 @@ export default defineComponent({
 			visibility: visible;
 			pointer-events: auto;
 			transform: translate(-0.5%, -77%);
-			font-size: 0.75rem;
+			font-size: 0.8rem;
 		}
 	}
 
@@ -424,7 +424,7 @@ export default defineComponent({
 				visibility: visible;
 				pointer-events: auto;
 				transform: translate(-3px, -80%);
-				font-size: 0.75rem;
+				font-size: 0.8rem;
 			}
 		}
 
@@ -433,7 +433,7 @@ export default defineComponent({
 			visibility: visible;
 			pointer-events: auto;
 			transform: translate(-2px, -77%);
-			font-size: 0.75rem;
+			font-size: 0.8rem;
 		}
 	}
 

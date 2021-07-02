@@ -48,7 +48,7 @@
 				v-on="inputListener"
 			/>
 			<label
-				v-if="!multiple && (label || labelPlaceholder)"
+				v-if="(label || labelPlaceholder)"
 				class="vs-select__label"
 				:for="uid"
 				:class="{
@@ -75,7 +75,9 @@
 				ref="chips"
 				v-on="chipsListener"
 			>
-				<component :is="item" v-for="item of getChips" :key="item" />
+				<div v-for="item of getChips" :key="item" >
+					<component :is="item" />
+				</div>				
 				<input
 					v-if="filter"
 					class="vs-select__chips__input"
@@ -111,14 +113,14 @@
 					]"
 					@mouseleave="
 						() => {
-							this.targetSelect = false;
-							this.targetSelectInput = false;
+							targetSelect = false;
+							targetSelectInput = false;
 						}
 					"
 					@mouseenter="
 						() => {
-							this.targetSelect = true;
-							this.targetSelectInput = true;
+							targetSelect = true;
+							targetSelectInput = true;
 						}
 					"
 				>
@@ -401,13 +403,13 @@ export default defineComponent({
 						id: ++id
 					},
 					[
-						item.label,
+						h("span",{}, item.label),
 						!isCollapse &&
 							h(
 								"span",
 								{
 									class: "vs-select__chips__chip__close",									
-									onClick: () => {
+									onClick: (evt) => {										
 										setTimeout(() => {
 											targetClose.value = false;
 										}, 100);
@@ -418,6 +420,7 @@ export default defineComponent({
 											}
 										}
 										clickOption(item.value, item.label);
+										evt.stopPropagation();									
 									},
 									onMouseLeave: () => {
 										targetClose.value = false;
@@ -987,8 +990,8 @@ export default defineComponent({
 			opacity: 1;
 			visibility: visible;
 			pointer-events: auto;
-			transform: translate(-3%, -28px) !important;
-			font-size: 0.75rem;
+			transform: translate(-1%, -30px) !important;
+			font-size: 0.8rem;
 			margin-top: 0px !important;
 		}
 
@@ -1033,7 +1036,7 @@ export default defineComponent({
 				visibility: visible;
 				pointer-events: auto;
 				transform: translate(-3%, -28px) !important;
-				font-size: 0.75rem;
+				font-size: 0.8rem;
 				margin-top: 0px !important;
 			}
 		}
@@ -1259,7 +1262,7 @@ export default defineComponent({
 				visibility: visible;
 				pointer-events: auto;
 				transform: translate(-3%, -28px) !important;
-				font-size: 0.75rem;
+				font-size: 0.8rem;
 				margin-top: 0px !important;
 			}
 		}
@@ -1269,7 +1272,7 @@ export default defineComponent({
 			visibility: visible;
 			pointer-events: auto;
 			transform: translate(-3%, -28px) !important;
-			font-size: 0.75rem;
+			font-size: 0.8rem;
 			margin-top: 0px !important;
 		}
 	}
