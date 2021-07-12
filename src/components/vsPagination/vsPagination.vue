@@ -1,312 +1,730 @@
 <template>
-  <vs-row
-    :vs-justify="description ? 'space-between' : 'center'"
-    vs-type="flex"
-    vs-w="12">
-    <vs-col
-      v-if="description"
-      class="vs-pagination--mb"
-      vs-type="flex"
-      vs-justify="flex-start"
-      vs-align="center"
-      vs-lg="6"
-      vs-sm="12"
-      vs-xs="12"
-    >
-      <div>
-        <span
-          style="margin-right:5px"
-        >
-          {{ descriptionTitle }}: {{ minRows }} - {{ maxRows }} {{ descriptionConnector }} {{ sizeArray }} | {{ descriptionBody }}:
-
-        </span>
-        <ul class="vs-pagination--array">
-          <li
-            v-for="(row,index) in descriptionItems"
-            :key="index">
-            <span
-              :style="styleDescription"
-              :class="[`vs-description-${color}`,{ 'vs-pagination--bold': (index==indexRows)}]"
-              @click="changeRowMaxItems(index)">
-              {{ row }}
-            </span>
-            <span
-              v-if="index != (descriptionItems.length - 1)">
-              ,
-            </span>
-          </li>
-        </ul>
-      </div>
-    </vs-col>
-    <vs-col
-      :vs-lg="description ? 6 : 12"
-      class="vs-pagination--mb"
-      vs-type="flex"
-      vs-justify="flex-end"
-      vs-align="center"
-      vs-sm="12"
-      vs-xs="12" >
-      <div
-        :style="stylePagination"
-        :class="[`vs-pagination-${color}`]"
-        class="con-vs-pagination">
-        <nav class="vs-pagination--nav">
-          <button
-            :class="{disabled:current <= 1 ? 'disabled' : null}"
-            :disabled="current === 1"
-            class="vs-pagination--buttons btn-prev-pagination vs-pagination--button-prev"
-            @click="prevPage">
-            <vs-icon
-              :icon-pack="iconPack"
-              :icon="prevIcon ? prevIcon : defaultPrevIcon"
-            ></vs-icon>
-          </button>
-          <ul class="vs-pagination--ul">
-            <li
-              v-for="(page, index) in pages"
-              :key="index"
-              :class="{'is-current': page == current}"
-              class="item-pagination vs-pagination--li"
-              @click="goTo(page)">
-              <span>
-                {{ page }}
-              </span>
-
-              <div class="effect"></div>
-            </li>
-          </ul>
-          <!-- :style="styleBtn" -->
-          <button
-            :class="{disabled:current === total ? 'disabled' : null}"
-            :disabled="current === total"
-            class="vs-pagination--buttons btn-next-pagination vs-pagination--button-next"
-            @click="nextPage">
-            <vs-icon
-              :icon-pack="iconPack"
-              :icon="nextIcon ? nextIcon : defaultNextIcon"
-            ></vs-icon>
-          </button>
-          <input
-            v-if="goto"
-            v-model="go"
-            :max="total"
-            class="vs-pagination--input-goto"
-            min="1"
-            type="number"
-            @change="goTo">
-        </nav>
-      </div>
-    </vs-col>
-  </vs-row>
+	<div
+		class="vs-pagination-content"
+		:style="{
+			['--vs-getColor']: color ? getColor : '',
+		}"
+		:class="[
+			{
+				buttonsDotted: buttonsDotted,
+				circle: circle,
+				square: square,
+				disabled: disabled,
+				notMargin: notMargin,
+			},
+			{
+				[`vs-component--primary`]:
+					!danger && !success && !warn && !dark && !color,
+			},
+			{ [`vs-component--danger`]: !!danger },
+			{ [`vs-component--warn`]: !!warn },
+			{ [`vs-component--success`]: !!success },
+			{ [`vs-component--dark`]: !!dark },
+		]"
+	>		
+		<button
+			v-if="!notArrows"
+			class="vs-pagination__arrow prev"			
+			:disabled="infinite ? false : val <= 1"
+			@click="prevClicked"
+		>
+			<slot v-if="$slots.arrowPrev" name="arrowPrev" />
+			<vs-icon :style="{
+				cursor: 'pointer',
+				display: 'inline-flex',
+				'align-self': 'center',
+				'justify-content': 'center',
+			}" v-else>keyboard_arrow_left</vs-icon>
+		</button>
+		<slot v-if="$slots.default" />
+		<div
+			class="vs-pagination"
+			ref="pagination"
+			v-if="!onlyArrows && !$slots.default"
+		>
+			<component :is="item" v-for="item of getPages" :key="item" />			
+		</div>
+		<button
+			v-if="!notArrows"
+			class="vs-pagination__arrow next"
+			:disabled="infinite ? false : val >= length"
+			@click="nextClicked"
+		>
+			<slot v-if="$slots.arrowNext" name="arrowNext" />
+			<vs-icon :style="{
+				cursor: 'pointer',
+				display: 'inline-flex',
+				'align-self': 'center',
+				'justify-content': 'center',
+			}" v-else>keyboard_arrow_right</vs-icon>
+		</button>
+		<div v-if="progress" class="vs-pagination__progress">
+			<div class="progress" :style="{ width: `${getProgress}%` }"></div>
+		</div>
+	</div>
 </template>
-<script>
-import _color from '../../utils/color'
+<script lang="ts">
+import { computed, defineComponent, h, nextTick, ref, watch } from "vue";
+import _color from "../../utils/color";
+import VsIconsArrow from "../../icons/arrow";
+import vsComponent from "../vsComponent";
 
-export default {
-  name: 'VsPagination',
-  props:{
-    color:{
-      type:String,
-      default:'primary'
-    },
-    total:{
-      type:Number,
-      required:true
-    },
-    sizeArray:{
-      type:Number,
-      required:false
-    },
-    maxItems: {
-      type:[Number, String],
-      required:false
-    },
-    value:{
-      type:Number,
-      required:true,
-      default: 1
-    },
-    max:{
-      type:Number,
-      default:9
-    },
-    goto:{
-      type:Boolean
-    },
-    type:{
-      type:String
-    },
-    prevIcon:{
-      type:String,
-    },
-    nextIcon:{
-      type:String,
-    },
-    iconPack:{
-      type:String,
-      default:'material-icons'
-    },
-    description:{
-      default: false,
-      type: Boolean
-    },
-    descriptionItems:{
-      default: () => [],
-      type: Array
-    },
-    descriptionTitle: {
-      type:String,
-      default:'Registries'
-    },
-    descriptionConnector: {
-      type:String,
-      default:'of'
-    },
-    descriptionBody: {
-      type:String,
-      default:'Pages'
-    },
-  },
-  data: () => ({
-    pages: [],
-    current: 0,
-    go: 0,
-    prevRange: '',
-    nextRange: '',
-    hoverBtn1: false,
-    minRows: 0,
-    maxRows: 0,
-    indexRows: 0,
-  }),
-  computed: {
-    defaultNextIcon() {
-      if(this.$vs.rtl) return 'chevron_left'
-      return 'chevron_right'
-    },
-    defaultPrevIcon() {
-      if(this.$vs.rtl) return 'chevron_right'
-      return 'chevron_left'
-    },
-    stylePagination () {
-      let style = {}
-      if (!_color.isColor(this.color)) {
-        style = {
-          '--vs-color-pagination': _color.getColor(this.color),
-          '--vs-color-pagination-alpha': _color.getColor(this.color,.5)
-        }
-      }
-      return style
-    },
-    styleDescription () {
-      return {
-        'cursor': 'pointer',
-      }
-    },
-  },
-  watch: {
-    current(val) {
-      this.getPages()
-      this.calculateMinMax(val)
-      this.$emit('input', this.current)
-      this.$emit('change', this.current)
-    },
-    total() {
-      this.getPages()
-    },
-    max() {
-      this.getPages()
-    },
-    value(val) {
-      const pageNum = val < 1 ? 1 : (val <= this.total ? val : this.total)
-      this.goTo(pageNum)
-    },
-  },
+export default defineComponent({
+	name: "VsPagination",
+	extends: vsComponent,
+	props: {
+		modelValue: { type: Number, default: 1 },
+		infinite: { default: false, type: Boolean },
+		progress: { default: false, type: Boolean },
+		notMargin: { default: false, type: Boolean },
+		buttonsDotted: { default: false, type: Boolean },
+		notArrows: { default: false, type: Boolean },
+		onlyArrows: { default: false, type: Boolean },
+		circle: { default: false, type: Boolean },
+		square: { default: false, type: Boolean },
+		disabled: { default: false, type: Boolean },
+		disabledItems: { default: (): any => [], type: Array },
+		loadingItems: { default: (): any => [], type: Array },
+		length: { default: 1, type: Number },
+		max: { default: 9, type: Number },
+		dottedNumber: { default: 5, type: Number },
+	},
+	setup(props, context) {
+		let val = ref(0);
+		let leftActive = ref(42);
+		let activeClassMove = ref(false);
+		let pagination = ref<HTMLDivElement>();
 
-  async mounted () {
-    this.current = this.go = this.value
-    await this.calculateMinMax(this.current)
-    this.indexRows = this.descriptionItems.indexOf(this.maxItems)
-    this.getPages()
-  },
+		const getProgress = computed(() => {
+			let percent = 0;
+			if (props.modelValue)
+				percent = (props.modelValue * 100) / props.length;
 
-  methods:{
-    async changeRowMaxItems (index) {
-      this.indexRows = index
-      await this.$emit('changeMaxItems', index)
-      await this.calculateMinMax(this.current)
-      this.current = 1
-    },
-    async calculateMinMax (val) {
-      this.maxRows = ( (val * this.maxItems) <= this.sizeArray ) ? val * this.maxItems : this.sizeArray
-      this.minRows = ( (val * this.maxItems) <= this.sizeArray ) ? (this.maxRows - this.maxItems) + 1 : ((this.current - 1) * this.maxItems) + 1
-    },
-    isEllipsis(page) {
-      return page === '...'
-    },
-    goTo(page) {
-      if(page === '...') {
-        return
-      }
-      if (typeof page.target === 'undefined') {
-        this.current = page
-      } else {
-        const value  = parseInt(page.target.value, 10)
-        this.go      = (
-          value < 1 ? 1 : (value <= this.total ? value : this.total)
-        )
-        this.current = this.go
-      }
-    },
-    getPages() {
-      if (this.total <= this.max) {
-        let pages = this.setPages(1, this.total)
-        this.pages = pages
-      }
-      const even     = this.max % 2 === 0 ? 1 : 0
-      if(this.total < 6) {
-        this.prevRange = Math.floor(this.max / (this.max/2))
-      } else {
-        this.prevRange = Math.floor(this.max / 2)
-      }
-      this.nextRange = this.total - this.prevRange + 1 + even
+			return percent;
+		});
 
-      if (this.current >= this.prevRange && this.current <= this.nextRange) {
-        const start = this.current - this.prevRange + 2
-        const end   = this.current + this.prevRange - 2 - even
+		const setValuePage = function (NumberPage: number) {
+			context.emit("update:modelValue", NumberPage);
+		};
 
-        this.pages = [1, '...', ...this.setPages(start, end), '...', this.total]
-      } else if (this.total < 6) {
-        this.pages = [
-          ...this.setPages(1, this.total)
-        ]
-      } else {
-        this.pages = [
-          ...this.setPages(1, this.prevRange),
-          '...',
-          ...this.setPages(this.nextRange, this.total)
-        ]
-      }
+		const renderDotted = function (text: string = "...") {
+			const dotted = h(
+				"div",
+				{					
+					class: {
+						"vs-pagination__dotted": true,
+						next:
+							props.modelValue == props.length
+								? false
+								: text == "...>",
+					},
+					style: {
+						cursor: 'pointer'
+					},
+					onClick: (evt: any) => {
+							let newVal = (
+								props.modelValue == props.length
+									? false
+									: text == "...>"
+							)
+								? (val.value += props.dottedNumber)
+								: (val.value -= props.dottedNumber);
+							if (newVal > props.length) {
+								newVal = props.length;
+							} else if (newVal < 1) {
+								newVal = 1;
+							}
+							setValuePage(newVal);
+						},					
+				},
+				[
+					h(
+						"span",
+						{
+							class: "dotted",
+						},
+						[`...`]
+					),
+					h(
+						"span",
+						{
+							class: "con-arrows",
+						},
+						[h(VsIconsArrow), h(VsIconsArrow)]
+					),
+				]
+			);
 
-    },
-    setPages(start, end) {
-      const setPages = []
+			return dotted;
+		};
 
-      for (start > 0 ? start : 1; start <= end; start++) {
-        setPages.push(start)
-      }
+		const isDisabledItem = function (item: number) {
+			return props.disabledItems.indexOf(item) !== -1;
+		};
 
-      return setPages
-    },
-    nextPage() {
-      if(this.current < this.total) {
-        this.current++
-      }
-    },
-    prevPage() {
-      if(this.current > 1) {
-        this.current--
-      }
-    }
-  }
-}
+		const isLoadingItem = function (item: number) {
+			return props.loadingItems.indexOf(item) !== -1;
+		};
+
+		const renderButton = function (NumberPage: number = 1) {
+			const button = h(
+				"button",
+				{
+					ref: `btn${NumberPage}`,					
+					class: {
+						[`vs-pagination__button pagination-btn-${NumberPage}`]: true,
+						active: NumberPage == props.modelValue,
+						"vs-pagination__active" : NumberPage == props.modelValue,
+						prevActive: NumberPage == props.modelValue - 1,
+						nextActive: NumberPage == props.modelValue + 1,
+						disabled: isDisabledItem(NumberPage),
+						loading: isLoadingItem(NumberPage),
+					},
+					onClick: (evt: any) => {
+							setValuePage(NumberPage);
+					},					
+				},
+				props.buttonsDotted ? "" : `${NumberPage}`
+			);
+
+			return button;
+		};
+
+		const renderButtons = function (array: any) {
+			const buttons: any[] = [];
+
+			array.forEach((item: any) => {
+				if (item === "...>" || item === "<...") {
+					buttons.push(renderDotted(item));
+				} else {
+					buttons.push(renderButton(item));
+				}
+			});
+
+			return buttons;
+		};
+
+		const getButtons = function (start: number = 1, end: number = 6) {
+			const buttons: any[] = [];
+			for (start > 0 ? start : 1; start <= end; start++) {
+				buttons.push(start);
+			}
+
+			return buttons;
+		};
+
+		const isMobile = computed(() => {
+			let isMobile = false;
+			/* if (!(<any>window.vm).$isServer) {
+				if (window.innerWidth < 600) {
+					isMobile = true;
+				}
+			} */
+			return isMobile;
+		});
+
+		const getPages = computed(() => {
+			const length = Number(props.length);
+			const max = props.max;
+			const even = max % 2 === 0 ? 1 : 0;
+			const prevRange = Math.floor(max / 2);
+			const nextRange = length - prevRange + 1 + even;
+
+			if (
+				props.modelValue >= prevRange &&
+				props.modelValue <= nextRange &&
+				!props.buttonsDotted
+			) {
+				const start = props.modelValue - prevRange + 2;
+				const end = props.modelValue + prevRange - 2 - even;
+
+				return renderButtons([
+					1,
+					"<...",
+					...getButtons(start, end),
+					"...>",
+					props.length,
+				]);
+			} else if (!props.buttonsDotted && props.length > 6) {
+				return renderButtons([
+					...getButtons(1, prevRange),
+					"...>",
+					...getButtons(nextRange, length),
+				]);
+			} else if (props.buttonsDotted || props.length <= 6) {
+				return renderButtons([
+					...getButtons(1, props.length == 0 ? 1 : props.length),
+				]);
+			}
+
+			return [];
+		});
+
+		const prevClicked = function () {
+			const newVal = (val.value -= 1);
+			if (newVal > 0) {
+				setValuePage(newVal);
+			} else if (props.infinite) {
+				setValuePage(props.length);
+			}
+		};
+
+		const nextClicked = function () {
+			const newVal = (val.value += 1);
+			if (newVal <= props.length) {
+				setValuePage(newVal);
+			} else if (props.infinite) {
+				setValuePage(1);
+			}
+		};
+
+		watch(
+			() => props.length,
+			() => {
+				nextTick(() => {
+										
+					setTimeout(() => {
+						activeClassMove.value = false;
+					}, 300);					
+				});
+			}
+		);
+
+		watch(
+			() => props.modelValue,
+			(valNew, prevValue) => {
+				if (isDisabledItem(valNew) || isLoadingItem(valNew)) {
+					let newVal = valNew;
+					if (valNew > prevValue) {
+						newVal += 1;
+					} else {
+						newVal -= 1;
+					}
+
+					if (newVal > props.length) {
+						newVal = props.infinite ? 1 : prevValue;
+					} else if (newVal <= 0) {
+						newVal = props.infinite ? props.length : prevValue;
+					}
+					val.value = newVal;
+					setValuePage(newVal);
+				} else {
+					val.value = valNew;
+					if (pagination.value) {
+						activeClassMove.value = true;
+						nextTick(() => {							
+							setTimeout(() => {
+								activeClassMove.value = false;
+							}, 300);
+						});
+					}
+				}
+			}
+		);
+
+		return {
+			leftActive,
+			activeClassMove,
+			val,
+			prevClicked,
+			nextClicked,
+			getPages,
+			pagination,
+			getProgress 
+		};
+	},
+});
 </script>
+
+<style lang="scss" >
+@import "../../style/sass/_mixins";
+
+.vs-pagination-content {
+	--vs-getColor: var(--vs-primary);
+}
+
+.vs-pagination-content {
+	position: relative;
+	display: flex;
+	align-self: center;
+	justify-content: center;
+
+	&.notMargin {
+		.vs-pagination {
+			&__dotted {
+				background: -getColor("gray-3");
+				margin: 0px;
+			}
+
+			&__arrow {
+				margin: 0px !important;
+				border-radius: 0px;
+
+				&:first-of-type {
+					border-radius: 12px 0px 0px 12px;
+				}
+
+				&:last-of-type {
+					border-radius: 0px 12px 12px 0px;
+				}
+			}
+
+			&__button {
+				border-radius: 0px;
+				margin: 0px !important;
+			}
+		}
+	}
+
+	&.disabled {
+		opacity: 0.5;
+		pointer-events: none;
+		user-select: none;
+	}
+
+	&.square {
+		.vs-pagination {
+			&__active {
+				border-radius: 0px;
+			}
+
+			&__button {
+				border-radius: 0px;
+			}
+
+			&__arrow {
+				border-radius: 0px;
+			}
+		}
+	}
+
+	&.circle {
+		.vs-pagination {
+			&__active {
+				border-radius: 50%;
+			}
+
+			&__button {
+				border-radius: 50%;
+			}
+
+			&__arrow {
+				border-radius: 50%;
+			}
+		}
+	}
+
+	&.buttonsDotted {
+		.vs-pagination {
+			&__arrow {
+				width: 15px;
+				height: 12px;
+				min-width: 15px;
+				padding: 0px;
+				background: transparent;
+
+				i {
+					width: 6px;
+					height: 6px;
+
+					&:before {
+						width: 1px;
+					}
+
+					&:after {
+						height: 1px;
+					}
+				}
+			}
+
+			&__dotted {
+				width: 12px;
+				height: 12px;
+				font-size: 0.9rem;
+				letter-spacing: 1px;
+			}
+
+			&__button {
+				width: 12px;
+				height: 12px;
+
+				&.active {
+					transform: scale(1);
+				}
+			}
+
+			&__active {
+				width: 12px;
+				height: 12px;
+				box-shadow: 0px 2px 10px 0px -getColor("color", 0.4);
+				transform: scale(1);
+
+				&.move {
+					transform: scale(1.2);
+				}
+			}
+		}
+	}
+}
+
+.vs-pagination {
+	display: flex;
+	align-self: center;
+	justify-content: center;
+	position: relative;
+
+	&__progress {
+		width: calc(100% - 16px);
+		height: 3px;
+		background: -getColor("gray-3");
+		position: absolute;
+		bottom: -8px;
+		border-radius: 10px;
+
+		.progress {
+			width: 0px;
+			background: -getColor("color", 1);
+			height: 100%;
+			position: relative;
+			border-radius: inherit;
+			transition: all 0.25s ease;
+			max-width: 100%;
+		}
+	}
+
+	&__slot {
+		min-height: 36px;
+		min-width: 36px;
+		position: relative;
+		display: block;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	&__arrow {
+		position: relative;
+		width: auto;
+		height: 36px;
+		min-width: 36px;
+		border-radius: 12px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		margin: 0px 2px;
+		background: -getColor("gray-3");
+		transition: all 0.25s ease;
+		border: 0px;
+
+		&:disabled {
+			opacity: 0.4;
+			pointer-events: none;
+		}
+
+		&:hover {
+			background: -getColor("gray-4");
+		}
+
+		i {
+			width: 10px;
+			
+			position: relative;
+			display: block;
+			
+		
+
+			&:before {
+				width: 2px;
+			}
+
+			&:after {
+				height: 2px;
+			}
+		}
+	
+	}
+
+	&__active {
+		
+		
+		background: -getColor("color") !important;
+		color: #fff !important;
+		transition: background 0.2s ease;
+
+		&.move {
+			transform: scale(1.1);
+		}
+	}
+
+	&__dotted {
+		width: 36px;
+		height: 36px;
+		position: relative;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 1.4rem;
+		letter-spacing: 2px;
+		margin: 0px 2px;
+		cursor: pointer;
+
+		&:hover {
+			span.dotted {
+				opacity: 0;
+				margin-left: -1px;
+				transition: all 0.25s ease;
+			}
+
+			.con-arrows {
+				opacity: 1;
+				margin-left: -1px;
+				transition: all 0.25s ease;
+			}
+		}
+
+		&.next {
+			&:hover {
+				span.dotted {
+					opacity: 0;
+					margin-left: 1px;
+					transition: all 0.25s ease;
+				}
+
+				.con-arrows {
+					opacity: 1;
+					margin-left: 1px;
+					transition: all 0.25s ease;
+				}
+			}
+		}
+
+		span.dotted {
+			margin-right: -2px;
+			text-align: center;
+		}
+
+		&.next {
+			.con-arrows {
+				transform: rotate(180deg);
+				margin-left: -5px;
+			}
+		}
+
+		.con-arrows {
+			width: 10px;
+			height: 10px;
+			position: absolute;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			margin-left: 5px;
+			opacity: 0;
+			transition: all 0.1s ease;
+
+			i {
+				width: 10px;
+				height: 10px;
+				position: relative;
+				display: block;
+				transform: rotate(-45deg) scale(0.8);
+
+				&:before {
+					width: 2px;
+				}
+
+				&:after {
+					height: 2px;
+				}
+
+				&:last-child {
+					position: absolute;
+					top: 0px;
+					margin-left: 6px;
+				}
+			}
+		}
+	}
+
+	&__button {
+		width: 36px;
+		height: 36px;
+		border-radius: 12px;
+		padding: 0px;
+		background: -getColor("gray-3");
+		margin: 0px 2px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 0.9rem;
+		transition: all 0.25s ease;
+		color: -getColor("text");
+		position: relative;
+		border: 0px;
+
+		&.loading {
+			border-radius: 50%;
+			opacity: 0.5;
+			pointer-events: none;
+			user-select: none;
+
+			&:after {
+				content: "";
+				position: absolute;
+				width: 100%;
+				height: 100%;
+				border-radius: 50%;
+				border: 2px solid -getColor("color", 1);
+				border-top: 2px solid -getColor("background", 0);
+				border-left: 2px solid -getColor("background", 0);
+				border-bottom: 2px solid -getColor("background", 0);
+				box-sizing: border-box;
+				transition: all 0.25s ease;
+				display: block;
+				box-shadow: 0px 0px 0px 0px -getColor("color", 1);
+				animation: loadingPagination 0.6s ease infinite;
+			}
+
+			&:before {
+				content: "";
+				position: absolute;
+				width: 100%;
+				height: 100%;
+				border-radius: 50%;
+				border: 2px dashed -getColor("color", 1);
+				border-top: 2px solid -getColor("background", 0);
+				border-left: 2px solid -getColor("background", 0);
+				border-bottom: 2px solid -getColor("background", 0);
+				box-sizing: border-box;
+				transition: all 0.25s ease;
+				display: block;
+				box-shadow: 0px 0px 0px 0px -getColor("color", 1);
+				animation: loadingPagination 0.6s linear infinite;
+			}
+		}
+
+		&.disabled {
+			opacity: 0.4;
+			pointer-events: none;
+			user-select: none;
+		}
+
+		&:hover {
+			background: -getColor("gray-4");
+		}
+
+		&:active {
+			transform: scale(0.9);
+		}
+	}
+}
+
+@keyframes loadingPagination {
+	0% {
+		transform: rotate(0);
+	}
+
+	100% {
+		transform: rotate(360deg);
+	}
+}
+</style>

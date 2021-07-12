@@ -876,6 +876,14 @@
 			</vs-navbar>
 			<vs-button @click="openNav = !openNav"> Toggle Navbar </vs-button>
 		</div>
+
+		<div class="showcase-component">
+			<h4>Pagination:</h4>
+			<hr />
+				
+			<vs-pagination progress  not-margin v-model="page" :length="20" />			
+			
+		</div>
 	</div>
 </template>
 
@@ -940,6 +948,7 @@ export default defineComponent({
 		let selectValue = ref([]);
 		let selectValue2 = ref(null);
 		let selectValue1 = ref(null);
+		let page = ref(1);
 
 		let notificationComponent = ref(null);
 		let validEmail = computed(function () {
@@ -1007,7 +1016,8 @@ export default defineComponent({
 			selectValue1,
 			selectValue2,
 			radios1: "luis",
-			picked
+			picked,
+			page
 		};
 	},
 });
