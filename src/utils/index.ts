@@ -112,11 +112,11 @@ const setColor = (colorName: string, color: string, el: any, addClass?: boolean)
   }
 }
 
-const getApplyColor = (color: string) => {
-  return `rgb(${getColor(color)})`;
+const getApplyColor = (color: string, alphax = 1) => {
+  return `rgba(${getColor(color)} , ${alphax})`;
 }
 
-const getColor = (color: string) => {
+const getColor = (color: string, alphax = 1) => {
   function hexToRgb(hex: string) {
     const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i
     hex = hex.replace(shorthandRegex, (m: any, r: string, g: string, b: string) => {
@@ -176,7 +176,7 @@ const setCords = (element: any, parent: any) => {
   if ((rootTop - elTop) < 30) {
     // console.log('hola mundo')
     style.top = `${y + scrollTop - element.clientHeight - 4}px`
-    style.left = `${x}px`
+    style.left = `${x+8}px`
     style.width = `${w}px`
     element.classList.add('top')
     parent.classList.add('top')

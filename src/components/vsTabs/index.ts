@@ -10,4 +10,4 @@ if (typeof window !== 'undefined' && (<any>window).Vue) {
   vsComponent.install((<any>window).Vue)  
 }
 
-export default vsComponent;
+export { vsComponent as vsTabs, vsComponent2 as vsTab };

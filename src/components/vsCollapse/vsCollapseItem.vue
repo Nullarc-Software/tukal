@@ -177,3 +177,51 @@ export default defineComponent({
 	}
 });
 </script>
+
+<style lang="scss" scoped>
+.vs-collapse-item {
+	border-bottom: 1px solid rgba(0,0,0,0.04);
+	cursor: pointer;
+	transition: all 0.25s ease;
+	&.open-item {
+		.con-content--item {
+			opacity: 1;
+		}
+	}
+	&.disabledx {
+		opacity: --vs-disabled-opacity;
+		cursor: default;
+		pointer-events: none;
+		z-index: 999;
+	}
+	&:last-child {
+		border-bottom: 0px solid rgba(0,0,0,0) !important;
+	}
+}
+.vs-collapse-item--header {
+	display: flex;
+	padding: 10px;
+	position: relative;
+	transition: all 0.25s ease;
+}
+.vs-collapse-item--icon-header {	
+	top: 50%;
+	display: block;
+	transition: all 0.25s ease;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 5px;
+}
+.vs-collapse-item--content {
+	overflow: hidden;
+	transition: all 0.2s ease;
+}
+.con-content--item {
+	padding: 10px;
+	padding-top: 0px;
+	font-size: 0.85rem;
+	opacity: 0.2;
+	transition: all 0.25s ease;
+}
+</style>

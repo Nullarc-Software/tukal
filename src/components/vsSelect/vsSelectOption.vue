@@ -129,7 +129,7 @@ export default defineComponent({
 		onMounted(() => {
 			if (!renderSelect?.value) {
 				addChildOption?.call(null, props.disabled, props.value, props.label, option.value?.offsetTop );
-				console.log("added child: " + uid);
+				//console.log("added child: " + uid);
 			}
 			addUid?.call(null, uid);
 

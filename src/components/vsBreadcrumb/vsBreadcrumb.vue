@@ -119,3 +119,60 @@ export default defineComponent({
   }
 });
 </script>
+
+<style lang="scss" scoped>
+
+@import "../../style/sass/_mixins";
+
+.vs-breadcrumb {
+	display: flex;
+	&.vs-align-left {
+		justify-content: flex-start;
+	}
+	&.vs-align-center {
+		justify-content: center;
+	}
+	&.vs-align-right {
+		justify-content: flex-end;
+	}
+	.disabled-link {
+		opacity: 0.5;
+		pointer-events: none;
+	}
+}
+.vs-breadcrumb--ol {
+	display: flex;
+	flex-wrap: wrap;
+	padding: 0.75rem 1rem;
+	list-style-type: none;
+	li {
+		&.vs-active {
+			cursor: default;
+		}
+	}
+	a {
+		transition: all 0.2s ease;
+		color: rgba(0,0,0,0.4);
+	}
+}
+.vs-breadcrumb--ol a:hover,
+.vs-breadcrumb--ol a:focus {
+	color: rgba(0,0,0,0.7);
+	text-decoration: none;
+}
+.vs-breadcrum--separator {
+	color: rgba(0,0,0,0.4);
+	padding: 0 0.5rem 0 0.5rem;
+	&.material-icons {
+		vertical-align: middle;
+		font-size: inherit;
+	}
+}
+
+@each $color, $index in --vs-colors{
+    .vs-breadcrumb-text-#{$color}{
+        color: -getColor(colorx, 1);
+    }    
+}
+
+</style>

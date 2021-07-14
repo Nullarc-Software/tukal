@@ -2,7 +2,7 @@
 	<div
 		class="vs-pagination-content"
 		:style="{
-			['--vs-getColor']: color ? getColor : '',
+			['--vs-color']: color ? getColor(color) : '',
 		}"
 		:class="[
 			{
@@ -21,6 +21,7 @@
 			{ [`vs-component--success`]: !!success },
 			{ [`vs-component--dark`]: !!dark },
 		]"
+		v-bind="$attrs"
 	>		
 		<button
 			v-if="!notArrows"
@@ -75,6 +76,7 @@ export default defineComponent({
 	props: {
 		modelValue: { type: Number, default: 1 },
 		infinite: { default: false, type: Boolean },
+		flat: { default: false, type: Boolean },
 		progress: { default: false, type: Boolean },
 		notMargin: { default: false, type: Boolean },
 		buttonsDotted: { default: false, type: Boolean },
@@ -175,13 +177,14 @@ export default defineComponent({
 						[`vs-pagination__button pagination-btn-${NumberPage}`]: true,
 						active: NumberPage == props.modelValue,
 						"vs-pagination__active" : NumberPage == props.modelValue,
+						flat: props.flat,
 						prevActive: NumberPage == props.modelValue - 1,
 						nextActive: NumberPage == props.modelValue + 1,
 						disabled: isDisabledItem(NumberPage),
 						loading: isLoadingItem(NumberPage),
 					},
 					onClick: (evt: any) => {
-							setValuePage(NumberPage);
+						setValuePage(NumberPage);
 					},					
 				},
 				props.buttonsDotted ? "" : `${NumberPage}`
@@ -333,10 +336,10 @@ export default defineComponent({
 			getProgress 
 		};
 	},
-});
+}); 
 </script>
 
-<style lang="scss" >
+<style lang="scss" scoped>
 @import "../../style/sass/_mixins";
 
 .vs-pagination-content {
@@ -472,7 +475,7 @@ export default defineComponent({
 	align-self: center;
 	justify-content: center;
 	position: relative;
-
+	transition: background-color 0.2s ease;
 	&__progress {
 		width: calc(100% - 16px);
 		height: 3px;
@@ -546,10 +549,13 @@ export default defineComponent({
 
 	&__active {
 		
+		&.flat{
+			background: -getColor("color", 0.15) !important;
+			color: -getColor("color", 1) !important;
+		}
 		
 		background: -getColor("color") !important;
-		color: #fff !important;
-		transition: background 0.2s ease;
+		color: #fff !important;		
 
 		&.move {
 			transform: scale(1.1);

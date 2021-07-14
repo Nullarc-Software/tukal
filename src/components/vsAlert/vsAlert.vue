@@ -152,3 +152,71 @@ export default defineComponent({
 	}
 });
 </script>
+
+<style lang="scss" scoped>
+
+@import "../../style/sass/_mixins";
+@import "../../style/sass/_colors";
+
+.con-vs-alert {
+	border-radius: 6px;
+	color: #fff;
+	width: 100%;
+	position: relative;
+	font-size: 0.8rem;
+	cursor: default;
+	transition: all 0.25s ease;
+	overflow: hidden;
+}
+.icon-alert {
+	height: 100%;
+	position: absolute;
+	padding: 10px;
+	top: 0px;
+	font-size: 1.1rem;
+	display: flex;
+	align-items: center;
+}
+.vs-alert {
+	padding: 10px;
+	overflow: hidden;
+	position: relative;
+}
+.vs-alert--title {
+	font-size: 0.9rem;
+	font-weight: bold;
+	padding: 8px 10px;
+}
+.vs-alert--close {
+	position: relative;
+	margin-top: 4px;
+	display: inline-block;
+	padding: 4px;
+	border-radius: 6px;
+	padding-bottom: 1px;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	&:hover {
+		box-shadow: 0px 5px 15px 0px rgba(0,0,0,0.1);
+	}
+}
+
+@each $color, $index in --vs-colors{
+    .con-vs-alert-#{$color}{
+        background: -getColor($color, .15);
+        box-shadow: 0px 0px 25px 0px -getColor($color, .15);
+        color: -getColor($color, 1);
+        h4{
+            box-shadow: 0px 6px 15px -7px -getColor($color, .4);
+        }
+        
+        .con-x{
+            background: -getColor($color, 1);
+            color: rgb(255,255,255);
+        }   
+        
+    }    
+}
+
+
+</style>

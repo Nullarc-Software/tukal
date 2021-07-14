@@ -30,7 +30,7 @@
 
 <script lang="ts">
 import { computed, defineComponent } from '@vue/runtime-core';
-import _color from '../../utils/color'
+import * as _color from '../../utils'
 
 export default defineComponent({
   name:'VsChip',
@@ -78,8 +78,8 @@ export default defineComponent({
   setup(props, context){
 
 	const styleChip = computed(() => {
-      const background = props.transparent ? _color.getColor(props.color, .15) : _color.getColor(props.color, 1);
-      const color = props.transparent ? _color.getColor(props.color, 1) : props.color ? 'rgba(255,255,255,.9)' : 'rgba(0,0,0,.7)';
+      const background = props.transparent ? _color.getApplyColor(props.color, .15) : _color.getApplyColor(props.color, 1);
+      const color = props.transparent ? _color.getApplyColor(props.color, 1) : props.color ? 'rgba(255,255,255,.9)' : 'rgba(0,0,0,.7)';
 
       return {
         background: background,

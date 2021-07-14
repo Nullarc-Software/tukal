@@ -144,9 +144,7 @@
 					'vs-select-icon-down': !activeOptions,
 					'vs-select-icon-up': activeOptions
 				}"
-			>
-				keyboard_arrow_down
-			</vs-icon>
+			></vs-icon>
 		</div>
 
 		<transition @before-enter="beforeEnter" @enter="enter" @leave="leave">
@@ -213,7 +211,7 @@ export default defineComponent({
 		vsOption
 	},
 	props: {
-		value: {},
+		modelValue: {},
 		multiple: { type: Boolean, default: false },
 		dropdown: { type: Boolean, default: false },
 		inline: { type: Boolean, default: false },
@@ -264,7 +262,7 @@ export default defineComponent({
 				return this.targetClose;
 			}),
 			parentValue: computed(() => {
-				return this.value;
+				return this.modelValue;
 			})
 		};
 	},
@@ -296,7 +294,7 @@ export default defineComponent({
 		const setHover = function() {
 			let index: number = -1;
 			childOptions.value.forEach((item: any, i: number) => {
-				if (item.value == props.value) {
+				if (item.value == props.modelValue) {
 					index = i;
 				}
 			});
@@ -344,7 +342,7 @@ export default defineComponent({
 
 		const clickOption = function(value: any, label: any) {
 			if (props.multiple) {
-				const oldVal = [...(props.value as Array<any>)];
+				const oldVal = [...(props.modelValue as Array<any>)];
 				if (
 					_.indexOf(oldVal, value) === -1
 				) {
@@ -363,11 +361,11 @@ export default defineComponent({
 					return result;
 				}, []);
 
-				context.emit("update:value", oldVal);
+				context.emit("update:modelValue", oldVal);
 				valueLabel.value = labels;
 
 			} else {
-				context.emit("update:value", value);
+				context.emit("update:modelValue", value);
 				valueLabel.value = label;
 			}
 
@@ -387,8 +385,8 @@ export default defineComponent({
 		};
 
 		let isValue = computed(() => {
-			if (Array.isArray(props.value)) return props.value.length !== 0;
-			else return !(_.isNull(props.value) && !_.isUndefined(props.value));
+			if (Array.isArray(props.modelValue)) return props.modelValue.length !== 0;
+			else return !(_.isNull(props.modelValue) && !_.isUndefined(props.modelValue));
 		});
 		//computeds
 		const getChips = computed(() => {
@@ -472,10 +470,10 @@ export default defineComponent({
 		const getValue = function() {
 			const options = childOptions.value;
 			const filterOptions = options.filter((option: any): boolean => {
-				return typeof props.value == "number" ||
-					typeof props.value == "string"
-					? props.value == option.value
-					: _.find(props.value as Array<any>, {
+				return typeof props.modelValue == "number" ||
+					typeof props.modelValue == "string"
+					? props.modelValue == option.value
+					: _.find(props.modelValue as Array<any>, {
 							value: option.value
 					  }) !== undefined;
 			});
@@ -704,16 +702,16 @@ export default defineComponent({
 				}, []);						
 
 			//set the default value first. Since the list is not rendered to the dom, get it from the default slot.
-			if(!Array.isArray(props.value)){
+			if(!Array.isArray(props.modelValue)){
 
-				let labelValue = _.find(reduced, {value: props.value});
+				let labelValue = _.find(reduced, {value: props.modelValue});
 				if(labelValue)
 					valueLabel.value = labelValue.label;
 			}
 			else{
 
 				let newLabelValues :any[] = [];
-				props.value.forEach((value) => {
+				props.modelValue.forEach((value) => {
 					let labelValue = _.find(reduced, {value: value});
 					if(labelValue)
 						newLabelValues.push(labelValue);
@@ -961,7 +959,7 @@ export default defineComponent({
 
 	&.activeOptions {
 		.vs-icon-arrow {
-			transform: rotate(180deg);
+			transform: rotate(45deg);
 			margin-top: (-2px) !important;
 		}
 

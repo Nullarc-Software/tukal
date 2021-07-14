@@ -299,7 +299,7 @@
 				</ul>
 			</div>
 		</div>
-		<div class="showcase-component">
+		<!-- <div class="showcase-component">
 			<h3>Chips:</h3>
 			<hr />
 			<div class="centerx">
@@ -328,7 +328,7 @@
 					Icon edit
 				</vs-chip>
 			</div>
-		</div>
+		</div> -->
 		<div class="showcase-component" style="margin-top: 100px">
 			<h3>Collapse:</h3>
 			<hr />
@@ -599,9 +599,12 @@
 			<h4>Radio:</h4>
 			<hr />
 
-			<vs-radio v-model="picked" val="1" > <template #icon>
-          <vs-icon>person</vs-icon>
-        </template> Option A </vs-radio>
+			<vs-radio v-model="picked" val="1">
+				<template #icon>
+					<vs-icon>person</vs-icon>
+				</template>
+				Option A
+			</vs-radio>
 			<vs-radio v-model="picked" val="2"> Option B </vs-radio>
 			<vs-radio disabled v-model="picked" val="3"> Option C </vs-radio>
 			<vs-radio v-model="picked" val="4"> Option D </vs-radio>
@@ -614,7 +617,7 @@
 				block
 				multiple
 				label-placeholder="Label-placeholder"
-				v-model:value="selectValue"
+				v-model="selectValue"
 				style="margin: 10px"
 				filter
 			>
@@ -630,7 +633,7 @@
 			<vs-select
 				inline
 				placeholder="Label-placeholder for something soooooo longggg Label-placeholder for something soooooo longggg"
-				v-model:value="selectValue1"
+				v-model="selectValue1"
 				style="margin: 10px"
 				filter
 			>
@@ -646,7 +649,7 @@
 			<vs-select
 				inline
 				label-placeholder="Label-placeholder"
-				v-model:value="selectValue"
+				v-model="selectValue"
 				style="margin: 10px"
 			>
 				<vs-option label="Test" value="1"> Test </vs-option>
@@ -662,7 +665,7 @@
 				inline
 				dropdown
 				placeholder="Dropdown"
-				v-model:value="selectValue2"
+				v-model="selectValue2"
 				style="margin: 10px"
 			>
 				<vs-option label="Test" value="1"> Test </vs-option>
@@ -824,8 +827,6 @@
 			</vs-switch>
 		</div>
 
-		
-
 		<div class="showcase-component">
 			<h4>Navbar:</h4>
 			<hr />
@@ -880,9 +881,36 @@
 		<div class="showcase-component">
 			<h4>Pagination:</h4>
 			<hr />
-				
-			<vs-pagination progress  not-margin v-model="page" :length="20" />			
-			
+
+			<vs-pagination progress not-margin v-model="page" :length="20" />
+			<vs-pagination
+				progress
+				dark
+				flat
+				not-margin
+				v-model="page"
+				:length="20"
+			/>
+		</div>
+
+		<div class="showcase-component">
+			<h4>Tabs:</h4>
+			<hr />
+
+			<vs-tabs color="success" position="left">
+				<vs-tab label="Home">
+					Home
+				</vs-tab>
+				<vs-tab label="Service">
+					Service
+				</vs-tab>
+				<vs-tab label="login">
+					Login
+				</vs-tab>
+				<vs-tab disabled label="Disabled">
+					Disabled
+				</vs-tab>				
+			</vs-tabs>
 		</div>
 	</div>
 </template>
@@ -898,7 +926,9 @@ import {
 } from "@vue/runtime-core";
 import * as components from "./components";
 import { vsButton } from "./components/vsButton";
-import notification, { notificationAttributes } from "./components/vsNotifications";
+import notification, {
+	notificationAttributes,
+} from "./components/vsNotifications";
 import Popper from "vue3-popper";
 
 export default defineComponent({
@@ -946,7 +976,7 @@ export default defineComponent({
 		let inpValue = ref("");
 		let navValue = ref("guide");
 		let selectValue = ref([]);
-		let selectValue2 = ref(null);
+		let selectValue2 = ref("1");
 		let selectValue1 = ref(null);
 		let page = ref(1);
 
@@ -965,7 +995,7 @@ export default defineComponent({
 				text: `These documents refer to the latest version of vuesax (4.0+),
 					to see the documents of the previous versions you can do it here 👉 Vuesax3.x`,
 				flat: true,
-				
+
 				onClickClose: function () {
 					console.log("notif closed");
 				},
@@ -973,7 +1003,7 @@ export default defineComponent({
 					console.log("clicked");
 				},
 				color: "#7d33ff",
-				progressAuto: true
+				progressAuto: true,
 			};
 
 			let notif = new notification(notificationAttrs);
@@ -992,7 +1022,7 @@ export default defineComponent({
 
 		watch(picked, () => {
 			console.log("picked: " + picked);
-		})
+		});
 
 		return {
 			active1,
@@ -1017,7 +1047,7 @@ export default defineComponent({
 			selectValue2,
 			radios1: "luis",
 			picked,
-			page
+			page,
 		};
 	},
 });
