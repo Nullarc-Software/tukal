@@ -18,6 +18,7 @@ export { default as vsList } from './vsList'
 export { default as vsAvatar } from './vsAvatar'
 export { default as vsPagination } from './vsPagination'
 export { default as vsBreadcrumb } from './vsBreadcrumb'
+export { default as loading } from './vsLoading'
 
 export { default as vsDivider } from './vsDivider'
 export { default as vsSpacer } from './vsSpacer'

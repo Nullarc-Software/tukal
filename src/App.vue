@@ -8,6 +8,8 @@
 			<h3>Buttons:</h3>
 			<hr />
 			<vs-button success @click="justLoad"> Open Notification </vs-button>
+            <div style="width: 200px; height:200px; position:relative" ref="loadingDiv" />
+			<vs-button success @click="justShowLoading"> Open Loading </vs-button>
 			<vs-button
 				type="filled"
 				color="danger"
@@ -930,6 +932,8 @@ import notification, {
 	notificationAttributes,
 } from "./components/vsNotifications";
 import Popper from "vue3-popper";
+import { LoadingParams } from "./components/vsLoading";
+import {default as LoadingConstructor } from "./components/vsLoading";
 
 export default defineComponent({
 	components: {
@@ -988,6 +992,32 @@ export default defineComponent({
 		});
 
 		provide("appRouter", null);
+
+        /*
+        waves
+        corners
+        border
+        points
+        square
+        gradient
+        rectangle
+        circles
+        square-rotate
+        scale
+        */
+        let loadingDiv = ref();
+        const  justShowLoading = function() {
+            let attrs : LoadingParams = {
+                target: loadingDiv,
+                color: 'dark',
+                type: "scale"
+            };
+
+            const load = new LoadingConstructor(attrs);
+            setTimeout(() => {
+                load.close();
+            }, 5000);
+        }
 
 		let justLoad = function () {
 			let notificationAttrs: notificationAttributes = {
@@ -1048,6 +1078,8 @@ export default defineComponent({
 			radios1: "luis",
 			picked,
 			page,
+            loadingDiv,
+            justShowLoading
 		};
 	},
 });

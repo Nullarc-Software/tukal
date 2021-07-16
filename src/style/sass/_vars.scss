@@ -1,4 +1,5 @@
-\:root {
+:root {
+    @extend :root;
     --vs-shadow-opacity: 0.05;
     --vs-radius: 20px;
     --vs-zindex-1: 100000;

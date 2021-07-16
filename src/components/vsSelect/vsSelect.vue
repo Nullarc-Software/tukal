@@ -54,7 +54,8 @@
 				:class="{
 					'vs-select__label--placeholder': labelPlaceholder,
 					'vs-select__label--label': label,
-					'vs-select__label--hidden': isValue
+					'vs-select__label--hidden': isValue,
+                    'chips-hovered-multiple': chipsHovered && multiple
 				}"
 			>
 				{{ labelPlaceholder || label }}
@@ -192,10 +193,11 @@ import {
 	provide,
 	watch,
 	getCurrentInstance,
-	onMounted
+	onMounted,
+	onBeforeUnmount
 } from "vue";
 import vsComponent from "../vsComponent";
-import { insertBody, setCords } from "@/utils";
+import { insertBody, removeBody, setCords } from "@/utils";
 import vsOption, { SelectOptionConstants } from "../vsSelect/vsSelectOption.vue";
 import vsIcon from "../vsIcon/vsIcon.vue";
 import _ from "lodash";
@@ -277,6 +279,7 @@ export default defineComponent({
 		let targetSelectInput = ref(false);
 		let targetClose = ref(false);
 		let activeFilter = ref(false);
+		let chipsHovered = ref(false);
 		let textFilter = ref<String>();
 		let childVisibles = ref(0);
 
@@ -582,6 +585,12 @@ export default defineComponent({
 		const chipsListener = computed(() => {
 			return {
 				keydown: handleKeydown,
+                mouseover: (event) => {
+                    chipsHovered.value = true;
+                },
+                mouseout: (event) => {
+                    chipsHovered.value = false;
+                },
 				focus: (evt: Event) => {
 					if (!targetClose.value) {
 						activeOptions.value = true;
@@ -724,7 +733,17 @@ export default defineComponent({
 			window.addEventListener("scroll", handleScroll);
 		});
 
+        onBeforeUnmount(() => {
+
+            if(activeOptions.value)
+            {
+                const optionsTemp = options.value as HTMLElement;
+			    removeBody(optionsTemp, document.body);
+            }
+        });
+
 		return {
+            chipsHovered,
 			renderSelect,
 			activeOptions,
 			valueLabel,
@@ -1082,9 +1101,12 @@ export default defineComponent({
 		}
 
 		&:hover {
-			background: -getColor("background");
-			box-shadow: 0px 5px 25px -4px rgba(0, 0, 0, -var(shadow-opacity));
-			transform: translate(0, -4px);
+			background: -getColor("background");            
+			box-shadow: 0px 5px 25px -4px rgba(0, 0, 0, -var(shadow-opacity));            
+            transform: translate(0, -8px);
+            &.chips-hovered-multiple{
+                transform: translate(0, -8px);
+            }			
 			transition: all 0.25s ease;
 
 			~ .vs-icon-arrow {
@@ -1378,4 +1400,5 @@ export default defineComponent({
 	opacity: 1;
 	margin-left: 10px;
 }
+
 </style>

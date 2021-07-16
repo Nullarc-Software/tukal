@@ -37,7 +37,7 @@
 		>
 			<input
 				class="vs-input"
-				:value="value"
+				:value="modelValue"
 				:class="[
 					{ ['vs-input--has-icon']: !!$slots.icon },
 					{ ['vs-input--has-icon--after']: !!iconAfter },
@@ -52,7 +52,7 @@
 				:for="getId"
 				:class="[
 					'vs-input__label',
-					{ 'vs-input__label--hidden': value !== '' },
+					{ 'vs-input__label--hidden': modelValue !== '' },
 				]"
 			>
 				{{ placeholder }}
@@ -64,7 +64,7 @@
 					{ 'vs-input__label--placeholder': labelPlaceholder },
 					{
 						'vs-input__label--hidden':
-							value !== '' ||
+							modelValue !== '' ||
 							$attrs.type == 'date' ||
 							$attrs.type == 'time',
 					},
@@ -156,7 +156,7 @@ export default defineComponent({
 	name: "VsInput",
 	extends: vsComponent,
 	props: {
-		value: { default: "" },
+		modelValue: { default: "" },
 		labelPlaceholder: { default: "" },
 		label: { default: "" },
 		block: { type: Boolean, default: false },
@@ -175,7 +175,7 @@ export default defineComponent({
 		placeholder: { type: String, default: null },
 		inline: { type: Boolean, default: false },
 	},
-	emits: ["update:value", "click-icon"],
+	emits: ["update:modelValue", "click-icon"],
 	setup(props, context) {
 		const getId = computed(() => {
 			return `vs-input--${props.id || ++InputConstants.id}`;
@@ -208,7 +208,7 @@ export default defineComponent({
 		};
 
 		const onInput = function (evt) {
-			context.emit("update:value", evt.target.value);
+			context.emit("update:modelValue", evt.target.value);
 		};
 
 		const iconClick = function (evt) {

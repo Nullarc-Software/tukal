@@ -1,7 +1,7 @@
 <template>
 	<transition name="vs-dialog">
 		<div
-			v-if="value"
+			v-if="modelValue"
 			:class="[
 				'vs-dialog-content',
 				{
@@ -62,7 +62,7 @@ export default defineComponent({
 	extends: vsComponent,
 	components: { vsIcon, VsButton },
 	props: {
-		value: {
+		modelValue: {
 			type: Boolean,
 			default: false,
 		},
@@ -123,13 +123,13 @@ export default defineComponent({
       default:null
     }
 	},
-	emits: ["update:value", "close"],
+	emits: ["update:modelValue", "close"],
 	setup(props, context) {
 		let rebound = ref(false);
 
 		const esc = function(evt: any) {
 			if (evt.which == 27 && !props.preventClose) {
-				context.emit("update:value", false);
+				context.emit("update:modelValue", false);
 				context.emit("close");
 			}
 		};
@@ -147,7 +147,7 @@ export default defineComponent({
 		};
 
 		watch(
-			() => props.value,
+			() => props.modelValue,
 			(newVal, prevVal) => {
 				if (newVal) {
 					insertDialog();
@@ -165,7 +165,7 @@ export default defineComponent({
 
 		const click = function(evt) {
 			if (!evt.target.closest(".vs-dialog")  && !props.preventClose) {
-				context.emit("update:value", !props.value);
+				context.emit("update:modelValue", !props.modelValue);
 				context.emit("close");
 			}
 
@@ -178,7 +178,7 @@ export default defineComponent({
 		};
 
 		const closeClick = function(evt) {
-			context.emit("update:value", !props.value);
+			context.emit("update:modelValue", !props.modelValue);
 			context.emit("close");
 		};
 

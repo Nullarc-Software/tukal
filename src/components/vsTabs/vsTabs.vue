@@ -203,9 +203,9 @@ export default defineComponent({
 			const elem = ul.value?.getElementsByClassName(`vs-tabs--li-${index}`)[0];
 			if (reactiveData.childActive == index && !initialAnimation) {
 				reactiveData.these = true;
-				elem?.el?.classList.add("isActive");
+				elem?.classList.add("isActive");
 				setTimeout(() => {
-					elem?.el?.classList.remove("isActive");
+					elem?.classList.remove("isActive");
 					reactiveData.these = false;
 				}, 200);
 			}
