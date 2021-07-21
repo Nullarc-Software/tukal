@@ -1,5 +1,7 @@
 <template lang="html">
     <transition
+
+        v-if="!noTransitions"
         :name="
             invert
                 ? vertical
@@ -14,15 +16,15 @@
             <slot />
         </div>
     </transition>
+    <div v-else-if="active" class="con-tab vs-tabs--content">
+            <slot />
+    </div>
+    
 </template>
 
 <script lang="ts">
-import { defineComponent, getCurrentInstance, inject, onBeforeMount, onMounted, reactive, toRefs, VNode } from "vue"
-import { ChildData } from "./vsTabs.vue";
-
-class TabId {
-	public static tabId = 0;
-}
+import { defineComponent, getCurrentInstance, inject, onBeforeMount, onMounted, reactive, Ref, toRefs, VNode } from "vue"
+import { ChildData, TabId } from "./vsTabs.vue";
 
 export default defineComponent({
 	name: "VsTab",
@@ -45,6 +47,10 @@ export default defineComponent({
 			default: "material-icons",
 		},
         disabled: {
+            type: Boolean,
+            default: false
+        },
+        noTransitions: {
             type: Boolean,
             default: false
         }
@@ -71,6 +77,9 @@ export default defineComponent({
         }
 
         let addChild = inject<Function>("addChild");
+        let noTransitions = inject<Ref<Boolean>>("noTransitions");
+        let nextId = inject<Ref<TabId>>("tabIdInstance");
+
         let data = Object.assign({}, {
             vnode: (getCurrentInstance()?.vnode as VNode),
             setActive,
@@ -81,7 +90,7 @@ export default defineComponent({
 			icon: props.icon,
 			iconPack: props.iconPack,
 			tag: props.tag,
-			id: TabId.tabId++,
+			id: nextId?.value ? nextId.value.tabId++ : 0,
 			attrs: context.attrs,	
             disabled: props.disabled		
 		});
@@ -91,7 +100,8 @@ export default defineComponent({
         })
 
         return {
-            ...toRefs(reactiveData)
+            ...toRefs(reactiveData),
+            noTransitions
         }
 
     }	

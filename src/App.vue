@@ -468,9 +468,10 @@
 			<vs-input
 				block
 				id="inp1"
-				v-model:value="inpValue"
+				v-model="inpValue"
 				placeholder="Name"
 				style="margin-top: 10px"
+                maxlength="15"
 			/>
 			<br />
 			<vs-input
@@ -1008,15 +1009,14 @@ export default defineComponent({
         let loadingDiv = ref();
         const  justShowLoading = function() {
             let attrs : LoadingParams = {
-                target: loadingDiv,
+                target: null,
                 color: 'dark',
-                type: "scale"
+                type: "circles",
+                scale: "1.0"
             };
 
             const load = new LoadingConstructor(attrs);
-            setTimeout(() => {
-                load.close();
-            }, 5000);
+           
         }
 
 		let justLoad = function () {

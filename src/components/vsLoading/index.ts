@@ -1,4 +1,4 @@
-import { App, createApp, nextTick, reactive } from 'vue';
+import { App, createApp, nextTick, reactive, Ref, ref } from 'vue';
 import vsComponent from './vsLoading.vue'
 
 vsComponent.install = (vue: any) => {
@@ -27,52 +27,51 @@ const loadingConstructor = vsComponent;
 class loading {
 
     instance: App | null = null;
-    params: LoadingParams;
+    params: Ref<LoadingParams>;
     isVisible: boolean = false;
 
     public changeText(val: string) {
         if (val) {
-            this.params.text = val
+            this.params.value.text = val
         }
     }
 
     public changeProgress(val: number) {
         if (val) {
-            this.params.progress = val
+            this.params.value.progress = val
         }
     }
 
     public changePercent(val: string) {
         if (val) {
-            this.params.percent = val
+            this.params.value.percent = val
         }
     }
 
     public close() {
-        this.isVisible = false
-        document.body.style.overflowY = 'auto'
+        this.params.value.opacity = '0';
         setTimeout(() => {
             this.instance?.unmount();            
-        }, 250)
+        }, 50)
     }
 
     constructor(paramsAttr: LoadingParams) {
 
-        this.params = reactive(paramsAttr);
-
+        this.params = ref(paramsAttr);
+        let target : any = null;
         if (typeof paramsAttr.target === 'string') {
-            this.params.target = document.querySelector(this.params.target)
+            target = document.querySelector(this.params.value.target)
         } else if (paramsAttr.target) {
-            this.params.target = this.params.target.$el || this.params.target
+            target = this.params.value.target.$el || this.params.value.target
         } else {
-            this.params.target = document.body
+            target = document.body
         }
 
-        this.instance = createApp(loadingConstructor, this.params as any);
+        this.instance = createApp(loadingConstructor, this.params.value as any);
         let element = document.createElement("div");
         let html = this.instance.mount(element).$el;
 
-        this.params.target.appendChild(html);      
+        target.appendChild(html);      
 
     }
 

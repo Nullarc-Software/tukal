@@ -173,7 +173,7 @@ export default defineComponent({
 		square: { type: Boolean, default: false },
 		id: { type: String, default: null },
 		placeholder: { type: String, default: null },
-		inline: { type: Boolean, default: false },
+		inline: { type: Boolean, default: false },        
 	},
 	emits: ["update:modelValue", "click-icon"],
 	setup(props, context) {
@@ -207,8 +207,8 @@ export default defineComponent({
 			el.style.height = "0px";
 		};
 
-		const onInput = function (evt) {
-			context.emit("update:modelValue", evt.target.value);
+		const onInput = function (evt) {          
+    		context.emit("update:modelValue", evt.target.value);
 		};
 
 		const iconClick = function (evt) {

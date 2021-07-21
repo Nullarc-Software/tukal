@@ -22,9 +22,9 @@
           <button
             v-bind="child.attrs"
             :style="styleAlignIcon(child.icon)"
+            :disabled="child.disabled"
             class="vs-tabs--btn"
             type="button"
-            :disabled="child.disabled"
             @click="activeChild(child.id)"
             >
             <vs-icon
@@ -102,9 +102,14 @@ interface TabData {
 	invert: boolean;
 }
 
-class TabIndex {
-	public static tabIndex = 0;
+
+export class TabId {
+	public tabId = 0;
+    public resetId() {
+        this.tabId = 0;
+    }
 }
+
 
 export default defineComponent({
 	name: "VsTabs",
@@ -130,17 +135,34 @@ export default defineComponent({
 			default: "top",
 			type: String,
 		},
+        noTransitions : {
+            type: Boolean,
+            default: false
+        },
+        headerSize: {
+            type: Number,
+            default: 16
+        }
+        
 	},
 	provide() {
 		return {
 			addChild: (instance: ChildData) => {
-				this.children.push(instance);
+				this.children.push(instance);                
 			},
+            noTransitions : computed(() => {
+                return this.noTransitions;
+            }),
+            tabIdInstance : computed(() => {
+                return this.tabIdInstance;
+            })
 		};
 	},
 	setup(props, context) {
-		let ul = ref<HTMLUListElement>();
 
+        let tabIdInstance = ref(new TabId());
+
+		let ul = ref<HTMLUListElement>();
 		let data: TabData = {
 			topx: "auto",
 			heightx: 2,
@@ -182,7 +204,15 @@ export default defineComponent({
 		};
 
 		const styleAlignIcon = function (icon) {
-			return icon ? "display:flex;align-items:center" : "";
+			return icon ? { 
+                    display: 'flex',
+                    'align-items': 'center',
+                    'font-size' : `${props.headerSize}px`,
+                    cursor: 'pointer'
+                } : {
+                    'font-size' : `${props.headerSize}px`,
+                    cursor: 'pointer'
+                };
 		};
 
 		const parseIndex = function (index) {
@@ -283,6 +313,7 @@ export default defineComponent({
 			clickTag,
 			activeChild,
 			parseIndex,
+            tabIdInstance
 		};
 	},
 	watch: {
@@ -380,7 +411,6 @@ export default defineComponent({
 	width: 100%;
 	padding-left: 0px;
 	position: relative;
-	box-shadow: 0px 0px 25px 0px rgba(0, 0, 0, 0.04);
 	&.ul-tabs-center {
 		justify-content: center;
 	}
