@@ -316,9 +316,7 @@ export default defineComponent({
 			}
 
 			&:hover {
-				box-shadow: 0px 0px 0px 0px
-					rgba(0, 0, 0, -var("shadow-opacity"));
-
+			
 				&:not(.content) {
 					transform: translate(0, 5px);
 				}				
@@ -342,7 +340,7 @@ export default defineComponent({
 		max-width: 350px;
 	}
 
-	box-shadow: 0px 5px 20px 0px rgba(0, 0, 0, -var("shadow-opacity"));
+	box-shadow: -var("elevated-2");
 	border-radius: 20px;
 	transition: all 0.25s ease;
 	cursor: pointer;

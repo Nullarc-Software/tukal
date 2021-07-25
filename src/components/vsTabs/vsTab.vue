@@ -23,7 +23,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, getCurrentInstance, inject, onBeforeMount, onMounted, reactive, Ref, toRefs, VNode } from "vue"
+import { defineComponent, getCurrentInstance, inject, onBeforeMount, onMounted, reactive, Ref, toRefs, VNode, watch } from "vue"
 import { ChildData, TabId } from "./vsTabs.vue";
 
 export default defineComponent({
@@ -77,9 +77,11 @@ export default defineComponent({
         }
 
         let addChild = inject<Function>("addChild");
+        let updateChild = inject<Function>("updateChild");
         let noTransitions = inject<Ref<Boolean>>("noTransitions");
         let nextId = inject<Ref<TabId>>("tabIdInstance");
 
+        let currentId = nextId?.value ? nextId.value.tabId++ : 0
         let data = Object.assign({}, {
             vnode: (getCurrentInstance()?.vnode as VNode),
             setActive,
@@ -90,14 +92,15 @@ export default defineComponent({
 			icon: props.icon,
 			iconPack: props.iconPack,
 			tag: props.tag,
-			id: nextId?.value ? nextId.value.tabId++ : 0,
+			id: currentId,
 			attrs: context.attrs,	
             disabled: props.disabled		
 		});
 
         onMounted(() => {
             addChild?.call(null,data);
-        })
+        });
+       
 
         return {
             ...toRefs(reactiveData),

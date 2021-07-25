@@ -36,6 +36,13 @@ export default /*#__PURE__*/ defineComponent({
 	directives: {
 		clickAway,
 	},
+    provide(){
+        return {
+            closeParent : () => {
+                this.hideFn();
+            }
+        }
+    },
 	props: {
 		/**
 		 * Preferred [placement](https://popper.js.org/docs/v2/constructors/#options)
@@ -99,10 +106,10 @@ export default /*#__PURE__*/ defineComponent({
 			type: String,
 			default: "0",
 		},
-    cursorPointer: {
-      type: Boolean,
-      defalut: true
-    }
+        cursorPointer: {
+            type: Boolean,
+            defalut: true
+        }
 	},
 	setup(props, { slots, emit }) {
 		const children = slots.default();
@@ -166,6 +173,7 @@ export default /*#__PURE__*/ defineComponent({
 		});
 
 		return {
+            hideFn: hide,
 			isOpen,
 			popperNode,
 			triggerNode,

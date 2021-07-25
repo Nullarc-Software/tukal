@@ -54,7 +54,7 @@ export default defineComponent({
     inheritAttrs: false,
 	extends: vsComponent,
     props: {
-        value: { default: "" },
+        modelValue: { default: "" },
         val: { default: "" },
         notValue: { default: "" },
         loading: { type: Boolean, default: false },
@@ -62,18 +62,19 @@ export default defineComponent({
         indeterminate: { type: Boolean, default: false },
         icon: { type: Boolean, default: false }
     },
+    emits: ["change", "update:modelValue"],
     setup(props, context) {
         const isChecked = computed(() => {
             let isChecked = false;
 
-            if (props.value) {
-                if (typeof props.value == "boolean") {
-                    isChecked = props.value;
+            if (props.modelValue) {
+                if (typeof props.modelValue == "boolean") {
+                    isChecked = props.modelValue;
                 } else if (
-                    typeof props.value == "object" &&
-                    props.value !== null
+                    typeof props.modelValue == "object" &&
+                    props.modelValue !== null
                 ) {
-                    const array = props.value as Array<any>;
+                    const array = props.modelValue as Array<any>;
                     const containValue =
                         array.indexOf(props.val) === -1 &&
                         JSON.stringify(array).indexOf(
@@ -102,13 +103,13 @@ export default defineComponent({
         const inputListener = computed(() => {
             return {
                 input: (evt: any) => {
-                    if (typeof props.value == "boolean") {
-                        context.emit("update:value", !props.value);
+                    if (typeof props.modelValue == "boolean") {
+                        context.emit("update:modelValue", !props.modelValue);
                     } else if (
-                        typeof props.value == "object" &&
-                        props.value !== null
+                        typeof props.modelValue == "object" &&
+                        props.modelValue !== null
                     ) {
-                        const array = props.value as Array<any>;
+                        const array = props.modelValue as Array<any>;
                         const containValue =
                             array.indexOf(props.val) === -1 &&
                             JSON.stringify(array).indexOf(
@@ -131,12 +132,12 @@ export default defineComponent({
                             array.splice(indexVal, 1);
                         }
 
-                        context.emit("update:value", array);
+                        context.emit("update:modelValue", array);
                     } else {
-                        if (props.val !== props.value) {
-                            context.emit("update:value", props.val);
+                        if (props.val !== props.modelValue) {
+                            context.emit("update:modelValue", props.val);
                         } else {
-                            context.emit("update:value", props.notValue || null);
+                            context.emit("update:modelValue", props.notValue || null);
                         }
                     }
                     context.emit("change", evt);

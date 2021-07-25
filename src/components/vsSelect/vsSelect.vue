@@ -880,6 +880,7 @@ export default defineComponent({
 	width: 100%;
 	max-width: fit-content;
 	display: flex;
+    flex-direction: column;
 
 	&.inline{
 		display: inline-flex;
@@ -1351,6 +1352,7 @@ export default defineComponent({
 		padding: 0px 7px;
 		transition: all 0.25s ease;
 		overflow: hidden;
+        height: unset !important;
 
 		&--success {
 			color: -getColor("success", 1);

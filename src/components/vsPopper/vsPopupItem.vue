@@ -6,7 +6,7 @@
 			background: hoverx ? giveColor(0.01) + ' !important' : null,
 		}"
 		class="vs-component vs-dropdown--item"
-		@click="closeParent"
+		@click="clickClose"
 		@mouseover="hoverx = true"
 		@mouseout="hoverx = false"
 	>
@@ -48,6 +48,10 @@ export default defineComponent({
 	inheritAttrs: false,
 	props: {
 		to: {},
+        onClickClose: {
+            default: false,
+            type: Boolean
+        },
 		disabled: {
 			default: false,
 			type: Boolean,
@@ -61,13 +65,19 @@ export default defineComponent({
 		let hoverx = ref(false);
 		let vsDropDownItem = ref(true);
 		let color = ref("");		
-		
-			
+        const closeParent = inject<Function>("closeParent");
+					
 		const giveColor = function (opacity = 1) {
 			return _color.rColor(color.value, opacity);
 		};		
 
+        const clickClose = function(){
+            if(props.onClickClose)
+                closeParent?.call(null);
+        }
+
 		return {
+            clickClose,
 			hoverx,
 			vsDropDownItem,
 			color,

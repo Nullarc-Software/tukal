@@ -819,7 +819,7 @@
 		<div class="showcase-component">
 			<h4>Switch:</h4>
 			<hr />
-			<vs-switch v-model="active"> Suscribe </vs-switch>
+			<vs-switch v-model="active"> Subscribe </vs-switch>
 			<vs-switch v-model="active2">
 				<template #off> Off </template>
 				<template #on> On </template>
@@ -900,7 +900,7 @@
 			<h4>Tabs:</h4>
 			<hr />
 
-			<vs-tabs color="success" position="left">
+			<vs-tabs position="top" tabStyle="card">
 				<vs-tab label="Home">
 					Home
 				</vs-tab>
@@ -910,7 +910,7 @@
 				<vs-tab label="login">
 					Login
 				</vs-tab>
-				<vs-tab disabled label="Disabled">
+				<vs-tab label="Disabled">
 					Disabled
 				</vs-tab>				
 			</vs-tabs>
