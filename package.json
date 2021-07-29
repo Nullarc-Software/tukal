@@ -1,16 +1,16 @@
 {
-  "name": "vuesax3",
+  "name": "tukal",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve src/main.ts",
     "inspect": "vue-cli-service inspect",
-    "build": "vue-cli-service build --mode development --target lib --name vuesax3 src/main.lib.ts",
+    "build": "vue-cli-service build --mode development --target lib --name tukal src/main.lib.ts",
     "lint": "vue-cli-service lint"
   },
-  "main": "dist/vuesax3.common.js",
-  "unpkg": "dist/vuesax3.umd.min.js",
-  "jsdelivr": "dist/vuesax3.umd.min.js",
+  "main": "dist/tukal.common.js",
+  "unpkg": "dist/tukal.umd.min.js",
+  "jsdelivr": "dist/tukal.umd.min.js",
   "dependencies": {
     "babel-loader": "^8.2.2",
     "copy-webpack-plugin": "^8.1.1",

@@ -1,6 +1,6 @@
-import * as vsComponents from './components/index'
+import * as tuComponents from './components/index'
 import './style/sass/vuesax.scss'
-import vsTheme from './utils/theme'
+import tuTheme from './utils/theme'
 import DefineVuesaxMixin from './defineGlobalMixin'
 import { App } from '@vue/runtime-core'
 import  RootApp from "./App.vue"
@@ -12,14 +12,14 @@ const install = function(Vue : App, options : any = {}) {
   // set default options  
 
   // Use Components
-  Object.values(vsComponents).forEach((vsComponent) => {
-    Vue.component(vsComponent.name, vsComponent);
+  Object.values(tuComponents).forEach((tuComponent) => {
+    Vue.component(tuComponent.name, tuComponent);
   })
   if(options){
     if(options.hasOwnProperty('theme')){
       if(options.theme.hasOwnProperty('colors')){
         if (typeof window !== 'undefined') {
-          vsTheme.vsfunction(options.theme.colors)
+          tuTheme.tufunction(options.theme.colors)
         }
       }
     }
@@ -38,43 +38,43 @@ appVm.mount("#app");
 
 export default install
 
-/* export { vsButton, vsButtonGroup } from './components/vsButton'
-export { vsSelect, vsSelectOption, vsSelectOptionGroup  } from './components/vsSelect'
-export { default as vsSwitch } from './components/vsSwitch'
-export { default as vsCheckbox } from './components/vsCheckBox'
-export { default as vsRadio } from './components/vsRadio'
-export { default as vsInput } from './components/vsInput'
-export { default as vsTabs } from './components/vsTabs'
-export { default as vsSlider } from './components/vsSlider'
-export { default as vsInputNumber } from './components/vsInputNumber'
-export { default as vsTooltip } from './components/vsTooltip'
-export { default as vsUpload } from './components/vsUpload'
-export { default as vsPopup } from './components/vsPopup'
-export { default as vsAlert } from './components/vsAlert'
-export {vsChip, vsChips } from './components/vsChip'
-export { default as vsProgress } from './components/vsProgress'
-export { vsCard, vsCardGroup } from './components/vsCard'
-export { default as vsList } from './components/vsList'
-export { default as vsAvatar } from './components/vsAvatar'
-export { default as vsPagination } from './components/vsPagination'
-export { default as vsBreadcrumb } from './components/vsBreadcrumb'
-export { default as vsDivider } from './components/vsDivider'
-export { default as vsSpacer } from './components/vsSpacer'
-export { default as vsIcon } from './components/vsIcon'
-export { vsNavbar,vsNavbarGroup, vsNavbarItem } from './components/vsNavbar'
-export { vsSidebar, vsSidebarGroup, vsSidebarItem } from './components/vsSideBar'
-export { vsDropDown, vsDropDownItem } from './components/vsDropDown'
-export { default as vsTable } from './components/vsTable'
-export { default as vsDialog } from './components/vsDialog'
-export { default as vsTextarea } from './components/vsTextarea'
-export { vsCollapse, vsCollapseItem } from './components/vsCollapse'
-export { default as vsImages } from './components/vsImages'
-export { default as vsNotification } from './components/vsNotifications'
+/* export { tuButton, tuButtonGroup } from './components/tuButton'
+export { tuSelect, tuSelectOption, tuSelectOptionGroup  } from './components/tuSelect'
+export { default as tuSwitch } from './components/tuSwitch'
+export { default as tuCheckbox } from './components/tuCheckBox'
+export { default as tuRadio } from './components/tuRadio'
+export { default as tuInput } from './components/tuInput'
+export { default as tuTabs } from './components/tuTabs'
+export { default as tuSlider } from './components/tuSlider'
+export { default as tuInputNumber } from './components/tuInputNumber'
+export { default as tuTooltip } from './components/tuTooltip'
+export { default as tuUpload } from './components/tuUpload'
+export { default as tuPopup } from './components/tuPopup'
+export { default as tuAlert } from './components/tuAlert'
+export {tuChip, tuChips } from './components/tuChip'
+export { default as tuProgress } from './components/tuProgress'
+export { tuCard, tuCardGroup } from './components/tuCard'
+export { default as tuList } from './components/tuList'
+export { default as tuAvatar } from './components/tuAvatar'
+export { default as tuPagination } from './components/tuPagination'
+export { default as tuBreadcrumb } from './components/tuBreadcrumb'
+export { default as tuDivider } from './components/tuDivider'
+export { default as tuSpacer } from './components/tuSpacer'
+export { default as tuIcon } from './components/tuIcon'
+export { tuNavbar,tuNavbarGroup, tuNavbarItem } from './components/tuNavbar'
+export { tuSidebar, tuSidebarGroup, tuSidebarItem } from './components/tuSideBar'
+export { tuDropDown, tuDropDownItem } from './components/tuDropDown'
+export { default as tuTable } from './components/tuTable'
+export { default as tuDialog } from './components/tuDialog'
+export { default as tuTextarea } from './components/tuTextarea'
+export { tuCollapse, tuCollapseItem } from './components/tuCollapse'
+export { default as tuImages } from './components/tuImages'
+export { default as tuNotification } from './components/tuNotifications'
 //New Component import
 
 //layout
-export { default as vsRow } from './layout/vsRow'
-export { default as vsCol } from './layout/vsCol' */
+export { default as tuRow } from './layout/tuRow'
+export { default as tuCol } from './layout/tuCol' */
 
 
 

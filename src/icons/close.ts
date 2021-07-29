@@ -8,9 +8,9 @@ export default defineComponent({
 
     render(h: any): VNode {
         const icon = h('i', {
-            staticClass: 'vs-icon-close',
+            staticClass: 'tu-icon-close',
             class: [
-                `vs-icon-hover-${this.hover}`
+                `tu-icon-hover-${this.hover}`
             ],
             ref: 'icon'
         })

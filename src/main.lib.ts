@@ -1,6 +1,6 @@
-import * as vsComponents from './components/index'
+import * as tuComponents from './components/index'
 import './style/sass/vuesax.scss'
-import vsTheme from './utils/theme'
+import tuTheme from './utils/theme'
 import DefineVuesaxMixin from './defineGlobalMixin'
 
 import { App } from '@vue/runtime-core'
@@ -11,14 +11,14 @@ const install = function(Vue : App, options : any = {}) {
   // set default options
 
   // Use Components
-  Object.values(vsComponents).forEach((vsComponent) => {
-    Vue.component(vsComponent.name, vsComponent);
+  Object.values(tuComponents).forEach((tuComponent) => {
+    Vue.component(tuComponent.name, tuComponent);
   })
   if(options){
     if(options.hasOwnProperty('theme')){
       if(options.theme.hasOwnProperty('colors')){
         if (typeof window !== 'undefined') {
-          vsTheme.vsfunction(options.theme.colors)
+          tuTheme.tufunction(options.theme.colors)
         }
       }
     }
@@ -28,34 +28,34 @@ const install = function(Vue : App, options : any = {}) {
 }
 export default install;
 
-export { vsButton, vsButtonGroup } from './components/vsButton'
-export { vsSelect, vsSelectOption, vsSelectOptionGroup } from './components/vsSelect'
-export { default as vsSwitch } from './components/vsSwitch'
-export { default as vsCheckbox } from './components/vsCheckBox'
-export { default as vsRadio } from './components/vsRadio'
-export { default as vsInput } from './components/vsInput'
-export { vsTab, vsTabs } from './components/vsTabs'
-export { default as vsAlert } from './components/vsAlert'
-export { vsChip, vsChips } from './components/vsChip'
-export { vsCard, vsCardGroup } from './components/vsCard'
-export { default as vsAvatar } from './components/vsAvatar'
-export { default as vsPagination } from './components/vsPagination'
-export { default as vsBreadcrumb } from './components/vsBreadcrumb'
-export { loading, LoadingAttributes } from './components/vsLoading'
+export { tuButton, tuButtonGroup } from './components/tuButton'
+export { tuSelect, tuSelectOption, tuSelectOptionGroup } from './components/tuSelect'
+export { default as tuSwitch } from './components/tuSwitch'
+export { default as tuCheckbox } from './components/tuCheckBox'
+export { default as tuRadio } from './components/tuRadio'
+export { default as tuInput } from './components/tuInput'
+export { tuTab, tuTabs } from './components/tuTabs'
+export { default as tuAlert } from './components/tuAlert'
+export { tuChip, tuChips } from './components/tuChip'
+export { tuCard, tuCardGroup } from './components/tuCard'
+export { default as tuAvatar } from './components/tuAvatar'
+export { default as tuPagination } from './components/tuPagination'
+export { default as tuBreadcrumb } from './components/tuBreadcrumb'
+export { loading, LoadingAttributes } from './components/tuLoading'
 
-export { default as vsDivider } from './components/vsDivider'
-export { default as vsIcon } from './components/vsIcon'
-export { vsNavbar,vsNavbarGroup, vsNavbarItem } from './components/vsNavbar'
-export { notification, NotificationAttributes} from './components/vsNotifications'
-export { vsSidebar, vsSidebarGroup, vsSidebarItem } from './components/vsSideBar'
-export { vsPopper, vsPopupMenu, vsPopupItem } from './components/vsPopper'
-export { default as vsDialog } from './components/vsDialog'
-export { vsCollapse, vsCollapseItem} from './components/vsCollapse'
+export { default as tuDivider } from './components/tuDivider'
+export { default as tuIcon } from './components/tuIcon'
+export { tuNavbar,tuNavbarGroup, tuNavbarItem } from './components/tuNavbar'
+export { notification, NotificationAttributes} from './components/tuNotifications'
+export { tuSidebar, tuSidebarGroup, tuSidebarItem } from './components/tuSideBar'
+export { tuPopper, tuPopupMenu, tuPopupItem } from './components/tuPopper'
+export { default as tuDialog } from './components/tuDialog'
+export { tuCollapse, tuCollapseItem} from './components/tuCollapse'
 //New Component import
 
 //layout
-export { default as vsRow } from './layout/vsRow'
-export { default as vsCol } from './layout/vsCol'
+export { default as tuRow } from './layout/tuRow'
+export { default as tuCol } from './layout/tuCol'
 
 
 

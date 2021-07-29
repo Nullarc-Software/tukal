@@ -7,73 +7,73 @@
 		<div class="showcase-component">
 			<h3>Buttons:</h3>
 			<hr />
-			<vs-button success @click="justLoad"> Open Notification </vs-button>
+			<tu-button success @click="justLoad"> Open Notification </tu-button>
             <div style="width: 200px; height:200px; position:relative" ref="loadingDiv" />
-			<vs-button success @click="justShowLoading"> Open Loading </vs-button>
-			<vs-button
+			<tu-button success @click="justShowLoading"> Open Loading </tu-button>
+			<tu-button
 				type="filled"
 				color="danger"
 				textColor="#000"
 				style="margin-right: 10px"
 			>
 				Simple Button
-			</vs-button>
-			<vs-button
+			</tu-button>
+			<tu-button
 				type="filled"
 				color="primary"
 				style="margin-right: 10px"
 				size="small"
 			>
 				Small
-			</vs-button>
-			<vs-button
+			</tu-button>
+			<tu-button
 				type="filled"
 				color="primary"
 				style="margin-right: 10px"
 				size="large"
 			>
 				Large
-			</vs-button>
-			<vs-button
+			</tu-button>
+			<tu-button
 				type="filled"
 				color="primary"
 				style="margin-right: 10px"
 				size="xl"
 			>
 				Xtra Large
-			</vs-button>
-			<vs-button
+			</tu-button>
+			<tu-button
 				circle
 				type="filled"
 				color="primary"
 				style="margin-right: 10px"
 			>
-				<vs-icon>home </vs-icon>
-			</vs-button>
-			<vs-button circle transparent style="margin-right: 10px">
-				<vs-icon>home </vs-icon>
-			</vs-button>
-			<vs-button
+				<tu-icon>home </tu-icon>
+			</tu-button>
+			<tu-button circle transparent style="margin-right: 10px">
+				<tu-icon>home </tu-icon>
+			</tu-button>
+			<tu-button
 				square
 				type="filled"
 				color="primary"
 				style="margin-right: 10px"
 			>
 				Square Button
-			</vs-button>
-			<vs-button border color="primary" style="margin-right: 10px">
+			</tu-button>
+			<tu-button border color="primary" style="margin-right: 10px">
 				Border Only
-			</vs-button>
-			<vs-button flat color="primary" style="margin-right: 10px">
+			</tu-button>
+			<tu-button flat color="primary" style="margin-right: 10px">
 				Flat
-			</vs-button>
-			<vs-button gradient color="primary" style="margin-right: 10px">
+			</tu-button>
+			<tu-button gradient color="primary" style="margin-right: 10px">
 				Gradient
-			</vs-button>
-			<vs-button relief color="primary" style="margin-right: 10px">
+			</tu-button>
+			<tu-button relief color="primary" style="margin-right: 10px">
 				Relief
-			</vs-button>
-			<vs-button
+			</tu-button>
+			<tu-button
 				:loading="loading"
 				@click="loading = true"
 				type="filled"
@@ -81,81 +81,81 @@
 				style="margin-right: 10px"
 			>
 				Loading
-			</vs-button>
-			<vs-button
+			</tu-button>
+			<tu-button
 				upload
 				type="border"
 				color="danger"
 				style="margin-right: 10px"
 			>
 				Upload
-			</vs-button>
-			<vs-button
+			</tu-button>
+			<tu-button
 				upload
 				type="border"
 				color="#00FF00"
 				style="margin-right: 10px"
 			>
 				Upload
-			</vs-button>
-			<vs-button
+			</tu-button>
+			<tu-button
 				upload
 				type="filled"
 				color="primary"
 				style="margin-right: 10px"
 			>
 				Upload
-			</vs-button>
-			<vs-button type="filled" color="primary" style="margin-right: 10px">
+			</tu-button>
+			<tu-button type="filled" color="primary" style="margin-right: 10px">
 				Animate
 				<template v-slot:animate>
-					<vs-icon>home </vs-icon>
+					<tu-icon>home </tu-icon>
 				</template>
-			</vs-button>
+			</tu-button>
 			<br />
 		</div>
 		<div class="showcase-component">
 			<h3>Button Groups:</h3>
 			<hr />
-			<vs-button-group fixed-height="40px">
-				<vs-button> One </vs-button>
-				<vs-button> Two </vs-button>
-				<vs-button> Three </vs-button>
-				<vs-button> four </vs-button>
-			</vs-button-group>
+			<tu-button-group fixed-height="40px">
+				<tu-button> One </tu-button>
+				<tu-button> Two </tu-button>
+				<tu-button> Three </tu-button>
+				<tu-button> four </tu-button>
+			</tu-button-group>
 			<br />
-			<vs-button-group>
-				<vs-button type="border">
-					<vs-icon>edit</vs-icon>
-				</vs-button>
-				<vs-button type="border">
-					<vs-icon>format_color_text</vs-icon>
-				</vs-button>
-				<vs-button type="border">
-					<vs-icon>format_align_center</vs-icon>
-				</vs-button>
-				<vs-button type="border">
-					<vs-icon>format_size</vs-icon>
-				</vs-button>
-			</vs-button-group>
+			<tu-button-group>
+				<tu-button type="border">
+					<tu-icon>edit</tu-icon>
+				</tu-button>
+				<tu-button type="border">
+					<tu-icon>format_color_text</tu-icon>
+				</tu-button>
+				<tu-button type="border">
+					<tu-icon>format_align_center</tu-icon>
+				</tu-button>
+				<tu-button type="border">
+					<tu-icon>format_size</tu-icon>
+				</tu-button>
+			</tu-button-group>
 			<br />
-			<vs-button-group>
-				<vs-button type="border">
-					<vs-icon>edit</vs-icon>
-				</vs-button>
+			<tu-button-group>
+				<tu-button type="border">
+					<tu-icon>edit</tu-icon>
+				</tu-button>
 				<div style="display: inline-block">aaabbb</div>
-				<vs-button type="border">
-					<vs-icon>format_align_center</vs-icon>
-				</vs-button>
-				<vs-button type="border">
-					<vs-icon>format_size</vs-icon>
-				</vs-button>
-			</vs-button-group>
+				<tu-button type="border">
+					<tu-icon>format_align_center</tu-icon>
+				</tu-button>
+				<tu-button type="border">
+					<tu-icon>format_size</tu-icon>
+				</tu-button>
+			</tu-button-group>
 		</div>
 		<div class="showcase-component">
 			<h3>Alerts:</h3>
 			<hr />
-			<vs-alert
+			<tu-alert
 				title="Lorem ipsum dolor sit amet"
 				color="rgb(231, 154, 23)"
 				active="true"
@@ -164,36 +164,36 @@
 				eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
 				enim ad minim veniam, quis nostrud exercitation ullamco laboris
 				nisi ut aliquip ex ea commodo consequat
-			</vs-alert>
+			</tu-alert>
 			<div class="centerx">
-				<vs-button
+				<tu-button
 					@click="active1 = !active1"
 					color="primary"
 					type="filled"
-					>{{ !active1 ? "Open Alert" : "Close Alert" }}</vs-button
+					>{{ !active1 ? "Open Alert" : "Close Alert" }}</tu-button
 				>
-				<vs-alert v-model:active="active1" closable close-icon="close">
+				<tu-alert v-model:active="active1" closable close-icon="close">
 					Lorem ip sum dolor sit amet, consectetur adipisicing elit,
 					sed do eiusmod tempor incididunt ut labore et dolore magna
 					aliqua. Ut enim ad minim veniam, quis nostrud exercitation
 					ullamco laboris nisi ut aliquip ex ea commodo consequat
-				</vs-alert>
+				</tu-alert>
 			</div>
 		</div>
 		<div class="showcase-component">
 			<h3>Avatar:</h3>
 			<hr />
-			<vs-avatar text="Celebrimbor" />
-			<vs-avatar size="large">
+			<tu-avatar text="Celebrimbor" />
+			<tu-avatar size="large">
 				<img
 					src="https://avatars.githubusercontent.com/u/13927773?v=4"
 				/>
-			</vs-avatar>
+			</tu-avatar>
 		</div>
 		<div class="showcase-component">
 			<h3>Breadcrumbs:</h3>
 			<hr />
-			<vs-breadcrumb
+			<tu-breadcrumb
 				:items="[
 					{
 						title: 'Dashboard',
@@ -212,25 +212,25 @@
 						active: true,
 					},
 				]"
-			></vs-breadcrumb>
+			></tu-breadcrumb>
 
-			<vs-breadcrumb>
+			<tu-breadcrumb>
 				<li>
 					<a href="#" title="Home">Home</a
-					><span class="vs-breadcrum--separator">/</span>
+					><span class="tu-breadcrum--separator">/</span>
 				</li>
 				<li>
 					<a href="#" title="Profil">Profil</a
-					><span class="vs-breadcrum--separator">/</span>
+					><span class="tu-breadcrum--separator">/</span>
 				</li>
 				<li aria-current="page" class="active">Infos</li>
-			</vs-breadcrumb>
+			</tu-breadcrumb>
 		</div>
 		<div class="showcase-component">
 			<h3>Cards:</h3>
 			<hr />
-			<vs-card-group>
-				<vs-card
+			<tu-card-group>
+				<tu-card
 					type="2"
 					v-for="(card, key) in 6"
 					:key="key"
@@ -252,50 +252,50 @@
 						</p>
 					</template>
 					<template #interactions>
-						<vs-button danger icon>
-							<vs-icon>favorite</vs-icon>
-						</vs-button>
-						<vs-button class="btn-chat" shadow primary>
-							<vs-icon>chat</vs-icon>
+						<tu-button danger icon>
+							<tu-icon>favorite</tu-icon>
+						</tu-button>
+						<tu-button class="btn-chat" shadow primary>
+							<tu-icon>chat</tu-icon>
 							<span class="span"> 54 </span>
-						</vs-button>
+						</tu-button>
 					</template>
-				</vs-card>
-			</vs-card-group>
+				</tu-card>
+			</tu-card-group>
 		</div>
 		<div class="showcase-component">
 			<h3>CheckBoxes:</h3>
 			<hr />
-			<vs-checkbox v-model:value="checkBox1">{{ checkBox1 }}</vs-checkbox>
-			<vs-checkbox v-model:value="checkBox1">
+			<tu-checkbox v-model:value="checkBox1">{{ checkBox1 }}</tu-checkbox>
+			<tu-checkbox v-model:value="checkBox1">
 				<template v-slot:icon>
-					<vs-icon>settings</vs-icon>
+					<tu-icon>settings</tu-icon>
 				</template>
 				{{ checkBox1 }}
-			</vs-checkbox>
+			</tu-checkbox>
 			<div class="">
 				<ul class="centerx">
 					<li class="modelx">
 						{{ opts }}
 					</li>
 					<li>
-						<vs-checkbox v-model:value="opts" val="luis"
-							>Luis</vs-checkbox
+						<tu-checkbox v-model:value="opts" val="luis"
+							>Luis</tu-checkbox
 						>
 					</li>
 					<li>
-						<vs-checkbox v-model:value="opts" val="carols"
-							>Carols</vs-checkbox
+						<tu-checkbox v-model:value="opts" val="carols"
+							>Carols</tu-checkbox
 						>
 					</li>
 					<li>
-						<vs-checkbox v-model:value="opts" val="summer"
-							>Summer</vs-checkbox
+						<tu-checkbox v-model:value="opts" val="summer"
+							>Summer</tu-checkbox
 						>
 					</li>
 					<li>
-						<vs-checkbox v-model:value="opts" val="lyon"
-							>Lyon</vs-checkbox
+						<tu-checkbox v-model:value="opts" val="lyon"
+							>Lyon</tu-checkbox
 						>
 					</li>
 				</ul>
@@ -305,37 +305,37 @@
 			<h3>Chips:</h3>
 			<hr />
 			<div class="centerx">
-				<vs-chip>
-					<vs-avatar />
+				<tu-chip>
+					<tu-avatar />
 					Icon Default
-				</vs-chip>
-				<vs-chip color="primary">
-					<vs-avatar icon="send" />
+				</tu-chip>
+				<tu-chip color="primary">
+					<tu-avatar icon="send" />
 					Icon send
-				</vs-chip>
-				<vs-chip color="success">
-					<vs-avatar icon="markunread" />
+				</tu-chip>
+				<tu-chip color="success">
+					<tu-avatar icon="markunread" />
 					Icon markunread
-				</vs-chip>
-				<vs-chip color="danger">
-					<vs-avatar icon="link" />
+				</tu-chip>
+				<tu-chip color="danger">
+					<tu-avatar icon="link" />
 					Icon link_off
-				</vs-chip>
-				<vs-chip color="warning">
-					<vs-avatar icon="battery_alert" />
+				</tu-chip>
+				<tu-chip color="warning">
+					<tu-avatar icon="battery_alert" />
 					Icon battery_alert
-				</vs-chip>
-				<vs-chip color="dark">
-					<vs-avatar icon="edit" />
+				</tu-chip>
+				<tu-chip color="dark">
+					<tu-avatar icon="edit" />
 					Icon edit
-				</vs-chip>
+				</tu-chip>
 			</div>
 		</div> -->
 		<div class="showcase-component" style="margin-top: 100px">
 			<h3>Collapse:</h3>
 			<hr />
-			<vs-collapse accordion type="border">
-				<vs-collapse-item>
+			<tu-collapse accordion type="border">
+				<tu-collapse-item>
 					<template v-slot:header> Collapse item </template>
 					Lorem ipsum dolor sit amet, consectetur adipiscing elit.
 					Quisque rhoncus eros tortor, non fringilla lectus cursus et.
@@ -351,8 +351,8 @@
 					ante ipsum primis in faucibus orci luctus et ultrices
 					posuere cubilia Curae; Nullam sed lobortis nisl, quis
 					eleifend metus.
-				</vs-collapse-item>
-				<vs-collapse-item>
+				</tu-collapse-item>
+				<tu-collapse-item>
 					<template v-slot:header> Collapse item 2 </template>
 					Nunc auctor et leo vitae suscipit. Nullam aliquet purus
 					scelerisque enim hendrerit tristique. Maecenas tincidunt dui
@@ -371,13 +371,13 @@
 					<br /><br />
 					efficitur. Mauris quis faucibus nulla. Pellentesque egestas
 					non ipsum vel maximus.
-				</vs-collapse-item>
-				<vs-collapse-item>
+				</tu-collapse-item>
+				<tu-collapse-item>
 					<template v-slot:header> Collapse item 3 </template>
 					Suspendisse aliquet condimentum diam, sed aliquam nisl
 					dapibus et. Aliquam euismod ullamcorper dolor eu
-				</vs-collapse-item>
-				<vs-collapse-item>
+				</tu-collapse-item>
+				<tu-collapse-item>
 					<template v-slot:header> Collapse item 4 </template>
 					Suspendisse aliquet condimentum diam, sed aliquam nisl
 					dapibus et. Aliquam euismod ullamcorper dolor eu imperdiet.
@@ -385,16 +385,16 @@
 					odio. Maecenas porta elit vel lectus molestie, eget aliquam
 					enim feugiat. Vivamus nec faucibus nisl. Nunc venenatis
 					tempus finibus.
-				</vs-collapse-item>
-			</vs-collapse>
+				</tu-collapse-item>
+			</tu-collapse>
 		</div>
 		<div class="showcase-component">
 			<h3 :test="null">Dialog:</h3>
 			<hr />
-			<vs-button @click="activeDialog = !activeDialog"
-				>Open Dialog</vs-button
+			<tu-button @click="activeDialog = !activeDialog"
+				>Open Dialog</tu-button
 			>
-			<vs-dialog width="550px" v-model:value="activeDialog">
+			<tu-dialog width="550px" v-model:value="activeDialog">
 				<template v-slot:header>
 					<h4>Welcome to <b>Vuesax3</b></h4>
 				</template>
@@ -409,23 +409,23 @@
 				</div>
 
 				<template v-slot:footer>
-					<vs-button
+					<tu-button
 						width="100px"
 						style="margin: 5px"
 						@click="activeDialog = false"
 						block
 					>
 						Ok
-					</vs-button>
-					<vs-button type="flat" color="secondary" width="100px">
+					</tu-button>
+					<tu-button type="flat" color="secondary" width="100px">
 						Cancel
-					</vs-button>
+					</tu-button>
 				</template>
-			</vs-dialog>
-			<vs-button @click="activeDialog1 = !activeDialog1"
-				>Open Dialog</vs-button
+			</tu-dialog>
+			<tu-button @click="activeDialog1 = !activeDialog1"
+				>Open Dialog</tu-button
 			>
-			<vs-dialog
+			<tu-dialog
 				square
 				scroll
 				prevent-close
@@ -434,7 +434,7 @@
 			>
 				<template v-slot:header>
 					<h4>Welcome to <b>Vuesax3</b></h4>
-					<vs-divider color="rgba(0,0,0,0.5)" />
+					<tu-divider color="rgba(0,0,0,0.5)" />
 				</template>
 
 				<div class="con-content">
@@ -449,23 +449,23 @@
 				</div>
 
 				<template v-slot:footer>
-					<vs-button
+					<tu-button
 						width="100px"
 						style="margin: 5px"
 						@click="activeDialog1 = false"
 					>
 						Ok
-					</vs-button>
-					<vs-button type="flat" color="secondary" width="100px">
+					</tu-button>
+					<tu-button type="flat" color="secondary" width="100px">
 						Cancel
-					</vs-button>
+					</tu-button>
 				</template>
-			</vs-dialog>
+			</tu-dialog>
 		</div>
 		<div class="showcase-component">
 			<h3>Input:</h3>
 			<hr />
-			<vs-input
+			<tu-input
 				block
 				id="inp1"
 				v-model="inpValue"
@@ -474,34 +474,34 @@
                 maxlength="15"
 			/>
 			<br />
-			<vs-input
+			<tu-input
 				label="Full Name"
 				v-model:value="inpValue"
 				placeholder="Evan You"
 			/>
 			<br />
-			<vs-input label-placeholder="Country" v-model="value" />
+			<tu-input label-placeholder="Country" v-model="value" />
 			<br />
-			<vs-input v-model="value1" placeholder="User name">
+			<tu-input v-model="value1" placeholder="User name">
 				<template #icon>
-					<vs-icon>person</vs-icon>
+					<tu-icon>person</tu-icon>
 				</template>
-			</vs-input>
+			</tu-input>
 
-			<vs-input
+			<tu-input
 				type="password"
 				icon-after
 				v-model="value2"
 				placeholder="Password"
 			>
 				<template #icon>
-					<vs-icon>person</vs-icon>
+					<tu-icon>person</tu-icon>
 				</template>
-			</vs-input>
+			</tu-input>
 
 			<br />
 			<br />
-			<vs-input
+			<tu-input
 				v-model:value="inpValue"
 				label="Example Regex Validation"
 				placeholder="vuesax@gmail.com"
@@ -512,38 +512,38 @@
 				<template v-if="!validEmail && inpValue !== ''" #message-danger>
 					Email Invalid
 				</template>
-			</vs-input>
+			</tu-input>
 			<br />
-			<vs-input loading v-model="value" placeholder="Name" />
+			<tu-input loading v-model="value" placeholder="Name" />
 			<div style="margin: 10px">
-				<vs-input type="text" v-model="value1" label="Text" />
-				<vs-input type="password" v-model="value2" label="Password" />
-				<vs-input type="search" v-model="value3" label="Search" />
-				<vs-input type="number" v-model="value4" label="Number" />
-				<vs-input type="url" v-model="value5" label="Url" />
-				<vs-input type="time" v-model="value6" label="time" />
-				<vs-input type="date" v-model="value7" label="Date" />
+				<tu-input type="text" v-model="value1" label="Text" />
+				<tu-input type="password" v-model="value2" label="Password" />
+				<tu-input type="search" v-model="value3" label="Search" />
+				<tu-input type="number" v-model="value4" label="Number" />
+				<tu-input type="url" v-model="value5" label="Url" />
+				<tu-input type="time" v-model="value6" label="time" />
+				<tu-input type="date" v-model="value7" label="Date" />
 			</div>
 			<div style="margin: 10px">
-				<vs-input
+				<tu-input
 					primary
 					v-model="value"
 					state="primary"
 					placeholder="Primary"
 				/>
 
-				<vs-input
+				<tu-input
 					state="success"
 					success
 					v-model="value2"
 					placeholder="Success Icon"
 				>
 					<template #icon>
-						<vs-icon>person</vs-icon>
+						<tu-icon>person</tu-icon>
 					</template>
-				</vs-input>
+				</tu-input>
 
-				<vs-input
+				<tu-input
 					state="danger"
 					danger
 					icon-after
@@ -551,11 +551,11 @@
 					placeholder="Danger icon after"
 				>
 					<template #icon>
-						<vs-icon>person</vs-icon>
+						<tu-icon>person</tu-icon>
 					</template>
-				</vs-input>
+				</tu-input>
 
-				<vs-input
+				<tu-input
 					warn
 					state="warn"
 					v-model="value4"
@@ -563,16 +563,16 @@
 					label="Warn"
 				/>
 
-				<vs-input
+				<tu-input
 					dark
 					state="dark"
 					v-model="value5"
 					label-placeholder="Dark"
 				/>
 
-				<vs-input border v-model="value" placeholder="Name" />
+				<tu-input border v-model="value" placeholder="Name" />
 
-				<vs-input
+				<tu-input
 					color="#7d33ff"
 					border
 					type="password"
@@ -580,11 +580,11 @@
 					placeholder="Password"
 				>
 					<template #icon>
-						<vs-icon>person</vs-icon>
+						<tu-icon>person</tu-icon>
 					</template>
-				</vs-input>
+				</tu-input>
 
-				<vs-input
+				<tu-input
 					border
 					warn
 					type="email"
@@ -593,30 +593,30 @@
 					label-placeholder="Address"
 				>
 					<template #icon>
-						<vs-icon>person</vs-icon>
+						<tu-icon>person</tu-icon>
 					</template>
-				</vs-input>
+				</tu-input>
 			</div>
 		</div>
 		<div class="showcase-component">
 			<h4>Radio:</h4>
 			<hr />
 
-			<vs-radio v-model="picked" val="1">
+			<tu-radio v-model="picked" val="1">
 				<template #icon>
-					<vs-icon>person</vs-icon>
+					<tu-icon>person</tu-icon>
 				</template>
 				Option A
-			</vs-radio>
-			<vs-radio v-model="picked" val="2"> Option B </vs-radio>
-			<vs-radio disabled v-model="picked" val="3"> Option C </vs-radio>
-			<vs-radio v-model="picked" val="4"> Option D </vs-radio>
+			</tu-radio>
+			<tu-radio v-model="picked" val="2"> Option B </tu-radio>
+			<tu-radio disabled v-model="picked" val="3"> Option C </tu-radio>
+			<tu-radio v-model="picked" val="4"> Option D </tu-radio>
 		</div>
 		<div class="showcase-component">
 			<h4>Select:</h4>
 			<hr />
 
-			<vs-select
+			<tu-select
 				block
 				multiple
 				label-placeholder="Label-placeholder"
@@ -624,89 +624,89 @@
 				style="margin: 10px"
 				filter
 			>
-				<vs-option label="Test" value="1"> Test </vs-option>
-				<vs-option label="Test1" value="2"> Test1 </vs-option>
-				<vs-option label="Javascript" value="3"> Javascript </vs-option>
-				<vs-option disabled label="Sass" value="4"> Sass </vs-option>
-				<vs-option label="Typescript" value="5"> Typescript </vs-option>
-				<vs-option label="Webpack" value="6"> Webpack </vs-option>
-				<vs-option label="Nodejs" value="7"> Nodejs </vs-option>
-			</vs-select>
+				<tu-option label="Test" value="1"> Test </tu-option>
+				<tu-option label="Test1" value="2"> Test1 </tu-option>
+				<tu-option label="Javascript" value="3"> Javascript </tu-option>
+				<tu-option disabled label="Sass" value="4"> Sass </tu-option>
+				<tu-option label="Typescript" value="5"> Typescript </tu-option>
+				<tu-option label="Webpack" value="6"> Webpack </tu-option>
+				<tu-option label="Nodejs" value="7"> Nodejs </tu-option>
+			</tu-select>
 
-			<vs-select
+			<tu-select
 				inline
 				placeholder="Label-placeholder for something soooooo longggg Label-placeholder for something soooooo longggg"
 				v-model="selectValue1"
 				style="margin: 10px"
 				filter
 			>
-				<vs-option label="Test" value="1"> Test </vs-option>
-				<vs-option label="Test1" value="2"> Test1 </vs-option>
-				<vs-option label="Javascript" value="3"> Javascript </vs-option>
-				<vs-option disabled label="Sass" value="4"> Sass </vs-option>
-				<vs-option label="Typescript" value="5"> Typescript </vs-option>
-				<vs-option label="Webpack" value="6"> Webpack </vs-option>
-				<vs-option label="Nodejs" value="7"> Nodejs </vs-option>
-			</vs-select>
+				<tu-option label="Test" value="1"> Test </tu-option>
+				<tu-option label="Test1" value="2"> Test1 </tu-option>
+				<tu-option label="Javascript" value="3"> Javascript </tu-option>
+				<tu-option disabled label="Sass" value="4"> Sass </tu-option>
+				<tu-option label="Typescript" value="5"> Typescript </tu-option>
+				<tu-option label="Webpack" value="6"> Webpack </tu-option>
+				<tu-option label="Nodejs" value="7"> Nodejs </tu-option>
+			</tu-select>
 
-			<vs-select
+			<tu-select
 				inline
 				label-placeholder="Label-placeholder"
 				v-model="selectValue"
 				style="margin: 10px"
 			>
-				<vs-option label="Test" value="1"> Test </vs-option>
-				<vs-option label="Test1" value="2"> Test1 </vs-option>
-				<vs-option label="Javascript" value="3"> Javascript </vs-option>
-				<vs-option disabled label="Sass" value="4"> Sass </vs-option>
-				<vs-option label="Typescript" value="5"> Typescript </vs-option>
-				<vs-option label="Webpack" value="6"> Webpack </vs-option>
-				<vs-option label="Nodejs" value="7"> Nodejs </vs-option>
-			</vs-select>
+				<tu-option label="Test" value="1"> Test </tu-option>
+				<tu-option label="Test1" value="2"> Test1 </tu-option>
+				<tu-option label="Javascript" value="3"> Javascript </tu-option>
+				<tu-option disabled label="Sass" value="4"> Sass </tu-option>
+				<tu-option label="Typescript" value="5"> Typescript </tu-option>
+				<tu-option label="Webpack" value="6"> Webpack </tu-option>
+				<tu-option label="Nodejs" value="7"> Nodejs </tu-option>
+			</tu-select>
 
-			<vs-select
+			<tu-select
 				inline
 				dropdown
 				placeholder="Dropdown"
 				v-model="selectValue2"
 				style="margin: 10px"
 			>
-				<vs-option label="Test" value="1"> Test </vs-option>
-				<vs-option label="Test1" value="2"> Test1 </vs-option>
-				<vs-option label="Javascript" value="3">
-					Javascript <vs-icon>home</vs-icon>
-				</vs-option>
-				<vs-option disabled label="Sass" value="4"> Sass </vs-option>
-				<vs-option label="Typescript" value="5"> Typescript </vs-option>
-				<vs-option label="Webpack" value="6"> Webpack </vs-option>
-				<vs-option label="Nodejs" value="7"> Nodejs </vs-option>
-			</vs-select>
-			<vs-select
+				<tu-option label="Test" value="1"> Test </tu-option>
+				<tu-option label="Test1" value="2"> Test1 </tu-option>
+				<tu-option label="Javascript" value="3">
+					Javascript <tu-icon>home</tu-icon>
+				</tu-option>
+				<tu-option disabled label="Sass" value="4"> Sass </tu-option>
+				<tu-option label="Typescript" value="5"> Typescript </tu-option>
+				<tu-option label="Webpack" value="6"> Webpack </tu-option>
+				<tu-option label="Nodejs" value="7"> Nodejs </tu-option>
+			</tu-select>
+			<tu-select
 				inline
 				label="Group"
 				placeholder="Group"
 				v-model="value1"
 			>
-				<vs-option-group>
+				<tu-option-group>
 					<template v-slot:title> Vuejs </template>
-					<vs-option label="Vuesax" value="1"> Vuesax </vs-option>
-					<vs-option label="Vue" value="2"> Vue </vs-option>
-					<vs-option label="Javascript" value="3">
+					<tu-option label="Vuesax" value="1"> Vuesax </tu-option>
+					<tu-option label="Vue" value="2"> Vue </tu-option>
+					<tu-option label="Javascript" value="3">
 						Javascript
-					</vs-option>
-				</vs-option-group>
-				<vs-option-group>
+					</tu-option>
+				</tu-option-group>
+				<tu-option-group>
 					<template v-slot:title> Others </template>
-					<vs-option label="Sass" value="4"> Sass </vs-option>
-					<vs-option label="Typescript" value="5">
+					<tu-option label="Sass" value="4"> Sass </tu-option>
+					<tu-option label="Typescript" value="5">
 						Typescript
-					</vs-option>
-					<vs-option label="Webpack" value="6"> Webpack </vs-option>
-					<vs-option label="Nodejs" value="7"> Nodejs </vs-option>
-				</vs-option-group>
-			</vs-select>
+					</tu-option>
+					<tu-option label="Webpack" value="6"> Webpack </tu-option>
+					<tu-option label="Nodejs" value="7"> Nodejs </tu-option>
+				</tu-option-group>
+			</tu-select>
 
-			<vs-select
+			<tu-select
 				inline
 				v-for="(color, i) in colors"
 				:key="i"
@@ -715,35 +715,35 @@
 				placeholder="Select"
 				v-model="color.value"
 			>
-				<vs-option value="1"> Vuesax </vs-option>
-				<vs-option label="Vue" value="2"> Vue </vs-option>
-				<vs-option label="Javascript" value="3"> Javascript </vs-option>
-				<vs-option label="Sass" value="4"> Sass </vs-option>
-				<vs-option label="Typescript" value="5"> Typescript </vs-option>
-				<vs-option label="Webpack" value="6"> Webpack </vs-option>
-				<vs-option label="Nodejs" value="7"> Nodejs </vs-option>
-			</vs-select>
+				<tu-option value="1"> Vuesax </tu-option>
+				<tu-option label="Vue" value="2"> Vue </tu-option>
+				<tu-option label="Javascript" value="3"> Javascript </tu-option>
+				<tu-option label="Sass" value="4"> Sass </tu-option>
+				<tu-option label="Typescript" value="5"> Typescript </tu-option>
+				<tu-option label="Webpack" value="6"> Webpack </tu-option>
+				<tu-option label="Nodejs" value="7"> Nodejs </tu-option>
+			</tu-select>
 		</div>
 		<div class="showcase-component">
 			<h4>Dropdown:</h4>
 			<hr />
 			aaa
-			<vs-popper arrow>
+			<tu-popper arrow>
 				<button>click me</button>
 				<template #content>
-					<vs-popup-menu>
-						<vs-popup-item> Test </vs-popup-item>
-						<vs-popup-item> Test 1 </vs-popup-item>
-						<vs-popup-item divider> Test 2 </vs-popup-item>
-					</vs-popup-menu>
+					<tu-popup-menu>
+						<tu-popup-item> Test </tu-popup-item>
+						<tu-popup-item> Test 1 </tu-popup-item>
+						<tu-popup-item divider> Test 2 </tu-popup-item>
+					</tu-popup-menu>
 				</template>
-			</vs-popper>
+			</tu-popper>
 		</div>
 		<div class="showcase-component">
 			<h4>Sidebar:</h4>
 			<hr />
-			<vs-button @click="isOpen = !isOpen"> Toggle Sidebar </vs-button>
-			<vs-sidebar reduce v-model:value="sideBar" :open="isOpen">
+			<tu-button @click="isOpen = !isOpen"> Toggle Sidebar </tu-button>
+			<tu-sidebar reduce v-model:value="sideBar" :open="isOpen">
 				<template #logo>
 					<img
 						src="https://vuesax.com/logos/logo-vuesax-logotipo-vuesax-png-3.png"
@@ -751,89 +751,89 @@
 					/>
 				</template>
 				<template #header> Endpoint Nexus </template>
-				<vs-sidebar-item id="home">
+				<tu-sidebar-item id="home">
 					<template v-slot:icon>
-						<vs-icon>person</vs-icon>
+						<tu-icon>person</tu-icon>
 					</template>
 					Home
-				</vs-sidebar-item>
-				<vs-sidebar-item id="market">
+				</tu-sidebar-item>
+				<tu-sidebar-item id="market">
 					<template #icon>
-						<vs-icon>view_module</vs-icon>
+						<tu-icon>view_module</tu-icon>
 					</template>
 					Market Overview
-				</vs-sidebar-item>
-				<vs-sidebar-item id="Music">
+				</tu-sidebar-item>
+				<tu-sidebar-item id="Music">
 					<template #icon>
-						<vs-icon>music_note</vs-icon>
+						<tu-icon>music_note</tu-icon>
 					</template>
 					Music
-				</vs-sidebar-item>
-				<vs-sidebar-group>
+				</tu-sidebar-item>
+				<tu-sidebar-group>
 					<template #header>
-						<vs-sidebar-item arrow>
+						<tu-sidebar-item arrow>
 							<template #icon>
-								<vs-icon>music_note</vs-icon>
+								<tu-icon>music_note</tu-icon>
 							</template>
 							Social media
-						</vs-sidebar-item>
+						</tu-sidebar-item>
 					</template>
 
-					<vs-sidebar-item id="Instagram">
+					<tu-sidebar-item id="Instagram">
 						<template #icon>
-							<vs-icon>music_note</vs-icon>
+							<tu-icon>music_note</tu-icon>
 						</template>
 						Instagram
-					</vs-sidebar-item>
-					<vs-sidebar-item id="twitter">
+					</tu-sidebar-item>
+					<tu-sidebar-item id="twitter">
 						<template #icon>
-							<vs-icon>music_note</vs-icon>
+							<tu-icon>music_note</tu-icon>
 						</template>
 						Twitter
-					</vs-sidebar-item>
-					<vs-sidebar-item id="Facebook">
+					</tu-sidebar-item>
+					<tu-sidebar-item id="Facebook">
 						<template #icon>
-							<vs-icon>facebook</vs-icon>
+							<tu-icon>facebook</tu-icon>
 						</template>
 						Facebook
-					</vs-sidebar-item>
-				</vs-sidebar-group>
+					</tu-sidebar-item>
+				</tu-sidebar-group>
 				<template #footer>
-					<vs-row justify="space-between">
-						<vs-avatar
+					<tu-row justify="space-between">
+						<tu-avatar
 							badge-color="danger"
 							badge-position="top-right"
 						>
 							<i class="bx bx-bell"></i>
 
 							<template #badge> 28 </template>
-						</vs-avatar>
+						</tu-avatar>
 
-						<vs-avatar>
+						<tu-avatar>
 							<img src="/avatars/avatar-5.png" alt="" />
-						</vs-avatar>
-					</vs-row>
+						</tu-avatar>
+					</tu-row>
 				</template>
-			</vs-sidebar>
+			</tu-sidebar>
 		</div>
 		<div class="showcase-component">
 			<h4>Switch:</h4>
 			<hr />
-			<vs-switch v-model="active"> Subscribe </vs-switch>
-			<vs-switch v-model="active2">
+			<tu-switch v-model="active"> Subscribe </tu-switch>
+			<tu-switch v-model="active2">
 				<template #off> Off </template>
 				<template #on> On </template>
-			</vs-switch>
-			<vs-switch v-model="active3">
+			</tu-switch>
+			<tu-switch v-model="active3">
 				<template #off> default </template>
 				<template #on> Premium </template>
-			</vs-switch>
+			</tu-switch>
 		</div>
 
 		<div class="showcase-component">
 			<h4>Navbar:</h4>
 			<hr />
-			<vs-navbar
+			<tu-navbar
 				left-aligned
 				fixed
 				:open="openNav"
@@ -845,48 +845,48 @@
 						alt=""
 					/>
 				</template>
-				<vs-navbar-group>
+				<tu-navbar-group>
 					Docs
 					<template #items>
-						<vs-navbar-item
+						<tu-navbar-item
 							:active="navValue == 'guide'"
 							id="guide"
 						>
 							Guide
-						</vs-navbar-item>
-						<vs-navbar-item :active="navValue == 'docs'" id="docs">
+						</tu-navbar-item>
+						<tu-navbar-item :active="navValue == 'docs'" id="docs">
 							Documents
-						</vs-navbar-item>
-						<vs-navbar-item
+						</tu-navbar-item>
+						<tu-navbar-item
 							:active="navValue == 'components'"
 							id="components"
 						>
 							Components
-						</vs-navbar-item>
+						</tu-navbar-item>
 					</template>
-				</vs-navbar-group>
-				<vs-navbar-item :active="navValue == 'Github'" id="Github">
+				</tu-navbar-group>
+				<tu-navbar-item :active="navValue == 'Github'" id="Github">
 					Github
-				</vs-navbar-item>
-				<vs-navbar-item :active="navValue == 'Discord'" id="Discord">
+				</tu-navbar-item>
+				<tu-navbar-item :active="navValue == 'Discord'" id="Discord">
 					Discord
-				</vs-navbar-item>
-				<vs-navbar-item :active="navValue == 'Twitter'" id="Twitter">
+				</tu-navbar-item>
+				<tu-navbar-item :active="navValue == 'Twitter'" id="Twitter">
 					Twitter
-				</vs-navbar-item>
-				<vs-navbar-item :active="navValue == 'Medium'" id="Medium">
+				</tu-navbar-item>
+				<tu-navbar-item :active="navValue == 'Medium'" id="Medium">
 					Medium
-				</vs-navbar-item>
-			</vs-navbar>
-			<vs-button @click="openNav = !openNav"> Toggle Navbar </vs-button>
+				</tu-navbar-item>
+			</tu-navbar>
+			<tu-button @click="openNav = !openNav"> Toggle Navbar </tu-button>
 		</div>
 
 		<div class="showcase-component">
 			<h4>Pagination:</h4>
 			<hr />
 
-			<vs-pagination progress not-margin v-model="page" :length="20" />
-			<vs-pagination
+			<tu-pagination progress not-margin v-model="page" :length="20" />
+			<tu-pagination
 				progress
 				dark
 				flat
@@ -900,20 +900,20 @@
 			<h4>Tabs:</h4>
 			<hr />
 
-			<vs-tabs position="top" tabStyle="card">
-				<vs-tab label="Home">
+			<tu-tabs position="top" tabStyle="card">
+				<tu-tab label="Home">
 					Home
-				</vs-tab>
-				<vs-tab label="Service">
+				</tu-tab>
+				<tu-tab label="Service">
 					Service
-				</vs-tab>
-				<vs-tab label="login">
+				</tu-tab>
+				<tu-tab label="login">
 					Login
-				</vs-tab>
-				<vs-tab label="Disabled">
+				</tu-tab>
+				<tu-tab label="Disabled">
 					Disabled
-				</vs-tab>				
-			</vs-tabs>
+				</tu-tab>				
+			</tu-tabs>
 		</div>
 	</div>
 </template>
@@ -928,13 +928,13 @@ import {
 	watch,
 } from "@vue/runtime-core";
 import * as components from "./components";
-import { vsButton } from "./components/vsButton";
+import { tuButton } from "./components/tuButton";
 import {
     notification,
     NotificationAttributes
-} from "./components/vsNotifications";
+} from "./components/tuNotifications";
 import Popper from "vue3-popper";
-import { loading as LoadingConstructor, LoadingAttributes } from "./components/vsLoading";
+import { loading as LoadingConstructor, LoadingAttributes } from "./components/tuLoading";
 import 'material-icons/iconfont/material-icons.css';
  
 export default defineComponent({
@@ -1094,7 +1094,7 @@ export default defineComponent({
 	margin-top: 30px;
 }
 
-.vs-select-content {
+.tu-select-content {
 	margin: 20px;
 }
 body {

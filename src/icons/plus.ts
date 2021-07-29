@@ -8,7 +8,7 @@ export default defineComponent({
     },
     render(h: any): VNode {
         const icon = h('i', {
-            staticClass: 'vs-icon-plus',
+            staticClass: 'tu-icon-plus',
             class: {
                 less: this.less
             },

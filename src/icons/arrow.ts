@@ -8,7 +8,7 @@ export default defineComponent({
   render() {
     const icon = h('i', {      
       class: {
-		'vs-icon-arrow': true,
+		'tu-icon-arrow': true,
         less: this.less
       },
       ref: 'icon',      

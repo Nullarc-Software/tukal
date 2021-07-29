@@ -2,7 +2,7 @@
 import color from './color'
 export default {
 	name: 'theme',
-	vsfunction(json: any) {
+	tufunction(json: any) {
 		for (let clave in json) {
 			let colorx
 			if (/^[rgb(]/g.test(json[clave])) {
@@ -16,7 +16,7 @@ export default {
 			} else {
 				colorx = json[clave]
 			}
-			color.setCssVariable('--vs-' + clave, colorx)
+			color.setCssVariable('--tu-' + clave, colorx)
 		}
 	},
 }

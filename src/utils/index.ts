@@ -5,7 +5,7 @@ import { Router } from "vue-router"
 // import * as consolee from 'consolee'
 
 const isColor = (color: string) => {
-  const vsColors = [
+  const tuColors = [
     'primary', 'secondary', 'success', 'danger', 'warning', 'dark', 'light', 'warn',
     // social colors
     'facebook',
@@ -31,15 +31,15 @@ const isColor = (color: string) => {
     'google-plus',
     'messenger'
   ]
-  return vsColors.includes(color)
+  return tuColors.includes(color)
 }
 
 const setVar = (propertyName: string, value: string, el: any) => {
   if (!el) {
-    document.documentElement.style.setProperty(`--vs-${propertyName}`, value)
+    document.documentElement.style.setProperty(`--tu-${propertyName}`, value)
   } else {
     if (el.nodeName !== '#comment') {
-      el.style.setProperty(`--vs-${propertyName}`, value)
+      el.style.setProperty(`--tu-${propertyName}`, value)
     }
   }
 }
@@ -67,7 +67,7 @@ const setColor = (colorName: string, color: string, el: any, addClass?: boolean)
 
   if (color == 'dark' && el) {
     if (addClass) {
-      el.classList.add('vs-component-dark')
+      el.classList.add('tu-component-dark')
     }
   }
 
@@ -76,26 +76,26 @@ const setColor = (colorName: string, color: string, el: any, addClass?: boolean)
     newColor = `${arrayColor[0]},${arrayColor[1]},${arrayColor[2]}`
     setVar(colorName, newColor, el)
     if (addClass) {
-      el.classList.add('vs-change-color')
+      el.classList.add('tu-change-color')
     }
   } else if (isHEX) {
     const rgb = hexToRgb(color)
     newColor = `${rgb!.r},${rgb!.g},${rgb!.b}`
     setVar(colorName, newColor, el)
     if (addClass) {
-      el.classList.add('vs-change-color')
+      el.classList.add('tu-change-color')
     }
   } else if (isColor(color)) {
     const style = window.getComputedStyle(document.body)
-    newColor = style.getPropertyValue('--vs-' + color)
+    newColor = style.getPropertyValue('--tu-' + color)
     setVar(colorName, newColor, el)
     if (addClass) {
-      el.classList.add('vs-change-color')
+      el.classList.add('tu-change-color')
     }
   } else if (isRGBNumbers) {
     setVar(colorName, color, el)
     if (addClass) {
-      el.classList.add('vs-change-color')
+      el.classList.add('tu-change-color')
     }
   } else {
     //     consolee.warn({
@@ -145,7 +145,7 @@ const getColor = (color: string, alphax = 1) => {
     newColor = `${rgb!.r},${rgb!.g},${rgb!.b}`
   } else if (isColor(color)) {
     const style = window.getComputedStyle(document.body)
-    newColor = style.getPropertyValue('--vs-' + color)
+    newColor = style.getPropertyValue('--tu-' + color)
   } else if (isRGBNumbers) {
     newColor = color
   }

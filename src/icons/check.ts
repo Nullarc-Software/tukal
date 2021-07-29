@@ -8,7 +8,7 @@ export default defineComponent({
 
     render(h: any): VNode {
         const icon = h('i', {
-            staticClass: 'vs-icon-check',
+            staticClass: 'tu-icon-check',
             on: {
                 ...this.$attrs
             },

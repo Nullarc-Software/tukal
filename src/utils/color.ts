@@ -58,19 +58,19 @@ export default {
 		colorx = colorSplit
 	  }
   
-	  let vscolors = ['primary','success','danger','warning','dark']
+	  let tucolors = ['primary','success','danger','warning','dark']
 	  if(colorx){
 		if(/[#()]/.test(colorx)){
 		  return colorx
 		} else {
-		  if(vscolors.includes(colorx)){
-			return `rgba(var(--vs-${colorx}),${opacity})`
+		  if(tucolors.includes(colorx)){
+			return `rgba(var(--tu-${colorx}),${opacity})`
 		  } else {
-			return `rgba(var(--vs-primary),${opacity})`
+			return `rgba(var(--tu-primary),${opacity})`
 		  }
 		}
 	  } else {
-		return `rgba(var(--vs-primary),${opacity})`
+		return `rgba(var(--tu-primary),${opacity})`
 	  }
 	},
 	contrastColor(elementx : string) {
@@ -115,7 +115,7 @@ export default {
   
 	  if(colores.includes(colorInicial)){
 		let style = getComputedStyle(document.documentElement)
-		colorx = this.getVariable(style,'--vs-'+colorInicial)
+		colorx = this.getVariable(style,'--tu-'+colorInicial)
 	  } else {
 		if(/[rgb()]/g.test(colorInicial)){
 		  colorx = colorInicial.replace(/[rgb()]/g,'')
@@ -123,11 +123,11 @@ export default {
 		  let rgbx = this.hexToRgb(colorInicial)
 		  colorx = rgbx ? `${rgbx.r},${rgbx.g},${rgbx.b}` : ''
 		} else {
-		  colorx = '--vs-'+colorInicial
+		  colorx = '--tu-'+colorInicial
 		}
 	  }
 	  return colorx
-	  // this.setCssVariable('--vs-'+clave,colorx)
+	  // this.setCssVariable('--tu-'+clave,colorx)
 	},
 
 	isColorDark(props) {
@@ -135,8 +135,8 @@ export default {
 	},
 	
 	isColor(colorx: string){
-		let vscolors = ['primary','secondary','success','danger','warning','dark', 'light']
-		return vscolors.includes(colorx);
+		let tucolors = ['primary','secondary','success','danger','warning','dark', 'light']
+		return tucolors.includes(colorx);
 	},
 
 	isColorDefault(props) {
