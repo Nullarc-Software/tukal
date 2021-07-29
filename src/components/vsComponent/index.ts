@@ -1,10 +1,11 @@
-import functionWrapper from "@/functions";
+
 import { defineComponent, inject, ref } from "vue";
 import { Router } from "vue-router";
 import {getColor} from "../../utils"
 
 class ComponentConstants {
 	public static router : Router;
+    public static iconPackGlobal : string;
 }
 
 export default defineComponent({
@@ -17,10 +18,14 @@ export default defineComponent({
 			return getColor(color);
 		}
 		
-		let approuter = inject<Router>("appRouter");
+		let approuter = inject<Router|null>("appRouter", null);
+		let iconPackGlobal = inject<string|null>("iconPackGlobal", null);
 
 		if(approuter)
 			ComponentConstants.router = approuter;
+
+        if(iconPackGlobal)
+            ComponentConstants.iconPackGlobal = iconPackGlobal;
 			
 		return {
 			componentColor,

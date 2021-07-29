@@ -929,13 +929,14 @@ import {
 } from "@vue/runtime-core";
 import * as components from "./components";
 import { vsButton } from "./components/vsButton";
-import notification, {
-	notificationAttributes,
+import {
+    notification,
+    NotificationAttributes
 } from "./components/vsNotifications";
 import Popper from "vue3-popper";
-import { LoadingParams } from "./components/vsLoading";
-import {default as LoadingConstructor } from "./components/vsLoading";
-
+import { loading as LoadingConstructor, LoadingAttributes } from "./components/vsLoading";
+import 'material-icons/iconfont/material-icons.css';
+ 
 export default defineComponent({
 	components: {
 		...components,
@@ -993,6 +994,7 @@ export default defineComponent({
 		});
 
 		provide("appRouter", null);
+        provide("iconPackGlobal", "material-icons-outlined");
 
         /*
         waves
@@ -1008,7 +1010,7 @@ export default defineComponent({
         */
         let loadingDiv = ref();
         const  justShowLoading = function() {
-            let attrs : LoadingParams = {
+            let attrs : LoadingAttributes = {
                 target: null,
                 color: 'dark',
                 type: "circles",
@@ -1020,7 +1022,7 @@ export default defineComponent({
         }
 
 		let justLoad = function () {
-			let notificationAttrs: notificationAttributes = {
+			let notificationAttrs: NotificationAttributes = {
 				title: "Documentation Vuesax 4.0+",
 				text: `These documents refer to the latest version of vuesax (4.0+),
 					to see the documents of the previous versions you can do it here 👉 Vuesax3.x`,

@@ -2,7 +2,6 @@ import * as vsComponents from './components/index'
 import './style/sass/vuesax.scss'
 import vsTheme from './utils/theme'
 import DefineVuesaxMixin from './defineGlobalMixin'
-import vuesaxOptions from './utils/options'
 import { App } from '@vue/runtime-core'
 import  RootApp from "./App.vue"
 import { createApp } from '@vue/runtime-dom'
@@ -10,13 +9,7 @@ import { createApp } from '@vue/runtime-dom'
 import "material-design-icons/iconfont/material-icons.css"
 
 const install = function(Vue : App, options : any = {}) {
-  // set default options
-  Object.keys(vuesaxOptions).forEach((prop) => {
-
-    if(!options[prop]) {
-      options[prop.toString()] = (vuesaxOptions as any)[prop.toString()]
-    }
-  });
+  // set default options  
 
   // Use Components
   Object.values(vsComponents).forEach((vsComponent) => {

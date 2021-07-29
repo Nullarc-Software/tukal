@@ -1,5 +1,4 @@
 import { injectDirectionClass } from "./utils/rtl";
-import vsFunctions from './functions'
 import Vue, { App, reactive } from "vue"
 /**
  * Vuesax global mixin, all vueasx functions and properties injected
@@ -20,8 +19,7 @@ export default (Vue : App, options: any) => {
       if(!this.$vs) {
         // define $vs reactive properties        
         this.$vs = reactive(options);
-        // define $vs functions
-        vsFunctions(this);
+           
       }
 
       

@@ -23,36 +23,15 @@
 	</div>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent, computed, onBeforeUnmount, watch, toRefs } from "vue";
 import usePopper from "./composables/userPopper";
 import clickAway from "./directives/click-away";
 /**
  * The Popper component.
  */
-export default /*#__PURE__*/ defineComponent({
-	name: "VsPopper",
-	emits: ["show:popper", "hide:popper"],
-	directives: {
-		clickAway,
-	},
-    provide(){
-        return {
-            closeParent : () => {
-                this.hideFn();
-            }
-        }
-    },
-	props: {
-		/**
-		 * Preferred [placement](https://popper.js.org/docs/v2/constructors/#options)
-		 */
-		placement: {
-			type: String,
-			default: "bottom",
-			validator: function (value) {
-				return [
-					"auto",
+
+const Placement = ["auto",
 					"auto-start",
 					"auto-end",
 					"top",
@@ -66,9 +45,29 @@ export default /*#__PURE__*/ defineComponent({
 					"right-end",
 					"left",
 					"left-start",
-					"left-end",
-				].includes(value);
-			},
+					"left-end"] as const;
+export type PlacementType =  typeof Placement[number];
+
+export default defineComponent({
+	name: "VsPopper",
+	emits: ["show:popper", "hide:popper"],
+	directives: {
+		clickAway,
+	},
+    provide(){
+        return {
+            closeParent : () => {
+               this.hide();
+            }
+        }
+    },
+	props: {
+		/**
+		 * Preferred [placement](https://popper.js.org/docs/v2/constructors/#options)
+		 */
+		placement: {
+			type: String,
+			default: "bottom",			
 		},
 		/**
 		 * Customize the [offset](https://popper.js.org/docs/v2/modifiers/offset/) of the popper
@@ -108,12 +107,12 @@ export default /*#__PURE__*/ defineComponent({
 		},
         cursorPointer: {
             type: Boolean,
-            defalut: true
+            default: true
         }
 	},
 	setup(props, { slots, emit }) {
-		const children = slots.default();
-
+		const children = slots.default?.();
+        
 		if (children && children.length > 1) {
 			return console.error(
 				`[Popper]: The <Popper> component expects only one child element at its root. You passed ${children.length} child nodes.`
@@ -169,7 +168,8 @@ export default /*#__PURE__*/ defineComponent({
 		});
 
 		onBeforeUnmount(() => {
-			popperInstance.value && popperInstance.value.destroy();
+			if(popperInstance.value)
+                (popperInstance.value as any).destroy();
 		});
 
 		return {

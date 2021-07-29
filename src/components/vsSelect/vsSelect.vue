@@ -198,7 +198,7 @@ import {
 } from "vue";
 import vsComponent from "../vsComponent";
 import { insertBody, removeBody, setCords } from "@/utils";
-import vsOption, { SelectOptionConstants } from "../vsSelect/vsSelectOption.vue";
+import { default as vsOption, SelectOptionConstants } from "../vsSelect/vsSelectOption.vue";
 import vsIcon from "../vsIcon/vsIcon.vue";
 import _ from "lodash";
 

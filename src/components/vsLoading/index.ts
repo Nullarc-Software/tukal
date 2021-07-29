@@ -9,7 +9,7 @@ if (typeof window !== 'undefined' && (<any>window).Vue) {
     vsComponent.install((<any>window).Vue)
 }
 
-export interface LoadingParams {
+interface LoadingAttributes {
     type?: string
     text?: string
     hidden?: boolean,
@@ -27,7 +27,7 @@ const loadingConstructor = vsComponent;
 class loading {
 
     instance: App | null = null;
-    params: Ref<LoadingParams>;
+    params: Ref<LoadingAttributes>;
     isVisible: boolean = false;
 
     public changeText(val: string) {
@@ -55,7 +55,7 @@ class loading {
         }, 50)
     }
 
-    constructor(paramsAttr: LoadingParams) {
+    constructor(paramsAttr: LoadingAttributes) {
 
         this.params = ref(paramsAttr);
         let target : any = null;
@@ -77,4 +77,4 @@ class loading {
 
 }
 
-export default loading;
+export { loading, LoadingAttributes};

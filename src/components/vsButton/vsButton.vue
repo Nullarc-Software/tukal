@@ -86,12 +86,10 @@ import {
 } from "vue";
 import _color from "../../utils/color";
 import { useRouter } from "vue-router";
-import { useVs } from "@/functions";
 import vsIcon from "../vsIcon";
 import vsComponent from "../vsComponent";
 
 import ripple, { rippleCut, rippleReverse } from "../../utils/ripple";
-import VSax3Options from "@/utils/options";
 
 export default defineComponent({
 	name: "VsButton",

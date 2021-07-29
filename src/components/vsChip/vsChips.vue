@@ -24,9 +24,10 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent } from '@vue/runtime-core'
 import vsChip from './vsChip.vue'
-export default {
+export default defineComponent({
   name:'VsChips',
   components:{
     vsChip
@@ -59,16 +60,16 @@ export default {
   }),
   methods:{
     addItem(){
-      let valueOld = this.value
+      let valueOld = this.value as any
       valueOld.push(this.newChip)
       this.$emit('input', valueOld)
       this.newChip = ''
     },
     removeTotalItems(){
-      let valueOld = this.value
-      valueOld.splice(0, this.value.length);
+      let valueOld = this.value as any
+      valueOld.splice(0, (this.value as any).length);
       this.$emit('input', valueOld)
     }
   }
-}
+});
 </script>

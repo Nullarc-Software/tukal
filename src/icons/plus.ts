@@ -1,22 +1,23 @@
-import Vue, { VNode } from 'vue'
-import { Component, Prop } from 'vue-property-decorator'
+import Vue, { defineComponent, VNode } from 'vue'
 import './icons.sass'
-@Component
-export default class VsIconClose extends Vue {
-  @Prop({ type: Boolean, default: false }) public less!: boolean
 
-  render(h: any): VNode {
-    const icon = h('i', {
-      staticClass: 'vs-icon-plus',
-      class: {
-        less: this.less
-      },
-      ref: 'icon',
-      on: {
-        ...this.$listeners
-      }
-    })
+export default defineComponent({
 
-    return icon
-  }
-}
+    props: {
+        less: { type: Boolean, default: false }
+    },
+    render(h: any): VNode {
+        const icon = h('i', {
+            staticClass: 'vs-icon-plus',
+            class: {
+                less: this.less
+            },
+            ref: 'icon',
+            on: {
+                ...this.$attrs
+            }
+        })
+
+        return icon
+    }
+});

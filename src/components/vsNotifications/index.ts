@@ -11,7 +11,7 @@ if (typeof window !== 'undefined' && (<any>window).Vue) {
 
 const notificationConstructor = vsComponent;
 
-export declare interface notificationAttributes {	
+interface NotificationAttributes {	
 	position?:  "bottom-left"| "bottom-right" | "bottom-center" | "top-left" | "top-right" | "top-center",
 	isVisible?:  Boolean,
 	content?:  Object,
@@ -67,7 +67,7 @@ class notification{
 			this.clientClose();
 	}
 
-	constructor(paramsAttr: notificationAttributes){
+	constructor(paramsAttr: NotificationAttributes){
 
 		let params = Object.create({});
 		params = Object.assign(params, paramsAttr);
@@ -105,4 +105,4 @@ class notification{
 	}
 };
 
-export default notification;
+export { notification, NotificationAttributes};

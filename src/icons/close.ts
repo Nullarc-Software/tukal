@@ -1,19 +1,20 @@
-import Vue, { VNode } from 'vue'
-import { Component, Prop } from 'vue-property-decorator'
+import Vue, { defineComponent, VNode } from 'vue'
 import './icons.sass'
-@Component
-export default class VsIconClose extends Vue {
-  @Prop({ type: String, default: null }) public hover!: string | null
 
-  render(h: any): VNode {
-    const icon = h('i', {
-      staticClass: 'vs-icon-close',
-      class: [
-        `vs-icon-hover-${this.hover}`
-      ],
-      ref: 'icon'
-    })
+export default defineComponent({
+    props: {
+        hover: { type: String, default: null }
+    },
 
-    return icon
-  }
-}
+    render(h: any): VNode {
+        const icon = h('i', {
+            staticClass: 'vs-icon-close',
+            class: [
+                `vs-icon-hover-${this.hover}`
+            ],
+            ref: 'icon'
+        })
+
+        return icon
+    }
+})

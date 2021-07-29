@@ -1,7 +1,7 @@
 <template>
   <i
     :style="iconStyle"
-    :class="[iconPack, iconPack !='material-icons' ? icon : '', iconClass, getBg, getBgSize, {'round':round}]"
+    :class="[getIconPack, icon, iconClass, getBg, getBgSize, {'round':round}]"
     v-bind="$attrs"
     class="vs-icon notranslate icon-scale unselectable"
   >
@@ -9,25 +9,27 @@
   </i>
 </template>
 <script lang="ts">
-import { computed, defineComponent } from '@vue/runtime-core'
+import { computed, defineComponent, inject, Ref } from '@vue/runtime-core'
 import _color from '../../utils/color'
+import vsComponent from '../vsComponent';
+import { ComponentConstants } from '../vsComponent';
 
-class IconPackConstants {
-
+export class IconPackConstants {
 	public static iconPackGlobal = "fa";
 }
 
 export default defineComponent({
   name:'VsIcon',
+  extends: vsComponent,
   props:{
     icon: {
       default: null,
       type: String
     },
     iconPack: {
-      default: 'material-icons',
+      default: null,
       type: String
-    },
+    },    
     color: {
       default: null,
       type: String
@@ -47,6 +49,22 @@ export default defineComponent({
 
   },
   setup(props, context){
+
+    let iconPackGlobal: string | null = null;
+    if(iconPackGlobal === null)
+        iconPackGlobal = ComponentConstants.iconPackGlobal;
+
+    const getIconPack = computed(() => {
+
+        if(props.iconPack){
+            return props.iconPack;
+        }
+        else if(iconPackGlobal){
+            return iconPackGlobal;
+        }
+        else 
+            return "material-icons";        
+    })
 
 	const iconClass = computed(() => {
       const classes = {}
@@ -96,6 +114,7 @@ export default defineComponent({
 
 
 	return {
+        getIconPack,
 		iconClass,
 		iconStyle,
 		getBg,

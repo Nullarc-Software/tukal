@@ -1,0 +1,12 @@
+import { Router } from "vue-router";
+declare const isColor: (color: string) => boolean;
+declare const setVar: (propertyName: string, value: string, el: any) => void;
+declare const setColor: (colorName: string, color: string, el: any, addClass?: boolean) => void;
+declare const getApplyColor: (color: string, alphax?: number) => string;
+declare const getColor: (color: string, alphax?: number) => any;
+declare const insertBody: (element: HTMLElement, parent: any) => void;
+declare const removeBody: (element: HTMLElement, parent: any) => void;
+declare const setCords: (element: any, parent: any) => void;
+declare const setCordsPosition: (element: any, parent: any, position: string) => void;
+declare const getRouter: () => Router;
+export { setColor, getColor, setVar, isColor, insertBody, removeBody, setCords, setCordsPosition, getRouter, getApplyColor };
