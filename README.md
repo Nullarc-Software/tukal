@@ -1,4 +1,6 @@
-# vuesax3
+# Tukal js. The Component library based off vuesax 3 and vuesax 4
+
+Written in Typescript and Vuejs 3.
 
 ## Project setup
 ```
