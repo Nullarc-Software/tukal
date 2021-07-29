@@ -1,8 +1,8 @@
 @import '../../style/sass/_mixins'
 // @import '../../styles/colors'
 
-.vs-ripple-content
-  --vs-getColor: inherit
+.tu-ripple-content
+  --tu-getColor: inherit
   width: 100px
   height: 100px
   position: absolute
@@ -14,7 +14,7 @@
   right: 0px
   border-radius: inherit
   z-index: -1
-  .vs-ripple
+  .tu-ripple
     width: 0px
     height: 0px
     border-radius: 50%
@@ -26,7 +26,7 @@
     &--solid
       background: -getColor(color, 1)
       opacity: 1
-  .vs-ripple-invert
+  .tu-ripple-invert
     width: 0px
     height: 0px
     border-radius: 50%
@@ -35,7 +35,7 @@
     transform: translate(-50%,-50%)
     transition: all .5s ease
     background-image: radial-gradient(circle,-getColor(color, .5),-getColor(color, 0))
-  .vs-ripple-cut-1
+  .tu-ripple-cut-1
     width: 0px
     height: 0px
     opacity: 0
@@ -43,7 +43,7 @@
     transform: translate(-100%,-50%) skew(20deg)
     transition: all .6s ease
     background-image: linear-gradient(270deg, rgba(255,255,255,.25) 0%, rgba(255,255,255,0) 100%)
-  .vs-ripple-cut-2
+  .tu-ripple-cut-2
     width: 0px
     height: 0px
     opacity: 0

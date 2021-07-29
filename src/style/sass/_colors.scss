@@ -1,78 +1,78 @@
 :root{
   @extend :root;
-  --vs-primary: 25, 91, 255;
-  --vs-warn: 255, 186, 0;
-  --vs-danger: 255,71,87;
-  --vs-success: 70,201,58;
-  --vs-dark: 30,30,30;
-  --vs-light: 244,247,248;
-  --vs-color: 17,18,20;
+  --tu-primary: 25, 91, 255;
+  --tu-warn: 255, 186, 0;
+  --tu-danger: 255,71,87;
+  --tu-success: 70,201,58;
+  --tu-dark: 30,30,30;
+  --tu-light: 244,247,248;
+  --tu-color: 17,18,20;
 
   // social colors
 
-  --vs-facebook: 59, 89, 153;
-  --vs-twitter: 29, 161, 242;
-  --vs-youtube: 255, 0, 0;
-  --vs-pinterest: 189, 8, 28;
-  --vs-linkedin: 0, 119, 181;
-  --vs-snapchat: 255, 252, 0;
-  --vs-whatsapp: 37, 211, 102;
-  --vs-tumblr: 54, 70, 93;
-  --vs-reddit: 255, 69, 0;
-  --vs-spotify: 30, 215, 96;
-  --vs-amazon: 255, 153, 0;
-  --vs-medium: 2, 184, 117;
-  --vs-vimeo: 26, 183, 234;
-  --vs-skype: 0, 175, 240;
-  --vs-dribbble: 234, 76, 137;
-  --vs-slack: 74, 21, 75;
-  --vs-yahoo: 67, 2, 151;
-  --vs-twitch: 100, 65, 164;
-  --vs-discord: 114, 137, 218;
-  --vs-telegram: 0, 136, 204;
-  --vs-google-plus: 219, 68, 55;
-  --vs-messenger: 0, 132, 255;
+  --tu-facebook: 59, 89, 153;
+  --tu-twitter: 29, 161, 242;
+  --tu-youtube: 255, 0, 0;
+  --tu-pinterest: 189, 8, 28;
+  --tu-linkedin: 0, 119, 181;
+  --tu-snapchat: 255, 252, 0;
+  --tu-whatsapp: 37, 211, 102;
+  --tu-tumblr: 54, 70, 93;
+  --tu-reddit: 255, 69, 0;
+  --tu-spotify: 30, 215, 96;
+  --tu-amazon: 255, 153, 0;
+  --tu-medium: 2, 184, 117;
+  --tu-vimeo: 26, 183, 234;
+  --tu-skype: 0, 175, 240;
+  --tu-dribbble: 234, 76, 137;
+  --tu-slack: 74, 21, 75;
+  --tu-yahoo: 67, 2, 151;
+  --tu-twitch: 100, 65, 164;
+  --tu-discord: 114, 137, 218;
+  --tu-telegram: 0, 136, 204;
+  --tu-google-plus: 219, 68, 55;
+  --tu-messenger: 0, 132, 255;
 
   // theme
 
-  --vs-background: 255, 255, 255;
-  --vs-text: 44, 62, 80;
-  --vs-gray-1: 249, 252, 253;
-  --vs-gray-2: 244, 247, 248;
-  --vs-gray-3: 240, 243, 244;
-  --vs-gray-4: 230, 233, 234;
+  --tu-background: 255, 255, 255;
+  --tu-text: 44, 62, 80;
+  --tu-gray-1: 249, 252, 253;
+  --tu-gray-2: 244, 247, 248;
+  --tu-gray-3: 240, 243, 244;
+  --tu-gray-4: 230, 233, 234;
   
-  --vs-colors {
-    primary: --vs-primary;
-    secondary: --vs-secondary;
-    danger: --vs-danger;
-    success: --vs-success;
-    warning: --vs-warning;
-    dark: --vs-dark;
-    light: --vs-light;
-    background: --vs-background;
-    text: --vs-text;
-    color: --vs-color;
+  --tu-colors {
+    primary: --tu-primary;
+    secondary: --tu-secondary;
+    danger: --tu-danger;
+    success: --tu-success;
+    warning: --tu-warning;
+    dark: --tu-dark;
+    light: --tu-light;
+    background: --tu-background;
+    text: --tu-text;
+    color: --tu-color;
   }
 }
 
 [class*="--primary"]{
-  --vs-color: var(--vs-primary);
+  --tu-color: var(--tu-primary);
 }
 [class*="--default"]{
-  --vs-color: var(--vs-primary);
+  --tu-color: var(--tu-primary);
 }
 [class*="--danger"]{
-  --vs-color: var(--vs-danger);
+  --tu-color: var(--tu-danger);
 } 
 [class*="--success"]{
-  --vs-color: var(--vs-success);
+  --tu-color: var(--tu-success);
 }
 [class*="--dark"]{
-  --vs-color: var(--vs-dark);
+  --tu-color: var(--tu-dark);
 }
 [class*="--warn"]{
-  --vs-color: var(--vs-warn);
+  --tu-color: var(--tu-warn);
 }
   
 

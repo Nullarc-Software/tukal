@@ -1,19 +1,19 @@
 :root {
     @extend :root;
-    --vs-shadow-opacity: 0.05;
-    --vs-radius: 20px;
-    --vs-zindex-1: 100000;
-    --vs-zindex-2: 99000;
-    --vs-zindex-3: 98000;
-    --vs-zindex-4: 97000;
-    --vs-background-opacity: 0.2;
-    --vs-disabled-opacity: 0.5;
-    --vs-disabled-pointer: default;
+    --tu-shadow-opacity: 0.05;
+    --tu-radius: 20px;
+    --tu-zindex-1: 100000;
+    --tu-zindex-2: 99000;
+    --tu-zindex-3: 98000;
+    --tu-zindex-4: 97000;
+    --tu-background-opacity: 0.2;
+    --tu-disabled-opacity: 0.5;
+    --tu-disabled-pointer: default;
 
 
-    --vs-elevated-1: 0px 2px 4px rgba(0, 0, 0, 0.12);
-    --vs-elevated-2: 0px 4px 8px rgba(0, 0, 0, 0.12);
-    --vs-elevated-3: 0px 8px 16px rgba(0, 0, 0, 0.12);
-    --vs-elevated-4: 0px 12px 24px rgba(0, 0, 0, 0.12);
-    --vs-elevated-5: 0px 16px 32px rgba(0, 0, 0, 0.12);
+    --tu-elevated-1: 0px 2px 4px rgba(0, 0, 0, 0.12);
+    --tu-elevated-2: 0px 4px 8px rgba(0, 0, 0, 0.12);
+    --tu-elevated-3: 0px 8px 16px rgba(0, 0, 0, 0.12);
+    --tu-elevated-4: 0px 12px 24px rgba(0, 0, 0, 0.12);
+    --tu-elevated-5: 0px 16px 32px rgba(0, 0, 0, 0.12);
 }
