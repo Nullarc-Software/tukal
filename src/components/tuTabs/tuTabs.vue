@@ -16,6 +16,7 @@
                     class="tu-tabs--li"
                     :class="{
                         [`tu-tabs--li-${child.id}`]: true,
+                        [`tu-tabs--li-${child.name}`] : child.name,
                         activeChild: childActive == child.id
                     }"
                     @mouseover="hover = true"
@@ -83,6 +84,7 @@ export interface ChildData {
     iconPack: string;
     tag: string;
     id: number;
+    name?: string,
     attrs: Object;
     disabled: boolean;
     vnode: VNode | undefined;
@@ -248,13 +250,22 @@ export default defineComponent({
 
         const parseIndex = function(index) {
             let activeIndex = reactiveData.childActive;
-            if (index < 0) {
-                activeIndex = 0;
-            } else if (index >= reactiveData.children.length) {
-                activeIndex = reactiveData.children.length - 1;
-            } else if (reactiveData.children[index].disabled === false) {
-                activeIndex = parseInt(index);
+            
+            if(typeof index == "number" || !isNaN(parseInt(index))){
+                if (index < 0) {
+                    activeIndex = 0;
+                } else if (index >= reactiveData.children.length) {
+                    activeIndex = reactiveData.children.length - 1;
+                } else if (reactiveData.children[index].disabled === false) {
+                    activeIndex = parseInt(index);
+                }
             }
+            else {
+                activeIndex = _.findIndex(reactiveData.children, (child) => {
+                    return child.name === index;
+                });
+            }
+            
             return activeIndex;
         };
 
@@ -336,6 +347,14 @@ export default defineComponent({
             });
         });
 
+        watch(() => props.modelValue, () => {
+             const activeIndex = parseIndex(props.modelValue);
+            reactiveData.childActive = activeIndex;
+            nextTick(() => {
+                activeChild(activeIndex);
+            });
+        })
+
         return {
             ...toRefs(reactiveData),
             ul,
@@ -347,13 +366,7 @@ export default defineComponent({
             parseIndex,
             tabIdInstance
         };
-    },
-    watch: {
-        value(index) {
-            const activeIndex = this.parseIndex(index);
-            this.activeChild(activeIndex);
-        }
-    }
+    }   
 });
 </script>
 

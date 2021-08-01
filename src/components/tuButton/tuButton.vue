@@ -87,7 +87,7 @@ import {
 import _color from "../../utils/color";
 import { useRouter } from "vue-router";
 import tuIcon from "../tuIcon";
-import tuComponent from "../tuComponent";
+import tuComponent, { ComponentConstants } from "../tuComponent";
 
 import ripple, { rippleCut, rippleReverse } from "../../utils/ripple";
 
@@ -130,7 +130,7 @@ export default defineComponent({
 
 		const clickButton = function(event) {
 			if (props.to) {
-				useRouter().push(props.to);
+				ComponentConstants.router.push(props.to);
 			} else if (props.href) {
 				window.open(props.href, (props.blank && "_blank") || "_self");
 				// console.log(this.blank && '_self')

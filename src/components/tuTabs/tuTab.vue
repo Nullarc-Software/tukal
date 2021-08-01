@@ -34,6 +34,10 @@ export default defineComponent({
 			default: "Label",
 			type: String,
 		},
+        name: {
+            default: null,
+            type: String
+        },
 		icon: {
 			default: "",
 			type: String,
@@ -94,7 +98,8 @@ export default defineComponent({
 			tag: props.tag,
 			id: currentId,
 			attrs: context.attrs,	
-            disabled: props.disabled		
+            disabled: props.disabled,
+            name: props.name	
 		});
 
         onMounted(() => {

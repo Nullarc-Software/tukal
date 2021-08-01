@@ -8,8 +8,13 @@
 			<h3>Buttons:</h3>
 			<hr />
 			<tu-button success @click="justLoad"> Open Notification </tu-button>
-            <div style="width: 200px; height:200px; position:relative" ref="loadingDiv" />
-			<tu-button success @click="justShowLoading"> Open Loading </tu-button>
+			<div
+				style="width: 200px; height: 200px; position: relative"
+				ref="loadingDiv"
+			/>
+			<tu-button success @click="justShowLoading">
+				Open Loading
+			</tu-button>
 			<tu-button
 				type="filled"
 				color="danger"
@@ -471,7 +476,7 @@
 				v-model="inpValue"
 				placeholder="Name"
 				style="margin-top: 10px"
-                maxlength="15"
+				maxlength="15"
 			/>
 			<br />
 			<tu-input
@@ -900,20 +905,112 @@
 			<h4>Tabs:</h4>
 			<hr />
 
-			<tu-tabs position="top" tabStyle="card">
-				<tu-tab label="Home">
-					Home
-				</tu-tab>
-				<tu-tab label="Service">
-					Service
-				</tu-tab>
-				<tu-tab label="login">
-					Login
-				</tu-tab>
-				<tu-tab label="Disabled">
-					Disabled
-				</tu-tab>				
+			<tu-tabs position="top" tabStyle="card" v-model="tabName">
+				<tu-tab label="Home" name="ho"> Home </tu-tab>
+				<tu-tab label="Service" name="se" > Service </tu-tab>
+				<tu-tab label="login" name="lo"> Login </tu-tab>
+				<tu-tab label="Disabled" name="di"> Disabled </tu-tab>
 			</tu-tabs>
+		</div>
+        <div class="showcase-component">
+			<h4>Progress:</h4>
+			<hr />
+
+			   <tu-progress :percent="100" color="primary">primary</tu-progress>
+                <tu-progress :percent="90" color="warn">warning</tu-progress>
+                <tu-progress :percent="75" color="danger">danger</tu-progress>
+                <tu-progress :percent="60" color="success">success</tu-progress>
+                <tu-progress :percent="45" color="dark">dark</tu-progress>
+                <tu-progress :percent="30" color="rgb(164, 69, 15)">RGB</tu-progress>
+                <tu-progress :percent="15" color="#24c1a0">HEX</tu-progress>
+                <tu-progress :height="12" indeterminate color="#24c1a0">HEX</tu-progress>
+		</div>
+		<div class="showcase-component">
+			<h4>Table:</h4>
+			<hr />
+
+			<tu-table v-model="selected">
+				<template #thead>
+					<tu-tr>
+						<tu-th> Name </tu-th>
+						<tu-th> Email </tu-th>
+						<tu-th> Id </tu-th>
+					</tu-tr>
+				</template>
+				<template #tbody>
+					<tu-tr :key="i" v-for="(tr, i) in users" :data="tr" :isSelected="tr && selected && tr.id == selected.id">
+						<tu-td>
+							{{ tr.name }}
+						</tu-td>
+						<tu-td>
+							{{ tr.email }}
+						</tu-td>
+						<tu-td>
+							{{ tr.id }}
+						</tu-td>
+					</tu-tr>
+				</template>
+			</tu-table>
+            {{selected}}
+            <br />
+            Striped: 
+            <tu-table striped >
+				<template #thead>
+					<tu-tr>
+                        <tu-th>
+                            <tu-checkbox
+                                :indeterminate="selected && selected.length == users.length" v-model="allCheck"
+                                @change="selected = $vs.checkAll(selected, users)"
+                            />
+                        </tu-th>
+						<tu-th> Name </tu-th>
+						<tu-th> Email </tu-th>
+						<tu-th> Id </tu-th>
+					</tu-tr>
+				</template>
+				<template #tbody>
+					<tu-tr :key="i" v-for="(tr, i) in users" :data="tr">
+                        <tu-td>
+                            <tu-checkbox
+                                :indeterminate="selected && selected.length == users.length" v-model="allCheck"
+                                @change="selected = $vs.checkAll(selected, users)"
+                            />
+                        </tu-td>
+						<tu-td>
+							{{ tr.name }}
+						</tu-td>
+						<tu-td>
+							{{ tr.email }}
+						</tu-td>
+						<tu-td>
+							{{ tr.id }}
+						</tu-td>
+                        <template #expand>
+                            <div class="con-content">
+                                <div>
+                                <tu-avatar>
+                                    <img :src="`/avatars/avatar-${i + 1}.png`" alt="">
+                                </tu-avatar>
+                                <p>
+                                    {{ tr.name }}
+                                </p>
+                                </div>
+                                <div>
+                                <tu-button flat icon>
+                                    <i class='bx bx-lock-open-alt' ></i>
+                                </tu-button>
+                                <tu-button flat icon>
+                                    Send Email
+                                </tu-button>
+                                <tu-button border danger>
+                                    Remove User
+                                </tu-button>
+                                </div>
+                            </div>
+                            </template>
+					</tu-tr>
+				</template>
+			</tu-table>
 		</div>
 	</div>
 </template>
@@ -930,13 +1027,16 @@ import {
 import * as components from "./components";
 import { tuButton } from "./components/tuButton";
 import {
-    notification,
-    NotificationAttributes
+	notification,
+	NotificationAttributes,
 } from "./components/tuNotifications";
 import Popper from "vue3-popper";
-import { loading as LoadingConstructor, LoadingAttributes } from "./components/tuLoading";
-import 'material-icons/iconfont/material-icons.css';
- 
+import {
+	loading as LoadingConstructor,
+	LoadingAttributes,
+} from "./components/tuLoading";
+import "material-icons/iconfont/material-icons.css";
+
 export default defineComponent({
 	components: {
 		...components,
@@ -994,9 +1094,9 @@ export default defineComponent({
 		});
 
 		provide("appRouter", null);
-        provide("iconPackGlobal", "material-icons-outlined");
+		provide("iconPackGlobal", "material-icons-outlined");
 
-        /*
+		/*
         waves
         corners
         border
@@ -1008,18 +1108,17 @@ export default defineComponent({
         square-rotate
         scale
         */
-        let loadingDiv = ref();
-        const  justShowLoading = function() {
-            let attrs : LoadingAttributes = {
-                target: null,
-                color: 'dark',
-                type: "circles",
-                scale: "1.0"
-            };
+		let loadingDiv = ref();
+		const justShowLoading = function () {
+			let attrs: LoadingAttributes = {
+				target: null,
+				color: "dark",
+				type: "circles",
+				scale: "1.0",
+			};
 
-            const load = new LoadingConstructor(attrs);
-           
-        }
+			const load = new LoadingConstructor(attrs);
+		};
 
 		let justLoad = function () {
 			let notificationAttrs: NotificationAttributes = {
@@ -1056,7 +1155,84 @@ export default defineComponent({
 			console.log("picked: " + picked);
 		});
 
+        let users=  [
+          {
+            "id": 1,
+            "name": "Leanne Graham",
+            "username": "Bret",
+            "email": "Sincere@april.biz",
+            "website": "hildegard.org",
+          },
+          {
+            "id": 2,
+            "name": "Ervin Howell",
+            "username": "Antonette",
+            "email": "Shanna@melissa.tv",
+            "website": "anastasia.net",
+          },
+          {
+            "id": 3,
+            "name": "Clementine Bauch",
+            "username": "Samantha",
+            "email": "Nathan@yesenia.net",
+            "website": "ramiro.info",
+          },
+          {
+            "id": 4,
+            "name": "Patricia Lebsack",
+            "username": "Karianne",
+            "email": "Julianne.OConner@kory.org",
+            "website": "kale.biz",
+          },
+          {
+            "id": 5,
+            "name": "Chelsey Dietrich",
+            "username": "Kamren",
+            "email": "Lucio_Hettinger@annie.ca",
+            "website": "demarco.info",
+          },
+          {
+            "id": 6,
+            "name": "Mrs. Dennis Schulist",
+            "username": "Leopoldo_Corkery",
+            "email": "Karley_Dach@jasper.info",
+            "website": "ola.org",
+          },
+          {
+            "id": 7,
+            "name": "Kurtis Weissnat",
+            "username": "Elwyn.Skiles",
+            "email": "Telly.Hoeger@billy.biz",
+            "website": "elvis.io",
+          },
+          {
+            "id": 8,
+            "name": "Nicholas Runolfsdottir V",
+            "username": "Maxime_Nienow",
+            "email": "Sherwood@rosamond.me",
+            "website": "jacynthe.com",
+          },
+          {
+            "id": 9,
+            "name": "Glenna Reichert",
+            "username": "Delphine",
+            "email": "Chaim_McDermott@dana.io",
+            "website": "conrad.com",
+          },
+          {
+            "id": 10,
+            "name": "Clementina DuBuque",
+            "username": "Moriah.Stanton",
+            "email": "Rey.Padberg@karina.biz",
+            "website": "ambrose.net",
+          }
+        ];
+
+        let selected = ref(null);
+        let tabName = ref("ho");
+    
 		return {
+            selected,
 			active1,
 			checkBox1,
 			checkBox2,
@@ -1080,14 +1256,17 @@ export default defineComponent({
 			radios1: "luis",
 			picked,
 			page,
-            loadingDiv,
-            justShowLoading
+			loadingDiv,
+            tabName,
+			justShowLoading,
+            users
 		};
 	},
 });
 </script>
 
 <style>
+
 .showcase-component {
 	margin-bottom: 15px;
 	margin-left: 30px;

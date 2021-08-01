@@ -170,7 +170,7 @@ export default defineComponent({
 
 .tu-switch {
 
-	--tu-color: var(--tu-primary);
+  --tu-color: var(--tu-primary);
   color: #fff;
   padding: 5px;
   border-radius: 20px;

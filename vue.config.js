@@ -12,7 +12,7 @@ module.exports = {
             options.compilerOptions = {
               declaration: true,
               noEmit: false,
-              outDir: 'types',
+              outDir: 'dist',
               experimentalDecorators: true
             }
             return options;

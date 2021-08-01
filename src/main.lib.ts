@@ -41,6 +41,7 @@ export { tuCard, tuCardGroup } from './components/tuCard'
 export { default as tuAvatar } from './components/tuAvatar'
 export { default as tuPagination } from './components/tuPagination'
 export { default as tuBreadcrumb } from './components/tuBreadcrumb'
+export { default as tuProgress } from './components/tuProgress'
 export { loading, LoadingAttributes } from './components/tuLoading'
 
 export { default as tuDivider } from './components/tuDivider'
@@ -51,6 +52,7 @@ export { tuSidebar, tuSidebarGroup, tuSidebarItem } from './components/tuSideBar
 export { tuPopper, tuPopupMenu, tuPopupItem } from './components/tuPopper'
 export { default as tuDialog } from './components/tuDialog'
 export { tuCollapse, tuCollapseItem} from './components/tuCollapse'
+export { tuTable, tuTableExpand, tuTd, tuTh, tuTr } from './components/tuTable'
 //New Component import
 
 //layout
