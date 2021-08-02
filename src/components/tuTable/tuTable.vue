@@ -27,8 +27,8 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref } from "@vue/runtime-core";
-import _ from "lodash";
+import { computed, defineComponent, onMounted, ref } from "vue";
+import * as _ from "lodash";
 import tuComponent from "../tuComponent";
 
 export default defineComponent({

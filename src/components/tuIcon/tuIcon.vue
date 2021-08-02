@@ -9,7 +9,7 @@
   </i>
 </template>
 <script lang="ts">
-import { computed, defineComponent, inject, Ref } from '@vue/runtime-core'
+import { computed, defineComponent, inject, Ref } from 'vue'
 import _color from '../../utils/color'
 import tuComponent from '../tuComponent';
 import { ComponentConstants } from '../tuComponent';

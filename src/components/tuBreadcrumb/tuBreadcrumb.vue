@@ -1,4 +1,4 @@
-<template lang="html">
+<template>
   <nav
     v-bind="$attrs"
     :class="`tu-align-${align}`"
@@ -43,7 +43,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from '@vue/runtime-core'
+import { computed, defineComponent } from 'vue'
 import _color from '../../utils/color'
 import { useRoute, useRouter} from "vue-router"
 

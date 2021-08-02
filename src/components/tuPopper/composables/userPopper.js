@@ -7,71 +7,75 @@ import arrow from "@popperjs/core/lib/modifiers/arrow";
 
 const toInt = x => parseInt(x, 10);
 
-export default function usePopper(options) {
-  const isOpen = ref(false);
-  const popperInstance = ref(null);
-  const popperNode = ref(null);
-  const triggerNode = ref(null);
+export default function usePopper (options) {
+	const isOpen = ref(false);
+	const popperInstance = ref(null);
+	const popperNode = ref(null);
+	const triggerNode = ref(null);
 
-  const hide = () => {
-    isOpen.value = false;
-  };
+	const hide = () => {
+		isOpen.value = false;
+	};
 
-  const show = () => {
-    if (isOpen.value) {
-      return;
-    }
+	const show = () => {
+		if (isOpen.value) {
+			return;
+		}
 
-    isOpen.value = true;
-  };
+		isOpen.value = true;
+	};
 
-  const toggle = () => {
-    isOpen.value ? hide() : show();
-  };
+	const toggle = () => {
+		isOpen.value ? hide() : show();
+	};
 
-  watch(isOpen, async isOpen => {
-    if (isOpen) {
-      await nextTick();
-      initializePopper();
-    }
-  });
+	watch(isOpen, async isOpen => {
+		if (isOpen) {
+			await nextTick();
+			initializePopper();
+		}
+	});
 
-  const initializePopper = () => {
-    popperInstance.value = createPopper(triggerNode.value, popperNode.value, {
-      placement: options.placement.value,
-      modifiers: [
-        preventOverflow,
-        flip,
-        arrow,
-        {
-          name: "arrow",
-          options: {
-            padding: toInt(options.arrowPadding.value),
-          },
-        },
-        offset,
-        {
-          name: "offset",
-          options: {
-            offset: [
-              toInt(options.offsetX.value),
-              toInt(options.offsetY.value),
-            ],
-          },
-        },
-      ],
-    });
+	const initializePopper = () => {
+		popperInstance.value = createPopper(
+			triggerNode.value,
+			popperNode.value,
+			{
+				placement: options.placement.value,
+				modifiers: [
+					preventOverflow,
+					flip,
+					arrow,
+					{
+						name: "arrow",
+						options: {
+							padding: toInt(options.arrowPadding.value)
+						}
+					},
+					offset,
+					{
+						name: "offset",
+						options: {
+							offset: [
+								toInt(options.offsetX.value),
+								toInt(options.offsetY.value)
+							]
+						}
+					}
+				]
+			}
+		);
 
-    popperInstance.value.update();
-  };
+		popperInstance.value.update();
+	};
 
-  return {
-    isOpen,
-    hide,
-    show,
-    toggle,
-    popperInstance,
-    popperNode,
-    triggerNode,
-  };
+	return {
+		isOpen,
+		hide,
+		show,
+		toggle,
+		popperInstance,
+		popperNode,
+		triggerNode
+	};
 }

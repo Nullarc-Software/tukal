@@ -11,7 +11,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, getCurrentInstance, onMounted } from "@vue/runtime-core";
+import { defineComponent, getCurrentInstance, onMounted } from "vue";
 import tuComponent from "../tuComponent";
 import tuIcon from "../tuIcon";
 export default defineComponent({

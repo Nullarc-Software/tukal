@@ -14,7 +14,8 @@ module.exports = {
 	},
 	plugins: [
 		"vue",
-		"@typescript-eslint"
+		"@typescript-eslint",
+		"unused-imports"
 	],
 	rules: {
 		"no-tabs": ["off", {
@@ -23,6 +24,12 @@ module.exports = {
 		quotes: ["error", "double"],
 		indent: ["error", "tab"],
 		semi: ["error", "always"],
-		"no-restricted-imports": ["error", "@vue/runtime-core", "vue-demi"]
+		"no-unused-vars": "off",
+		"no-restricted-imports": ["error", "@vue/runtime-core", "vue-demi"],
+		"unused-imports/no-unused-imports": "error",
+		"unused-imports/no-unused-vars": [
+			"warn",
+			{ vars: "all", varsIgnorePattern: "^_", args: "after-used", argsIgnorePattern: "^_" }
+		]
 	}
 };

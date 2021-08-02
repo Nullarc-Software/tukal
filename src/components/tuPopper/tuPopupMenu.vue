@@ -1,4 +1,4 @@
-<template lang="html">
+<template>
     <div
         ref="dropOptions"       
         @mouseleave="mouseleavex"
@@ -16,7 +16,7 @@
 import { insertBody } from "@/utils";
 
 import Popper from "vue3-popper";
-import _ from "lodash";
+import * as _ from "lodash";
 import {
 	defineComponent,
 	getCurrentInstance,

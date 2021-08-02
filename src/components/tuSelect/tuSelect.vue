@@ -195,12 +195,12 @@ import {
 	getCurrentInstance,
 	onMounted,
 	onBeforeUnmount
-} from "@vue/runtime-core";
+} from "vue";
 import tuComponent from "../tuComponent";
 import { insertBody, removeBody, setCords } from "@/utils";
 import { default as tuOption } from "../tuSelect/tuSelectOption.vue";
 import tuIcon from "../tuIcon/tuIcon.vue";
-import _ from "lodash";
+import * as _ from "lodash";
 import { SelectOptionConstants } from ".";
 
 class SelectConstants {

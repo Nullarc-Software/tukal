@@ -1,7 +1,7 @@
 
 import { defineComponent, inject, ref } from "vue";
 import { Router } from "vue-router";
-import {getColor} from "../../utils"
+import { getColor } from "../../utils";
 
 class ComponentConstants {
 	public static router : Router;
@@ -10,29 +10,26 @@ class ComponentConstants {
 
 export default defineComponent({
 
-	data(){
-		
-		let componentColor = ref('');
+	data () {
+		const componentColor = ref("");
 
-		let funcWrapper = function(color){
+		const funcWrapper = function (color) {
 			return getColor(color);
-		}
-		
-		let approuter = inject<Router|null>("appRouter", null);
-		let iconPackGlobal = inject<string|null>("iconPackGlobal", null);
+		};
 
-		if(approuter)
-			ComponentConstants.router = approuter;
+		const approuter = inject<Router|null>("appRouter", null);
+		const iconPackGlobal = inject<string|null>("iconPackGlobal", null);
 
-        if(iconPackGlobal)
-            ComponentConstants.iconPackGlobal = iconPackGlobal;
-			
+		if (approuter) { ComponentConstants.router = approuter; }
+
+		if (iconPackGlobal) { ComponentConstants.iconPackGlobal = iconPackGlobal; }
+
 		return {
 			componentColor,
 			getColor: funcWrapper,
-			getColorSecondary: Function,	
-			approuter	
-		}
+			getColorSecondary: Function,
+			approuter
+		};
 	},
 	props: {
 		color: { type: String, default: null },
@@ -44,25 +41,23 @@ export default defineComponent({
 		active: { type: Boolean, default: false },
 		colorSecondary: {
 			type: String,
-			default: 'rgb(130, 207, 23)'
+			default: "rgb(130, 207, 23)"
 		},
-		textColor: { type: String, default: null}
-	},	
+		textColor: { type: String, default: null }
+	},
 	methods: {
-		isColorDark() {
-
-			let val = (this.color === 'dark' || this.dark || this.componentColor === 'dark');
+		isColorDark () {
+			const val = (this.color === "dark" || this.dark || this.componentColor === "dark");
 			return val;
 		},
 
-		isColor() {
-			return !!this.color || !!this.primary || !!this.success || !!this.warn || !!this.danger || !!this.dark
+		isColor () {
+			return !!this.color || !!this.primary || !!this.success || !!this.warn || !!this.danger || !!this.dark;
 		}
 	},
-	mounted() {
-
+	mounted () {
 		this.getColorSecondary = getColor(this.colorSecondary);
 	}
 });
 
-export {ComponentConstants}
+export { ComponentConstants };

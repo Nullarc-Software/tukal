@@ -67,7 +67,7 @@
 				<div class="tu-tabs-progress-header">
 					<div class="tu-tabs--progress__info">
 						<span>
-							<slot v-if="$slots.title" />
+							<slot v-if="$slots.title" name="title" />
 							<strong v-else> {{ title ?? "Progress" }} </strong>
 							|
 						</span>
@@ -131,7 +131,7 @@
 </template>
 
 <script lang="ts">
-import _ from "lodash";
+import * as _ from "lodash";
 import {
 	computed,
 	defineComponent,

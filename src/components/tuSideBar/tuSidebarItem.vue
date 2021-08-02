@@ -27,7 +27,7 @@ import { defineComponent, inject, onMounted, ref, Ref, watch } from "vue";
 import { RouteLocationMatched, useRouter } from "vue-router";
 import tuIcon from "../tuIcon/tuIcon.vue";
 import tuComponent, { ComponentConstants } from "../tuComponent";
-import _ from "lodash";
+import * as _ from "lodash";
 
 export default defineComponent({
     name: "TuSidebarItem",

@@ -1,4 +1,4 @@
-<template lang="html">
+<template>
 	<div class="tu-component tu-divider">
 		<span
 			:class="borderClass"

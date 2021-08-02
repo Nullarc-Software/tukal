@@ -1,4 +1,4 @@
-<template lang="html">
+<template>
   <div
     :style="styleChip"
     :class="[
@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from '@vue/runtime-core';
+import { computed, defineComponent } from 'vue';
 import * as _color from '../../utils'
 
 export default defineComponent({

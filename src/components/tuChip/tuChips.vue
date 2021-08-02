@@ -1,4 +1,4 @@
-<template lang="html">
+<template>
   <div class="">
     <div
       :class="{'no-items':value.length == 0}"
@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/runtime-core'
+import { defineComponent } from 'vue'
 import tuChip from './tuChip.vue'
 export default defineComponent({
   name:'tuChips',

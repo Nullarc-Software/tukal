@@ -21,7 +21,7 @@ import {
 	inject,
 	ref,
 	VNode,
-} from "@vue/runtime-core";
+} from "vue";
 import tuComponent from "../tuComponent";
 import tuTableExpand from "./tuTableExpand.vue";
 

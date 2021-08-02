@@ -1,6 +1,6 @@
 <template>
 	<button
-		:disabled="disabled"		
+		:disabled="disabled"
 		class="tu-select__option"
 		:class="[
 			{
@@ -11,17 +11,17 @@
 			}
 		]"
 		v-bind="$attrs"
-		v-on="listeners"		
+		v-on="listeners"
 		ref="option"
 	>
-		<tu-checkbox v-if="isMultiple" v-model:value="isActive">			
-			<slot />			
+		<tu-checkbox v-if="isMultiple" v-model:value="isActive">
+			<slot />
 		</tu-checkbox>
 		<slot v-else />
 	</button>
 </template>
 <script lang="ts">
-import _ from "lodash";
+import * as _ from "lodash";
 import {
 	computed,
 	defineComponent,
@@ -33,69 +33,68 @@ import {
 	unref,
 	watch
 } from "vue";
-import { SelectOptionConstants } from ".";
+import { SelectOptionConstants } from "./index";
 
 import tuComponent from "../tuComponent";
-
 
 export default defineComponent({
 	name: "TuOption",
 	props: {
 		label: { type: String, default: null },
 		disabled: { type: Boolean, default: false },
-		value: {},
+		value: {}
 
 	},
-	extends: tuComponent,	
-	setup(props, context) {
-		let activeOption = ref(false);
-		let hiddenOption = ref(false);		
-		let option = ref<HTMLButtonElement>();
-		
-		let textFilter = inject<Ref<String>>("textFilter");
-		let uids = inject<Ref<any[]>>("uids");
-		let parentValue = inject<Ref<any>>("parentValue");
-		let hoverOption = inject<Ref<Number>>("hoverOption");
-		let renderSelect = inject<Ref<Boolean>>("renderSelect");
-		let multiple = inject<Ref<Boolean>>("isMultiple");
-		let targetSelect = inject<Ref<Boolean>>("targetSelect");
-		let targetClose = inject<Ref<Boolean>>("targetClose");
-		let dropdown = inject<Ref<Boolean>>("dropdown");
+	extends: tuComponent,
+	setup (props, context) {
+		const activeOption = ref(false);
+		const hiddenOption = ref(false);
+		const option = ref<HTMLButtonElement>();
 
-		let callSetHover = inject<Function>("callSetHover");
-		let addUid = inject<Function>("addUid");
-		let addChildOption = inject<Function>("addChildOption");
-		let onClickOption = inject<Function>("onClickOption");
-		let updateActiveOptions = inject<Function>("updateActiveOptions");
+		const textFilter = inject<Ref<String>>("textFilter");
+		const uids = inject<Ref<any[]>>("uids");
+		const parentValue = inject<Ref<any>>("parentValue");
+		const hoverOption = inject<Ref<Number>>("hoverOption");
+		const renderSelect = inject<Ref<Boolean>>("renderSelect");
+		const multiple = inject<Ref<Boolean>>("isMultiple");
+		const targetSelect = inject<Ref<Boolean>>("targetSelect");
+		const targetClose = inject<Ref<Boolean>>("targetClose");
+		const dropdown = inject<Ref<Boolean>>("dropdown");
 
-		let uid = ++SelectOptionConstants.id;		
+		const callSetHover = inject<Function>("callSetHover");
+		const addUid = inject<Function>("addUid");
+		const addChildOption = inject<Function>("addChildOption");
+		const onClickOption = inject<Function>("onClickOption");
+		const updateActiveOptions = inject<Function>("updateActiveOptions");
 
-		let instance = getCurrentInstance();		
+		const uid = ++SelectOptionConstants.id;
 
-		if(textFilter)
-		watch(
-			textFilter,
-			val => {
-				if (val) {
-					if (
-						props.label.toLowerCase().indexOf(val.toLowerCase()) ===
+		const instance = getCurrentInstance();
+
+		if (textFilter) {
+			watch(
+				textFilter,
+				val => {
+					if (val) {
+						if (
+							props.label.toLowerCase().indexOf(val.toLowerCase()) ===
 						-1
-					) {
-						hiddenOption.value = true;
+						) {
+							hiddenOption.value = true;
+						} else {
+							hiddenOption.value = false;
+						}
 					} else {
 						hiddenOption.value = false;
 					}
-				} else {
-					hiddenOption.value = false;
 				}
-			}
-		);
-
+			);
+		}
 
 		const isActive = computed(() => {
-			return (typeof parentValue?.value == "number") || (typeof parentValue?.value == "string")
+			return (typeof parentValue?.value === "number") || (typeof parentValue?.value === "string")
 				? parentValue?.value == props.value
-				: _.find(parentValue?.value, (o) => { return o === props.value}) !== undefined
+				: _.find(parentValue?.value, (o) => { return o === props.value; }) !== undefined;
 		});
 
 		const isHover = computed(() => {
@@ -109,16 +108,16 @@ export default defineComponent({
 		const listeners = computed(() => {
 			return {
 				click: () => {
-					//console.log(this.value);		
-				
-						onClickOption?.call(null, props.value, props.label);					
+					// console.log(this.value);
+
+					onClickOption?.call(null, props.value, props.label);
 				},
 				blur: () => {
 					if (
 						!targetSelect?.value &&
 						!targetClose?.value
 					) {
-						updateActiveOptions?.call(null, false)
+						updateActiveOptions?.call(null, false);
 					}
 				}
 			};
@@ -126,8 +125,8 @@ export default defineComponent({
 
 		onMounted(() => {
 			if (!renderSelect?.value) {
-				addChildOption?.call(null, props.disabled, props.value, props.label, option.value?.offsetTop );
-				//console.log("added child: " + uid);
+				addChildOption?.call(null, props.disabled, props.value, props.label, option.value?.offsetTop);
+				// console.log("added child: " + uid);
 			}
 			addUid?.call(null, uid);
 
@@ -143,7 +142,7 @@ export default defineComponent({
 			activeOption,
 			listeners,
 			uid,
-			dropdown			
+			dropdown
 		};
 	}
 });
@@ -230,7 +229,7 @@ export default defineComponent({
   &.activeOption {
     background: -getColor("color", 0.05);
     color: -getColor("color", 1);
-    
+
   }
 
   // &:last-child

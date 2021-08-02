@@ -1,4 +1,4 @@
-<template lang="html">
+<template>
     <transition
         v-if="!noTransitions"
         :name="

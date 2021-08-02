@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, getCurrentInstance, nextTick, ref, watch } from "@vue/runtime-core";
+import { defineComponent, getCurrentInstance, nextTick, ref, watch } from "vue";
 import tuComponent from "../tuComponent";
 
 export default defineComponent({
