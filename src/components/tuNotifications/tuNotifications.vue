@@ -73,227 +73,205 @@
 </template>
 
 <script lang="ts">
-import {
-    computed,
-    defineComponent,
-    nextTick,
-    onBeforeMount,
-    onBeforeUnmount,
-    reactive,
-    watch
-} from "@vue/runtime-core";
+
 import tuIcon from "../tuIcon/tuIcon.vue";
 import _color from "../../utils/color";
-import { onMounted, ref, VNode } from "vue";
-import { Transition, TransitionGroup } from "vue";
+import { onMounted, ref, Transition, TransitionGroup, defineComponent, onBeforeUnmount } from "vue";
+
 import tuComponent from "../tuComponent";
 
 export default defineComponent({
-    name: "TuNotification",
-    extends: tuComponent,
-    props: {
-        notifId: {
-            type: Number,
-            default: 0
-        },
-        position: {
-            type: String,
-            default: "bottom-right"
-        },
-        isVisible: {
-            type: Boolean,
-            default: true
-        },
-        content: {
-            type: Object,
-            default: null
-        },
-        title: {
-            type: String,
-            default: null
-        },
-        text: {
-            type: String,
-            default: null
-        },
-        color: {
-            type: String,
-            default: "primary"
-        },
-        border: {
-            type: String,
-            default: null
-        },
-        icon: {
-            type: String,
-            default: null
-        },
-        onClickClose: {
-            type: Function,
-            default: null
-        },
-        onClick: {
-            type: Function,
-            default: null
-        },
-        buttonClose: {
-            type: Boolean,
-            default: true
-        },
-        flat: {
-            type: Boolean,
-            default: false
-        },
-        onDestroy: {
-            type: Function,
-            default: null
-        },
-        sticky: {
-            type: Boolean,
-            default: false
-        },
-        square: {
-            type: Boolean,
-            default: false
-        },
-        width: {
-            type: String,
-            default: null
-        },
-        loading: {
-            type: Boolean,
-            default: false
-        },
-        progressAuto: {
-            type: Boolean,
-            default: false
-        },
-        progress: {
-            type: Number,
-            default: 0
-        },
-        duration: {
-            type: Number,
-            default: 5000
-        },
-        notPadding: {
-            type: Object,
-            default: null
-        },
-        clickClose: {
-            type: Boolean,
-            default: false
-        },
-        classNotification: {
-            type: String,
-            default: null
-        }
-    },
-    components: {
-        tuIcon,
-        Transition,
-        TransitionGroup
-    },
-    emits: ["close"],
-    setup(props, context) {
-        let internalProgress = ref(props.progress);
-        let intervalProgress = ref(0);
-        let notif = ref<HTMLDivElement>();
+	name: "TuNotification",
+	extends: tuComponent,
+	props: {
+		notifId: {
+			type: Number,
+			default: 0
+		},
+		position: {
+			type: String,
+			default: "bottom-right"
+		},
+		isVisible: {
+			type: Boolean,
+			default: true
+		},
+		content: {
+			type: Object,
+			default: null
+		},
+		title: {
+			type: String,
+			default: null
+		},
+		text: {
+			type: String,
+			default: null
+		},
+		color: {
+			type: String,
+			default: "primary"
+		},
+		border: {
+			type: String,
+			default: null
+		},
+		icon: {
+			type: String,
+			default: null
+		},
+		onClickClose: {
+			type: Function,
+			default: null
+		},
+		onClick: {
+			type: Function,
+			default: null
+		},
+		buttonClose: {
+			type: Boolean,
+			default: true
+		},
+		flat: {
+			type: Boolean,
+			default: false
+		},
+		onDestroy: {
+			type: Function,
+			default: null
+		},
+		sticky: {
+			type: Boolean,
+			default: false
+		},
+		square: {
+			type: Boolean,
+			default: false
+		},
+		width: {
+			type: String,
+			default: null
+		},
+		loading: {
+			type: Boolean,
+			default: false
+		},
+		progressAuto: {
+			type: Boolean,
+			default: false
+		},
+		progress: {
+			type: Number,
+			default: 0
+		},
+		duration: {
+			type: Number,
+			default: 5000
+		},
+		notPadding: {
+			type: Object,
+			default: null
+		},
+		clickClose: {
+			type: Boolean,
+			default: false
+		},
+		classNotification: {
+			type: String,
+			default: null
+		}
+	},
+	components: {
+		tuIcon,
+		Transition,
+		TransitionGroup
+	},
+	emits: ["close"],
+	setup (props, context) {
+		const internalProgress = ref(props.progress);
+		const intervalProgress = ref(0);
+		const notif = ref<HTMLDivElement>();
 
-        let transitionClass = ref<Array<String>>([]);
-        transitionClass.value = [];
+		const transitionClass = ref<Array<String>>([]);
+		transitionClass.value = [];
 
-        const clickNoti = function() {
-            if (props.onClick) {
-                props.onClick();
-            }
-        };
+		const clickNoti = function () {
+			if (props.onClick) {
+				props.onClick();
+			}
+		};
 
-        const handleClickClose = function() {
-            transitionClass.value = [
-                "notification-leave-active",
-                "notification-leave-to"
-            ];
-            setTimeout(() => {
-                if (props.clickClose) {
-                    if (props.onClickClose) {
-                        props.onClickClose();
-                    }
-                }
-            }, 100);
-        };
+		const handleClickClose = function () {
+			transitionClass.value = [
+				"notification-leave-active",
+				"notification-leave-to"
+			];
+			setTimeout(() => {
+				if (props.clickClose) {
+					if (props.onClickClose) {
+						props.onClickClose();
+					}
+				}
+			}, 100);
+		};
 
-        const beforeEnter = function(el: any) {
-            el.style.maxHeight = `0px`;
-            el.style.padding = `0px 20px`;
-        };
+		const beforeEnter = function (el: any) {
+			el.style.maxHeight = "0px";
+			el.style.padding = "0px 20px";
+		};
 
-        const enter = function(el: any, done: any) {
-            const h = el.scrollHeight;
-            el.style.maxHeight = `${h + 40}px`;
-            if (window.innerWidth < 600) {
-                el.style.padding = `15px`;
-            } else {
-                el.style.padding = `20px`;
-            }
-            done();
-        };
+		const enter = function (el: any, done: any) {
+			const h = el.scrollHeight;
+			el.style.maxHeight = `${h + 40}px`;
+			if (window.innerWidth < 600) {
+				el.style.padding = "15px";
+			} else {
+				el.style.padding = "20px";
+			}
+			done();
+		};
 
-        const leave = function(el: any, done: any) {
-            setTimeout(() => {
-                done();
-            }, 250);
-        };
+		const leave = function (el: any, done: any) {
+			setTimeout(() => {
+				done();
+			}, 250);
+		};
 
-        const getProgress = computed(() => {
-            setInterval(() => {
-                internalProgress.value++;
-            }, 1);
-            return 20;
-        });
-
-        const isColor = () => {
-            return _color.isColor(props.color);
-        };
-        onMounted(() => {
-
-            if (props.sticky == false) {
-
+		const isColor = () => {
+			return _color.isColor(props.color);
+		};
+		onMounted(() => {
+			if (props.sticky === false) {
 				let value = 0;
-                intervalProgress.value = setInterval(() => {
+				intervalProgress.value = setInterval(() => {
+					if (props.progressAuto) { internalProgress.value++; } else { value++; }
 
-					if(props.progressAuto)
-                    	internalProgress.value++;
-					else 
-						value++;
+					if (internalProgress.value >= 100 || value >= 100) {
+						clearInterval(intervalProgress.value);
+						handleClickClose();
+					}
+				}, props.duration / 100);
+			}
+		});
 
-                    if (internalProgress.value >= 100 || value >=100) {
-                        clearInterval(intervalProgress.value);
-                        handleClickClose();
-                    }
-                }, props.duration / 100);
-            }
-        });
+		onBeforeUnmount(() => {
+			clearInterval(intervalProgress.value);
+		});
 
-        onBeforeUnmount(() => {
-            clearInterval(intervalProgress.value);
-        });
-
-        return {
-            internalProgress,
-            intervalProgress,
-            notif,
-            close,
-            handleClickClose,
-            beforeEnter,
-            enter,
-            leave,
-            getProgress,
-            clickNoti,
-            isColor,
-            transitionClass
-        };
-    }
+		return {
+			internalProgress,
+			intervalProgress,
+			notif,
+			close,
+			handleClickClose,
+			beforeEnter,
+			enter,
+			leave,
+			clickNoti,
+			isColor,
+			transitionClass
+		};
+	}
 });
 </script>
 

@@ -7,6 +7,8 @@ import { Router } from "vue-router"
 const isColor = (color: string) => {
   const tuColors = [
     'primary', 'secondary', 'success', 'danger', 'warning', 'dark', 'light', 'warn',
+    "text",
+    "background",
     // social colors
     'facebook',
     'twitter',

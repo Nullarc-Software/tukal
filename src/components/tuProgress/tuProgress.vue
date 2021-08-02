@@ -23,10 +23,11 @@ import { getApplyColor } from "@/utils";
 import {
 	computed,
 	defineComponent,
+	getCurrentInstance,
 	onMounted,
 	ref,
 	watch,
-} from "@vue/runtime-core";
+} from "vue";
 import tuComponent from "../tuComponent";
 
 export default defineComponent({
@@ -52,7 +53,7 @@ export default defineComponent({
 	},
 	setup(props, context) {
 		let percentx = ref(0);
-
+    
 		const styleConProgress = computed(() => {
 			return {
 				background: getApplyColor(props.color, 0.1),
@@ -71,7 +72,8 @@ export default defineComponent({
 			() => props.percent,
 			(newVal) => {
 				percentx.value = newVal;
-			}
+			},
+            
 		);
 
 		onMounted(() => {

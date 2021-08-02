@@ -12,4 +12,9 @@ if (typeof window !== 'undefined' && (<any>window).Vue) {
   tuComponent.install((<any>window).Vue)  
 }
 
+
+export class SelectOptionConstants {
+	public static id = 0;
+}
+
 export { tuComponent as tuSelect, tuComponent2 as tuSelectOption, tuComponent3 as tuSelectOptionGroup};

@@ -1,3 +1,4 @@
+
 <template>
 	<div style="position: relative">
 		<h1 style="text-align: cente; margin-top: 50px">
@@ -235,12 +236,7 @@
 			<h3>Cards:</h3>
 			<hr />
 			<tu-card-group>
-				<tu-card
-					type="2"
-					v-for="(card, key) in 6"
-					:key="key"
-					@click="handleClick"
-				>
+				<tu-card type="2" v-for="(card, key) in 6" :key="key">
 					<template #title>
 						<h3>Pot with a plant</h3>
 					</template>
@@ -399,7 +395,7 @@
 			<tu-button @click="activeDialog = !activeDialog"
 				>Open Dialog</tu-button
 			>
-			<tu-dialog width="550px" v-model:value="activeDialog">
+			<tu-dialog width="550px" v-model="activeDialog">
 				<template v-slot:header>
 					<h4>Welcome to <b>Vuesax3</b></h4>
 				</template>
@@ -435,7 +431,7 @@
 				scroll
 				prevent-close
 				width="550px"
-				v-model:value="activeDialog1"
+				v-model="activeDialog1"
 			>
 				<template v-slot:header>
 					<h4>Welcome to <b>Vuesax3</b></h4>
@@ -485,20 +481,15 @@
 				placeholder="Evan You"
 			/>
 			<br />
-			<tu-input label-placeholder="Country" v-model="value" />
+			<tu-input label-placeholder="Country" />
 			<br />
-			<tu-input v-model="value1" placeholder="User name">
+			<tu-input placeholder="User name">
 				<template #icon>
 					<tu-icon>person</tu-icon>
 				</template>
 			</tu-input>
 
-			<tu-input
-				type="password"
-				icon-after
-				v-model="value2"
-				placeholder="Password"
-			>
+			<tu-input type="password" icon-after placeholder="Password">
 				<template #icon>
 					<tu-icon>person</tu-icon>
 				</template>
@@ -519,30 +510,20 @@
 				</template>
 			</tu-input>
 			<br />
-			<tu-input loading v-model="value" placeholder="Name" />
+			<tu-input loading placeholder="Name" />
 			<div style="margin: 10px">
-				<tu-input type="text" v-model="value1" label="Text" />
-				<tu-input type="password" v-model="value2" label="Password" />
-				<tu-input type="search" v-model="value3" label="Search" />
-				<tu-input type="number" v-model="value4" label="Number" />
-				<tu-input type="url" v-model="value5" label="Url" />
-				<tu-input type="time" v-model="value6" label="time" />
-				<tu-input type="date" v-model="value7" label="Date" />
+				<tu-input type="text" label="Text" />
+				<tu-input type="password" label="Password" />
+				<tu-input type="search" label="Search" />
+				<tu-input type="number" label="Number" />
+				<tu-input type="url" label="Url" />
+				<tu-input type="time" label="time" />
+				<tu-input type="date" label="Date" />
 			</div>
 			<div style="margin: 10px">
-				<tu-input
-					primary
-					v-model="value"
-					state="primary"
-					placeholder="Primary"
-				/>
+				<tu-input primary state="primary" placeholder="Primary" />
 
-				<tu-input
-					state="success"
-					success
-					v-model="value2"
-					placeholder="Success Icon"
-				>
+				<tu-input state="success" success placeholder="Success Icon">
 					<template #icon>
 						<tu-icon>person</tu-icon>
 					</template>
@@ -552,7 +533,6 @@
 					state="danger"
 					danger
 					icon-after
-					v-model="value2"
 					placeholder="Danger icon after"
 				>
 					<template #icon>
@@ -563,25 +543,18 @@
 				<tu-input
 					warn
 					state="warn"
-					v-model="value4"
 					placeholder="Label Warn"
 					label="Warn"
 				/>
 
-				<tu-input
-					dark
-					state="dark"
-					v-model="value5"
-					label-placeholder="Dark"
-				/>
+				<tu-input dark state="dark" label-placeholder="Dark" />
 
-				<tu-input border v-model="value" placeholder="Name" />
+				<tu-input border placeholder="Name" />
 
 				<tu-input
 					color="#7d33ff"
 					border
 					type="password"
-					v-model="value2"
 					placeholder="Password"
 				>
 					<template #icon>
@@ -594,7 +567,6 @@
 					warn
 					type="email"
 					icon-after
-					v-model="value3"
 					label-placeholder="Address"
 				>
 					<template #icon>
@@ -686,12 +658,7 @@
 				<tu-option label="Webpack" value="6"> Webpack </tu-option>
 				<tu-option label="Nodejs" value="7"> Nodejs </tu-option>
 			</tu-select>
-			<tu-select
-				inline
-				label="Group"
-				placeholder="Group"
-				v-model="value1"
-			>
+			<tu-select inline label="Group" placeholder="Group">
 				<tu-option-group>
 					<template v-slot:title> Vuejs </template>
 					<tu-option label="Vuesax" value="1"> Vuesax </tu-option>
@@ -824,12 +791,12 @@
 		<div class="showcase-component">
 			<h4>Switch:</h4>
 			<hr />
-			<tu-switch v-model="active"> Subscribe </tu-switch>
-			<tu-switch v-model="active2">
+			<tu-switch> Subscribe </tu-switch>
+			<tu-switch>
 				<template #off> Off </template>
 				<template #on> On </template>
 			</tu-switch>
-			<tu-switch v-model="active3">
+			<tu-switch>
 				<template #off> default </template>
 				<template #on> Premium </template>
 			</tu-switch>
@@ -905,25 +872,45 @@
 			<h4>Tabs:</h4>
 			<hr />
 
-			<tu-tabs position="top" tabStyle="card" v-model="tabName">
+			<tu-tabs
+				position="top"
+				noTransitions
+				tabStyle="card"
+				v-model="tabName"
+			>
 				<tu-tab label="Home" name="ho"> Home </tu-tab>
-				<tu-tab label="Service" name="se" > Service </tu-tab>
+				<tu-tab label="Service" name="se"> Service </tu-tab>
+				<tu-tab label="login" name="lo"> Login </tu-tab>
+				<tu-tab label="Disabled" name="di"> Disabled </tu-tab>
+			</tu-tabs>
+			<tu-tabs
+				position="top"
+				noTransitions
+				tabStyle="progress"
+				v-model="tabName"
+			>
+				<tu-tab label="Home" name="ho"> Home </tu-tab>
+				<tu-tab label="Service" name="se"> Service </tu-tab>
 				<tu-tab label="login" name="lo"> Login </tu-tab>
 				<tu-tab label="Disabled" name="di"> Disabled </tu-tab>
 			</tu-tabs>
 		</div>
-        <div class="showcase-component">
+		<div class="showcase-component">
 			<h4>Progress:</h4>
 			<hr />
 
-			   <tu-progress :percent="100" color="primary">primary</tu-progress>
-                <tu-progress :percent="90" color="warn">warning</tu-progress>
-                <tu-progress :percent="75" color="danger">danger</tu-progress>
-                <tu-progress :percent="60" color="success">success</tu-progress>
-                <tu-progress :percent="45" color="dark">dark</tu-progress>
-                <tu-progress :percent="30" color="rgb(164, 69, 15)">RGB</tu-progress>
-                <tu-progress :percent="15" color="#24c1a0">HEX</tu-progress>
-                <tu-progress :height="12" indeterminate color="#24c1a0">HEX</tu-progress>
+			<tu-progress :percent="100" color="primary">primary</tu-progress>
+			<tu-progress :percent="90" color="warn">warning</tu-progress>
+			<tu-progress :percent="75" color="danger">danger</tu-progress>
+			<tu-progress :percent="60" color="success">success</tu-progress>
+			<tu-progress :percent="45" color="dark">dark</tu-progress>
+			<tu-progress :percent="30" color="rgb(164, 69, 15)"
+				>RGB</tu-progress
+			>
+			<tu-progress :percent="15" color="#24c1a0">HEX</tu-progress>
+			<tu-progress :height="12" indeterminate color="#24c1a0"
+				>HEX</tu-progress
+			>
 		</div>
 		<div class="showcase-component">
 			<h4>Table:</h4>
@@ -938,7 +925,12 @@
 					</tu-tr>
 				</template>
 				<template #tbody>
-					<tu-tr :key="i" v-for="(tr, i) in users" :data="tr" :isSelected="tr && selected && tr.id == selected.id">
+					<tu-tr
+						:key="i"
+						v-for="(tr, i) in users"
+						:data="tr"
+						:isSelected="tr && selected && tr.id == selected.id"
+					>
 						<tu-td>
 							{{ tr.name }}
 						</tu-td>
@@ -951,18 +943,22 @@
 					</tu-tr>
 				</template>
 			</tu-table>
-            {{selected}}
-            <br />
-            Striped: 
-            <tu-table striped >
+			{{ selected }}
+			<br />
+			Striped:
+			<tu-table striped>
 				<template #thead>
 					<tu-tr>
-                        <tu-th>
-                            <tu-checkbox
-                                :indeterminate="selected && selected.length == users.length" v-model="allCheck"
-                                @change="selected = $vs.checkAll(selected, users)"
-                            />
-                        </tu-th>
+						<tu-th>
+							<tu-checkbox
+								:indeterminate="
+									selected && selected.length == users.length
+								"
+								@change="
+									selected = $vs.checkAll(selected, users)
+								"
+							/>
+						</tu-th>
 						<tu-th> Name </tu-th>
 						<tu-th> Email </tu-th>
 						<tu-th> Id </tu-th>
@@ -970,12 +966,16 @@
 				</template>
 				<template #tbody>
 					<tu-tr :key="i" v-for="(tr, i) in users" :data="tr">
-                        <tu-td>
-                            <tu-checkbox
-                                :indeterminate="selected && selected.length == users.length" v-model="allCheck"
-                                @change="selected = $vs.checkAll(selected, users)"
-                            />
-                        </tu-td>
+						<tu-td>
+							<tu-checkbox
+								:indeterminate="
+									selected && selected.length == users.length
+								"
+								@change="
+									selected = $vs.checkAll(selected, users)
+								"
+							/>
+						</tu-td>
 						<tu-td>
 							{{ tr.name }}
 						</tu-td>
@@ -985,29 +985,34 @@
 						<tu-td>
 							{{ tr.id }}
 						</tu-td>
-                        <template #expand>
-                            <div class="con-content">
-                                <div>
-                                <tu-avatar>
-                                    <img :src="`/avatars/avatar-${i + 1}.png`" alt="">
-                                </tu-avatar>
-                                <p>
-                                    {{ tr.name }}
-                                </p>
-                                </div>
-                                <div>
-                                <tu-button flat icon>
-                                    <i class='bx bx-lock-open-alt' ></i>
-                                </tu-button>
-                                <tu-button flat icon>
-                                    Send Email
-                                </tu-button>
-                                <tu-button border danger>
-                                    Remove User
-                                </tu-button>
-                                </div>
-                            </div>
-                            </template>
+						<template #expand>
+							<div class="con-content">
+								<div>
+									<tu-avatar>
+										<img
+											:src="`/avatars/avatar-${
+												i + 1
+											}.png`"
+											alt=""
+										/>
+									</tu-avatar>
+									<p>
+										{{ tr.name }}
+									</p>
+								</div>
+								<div>
+									<tu-button flat icon>
+										<i class="bx bx-lock-open-alt"></i>
+									</tu-button>
+									<tu-button flat icon>
+										Send Email
+									</tu-button>
+									<tu-button border danger>
+										Remove User
+									</tu-button>
+								</div>
+							</div>
+						</template>
 					</tu-tr>
 				</template>
 			</tu-table>
@@ -1016,78 +1021,80 @@
 </template>
 
 <script lang="ts">
+/* eslint no-unused-vars: "off" */
+
 import {
 	computed,
 	defineComponent,
 	provide,
 	reactive,
 	ref,
-	watch,
-} from "@vue/runtime-core";
+	watch
+} from "vue";
 import * as components from "./components";
 import { tuButton } from "./components/tuButton";
 import {
-	notification,
-	NotificationAttributes,
+	Notification,
+	NotificationAttributes
 } from "./components/tuNotifications";
 import Popper from "vue3-popper";
 import {
-	loading as LoadingConstructor,
-	LoadingAttributes,
+	Loading as LoadingConstructor,
+	LoadingAttributes
 } from "./components/tuLoading";
 import "material-icons/iconfont/material-icons.css";
 
 export default defineComponent({
 	components: {
 		...components,
-		Popper,
+		Popper
 	},
 	data: () => ({
 		colors: [
 			{
 				color: "primary",
-				value: "1",
+				value: "1"
 			},
 			{
 				color: "danger",
-				value: "1",
+				value: "1"
 			},
 			{
 				color: "success",
-				value: "2",
+				value: "2"
 			},
 			{
 				color: "warn",
-				value: "3",
+				value: "3"
 			},
 			{
 				color: "dark",
-				value: "4",
-			},
-		],
+				value: "4"
+			}
+		]
 	}),
-	setup(props, context) {
-		let active1 = ref(true);
-		let checkBox1 = ref(false);
-		let checkBox2 = ref(["luis"]);
-		let loading = ref(false);
-		let sideBar = ref("home");
-		let activeDialog = ref(false);
-		let activeDialog1 = ref(false);
-		let activeDialog2 = ref(false);
-		let notifShow = ref(false);
-		let isOpen = ref(false);
-		let openNav = ref(false);
-		let opts: any = reactive([]);
-		let inpValue = ref("");
-		let navValue = ref("guide");
-		let selectValue = ref([]);
-		let selectValue2 = ref("1");
-		let selectValue1 = ref(null);
-		let page = ref(1);
+	setup (props, context) {
+		const active1 = ref(true);
+		const checkBox1 = ref(false);
+		const checkBox2 = ref(["luis"]);
+		const loading = ref(false);
+		const sideBar = ref("home");
+		const activeDialog = ref(false);
+		const activeDialog1 = ref(false);
+		const activeDialog2 = ref(false);
+		const notifShow = ref(false);
+		const isOpen = ref(false);
+		const openNav = ref(false);
+		const opts: any = reactive([]);
+		const inpValue = ref("");
+		const navValue = ref("guide");
+		const selectValue = ref([]);
+		const selectValue2 = ref("1");
+		const selectValue1 = ref(null);
+		const page = ref(1);
 
-		let notificationComponent = ref(null);
-		let validEmail = computed(function () {
+		const notificationComponent = ref(null);
+		const validEmail = computed(function () {
 			return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(
 				inpValue.value
 			);
@@ -1108,20 +1115,20 @@ export default defineComponent({
         square-rotate
         scale
         */
-		let loadingDiv = ref();
+		const loadingDiv = ref();
 		const justShowLoading = function () {
-			let attrs: LoadingAttributes = {
+			const attrs: LoadingAttributes = {
 				target: null,
 				color: "dark",
 				type: "circles",
-				scale: "1.0",
+				scale: "1.0"
 			};
 
 			const load = new LoadingConstructor(attrs);
 		};
 
-		let justLoad = function () {
-			let notificationAttrs: NotificationAttributes = {
+		const justLoad = function () {
+			const notificationAttrs: NotificationAttributes = {
 				title: "Documentation Vuesax 4.0+",
 				text: `These documents refer to the latest version of vuesax (4.0+),
 					to see the documents of the previous versions you can do it here 👉 Vuesax3.x`,
@@ -1134,105 +1141,105 @@ export default defineComponent({
 					console.log("clicked");
 				},
 				color: "#7d33ff",
-				progressAuto: true,
+				progressAuto: true
 			};
 
-			let notif = new notification(notificationAttrs);
+			new Notification(notificationAttrs);
 			notificationAttrs.position = "top-center";
 			notificationAttrs.color = "primary";
 			notificationAttrs.sticky = true;
 			notificationAttrs.flat = false;
-			new notification(notificationAttrs);
+			new Notification(notificationAttrs);
 		};
 
 		watch(selectValue, () => {
 			console.log(selectValue.value);
 		});
 
-		let picked = ref("1");
+		const picked = ref("1");
 
 		watch(picked, () => {
-			console.log("picked: " + picked);
+			console.log("picked: " + picked.value);
 		});
 
-        let users=  [
-          {
-            "id": 1,
-            "name": "Leanne Graham",
-            "username": "Bret",
-            "email": "Sincere@april.biz",
-            "website": "hildegard.org",
-          },
-          {
-            "id": 2,
-            "name": "Ervin Howell",
-            "username": "Antonette",
-            "email": "Shanna@melissa.tv",
-            "website": "anastasia.net",
-          },
-          {
-            "id": 3,
-            "name": "Clementine Bauch",
-            "username": "Samantha",
-            "email": "Nathan@yesenia.net",
-            "website": "ramiro.info",
-          },
-          {
-            "id": 4,
-            "name": "Patricia Lebsack",
-            "username": "Karianne",
-            "email": "Julianne.OConner@kory.org",
-            "website": "kale.biz",
-          },
-          {
-            "id": 5,
-            "name": "Chelsey Dietrich",
-            "username": "Kamren",
-            "email": "Lucio_Hettinger@annie.ca",
-            "website": "demarco.info",
-          },
-          {
-            "id": 6,
-            "name": "Mrs. Dennis Schulist",
-            "username": "Leopoldo_Corkery",
-            "email": "Karley_Dach@jasper.info",
-            "website": "ola.org",
-          },
-          {
-            "id": 7,
-            "name": "Kurtis Weissnat",
-            "username": "Elwyn.Skiles",
-            "email": "Telly.Hoeger@billy.biz",
-            "website": "elvis.io",
-          },
-          {
-            "id": 8,
-            "name": "Nicholas Runolfsdottir V",
-            "username": "Maxime_Nienow",
-            "email": "Sherwood@rosamond.me",
-            "website": "jacynthe.com",
-          },
-          {
-            "id": 9,
-            "name": "Glenna Reichert",
-            "username": "Delphine",
-            "email": "Chaim_McDermott@dana.io",
-            "website": "conrad.com",
-          },
-          {
-            "id": 10,
-            "name": "Clementina DuBuque",
-            "username": "Moriah.Stanton",
-            "email": "Rey.Padberg@karina.biz",
-            "website": "ambrose.net",
-          }
-        ];
+		const users = [
+			{
+				id: 1,
+				name: "Leanne Graham",
+				username: "Bret",
+				email: "Sincere@april.biz",
+				website: "hildegard.org"
+			},
+			{
+				id: 2,
+				name: "Ervin Howell",
+				username: "Antonette",
+				email: "Shanna@melissa.tv",
+				website: "anastasia.net"
+			},
+			{
+				id: 3,
+				name: "Clementine Bauch",
+				username: "Samantha",
+				email: "Nathan@yesenia.net",
+				website: "ramiro.info"
+			},
+			{
+				id: 4,
+				name: "Patricia Lebsack",
+				username: "Karianne",
+				email: "Julianne.OConner@kory.org",
+				website: "kale.biz"
+			},
+			{
+				id: 5,
+				name: "Chelsey Dietrich",
+				username: "Kamren",
+				email: "Lucio_Hettinger@annie.ca",
+				website: "demarco.info"
+			},
+			{
+				id: 6,
+				name: "Mrs. Dennis Schulist",
+				username: "Leopoldo_Corkery",
+				email: "Karley_Dach@jasper.info",
+				website: "ola.org"
+			},
+			{
+				id: 7,
+				name: "Kurtis Weissnat",
+				username: "Elwyn.Skiles",
+				email: "Telly.Hoeger@billy.biz",
+				website: "elvis.io"
+			},
+			{
+				id: 8,
+				name: "Nicholas Runolfsdottir V",
+				username: "Maxime_Nienow",
+				email: "Sherwood@rosamond.me",
+				website: "jacynthe.com"
+			},
+			{
+				id: 9,
+				name: "Glenna Reichert",
+				username: "Delphine",
+				email: "Chaim_McDermott@dana.io",
+				website: "conrad.com"
+			},
+			{
+				id: 10,
+				name: "Clementina DuBuque",
+				username: "Moriah.Stanton",
+				email: "Rey.Padberg@karina.biz",
+				website: "ambrose.net"
+			}
+		];
 
-        let selected = ref(null);
-        let tabName = ref("ho");
-    
+		const selected = ref(null);
+		const tabName = ref("ho");
+
 		return {
-            selected,
+			selected,
 			active1,
 			checkBox1,
 			checkBox2,
@@ -1257,16 +1264,15 @@ export default defineComponent({
 			picked,
 			page,
 			loadingDiv,
-            tabName,
+			tabName,
 			justShowLoading,
-            users
+			users
 		};
-	},
+	}
 });
 </script>
 
 <style>
-
 .showcase-component {
 	margin-bottom: 15px;
 	margin-left: 30px;

@@ -1,3 +1,3 @@
 yarn build
-yarn dts-bundle  --name tukal --main types/main.lib.d.ts
-copy types\* dist -Y
+yarn dts-bundle  --name index --main dist/main.lib.d.ts
+copy .\package.json .\dist /Y

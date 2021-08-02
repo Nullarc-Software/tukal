@@ -1,42 +1,42 @@
-import * as tuComponents from './components/index'
-import './style/sass/vuesax.scss'
-import tuTheme from './utils/theme'
-import DefineVuesaxMixin from './defineGlobalMixin'
-import { App } from '@vue/runtime-core'
-import  RootApp from "./App.vue"
-import { createApp } from '@vue/runtime-dom'
+import * as tuComponents from "./components/index";
+import "./style/sass/vuesax.scss";
+import tuTheme from "./utils/theme";
+import DefineVuesaxMixin from "./defineGlobalMixin";
+import { App } from "vue";
+import RootApp from "./App.vue";
+import { createApp } from "@vue/runtime-dom";
 
-import "material-design-icons/iconfont/material-icons.css"
+import "material-design-icons/iconfont/material-icons.css";
 
-const install = function(Vue : App, options : any = {}) {
-  // set default options  
+const install = function (Vue : App, options : any = {}) {
+	// set default options
 
-  // Use Components
-  Object.values(tuComponents).forEach((tuComponent) => {
-    Vue.component(tuComponent.name, tuComponent);
-  })
-  if(options){
-    if(options.hasOwnProperty('theme')){
-      if(options.theme.hasOwnProperty('colors')){
-        if (typeof window !== 'undefined') {
-          tuTheme.tufunction(options.theme.colors)
-        }
-      }
-    }
-  }
-  // Define vuesax functions and properties ($vs)
-  DefineVuesaxMixin(Vue, options);
-}
+	// Use Components
+	Object.values(tuComponents).forEach((tuComponent) => {
+		Vue.component(tuComponent.name, tuComponent);
+	});
+	if (options) {
+		if (Object.prototype.hasOwnProperty.call(options, "theme")) {
+			if (Object.prototype.hasOwnProperty.call(options, "color")) {
+				if (typeof window !== "undefined") {
+					tuTheme.tufunction(options.theme.colors);
+				}
+			}
+		}
+	}
+	// Define vuesax functions and properties ($vs)
+	DefineVuesaxMixin(Vue, options);
+};
 
 const appVm = createApp(RootApp);
-(<any>window).Vue = appVm
-if (typeof window !== 'undefined' && (<any>window).Vue) {
-  install((<any>window).Vue)
+(<any>window).Vue = appVm;
+if (typeof window !== "undefined" && (<any>window).Vue) {
+	install((<any>window).Vue);
 }
 
 appVm.mount("#app");
 
-export default install
+export default install;
 
 /* export { tuButton, tuButtonGroup } from './components/tuButton'
 export { tuSelect, tuSelectOption, tuSelectOptionGroup  } from './components/tuSelect'
@@ -75,6 +75,3 @@ export { default as tuNotification } from './components/tuNotifications'
 //layout
 export { default as tuRow } from './layout/tuRow'
 export { default as tuCol } from './layout/tuCol' */
-
-
-

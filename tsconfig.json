@@ -12,6 +12,7 @@
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
     "declaration": true,
+    "declarationDir": "dist",
     "noEmit": false,
     "baseUrl": ".",
     "types": [

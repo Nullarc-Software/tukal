@@ -33,12 +33,10 @@ import {
 	unref,
 	watch
 } from "vue";
+import { SelectOptionConstants } from ".";
 
 import tuComponent from "../tuComponent";
 
-export class SelectOptionConstants {
-	public static id = 0;
-}
 
 export default defineComponent({
 	name: "TuOption",
