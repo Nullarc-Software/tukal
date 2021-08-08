@@ -48,6 +48,7 @@ import { setColor } from "@/utils";
 import { computed, defineComponent, onMounted, ref, watch } from "vue";
 import tuComponent from "../tuComponent";
 
+
 export default defineComponent({
 	name: "TuSidebar",
 	extends: tuComponent,
@@ -65,22 +66,22 @@ export default defineComponent({
 		right: { default: false, type: Boolean },
 		background: { default: "background", type: String },
 		expanded: { default: false, type: Boolean },
-		fixedExpandWidth: { default: null, type: Number },
+		fixedExpandWidth: { default: null, type: Number }
 	},
 	emits: ["update:open", "update:value", "update:expanded"],
-	provide() {
+	provide () {
 		return {
 			parentValue: computed(() => this.value),
 			handleClickItem: this.handleClickItem,
-			reduced: computed(() => this.reduceInternal),
+			reduced: computed(() => this.reduceInternal)
 		};
 	},
-	setup(props, context) {
-		let staticWidth = ref(260);
-		let forceExpand = ref(false);
-		let reduceInternal = ref(false);
+	setup (props, context) {
+		const staticWidth = ref(260);
+		const forceExpand = ref(false);
+		const reduceInternal = ref(false);
 
-		let sidebar = ref<HTMLDivElement>();
+		const sidebar = ref<HTMLDivElement>();
 
 		const clickCloseSidebar = function (evt) {
 			if (!(evt.target as any).closest(".tu-sidebar-content")) {
@@ -109,7 +110,7 @@ export default defineComponent({
 						reduceInternal.value = true;
 						context.emit("update:expanded", false);
 					}
-				},
+				}
 			};
 		});
 
@@ -157,12 +158,9 @@ export default defineComponent({
 		);
 
 		onMounted(() => {
-			if (!props.fixedExpandWidth)
-				staticWidth.value = (sidebar.value?.offsetWidth as number) + 15;
-			else {
+			if (!props.fixedExpandWidth) { staticWidth.value = (sidebar.value?.offsetWidth as number) + 15; } else {
 				staticWidth.value = props.fixedExpandWidth;
-				if (sidebar.value)
-					sidebar.value.style.width = `${staticWidth.value}px`;
+				if (sidebar.value) { sidebar.value.style.width = `${staticWidth.value}px`; }
 			}
 
 			reduceInternal.value = props.reduce;
@@ -187,9 +185,9 @@ export default defineComponent({
 			handleClickItem,
 			clickCloseSidebar,
 			listeners,
-			sidebar,
+			sidebar
 		};
-	},
+	}
 });
 </script>
 

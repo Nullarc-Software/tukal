@@ -267,35 +267,36 @@
 		<div class="showcase-component">
 			<h3>CheckBoxes:</h3>
 			<hr />
-			<tu-checkbox v-model:value="checkBox1">{{ checkBox1 }}</tu-checkbox>
-			<tu-checkbox v-model:value="checkBox1">
+			<tu-checkbox v-model="checkBox1">{{ checkBox1 }}</tu-checkbox>
+			<tu-checkbox v-model="checkBox1">
 				<template v-slot:icon>
 					<tu-icon>settings</tu-icon>
 				</template>
 				{{ checkBox1 }}
 			</tu-checkbox>
 			<div class="">
+				<button @click="resetOpts" > Reset </button>
 				<ul class="centerx">
 					<li class="modelx">
 						{{ opts }}
 					</li>
 					<li>
-						<tu-checkbox v-model:value="opts" val="luis"
+						<tu-checkbox v-model="opts" val="luis"
 							>Luis</tu-checkbox
 						>
 					</li>
 					<li>
-						<tu-checkbox v-model:value="opts" val="carols"
+						<tu-checkbox v-model="opts" val="carols"
 							>Carols</tu-checkbox
 						>
 					</li>
 					<li>
-						<tu-checkbox v-model:value="opts" val="summer"
+						<tu-checkbox :disabled="true" v-model="opts" val="summer"
 							>Summer</tu-checkbox
 						>
 					</li>
 					<li>
-						<tu-checkbox v-model:value="opts" val="lyon"
+						<tu-checkbox v-model="opts" val="lyon"
 							>Lyon</tu-checkbox
 						>
 					</li>
@@ -887,6 +888,7 @@
 				position="top"
 				noTransitions
 				tabStyle="progress"
+				progressWidth="20"
 				v-model="tabName"
 			>
 				<tu-tab label="Home" name="ho"> Home </tu-tab>
@@ -911,6 +913,14 @@
 			<tu-progress :height="12" indeterminate color="#24c1a0"
 				>HEX</tu-progress
 			>
+		</div>
+		<div class="showcase-component">
+			<h4>Text Area:</h4>
+			<hr />
+				<tu-textarea  />
+				<tu-textarea width="300px" />
+				<tu-textarea label="Label in Textarea" height="100px" />
+				<tu-textarea counter="20" label="Label in Textarea" height="100px" />
 		</div>
 		<div class="showcase-component">
 			<h4>Table:</h4>
@@ -1085,7 +1095,7 @@ export default defineComponent({
 		const notifShow = ref(false);
 		const isOpen = ref(false);
 		const openNav = ref(false);
-		const opts: any = reactive([]);
+		const opts: any = ref(['luis']);
 		const inpValue = ref("");
 		const navValue = ref("guide");
 		const selectValue = ref([]);
@@ -1238,12 +1248,18 @@ export default defineComponent({
 		const selected = ref(null);
 		const tabName = ref("ho");
 
+		function resetOpts() {
+			opts.value = ['carols'];
+			console.log(opts.value)
+		}
+
 		return {
 			selected,
 			active1,
 			checkBox1,
 			checkBox2,
 			justLoad,
+			resetOpts,
 			loading,
 			activeDialog,
 			activeDialog1,

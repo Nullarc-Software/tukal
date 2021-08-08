@@ -12,6 +12,7 @@ export { default as tuAvatar } from "./tuAvatar";
 export { default as tuPagination } from "./tuPagination";
 export { default as tuBreadcrumb } from "./tuBreadcrumb";
 export { default as tuProgress } from "./tuProgress";
+export { default as tuTextArea } from "./tuTextArea";
 export { Loading, LoadingAttributes } from "./tuLoading";
 
 export { default as tuDivider } from "./tuDivider";

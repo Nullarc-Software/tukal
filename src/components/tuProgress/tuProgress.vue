@@ -3,8 +3,8 @@
 		:class="[
 			`tu-progress-${color}`,
 			{
-				indeterminate: indeterminate,
-			},
+				indeterminate: indeterminate
+			}
 		]"
 		:style="styleConProgress"
 		class="tu-progress--background"
@@ -23,10 +23,9 @@ import { getApplyColor } from "@/utils";
 import {
 	computed,
 	defineComponent,
-	getCurrentInstance,
 	onMounted,
 	ref,
-	watch,
+	watch
 } from "vue";
 import tuComponent from "../tuComponent";
 
@@ -36,62 +35,60 @@ export default defineComponent({
 	props: {
 		height: {
 			type: [Number, String],
-			default: 5,
+			default: 5
 		},
 		indeterminate: {
 			type: Boolean,
-			default: false,
+			default: false
 		},
 		percent: {
 			type: Number,
-			default: 0,
+			default: 0
 		},
 		color: {
 			type: String,
-			default: "primary",
-		},
+			default: "primary"
+		}
 	},
-	setup(props, context) {
-		let percentx = ref(0);
-    
+	setup (props, context) {
+		const percentx = ref(0);
+
 		const styleConProgress = computed(() => {
 			return {
 				background: getApplyColor(props.color, 0.1),
-				height: `${props.height}px`,
+				height: `${props.height}px`
 			};
 		});
 
 		const styleProgress = computed(() => {
 			return {
 				background: getApplyColor(props.color),
-				width: `${percentx.value}%`,
+				width: `${percentx.value}%`
 			};
 		});
 
 		watch(
 			() => props.percent,
-			(newVal) => {
+			newVal => {
 				percentx.value = newVal;
-			},
-            
+			}
 		);
 
 		onMounted(() => {
 			setTimeout(() => {
-				percentx.value = props.percent; 
+				percentx.value = props.percent;
 			}, 600);
 		});
 
-        return {
-            styleConProgress,
-            styleProgress
-        }
-	},
+		return {
+			styleConProgress,
+			styleProgress
+		};
+	}
 });
 </script>
 
 <style lang="scss" scoped>
-
 @import "../../style/sass/_mixins";
 @import "../../style/sass/_colors";
 
@@ -108,7 +105,7 @@ export default defineComponent({
 .tu-progress--background {
 	width: 100%;
 	border-radius: 18px;
-	background-color: rgba(0,0,0,0.06);
+	background-color: rgba(0, 0, 0, 0.06);
 	z-index: 50;
 	position: relative;
 	display: inline-block;
@@ -122,27 +119,26 @@ export default defineComponent({
 }
 
 @keyframes indeterminate {
-    0% {
-      width: 30%;
-      left: -40%;
-    }
-    60% {
-      left: 100%;
-      width:100%;
-    }
-    100% {
-      left: 100%;
-      width:0%;
-    }
+	0% {
+		width: 30%;
+		left: -40%;
+	}
+	60% {
+		left: 100%;
+		width: 100%;
+	}
+	100% {
+		left: 100%;
+		width: 0%;
+	}
 }
 
-@each $color, $index in --tu-colors{
-    .tu-progress-#{$color}{
-        background: -getColor($color, .1);
-        ::v-deep(.tu-progress--foreground, .tu-progress--indeterminate){
-            background: -getColor($color, 1);
-        }
-    }    
+@each $color, $index in --tu-colors {
+	.tu-progress-#{$color} {
+		background: -getColor($color, 0.1);
+		::v-deep(.tu-progress--foreground, .tu-progress--indeterminate) {
+			background: -getColor($color, 1);
+		}
+	}
 }
-
 </style>

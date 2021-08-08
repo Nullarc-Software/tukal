@@ -52,9 +52,14 @@ export { tuSidebar, tuSidebarGroup, tuSidebarItem } from "./components/tuSideBar
 export { tuPopper, tuPopupMenu, tuPopupItem } from "./components/tuPopper";
 export { default as tuDialog } from "./components/tuDialog";
 export { tuCollapse, tuCollapseItem } from "./components/tuCollapse";
+export { default as tuTextArea } from "./components/tuTextArea";
 export { tuTable, tuTableExpand, tuTd, tuTh, tuTr } from "./components/tuTable";
+
 // New Component import
 
 // layout
 export { default as tuRow } from "./layout/tuRow";
 export { default as tuCol } from "./layout/tuCol";
+
+
+export * from "./utils"

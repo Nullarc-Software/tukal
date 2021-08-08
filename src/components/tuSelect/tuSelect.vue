@@ -6,7 +6,7 @@
 		}"
 		:class="[
 			{ block: block },
-			{ inline: inline},
+			{ inline: inline },
 			// colors
 			{
 				[`tu-component--primary`]:
@@ -48,14 +48,14 @@
 				v-on="inputListener"
 			/>
 			<label
-				v-if="(label || labelPlaceholder)"
+				v-if="label || labelPlaceholder"
 				class="tu-select__label"
 				:for="uid"
 				:class="{
 					'tu-select__label--placeholder': labelPlaceholder,
 					'tu-select__label--label': label,
 					'tu-select__label--hidden': isValue,
-                    'chips-hovered-multiple': chipsHovered && multiple
+					'chips-hovered-multiple': chipsHovered && multiple
 				}"
 			>
 				{{ labelPlaceholder || label }}
@@ -76,9 +76,9 @@
 				ref="chips"
 				v-on="chipsListener"
 			>
-				<div v-for="item of getChips" :key="item" >
+				<div v-for="item of getChips" :key="item">
 					<component :is="item" />
-				</div>				
+				</div>
 				<input
 					v-if="filter"
 					class="tu-select__chips__input"
@@ -88,7 +88,6 @@
 					:value="textFilter"
 					v-on="chipsFilterListener"
 				/>
-				
 			</button>
 			<transition name="tu-select">
 				<div
@@ -190,7 +189,6 @@ import {
 	computed,
 	nextTick,
 	defineComponent,
-	provide,
 	watch,
 	getCurrentInstance,
 	onMounted,
@@ -229,7 +227,7 @@ export default defineComponent({
 		block: { type: Boolean, default: false },
 		selectItems: { type: Array, default: [] }
 	},
-	provide() {
+	provide () {
 		return {
 			dropdown: computed(() => this.dropdown),
 			textFilter: computed(() => this.textFilter),
@@ -238,7 +236,12 @@ export default defineComponent({
 			parentSelect: this,
 			renderSelect: computed(() => this.renderSelect),
 			isMultiple: computed(() => this.multiple),
-			addChildOption: (disabled: boolean, value: any, label: string, offsetTop: number) => {
+			addChildOption: (
+				disabled: boolean,
+				value: any,
+				label: string,
+				offsetTop: number
+			) => {
 				this.childOptions.push({
 					disabled,
 					value,
@@ -269,33 +272,33 @@ export default defineComponent({
 			})
 		};
 	},
-	setup(props, context) {
-		let renderSelect = ref(false);
-		let activeOptions = ref(false);
-		let valueLabel = ref<any>(null);
-		let hoverOption = ref(-1);
-		let uids = ref<any[]>([]);
-		let childOptions = ref<any[]>([]);
-		let targetSelect = ref(false);
-		let targetSelectInput = ref(false);
-		let targetClose = ref(false);
-		let activeFilter = ref(false);
-		let chipsHovered = ref(false);
-		let textFilter = ref<String>();
-		let childVisibles = ref(0);
+	setup (props, context) {
+		const renderSelect = ref(false);
+		const activeOptions = ref(false);
+		const valueLabel = ref<any>(null);
+		const hoverOption = ref(-1);
+		const uids = ref<any[]>([]);
+		const childOptions = ref<any[]>([]);
+		const targetSelect = ref(false);
+		const targetSelectInput = ref(false);
+		const targetClose = ref(false);
+		const activeFilter = ref(false);
+		const chipsHovered = ref(false);
+		const textFilter = ref<String>();
+		const childVisibles = ref(0);
 
-		//Template refs
-		let chips = ref<HTMLButtonElement>();
-		let chipsInput = ref<HTMLInputElement>();
-		let input = ref<HTMLInputElement>();
-		let options = ref<HTMLDivElement>();
-		let select = ref<HTMLDivElement>();
-		let content = ref<HTMLDivElement>();
+		// Template refs
+		const chips = ref<HTMLButtonElement>();
+		const chipsInput = ref<HTMLInputElement>();
+		const input = ref<HTMLInputElement>();
+		const options = ref<HTMLDivElement>();
+		const select = ref<HTMLDivElement>();
+		const content = ref<HTMLDivElement>();
 
-		let uid = "select-" + ++SelectConstants.id;
-		let instance = getCurrentInstance();
+		const uid = "select-" + ++SelectConstants.id;
+		const instance = getCurrentInstance();
 
-		const setHover = function() {
+		const setHover = function () {
 			let index: number = -1;
 			childOptions.value.forEach((item: any, i: number) => {
 				if (item.value == props.modelValue) {
@@ -306,7 +309,7 @@ export default defineComponent({
 			hoverOption.value = index;
 		};
 
-		const handleWindowClick = function(evt: any) {
+		const handleWindowClick = function (evt: any) {
 			if (!targetSelectInput.value) {
 				handleBlur();
 			}
@@ -327,7 +330,7 @@ export default defineComponent({
 			}
 		};
 
-		const handleBlur = function() {
+		const handleBlur = function () {
 			nextTick(() => {
 				activeOptions.value = false;
 				childOptions.value = [];
@@ -344,30 +347,31 @@ export default defineComponent({
 			}
 		};
 
-		const clickOption = function(value: any, label: any) {
+		const clickOption = function (value: any, label: any) {
 			if (props.multiple) {
 				const oldVal = [...(props.modelValue as Array<any>)];
-				if (
-					_.indexOf(oldVal, value) === -1
-				) {
+				if (_.indexOf(oldVal, value) === -1) {
 					oldVal.push(value);
-
 				} else {
-					oldVal.splice(
-						_.indexOf(oldVal, value),
-						1
-					);
+					oldVal.splice(_.indexOf(oldVal, value), 1);
 				}
 
-				let labels = _.reduce(childOptions.value, function(result: any[], item, key){					
-					if(_.indexOf(oldVal, item.value) !== -1)
-						result.push({value: item.value, label: item.label});
-					return result;
-				}, []);
+				const labels = _.reduce(
+					childOptions.value,
+					function (result: any[], item, key) {
+						if (_.indexOf(oldVal, item.value) !== -1) {
+							result.push({
+								value: item.value,
+								label: item.label
+							});
+						}
+						return result;
+					},
+					[]
+				);
 
 				context.emit("update:modelValue", oldVal);
 				valueLabel.value = labels;
-
 			} else {
 				context.emit("update:modelValue", value);
 				valueLabel.value = label;
@@ -384,20 +388,23 @@ export default defineComponent({
 			}
 		};
 
-		let onClickOption = function(value: any, label: any) {
+		const onClickOption = function (value: any, label: any) {
 			clickOption(value, label);
 		};
 
-		let isValue = computed(() => {
-			if (Array.isArray(props.modelValue)) return props.modelValue.length !== 0;
-			else return !(_.isNull(props.modelValue) && !_.isUndefined(props.modelValue));
+		const isValue = computed(() => {
+			if (Array.isArray(props.modelValue)) { return props.modelValue.length !== 0; } else {
+				return !(
+					_.isNull(props.modelValue) &&
+					!_.isUndefined(props.modelValue)
+				);
+			}
 		});
-		//computeds
+		// computeds
 		const getChips = computed(() => {
 			let id = 0;
-			let chipIds: number[] = [];
-			const chip = function(item: any, isCollapse: boolean) {
-				
+			const chipIds: number[] = [];
+			const chip = function (item: any, isCollapse: boolean) {
 				return h(
 					"span",
 					{
@@ -405,13 +412,13 @@ export default defineComponent({
 						id: ++id
 					},
 					[
-						h("span",{}, item.label),
+						h("span", {}, item.label),
 						!isCollapse &&
 							h(
 								"span",
 								{
-									class: "tu-select__chips__chip__close",									
-									onClick: (evt) => {										
+									class: "tu-select__chips__chip__close",
+									onClick: evt => {
 										setTimeout(() => {
 											targetClose.value = false;
 										}, 100);
@@ -422,7 +429,7 @@ export default defineComponent({
 											}
 										}
 										clickOption(item.value, item.label);
-										evt.stopPropagation();									
+										evt.stopPropagation();
 									},
 									onMouseLeave: () => {
 										targetClose.value = false;
@@ -441,7 +448,9 @@ export default defineComponent({
 											hover: "less",
 											style: { "font-size": "0.5rem" }
 										},
-										() => { return "close"}
+										() => {
+											return "close";
+										}
 									)
 								]
 							)
@@ -451,8 +460,8 @@ export default defineComponent({
 
 			let chipsarr: any[] = [];
 			if (Array.isArray(valueLabel.value)) {
-				for (let item of valueLabel.value as any) {
-					let chipEl = chip(item, false);					
+				for (const item of valueLabel.value as any) {
+					const chipEl = chip(item, false);
 					chipsarr.push(chipEl);
 				}
 			}
@@ -468,17 +477,17 @@ export default defineComponent({
 				];
 			}
 
-			return  chipsarr;
+			return chipsarr;
 		});
 
-		const getValue = function() {
+		const getValue = function () {
 			const options = childOptions.value;
 			const filterOptions = options.filter((option: any): boolean => {
-				return typeof props.modelValue == "number" ||
-					typeof props.modelValue == "string"
+				return typeof props.modelValue === "number" ||
+					typeof props.modelValue === "string"
 					? props.modelValue == option.value
 					: _.find(props.modelValue as Array<any>, {
-							value: option.value
+						value: option.value
 					  }) !== undefined;
 			});
 
@@ -520,8 +529,8 @@ export default defineComponent({
 				}
 			};
 		});
-		
-		const handleKeydown = function(evt: any) {
+
+		const handleKeydown = function (evt: any) {
 			const optionsTemp = options.value;
 			for (let index = 0; index < 300; index++) {
 				setTimeout(() => {
@@ -560,8 +569,7 @@ export default defineComponent({
 
 			if (hoverOption.value !== -1) {
 				(content.value as HTMLElement).scrollTop =
-					childOptions.value?.[hoverOption.value].offsetTop -
-					66;
+					childOptions.value?.[hoverOption.value].offsetTop - 66;
 			}
 		};
 
@@ -586,12 +594,12 @@ export default defineComponent({
 		const chipsListener = computed(() => {
 			return {
 				keydown: handleKeydown,
-                mouseover: (event) => {
-                    chipsHovered.value = true;
-                },
-                mouseout: (event) => {
-                    chipsHovered.value = false;
-                },
+				mouseover: event => {
+					chipsHovered.value = true;
+				},
+				mouseout: event => {
+					chipsHovered.value = false;
+				},
 				focus: (evt: Event) => {
 					if (!targetClose.value) {
 						activeOptions.value = true;
@@ -640,7 +648,7 @@ export default defineComponent({
 			return newChildOptions.length == 0;
 		});
 
-		const iconClicked = function() {
+		const iconClicked = function () {
 			if (activeOptions.value) {
 				activeOptions.value = false;
 			} else {
@@ -648,22 +656,22 @@ export default defineComponent({
 			}
 		};
 
-		const beforeEnter = function(el: any) {
+		const beforeEnter = function (el: any) {
 			el.style.height = 0;
 		};
 
-		const enter = function(el: any, done: any) {
-			let h = el.scrollHeight;
+		const enter = function (el: any, done: any) {
+			const h = el.scrollHeight;
 			el.style.height = h - 1 + "px";
 			done();
 		};
 
-		const leave = function(el: any, done: any) {
+		const leave = function (el: any, done: any) {
 			el.style.minHeight = "0px";
 			el.style.height = "0px";
 		};
 
-		const insertOptions = function() {
+		const insertOptions = function () {
 			const optionsTemp = options.value as HTMLElement;
 			insertBody(optionsTemp, document.body);
 			setCords(options.value, select.value);
@@ -677,7 +685,7 @@ export default defineComponent({
 			uids.value = [];
 		});
 
-		const handleResize = function() {
+		const handleResize = function () {
 			const optionsTemp = options.value as HTMLElement;
 			if (!optionsTemp) {
 				return;
@@ -693,7 +701,7 @@ export default defineComponent({
 			}
 		};
 
-		const handleScroll = function() {
+		const handleScroll = function () {
 			const optionsTemp = options.value as HTMLElement;
 			if (optionsTemp) {
 				setCords(optionsTemp, select.value);
@@ -701,50 +709,49 @@ export default defineComponent({
 		};
 
 		onMounted(() => {
-			//getValue();
-			
-			let children : any = instance?.slots.default?.();
-			if(children?.length == 1 && typeof children[0].type === "symbol")
-				children = children[0].children;
-			let reduced = _.reduce(children, function(result : any[], item, index) {
-						result.push({ label: item.props?.label, value: item.props?.value});
-						return result;
-				}, []);						
+			// getValue();
 
-			//set the default value first. Since the list is not rendered to the dom, get it from the default slot.
-			if(!Array.isArray(props.modelValue)){
+			let children: any = instance?.slots.default?.();
+			if (children?.length == 1 && typeof children[0].type === "symbol") { children = children[0].children; }
+			const reduced = _.reduce(
+				children,
+				function (result: any[], item, index) {
+					result.push({
+						label: item.props?.label,
+						value: item.props?.value
+					});
+					return result;
+				},
+				[]
+			);
 
-				let labelValue = _.find(reduced, {value: props.modelValue});
-				if(labelValue)
-					valueLabel.value = labelValue.label;
-			}
-			else{
-
-				let newLabelValues :any[] = [];
-				props.modelValue.forEach((value) => {
-					let labelValue = _.find(reduced, {value: value});
-					if(labelValue)
-						newLabelValues.push(labelValue);
+			// set the default value first. Since the list is not rendered to the dom, get it from the default slot.
+			if (!Array.isArray(props.modelValue)) {
+				const labelValue = _.find(reduced, { value: props.modelValue });
+				if (labelValue) valueLabel.value = labelValue.label;
+			} else {
+				const newLabelValues: any[] = [];
+				props.modelValue.forEach(value => {
+					const labelValue = _.find(reduced, { value: value });
+					if (labelValue) newLabelValues.push(labelValue);
 				});
-				
-				valueLabel.value = newLabelValues;	
+
+				valueLabel.value = newLabelValues;
 			}
-		
+
 			window.addEventListener("resize", handleResize);
 			window.addEventListener("scroll", handleScroll);
 		});
 
-        onBeforeUnmount(() => {
-
-            if(activeOptions.value)
-            {
-                const optionsTemp = options.value as HTMLElement;
-			    removeBody(optionsTemp, document.body);
-            }
-        });
+		onBeforeUnmount(() => {
+			if (activeOptions.value) {
+				const optionsTemp = options.value as HTMLElement;
+				removeBody(optionsTemp, document.body);
+			}
+		});
 
 		return {
-            chipsHovered,
+			chipsHovered,
 			renderSelect,
 			activeOptions,
 			valueLabel,
@@ -881,12 +888,11 @@ export default defineComponent({
 	width: 100%;
 	max-width: fit-content;
 	display: flex;
-    flex-direction: column;
+	flex-direction: column;
 
-	&.inline{
+	&.inline {
 		display: inline-flex;
 	}
-
 
 	margin: 5px;
 	padding: 5px;
@@ -986,6 +992,7 @@ export default defineComponent({
 
 		.tu-select__input {
 			border-radius: 12px 12px 0px 0px;
+			border: 1px solid -getColor("text", 0.09);
 			background: -getColor("background");
 			box-shadow: 0px 5px 25px -4px rgba(0, 0, 0, -var(shadow-opacity));
 			transform: translate(0, -4px);
@@ -1023,7 +1030,7 @@ export default defineComponent({
 		opacity: 1;
 		background: transparent;
 		padding: 7px 13px;
-		border: 2px solid transparent;
+		border: 1px solid -getColor("text", 0.09);		
 		border-radius: 12px;
 		cursor: pointer;
 		transition: all 0.25s ease, height 0s;
@@ -1103,12 +1110,12 @@ export default defineComponent({
 		}
 
 		&:hover {
-			background: -getColor("background");            
-			box-shadow: 0px 5px 25px -4px rgba(0, 0, 0, -var(shadow-opacity));            
-            transform: translate(0, -8px);
-            &.chips-hovered-multiple{
-                transform: translate(0, -8px);
-            }			
+			background: -getColor("background");
+			box-shadow: 0px 5px 25px -4px rgba(0, 0, 0, -var(shadow-opacity));
+			transform: translate(0, -8px);
+			&.chips-hovered-multiple {
+				transform: translate(0, -8px);
+			}
 			transition: all 0.25s ease;
 
 			~ .tu-icon-arrow {
@@ -1353,7 +1360,7 @@ export default defineComponent({
 		padding: 0px 7px;
 		transition: all 0.25s ease;
 		overflow: hidden;
-        height: unset !important;
+		height: unset !important;
 
 		&--success {
 			color: -getColor("success", 1);
@@ -1403,5 +1410,4 @@ export default defineComponent({
 	opacity: 1;
 	margin-left: 10px;
 }
-
 </style>

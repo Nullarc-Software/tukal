@@ -14,7 +14,7 @@
 		v-on="listeners"
 		ref="option"
 	>
-		<tu-checkbox v-if="isMultiple" v-model:value="isActive">
+		<tu-checkbox v-if="isMultiple" v-model="isActive">
 			<slot />
 		</tu-checkbox>
 		<slot v-else />
@@ -30,7 +30,6 @@ import {
 	onMounted,
 	Ref,
 	ref,
-	unref,
 	watch
 } from "vue";
 import { SelectOptionConstants } from "./index";

@@ -80,12 +80,8 @@
 import {
 	computed,
 	defineComponent,
-	getCurrentInstance,
-	nextTick,
 	ref
 } from "vue";
-import _color from "../../utils/color";
-import { useRouter } from "vue-router";
 import tuIcon from "../tuIcon";
 import tuComponent, { ComponentConstants } from "../tuComponent";
 
@@ -114,21 +110,21 @@ export default defineComponent({
 		block: { type: Boolean, default: false },
 		animationType: { type: String, default: "" },
 		animateInactive: { type: Boolean, default: false },
-		to: { type: String, default: null },
+		to: { type: [Object, String], default: () => null },
 		href: { type: String, default: null },
 		blank: { type: Boolean, default: false },
 		inline: { type: Boolean, default: false },
 		width: { type: String, default: null },
-		height: { type: String, default: null },
-	
+		height: { type: String, default: null }
+
 	},
 	emits: ["routeErr", "mouseover", "mouseout", "blur", "click"],
-	setup: function(props, context) {
-		let rippleDir = ref("");
-		let componentColor = null;
-		let button = ref<HTMLButtonElement>();
+	setup: function (props, context) {
+		const rippleDir = ref("");
+		const componentColor = null;
+		const button = ref<HTMLButtonElement>();
 
-		const clickButton = function(event) {
+		const clickButton = function (event) {
 			if (props.to) {
 				ComponentConstants.router.push(props.to);
 			} else if (props.href) {
@@ -162,7 +158,7 @@ export default defineComponent({
 			}
 		};
 
-		let listeners = computed(() => {
+		const listeners = computed(() => {
 			return {
 				click: event => clickButton(event),
 				mousedown: event => mousedown(event)
@@ -215,7 +211,7 @@ export default defineComponent({
 				color: -getColor("color") !important;
 			} @else {
 				color: -getColor("text") !important;
-			}			
+			}
 		}
 	}
 
@@ -406,7 +402,7 @@ export default defineComponent({
 			padding: 15px 20px;
 			font-size: 1.1rem;
 		}
-		
+
 	}
 
 	&--size-large {
@@ -416,27 +412,27 @@ export default defineComponent({
 			.tu-button__content {
 				padding: 10px 15px;
 			}
-		
+
 	}
 
 	&--size-small {
 		font-size: 0.75rem;
 		border-radius: 9px;
-		
+
 			.tu-button__content {
 				padding: 5px 10px;
 			}
-		
+
 	}
 
 	&--size-mini {
 		font-size: 0.6rem;
 		border-radius: 7px;
-		
+
 			.tu-button__content {
 				padding: 3px 8px;
 			}
-		
+
 	}
 
 	&--circle {
@@ -451,7 +447,7 @@ export default defineComponent({
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		
+
 			.tu-button__content {
 				padding: 8px 8px;
 			}
@@ -459,7 +455,7 @@ export default defineComponent({
 			i {
 				font-size: 1.15rem;
 			}
-		
+
 	}
 }
 

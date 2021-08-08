@@ -6,6 +6,10 @@
 			`tu-tabs-${tabStyle}`,
 		]"
 		class="con-tu-tabs tu-tabs"
+		:style="{
+			width: fixedWidth,
+			height: fixedHeight
+		}"
 	>
 		<div class="con-ul-tabs">
 			<ul
@@ -102,8 +106,9 @@
 							>
 						</div>
 					</div>
-					<div class="tu-tabs--progress__bar">
+					<div class="tu-tabs--progress__bar" :style="{ width: progressWidth}">
 						<tu-progress
+							:height="8"
 							:percent="getPercentage"
 							:color="color"
 						></tu-progress>
@@ -196,11 +201,23 @@ export default defineComponent({
 			type: Number,
 			default: 16
 		},
+		progressWidth: {
+			type: String,
+			default: "100%"
+		},
 		tabStyle: {
 			type: String,
 			default: "default"
 		},
 		title: {
+			type: String,
+			default: null
+		},
+		fixedWidth: {
+			type: String,
+			default: null
+		},
+		fixedHeight: {
 			type: String,
 			default: null
 		}
@@ -641,7 +658,7 @@ export default defineComponent({
 
 .tu-tabs-progress {
 	padding: 20px;
-	box-shadow: var(--tu-elevated-1);
+	box-shadow: var(--tu-elevated-6);
 	border-radius: 15px;
 }
 

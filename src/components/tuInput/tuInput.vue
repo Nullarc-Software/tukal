@@ -268,6 +268,7 @@ export default defineComponent({
 	&.square {
 		.tu-input-content {
 			border-radius: 0px !important;
+			
 		}
 	}
 
@@ -322,6 +323,7 @@ export default defineComponent({
 	justify-content: flex-start;
 	position: relative;
 	border-radius: 12px;
+	border: 1px solid -getColor("text", 0.09);
 
 	+ .tu-input__message {
 		padding-top: 2px;
@@ -634,6 +636,7 @@ export default defineComponent({
 
 		.tu-input-content {
 			border-radius: 0px;
+			border: none !important;
 
 			.tu-input__affects {
 				width: 100%;
@@ -667,6 +670,7 @@ export default defineComponent({
 			.tu-input {
 				background: transparent;
 				border-radius: 0px;
+				border: none !important;
 
 				&:focus {
 					~ .tu-input__affects {
