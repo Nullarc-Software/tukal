@@ -483,6 +483,7 @@
 			/>
 			<br />
 			<tu-input label-placeholder="Country" />
+			<tu-input editable-static v-model="editStatic" />
 			<br />
 			<tu-input placeholder="User name">
 				<template #icon>
@@ -926,34 +927,17 @@
 			<h4>Table:</h4>
 			<hr />
 
-			<tu-table v-model="selected">
+			<tu-table v-model="selected" :page="page" :pageSize="3" :data="users">
 				<template #thead>
-					<tu-tr>
-						<tu-th> Name </tu-th>
-						<tu-th> Email </tu-th>
-						<tu-th> Id </tu-th>
-					</tu-tr>
+					<tu-th field="name" search> Name </tu-th>
+					<tu-th field="email" search> Email </tu-th>
+					<tu-th field="id" search> Id </tu-th>
+					<tu-th field="something" search> No value </tu-th>
 				</template>
-				<template #tbody>
-					<tu-tr
-						:key="i"
-						v-for="(tr, i) in users"
-						:data="tr"
-						:isSelected="tr && selected && tr.id == selected.id"
-					>
-						<tu-td>
-							{{ tr.name }}
-						</tu-td>
-						<tu-td>
-							{{ tr.email }}
-						</tu-td>
-						<tu-td>
-							{{ tr.id }}
-						</tu-td>
-					</tu-tr>
+				<template #footer>
+					<tu-pagination v-model="page" :length="Math.ceil(users.length/ 3)" />
 				</template>
 			</tu-table>
-			{{ selected }}
 			<br />
 			Striped:
 			<tu-table striped>
@@ -1177,7 +1161,7 @@ export default defineComponent({
 				id: 1,
 				name: "Leanne Graham",
 				username: "Bret",
-				email: "Sincere@april.biz",
+				email: "Sincere@april.biz teeasssssssssssssssssssssssssaaaaaa asdadqw qweqwe qwdasdaczxcz x",
 				website: "hildegard.org"
 			},
 			{
@@ -1212,7 +1196,7 @@ export default defineComponent({
 				id: 6,
 				name: "Mrs. Dennis Schulist",
 				username: "Leopoldo_Corkery",
-				email: "Karley_Dach@jasper.info",
+				email: "Karley_Dach@melissa.tv",
 				website: "ola.org"
 			},
 			{
@@ -1248,12 +1232,15 @@ export default defineComponent({
 		const selected = ref(null);
 		const tabName = ref("ho");
 
-		function resetOpts() {
+		function resetOpts () {
 			opts.value = ['carols'];
 			console.log(opts.value)
 		}
 
+		let editStatic = ref("Some Text");
+
 		return {
+			editStatic,
 			selected,
 			active1,
 			checkBox1,

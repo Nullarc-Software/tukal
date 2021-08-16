@@ -7,6 +7,7 @@ import RootApp from "./App.vue";
 import { createApp } from "@vue/runtime-dom";
 
 import "material-design-icons/iconfont/material-icons.css";
+import { createPinia } from "pinia";
 
 const install = function (Vue : App, options : any = {}) {
 	// set default options
@@ -18,9 +19,8 @@ const install = function (Vue : App, options : any = {}) {
 	if (options) {
 		if (Object.prototype.hasOwnProperty.call(options, "theme")) {
 			if (Object.prototype.hasOwnProperty.call(options, "color")) {
-				if (typeof window !== "undefined") {
+				if (typeof window !== "undefined")
 					tuTheme.tufunction(options.theme.colors);
-				}
 			}
 		}
 	}
@@ -30,10 +30,11 @@ const install = function (Vue : App, options : any = {}) {
 
 const appVm = createApp(RootApp);
 (<any>window).Vue = appVm;
-if (typeof window !== "undefined" && (<any>window).Vue) {
+if (typeof window !== "undefined" && (<any>window).Vue)
 	install((<any>window).Vue);
-}
 
+const pinia = createPinia();
+appVm.use(pinia);
 appVm.mount("#app");
 
 export default install;

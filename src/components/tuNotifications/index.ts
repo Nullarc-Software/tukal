@@ -5,9 +5,8 @@ tuComponent.install = (vue: any) => {
 	vue.component(tuComponent.name, tuComponent);
 };
 
-if (typeof window !== "undefined" && (<any>window).Vue) {
+if (typeof window !== "undefined" && (<any>window).Vue)
 	tuComponent.install((<any>window).Vue);
-}
 
 const notificationConstructor = tuComponent;
 
@@ -48,7 +47,8 @@ class Notification {
 		for (const id of Notification.instanceList.keys) {
 			try {
 				Notification.instanceList[id].unmount();
-			} catch (error) {
+			}
+			catch (error) {
 
 			}
 		}
@@ -62,7 +62,7 @@ class Notification {
 
 	private closeNotification () {
 		Notification.instanceList[this.currentId].unmount();
-		if (this.clientClose) { this.clientClose(); }
+		if (this.clientClose) this.clientClose();
 	}
 
 	constructor (paramsAttr: NotificationAttributes) {
@@ -71,7 +71,7 @@ class Notification {
 		params.notifId = ++Notification.notifId;
 		this.currentId = Notification.notifId;
 		params.clickClose = true;
-		if (params.onClickClose) { this.clientClose = params.onClickClose; }
+		if (params.onClickClose) this.clientClose = params.onClickClose;
 		params.onClickClose = this.closeNotification.bind(this);
 
 		if (params.progress === "auto" && params.duration !== "none") {
@@ -93,7 +93,7 @@ class Notification {
 		parent.appendChild(html);
 		document.body.appendChild(parent);
 
-		if (!!Notification.instanceList === false) { Notification.instanceList = Object.create(null); }
+		if (!!Notification.instanceList === false) Notification.instanceList = Object.create(null);
 		Notification.instanceList[Notification.notifId] = this.instance;
 	}
 };

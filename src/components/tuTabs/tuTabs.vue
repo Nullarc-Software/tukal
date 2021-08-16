@@ -8,7 +8,7 @@
 		class="con-tu-tabs tu-tabs"
 		:style="{
 			width: fixedWidth,
-			height: fixedHeight
+			height: fixedHeight,
 		}"
 	>
 		<div class="con-ul-tabs">
@@ -57,7 +57,7 @@
 						<tu-icon
 							:icon-pack="child.iconPack"
 							:icon="child.tag"
-							:color="child.tagColor"
+							
 						></tu-icon>
 					</button>
 				</li>
@@ -71,9 +71,7 @@
 				<div class="tu-tabs-progress-header">
 					<div class="tu-tabs--progress__info">
 						<span>
-							<slot v-if="$slots.title" name="title" />
-							<strong v-else> {{ title ?? "Progress" }} </strong>
-							|
+							
 						</span>
 						<span style="margin-left: 5px">
 							<span
@@ -106,7 +104,10 @@
 							>
 						</div>
 					</div>
-					<div class="tu-tabs--progress__bar" :style="{ width: progressWidth}">
+					<div
+						class="tu-tabs--progress__bar"
+						:style="{ width: progressWidth }"
+					>
 						<tu-progress
 							:height="8"
 							:percent="getPercentage"
@@ -145,7 +146,6 @@ import {
 	reactive,
 	ref,
 	toRefs,
-	VNode,
 	watch
 } from "vue";
 import { ChildData, TabId } from ".";
@@ -272,9 +272,9 @@ export default defineComponent({
 			if (props.tabStyle === "card") {
 				style.background = utils.getApplyColor(props.color, 0.15);
 				if (childId === 0) style["border-radius"] = "15px 0px 15px 0px";
-				else if (childId === data.children.length - 1) {
+				else if (childId === data.children.length - 1)
 					style["border-radius"] = "0px 15px 0px 15px";
-				} else style["border-radius"] = "0px 0px 15px 15px";
+				else style["border-radius"] = "0px 0px 15px 15px";
 			}
 
 			return style;
@@ -298,7 +298,7 @@ export default defineComponent({
 						0.5
 					)}`,
 					transform: `scaleX(${reactiveData.these ? 1.3 : 1})`
-				  }
+				}
 				: {};
 		});
 
@@ -313,25 +313,25 @@ export default defineComponent({
 					"align-items": "center",
 					"font-size": `${props.headerSize}px`,
 					cursor: "pointer"
-				  }
+				}
 				: {
 					"font-size": `${props.headerSize}px`,
 					cursor: "pointer"
-				  };
+				};
 		};
 
 		const parseIndex = function (index) {
 			let activeIndex = reactiveData.childActive;
 
 			if (typeof index === "number" || !isNaN(parseInt(index))) {
-				if (index < 0) {
+				if (index < 0)
 					activeIndex = 0;
-				} else if (index >= reactiveData.children.length) {
+				else if (index >= reactiveData.children.length)
 					activeIndex = reactiveData.children.length - 1;
-				} else if (reactiveData.children[index].disabled === false) {
+				else if (reactiveData.children[index].disabled === false)
 					activeIndex = parseInt(index);
-				}
-			} else {
+			}
+			else {
 				activeIndex = _.findIndex(reactiveData.children, (child) => {
 					return child.name === index;
 				});
@@ -355,9 +355,8 @@ export default defineComponent({
 			}
 
 			reactiveData.children.forEach((value, key) => {
-				if (key != index) {
+				if (key !== index)
 					value.setActive(false);
-				}
 			});
 
 			if (reactiveData.childActive > index) {
@@ -365,7 +364,8 @@ export default defineComponent({
 				reactiveData.children[reactiveData.childActive]?.setInvert(
 					false
 				);
-			} else {
+			}
+			else {
 				reactiveData.children[reactiveData.childActive]?.setInvert(
 					true
 				);
@@ -376,13 +376,11 @@ export default defineComponent({
 			reactiveData.childActive = index;
 			context.emit("update:modelValue", reactiveData.childActive);
 
-			if (props.position == "left" || props.position == "right") {
+			if (props.position === "left" || props.position === "right")
 				reactiveData.children[index]?.setVertical(true);
-			}
 
-			if (props.tabStyle !== "progress") {
+			if (props.tabStyle !== "progress")
 				changePositionLine(elem, initialAnimation);
-			}
 		};
 
 		const changePositionLine = function (elem, initialAnimation) {
@@ -391,10 +389,10 @@ export default defineComponent({
 				reactiveData.heightx = elem.offsetHeight;
 				reactiveData.widthx = 2;
 
-				if (props.position == "right") {
+				if (props.position === "right")
 					reactiveData.leftx = 0;
-				}
-			} else {
+			}
+			else {
 				const update = () => {
 					reactiveData.leftx = elem.offsetLeft;
 					reactiveData.widthx = elem.offsetWidth;
@@ -405,18 +403,17 @@ export default defineComponent({
 								ul.value.getBoundingClientRect().top);
 					}
 				};
-				if (!initialAnimation) {
+				if (!initialAnimation)
 					update();
-				} else {
+				else
 					setTimeout(update, 100);
-				}
 			}
 		};
 
 		const getPercentage = computed(() => {
 			return (
 				((activeIdx.value + 1) /
-					(reactiveData.children.length == 0
+					(reactiveData.children.length === 0
 						? 1
 						: reactiveData.children.length)) *
 				100

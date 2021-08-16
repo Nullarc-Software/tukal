@@ -15,27 +15,27 @@ import { defineComponent } from "vue";
 import tuComponent from "../tuComponent";
 
 export default defineComponent({
-    name: "TuTd",
-    extends: tuComponent,
-    props: {
-        checkbox: {
-            type: Boolean,
-            default: false
-        },
-        edit: {
-            type: Boolean,
-            default: false
-        }
-    },
-    setup(props, context) {        
-        const clickHandler = function(event) {
-            context.emit("click", event);
-        }
+	name: "TuTd",
+	extends: tuComponent,
+	props: {
+		checkbox: {
+			type: Boolean,
+			default: false
+		},
+		edit: {
+			type: Boolean,
+			default: false
+		}
+	},
+	setup (props, context) {
+		const clickHandler = function (event) {
+			context.emit("tdClick", event);
+		};
 
-        return {
-            clickHandler
-        }
-    }
+		return {
+			clickHandler
+		};
+	}
 });
 </script>
 

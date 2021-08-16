@@ -24,6 +24,7 @@
 			{ [`tu-component--success`]: !!success },
 			{ [`tu-component--dark`]: !!dark },
 			{ [`tu-component--is-getColor`]: !!isColor },
+			{ [`tu-component-static-editable`] : !!editableStaticInternal }
 		]"
 	>
 		<div
@@ -46,6 +47,7 @@
 				@input="onInput"
 				placeholder
 				:id="getId"
+				:disabled="editableStaticInternal"
 			/>
 			<label
 				v-if="label"
@@ -84,6 +86,20 @@
 			>
 				<slot name="icon" />
 			</span>
+
+			<span
+				v-if="editableStaticInternal"
+				class="tu-input__icon__editable"
+				:class="[
+					{ 'tu-input__icon--after': true },
+					{ 'tu-input__icon--click': !!$attrs['click-icon'] },
+				]"
+			>
+				<tu-icon icon-pack="material-icons" @click="editableStaticInternal = false">mode_edit</tu-icon>
+			</span>
+			<div v-if="editableStaticInternal">
+
+			</div>
 			<div v-if="loading" class="tu-input__loading" />
 			<div class="tu-input__affects">
 				<div class="tu-input__affects__1" />
@@ -144,8 +160,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from "vue";
-import _color from "../../utils/color";
+import { computed, defineComponent, ref, watch } from "vue";
 import tuComponent from "../tuComponent";
 
 class InputConstants {
@@ -173,13 +188,19 @@ export default defineComponent({
 		square: { type: Boolean, default: false },
 		id: { type: String, default: null },
 		placeholder: { type: String, default: null },
-		inline: { type: Boolean, default: false },        
+		inline: { type: Boolean, default: false },
+		editableStatic: {
+			type: Boolean,
+			default: false
+		}
 	},
 	emits: ["update:modelValue", "click-icon"],
-	setup(props, context) {
+	setup (props, context) {
 		const getId = computed(() => {
 			return `tu-input--${props.id || ++InputConstants.id}`;
 		});
+
+		const editableStaticInternal = ref(props.editableStatic);
 
 		const hasColor = computed(() => {
 			return (
@@ -197,7 +218,7 @@ export default defineComponent({
 		};
 
 		const enter = function (el: any, done: any) {
-			let h = el.scrollHeight;
+			const h = el.scrollHeight;
 			el.style.height = h - 1 + "px";
 			done();
 		};
@@ -207,7 +228,7 @@ export default defineComponent({
 			el.style.height = "0px";
 		};
 
-		const onInput = function (evt) {          
+		const onInput = function (evt) {
     		context.emit("update:modelValue", evt.target.value);
 		};
 
@@ -215,16 +236,33 @@ export default defineComponent({
 			context.emit("click-icon", evt.target.value);
 		};
 
+		function editable (event: any) {
+			if (!event.target.closest(".tu-input-parent"))
+				editableStaticInternal.value = true;
+		}
+
+		if (props.editableStatic) {
+			watch(editableStaticInternal, (value) => {
+				setTimeout(() => {
+					if (value === false)
+						document.addEventListener("click", editable);
+					else
+						document.removeEventListener("click", editable);
+				}, 200);
+			});
+		}
+
 		return {
+			editableStaticInternal,
 			enter,
 			beforeEnter,
 			leave,
 			onInput,
 			iconClick,
 			hasColor,
-			getId,
+			getId
 		};
-	},
+	}
 });
 </script>
 <style lang="scss" scoped>
@@ -255,7 +293,7 @@ export default defineComponent({
 
 	&.inline {
 		display: inline-flex;
-		justify-content: center;		
+		justify-content: center;
 	}
 
 	align-self: center;
@@ -268,7 +306,7 @@ export default defineComponent({
 	&.square {
 		.tu-input-content {
 			border-radius: 0px !important;
-			
+
 		}
 	}
 
@@ -749,5 +787,22 @@ export default defineComponent({
 	100% {
 		transform: rotate(360deg);
 	}
+}
+
+.tu-input-parent.tu-component-static-editable {
+	::v-deep(.tu-input-content) {
+		border: none !important;
+	};
+	::v-deep(.tu-input) {
+		cursor: text;
+		//pointer-events: none;
+		background-color: transparent;
+	};
+	::v-deep(.tu-input__icon__editable) {
+		i {
+			font-size: 16px;
+		}
+	}
+
 }
 </style>

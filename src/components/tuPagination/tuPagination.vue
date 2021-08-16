@@ -22,10 +22,10 @@
 			{ [`tu-component--dark`]: !!dark },
 		]"
 		v-bind="$attrs"
-	>		
+	>
 		<button
 			v-if="!notArrows"
-			class="tu-pagination__arrow prev"			
+			class="tu-pagination__arrow prev"
 			:disabled="infinite ? false : val <= 1"
 			@click="prevClicked"
 		>
@@ -43,7 +43,7 @@
 			ref="pagination"
 			v-if="!onlyArrows && !$slots.default"
 		>
-			<component :is="item" v-for="item of getPages" :key="item" />			
+			<component :is="item" v-for="item of getPages" :key="item" />
 		</div>
 		<button
 			v-if="!notArrows"
@@ -66,7 +66,6 @@
 </template>
 <script lang="ts">
 import { computed, defineComponent, h, nextTick, ref, watch } from "vue";
-import _color from "../../utils/color";
 import tuIconsArrow from "../../icons/arrow";
 import tuComponent from "../tuComponent";
 
@@ -85,17 +84,17 @@ export default defineComponent({
 		circle: { default: false, type: Boolean },
 		square: { default: false, type: Boolean },
 		disabled: { default: false, type: Boolean },
-		disabledItems: { default: new Array<any>(), type: Array },
-		loadingItems: { default: new Array<any>(), type: Array },
+		disabledItems: { default: () => [], type: Array },
+		loadingItems: { default: () => [], type: Array },
 		length: { default: 1, type: Number },
 		max: { default: 9, type: Number },
-		dottedNumber: { default: 5, type: Number },
+		dottedNumber: { default: 5, type: Number }
 	},
-	setup(props, context) {
-		let val = ref(0);
-		let leftActive = ref(42);
-		let activeClassMove = ref(false);
-		let pagination = ref<HTMLDivElement>();
+	setup (props, context) {
+		const val = ref(1);
+		const leftActive = ref(42);
+		const activeClassMove = ref(false);
+		const pagination = ref<HTMLDivElement>();
 
 		const getProgress = computed(() => {
 			let percent = 0;
@@ -112,48 +111,48 @@ export default defineComponent({
 		const renderDotted = function (text: string = "...") {
 			const dotted = h(
 				"div",
-				{					
+				{
 					class: {
 						"tu-pagination__dotted": true,
 						next:
-							props.modelValue == props.length
+							props.modelValue === props.length
 								? false
-								: text == "...>",
+								: text === "...>"
 					},
 					style: {
-						cursor: 'pointer'
+						cursor: "pointer"
 					},
 					onClick: (evt: any) => {
-							let newVal = (
-								props.modelValue == props.length
-									? false
-									: text == "...>"
-							)
-								? (val.value += props.dottedNumber)
-								: (val.value -= props.dottedNumber);
-							if (newVal > props.length) {
-								newVal = props.length;
-							} else if (newVal < 1) {
-								newVal = 1;
-							}
-							setValuePage(newVal);
-						},					
+						let newVal = (
+							props.modelValue === props.length
+								? false
+								: text === "...>"
+						)
+							? (val.value += props.dottedNumber)
+							: (val.value -= props.dottedNumber);
+						if (newVal > props.length)
+							newVal = props.length;
+						else if (newVal < 1)
+							newVal = 1;
+
+						setValuePage(newVal);
+					}
 				},
 				[
 					h(
 						"span",
 						{
-							class: "dotted",
+							class: "dotted"
 						},
-						[`...`]
+						["..."]
 					),
 					h(
 						"span",
 						{
-							class: "con-arrows",
+							class: "con-arrows"
 						},
 						[h(tuIconsArrow), h(tuIconsArrow)]
-					),
+					)
 				]
 			);
 
@@ -172,20 +171,20 @@ export default defineComponent({
 			const button = h(
 				"button",
 				{
-					ref: `btn${NumberPage}`,					
+					ref: `btn${NumberPage}`,
 					class: {
 						[`tu-pagination__button pagination-btn-${NumberPage}`]: true,
-						active: NumberPage == props.modelValue,
-						"tu-pagination__active" : NumberPage == props.modelValue,
+						active: NumberPage === props.modelValue,
+						"tu-pagination__active": NumberPage === props.modelValue,
 						flat: props.flat,
-						prevActive: NumberPage == props.modelValue - 1,
-						nextActive: NumberPage == props.modelValue + 1,
+						prevActive: NumberPage === props.modelValue - 1,
+						nextActive: NumberPage === props.modelValue + 1,
 						disabled: isDisabledItem(NumberPage),
-						loading: isLoadingItem(NumberPage),
+						loading: isLoadingItem(NumberPage)
 					},
 					onClick: (evt: any) => {
 						setValuePage(NumberPage);
-					},					
+					}
 				},
 				props.buttonsDotted ? "" : `${NumberPage}`
 			);
@@ -197,11 +196,10 @@ export default defineComponent({
 			const buttons: any[] = [];
 
 			array.forEach((item: any) => {
-				if (item === "...>" || item === "<...") {
+				if (item === "...>" || item === "<...")
 					buttons.push(renderDotted(item));
-				} else {
+				else
 					buttons.push(renderButton(item));
-				}
 			});
 
 			return buttons;
@@ -209,15 +207,14 @@ export default defineComponent({
 
 		const getButtons = function (start: number = 1, end: number = 6) {
 			const buttons: any[] = [];
-			for (start > 0 ? start : 1; start <= end; start++) {
+			for (start > 0 ? start : 1; start <= end; start++)
 				buttons.push(start);
-			}
 
 			return buttons;
 		};
 
 		const isMobile = computed(() => {
-			let isMobile = false;
+			const isMobile = false;
 			/* if (!(<any>window.vm).$isServer) {
 				if (window.innerWidth < 600) {
 					isMobile = true;
@@ -246,17 +243,19 @@ export default defineComponent({
 					"<...",
 					...getButtons(start, end),
 					"...>",
-					props.length,
+					props.length
 				]);
-			} else if (!props.buttonsDotted && props.length > 6) {
+			}
+			else if (!props.buttonsDotted && props.length > 6) {
 				return renderButtons([
 					...getButtons(1, prevRange),
 					"...>",
-					...getButtons(nextRange, length),
+					...getButtons(nextRange, length)
 				]);
-			} else if (props.buttonsDotted || props.length <= 6) {
+			}
+			else if (props.buttonsDotted || props.length <= 6) {
 				return renderButtons([
-					...getButtons(1, props.length == 0 ? 1 : props.length),
+					...getButtons(1, props.length === 0 ? 1 : props.length)
 				]);
 			}
 
@@ -265,30 +264,27 @@ export default defineComponent({
 
 		const prevClicked = function () {
 			const newVal = (val.value -= 1);
-			if (newVal > 0) {
+			if (newVal > 0)
 				setValuePage(newVal);
-			} else if (props.infinite) {
+			else if (props.infinite)
 				setValuePage(props.length);
-			}
 		};
 
 		const nextClicked = function () {
 			const newVal = (val.value += 1);
-			if (newVal <= props.length) {
+			if (newVal <= props.length)
 				setValuePage(newVal);
-			} else if (props.infinite) {
+			else if (props.infinite)
 				setValuePage(1);
-			}
 		};
 
 		watch(
 			() => props.length,
 			() => {
 				nextTick(() => {
-										
 					setTimeout(() => {
 						activeClassMove.value = false;
-					}, 300);					
+					}, 300);
 				});
 			}
 		);
@@ -298,24 +294,24 @@ export default defineComponent({
 			(valNew, prevValue) => {
 				if (isDisabledItem(valNew) || isLoadingItem(valNew)) {
 					let newVal = valNew;
-					if (valNew > prevValue) {
+					if (valNew > prevValue)
 						newVal += 1;
-					} else {
+					else
 						newVal -= 1;
-					}
 
-					if (newVal > props.length) {
+					if (newVal > props.length)
 						newVal = props.infinite ? 1 : prevValue;
-					} else if (newVal <= 0) {
+					else if (newVal <= 0)
 						newVal = props.infinite ? props.length : prevValue;
-					}
+
 					val.value = newVal;
 					setValuePage(newVal);
-				} else {
+				}
+				else {
 					val.value = valNew;
 					if (pagination.value) {
 						activeClassMove.value = true;
-						nextTick(() => {							
+						nextTick(() => {
 							setTimeout(() => {
 								activeClassMove.value = false;
 							}, 300);
@@ -333,10 +329,10 @@ export default defineComponent({
 			nextClicked,
 			getPages,
 			pagination,
-			getProgress 
+			getProgress
 		};
-	},
-}); 
+	}
+});
 </script>
 
 <style lang="scss" scoped>
@@ -530,11 +526,9 @@ export default defineComponent({
 
 		i {
 			width: 10px;
-			
+
 			position: relative;
 			display: block;
-			
-		
 
 			&:before {
 				width: 2px;
@@ -544,18 +538,18 @@ export default defineComponent({
 				height: 2px;
 			}
 		}
-	
+
 	}
 
 	&__active {
-		
+
 		&.flat{
 			background: -getColor("color", 0.15) !important;
 			color: -getColor("color", 1) !important;
 		}
-		
+
 		background: -getColor("color") !important;
-		color: #fff !important;		
+		color: #fff !important;
 
 		&.move {
 			transform: scale(1.1);

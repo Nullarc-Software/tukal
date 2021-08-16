@@ -17,10 +17,8 @@ import {
 	computed,
 	defineComponent,
 	getCurrentInstance,
-	h,
 	inject,
-	ref,
-	VNode,
+	ref
 } from "vue";
 import tuComponent from "../tuComponent";
 import tuTableExpand from "./tuTableExpand.vue";
@@ -32,59 +30,61 @@ export default defineComponent({
 		data: {},
 		isSelected: {
 			default: false,
-			type: Boolean,
+			type: Boolean
 		},
 		notClickSelected: {
 			default: false,
-			type: Boolean,
+			type: Boolean
 		},
 		openExpandOnlyId: {
 			default: false,
-			type: Boolean,
+			type: Boolean
 		},
+		rowId: {
+			type: Number
+		}
 	},
-	setup(props, context) {
-		let expand = ref(false);
-		let instanceExpand = ref<any>(null);
-		let instance = getCurrentInstance();
-        let selected = inject<Function>("selected");
-        let isSelected = ref(false);
+	setup (props, context) {
+		const expand = ref(false);
+		const instanceExpand = ref<any>(null);
+		const instance = getCurrentInstance();
+		const selected = inject<Function>("selected");
+		const isSelected = ref(false);
 
-        const computeSelected = computed(() => {
-            if(isSelected.value)
-                return true;
-            else
-                return props.isSelected;
-        })
+		const computeSelected = computed(() => {
+			if (isSelected.value) return true;
+			else return props.isSelected;
+		});
 
-		function insertAfter(element: any) {
+		function insertAfter (element: any) {
 			if (instance.vnode.el.nextSibling) {
 				instance.vnode.el.parentNode.insertBefore(
 					element,
 					instance.vnode.el.nextSibling
 				);
-			} else {
-				instance.vnode.el.parentNode.appendChild(element);
 			}
+			else
+				instance.vnode.el.parentNode.appendChild(element);
 		}
 
-		function handleClickHasExpand() {
-			if (instanceExpand) {
+		function handleClickHasExpand () {
+			if (instanceExpand.value) {
 				instanceExpand.value.props.hidden =
 					!instanceExpand.value.props.hidden;
 				instanceExpand.value = null;
 				// this.expand = false
-			} else {
+			}
+			else {
 				const colspan =
 					instance.parent.vnode.el.querySelectorAll(
 						"thead th"
 					).length;
 				instanceExpand.value = new tuTableExpand();
-				instanceExpand.$props.colspan = colspan;
-				instanceExpand.$slots.default = context.slots.expand;
-				instanceExpand.vm = instanceExpand.$mount();
-				instanceExpand.$data.hidden = false;
-				insertAfter(instanceExpand.vnode.el);
+				instanceExpand.value.$props.colspan = colspan;
+				instanceExpand.value.$slots.default = context.slots.expand;
+				instanceExpand.value.vm = instanceExpand.value.$mount();
+				instanceExpand.value.$data.hidden = false;
+				insertAfter(instanceExpand.value.vnode.el);
 				// this.expand = true
 			}
 		}
@@ -93,165 +93,165 @@ export default defineComponent({
 			if (context.slots.expand) {
 				if (
 					(props.openExpandOnlyId
-						? event.target.nodeName == "TD"
+						? event.target.nodeName === "TD"
 						: true) &&
 					!event.target.className.includes("isEdit")
-				) {
+				)
 					handleClickHasExpand();
-				}
 			}
 
-			if (event.target.nodeName == "TD" && !props.notClickSelected) {
-                //isSelected.value = true;
-                selected.call(null, props.data);
-                context.emit("selected", props.data);
+			if (event.target.nodeName === "TD" && !props.notClickSelected) {
+				// isSelected.value = true;
+				selected.call(null, props.data);
+				context.emit("selected", props.data);
 			}
 
-			context.emit("click", event);
+			context.emit("rowClick", event);
 		};
 
 		return {
 			rowClick,
 			expand,
 			instanceExpand,
-            computeSelected
+			computeSelected
 		};
-	},
+	}
 });
 </script>
 
 <style lang="scss" scoped>
-
 @import "../../style/sass/_mixins";
 
 .isMultipleSelected {
-  ::v-deep(.tu-table__tr) {
-    ::v-deep(.tu-table__td) {
-      border-radius: 0px !important;
-    }
-  }
+	::v-deep(.tu-table__tr) {
+		::v-deep(.tu-table__td) {
+			border-radius: 0px !important;
+		}
+	}
 }
 
 .tu-table__tr {
-  padding: 5px;
-  border: 0px;
+	padding: 5px;
+	border: 0px;
 
-  &.expand {
-    cursor: pointer;
-  }
+	&.expand {
+		cursor: pointer;
+	}
 
-  &.tu-change-color {
-    ::v-deep(.tu-table__td) {
-      background: -getColor("color", 0.1) !important;
-      color: -getColor("color", 1) !important;
+	&.tu-change-color {
+		::v-deep(.tu-table__td) {
+			background: -getColor("color", 0.1) !important;
+			color: -getColor("color", 1) !important;
 
-      &:hover {
-        background: -getColor("color", 0.2) !important;
-      }
-    }
-  }
+			&:hover {
+				background: -getColor("color", 0.2) !important;
+			}
+		}
+	}
 
-  &:first-of-type {
-    ::v-deep(.tu-table__td) {
-      &:last-child {
-        border-radius: 0px 0px 15px 0px;
-      }
+	&:first-of-type {
+		::v-deep(.tu-table__td) {
+			&:last-child {
+				border-radius: 0px 0px 15px 0px;
+			}
 
-      &:first-child {
-        border-radius: 0px 0px 0px 15px;
-      }
-    }
-  }
+			&:first-child {
+				border-radius: 0px 0px 0px 15px;
+			}
+		}
+	}
 
-  &.isExpand:first-of-type {
-    ::v-deep(.tu-table__td) {
-      background: -getColor("gray-1") !important;
-      border-radius: 0px;
-    }
-  }
+	&.isExpand:first-of-type {
+		::v-deep(.tu-table__td) {
+			background: -getColor("gray-1") !important;
+			border-radius: 0px;
+		}
+	}
 
-  &.isExpand:not(:first-of-type) {
-    ::v-deep(.tu-table__td) {
-      background: -getColor("gray-1") !important;
+	&.isExpand:not(:first-of-type) {
+		::v-deep(.tu-table__td) {
+			background: -getColor("gray-1") !important;
 
-      &:last-child {
-        border-radius: 0px 15px 0px 0px;
-      }
+			&:last-child {
+				border-radius: 0px 15px 0px 0px;
+			}
 
-      &:first-child {
-        border-radius: 15px 0px 0px 0px;
-      }
-    }
+			&:first-child {
+				border-radius: 15px 0px 0px 0px;
+			}
+		}
 
-    + .tu-table__tr__expand {
-      td {
-        border-radius: 0px 0px 15px 15px !important;
-      }
-    }
-  }
+		+ .tu-table__tr__expand {
+			td {
+				border-radius: 0px 0px 15px 15px !important;
+			}
+		}
+	}
 
-  &.selected {
-    ::v-deep(.tu-table__td) {
-      background: -getColor("color", 0.1) !important;
-      color: -getColor("color", 1) !important;
-    }
-  }
+	&.selected {
+		::v-deep(.tu-table__td) {
+			background: -getColor("color", 0.1) !important;
+			color: -getColor("color", 1) !important;
+		}
+	}
 
-  ::v-deep(.tu-table__td) {
-    background: -getColor("bg", 0.1);
-    color: -getColor("bg", 1);
-  }
+	::v-deep(.tu-table__td) {
+		background: -getColor("bg", 0.1);
+		color: -getColor("bg", 1);
+	}
 
-  &.tu-change-color {
-    &:hover {
-      ::v-deep(.tu-table__td) {
-        background: -getColor("color", 0.2) !important;
-      }
-    }
-  }
+	&.tu-change-color {
+		&:hover {
+			::v-deep(.tu-table__td) {
+				background: -getColor("color", 0.2) !important;
+			}
+		}
+	}
 
-  &:hover {
-    ::v-deep(.tu-table__td) {
-      background: -getColor("gray-1");
-    }
-  }
+	&:hover {
+		::v-deep(.tu-table__td) {
+			background: -getColor("gray-1");
+		}
+	}
 }
 
 .tu-table__tr__expand {
-  transition: all 0.25s ease;
-  border: 0px;
+	transition: all 0.25s ease;
+	border: 0px;
 
-  ::v-deep(td) {
-    transition: all 0.25s ease;
-    padding: 0px;
-    background: -getColor("gray-1") !important;
-    border: 0px;
+	::v-deep(td) {
+		transition: all 0.25s ease;
+		padding: 0px;
+		background: -getColor("gray-1") !important;
+		border: 0px;
 
-    .tu-table__expand__td__content {
-      overflow: hidden;
-      display: block;
-      transition: all 0.25s ease;
+		.tu-table__expand__td__content {
+			overflow: hidden;
+			display: block;
+			transition: all 0.25s ease;
 
-      &__sub {
-        padding: 10px 15px;
-        z-index: 1;
-        position: relative;
-      }
-    }
-  }
+			&__sub {
+				padding: 10px 15px;
+				z-index: 1;
+				position: relative;
+			}
+		}
+	}
 }
 
-.fade-expand-enter-active, .fade-expand-leave-active {
-  transition: all 0.25s ease;
+.fade-expand-enter-active,
+.fade-expand-leave-active {
+	transition: all 0.25s ease;
 }
 
-.fade-expand-enter, .fade-expand-leave-to {
-  opacity: 0;
+.fade-expand-enter,
+.fade-expand-leave-to {
+	opacity: 0;
 
-  ::v-deep(td) {
-    ::v-deep(.tu-table__expand__td__content) {
-      height: 0px !important;
-    }
-  }
+	::v-deep(td) {
+		::v-deep(.tu-table__expand__td__content) {
+			height: 0px !important;
+		}
+	}
 }
 </style>
