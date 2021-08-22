@@ -12,16 +12,60 @@
 				[`size-${size}`]: true,
 			}"
 		>
-			<table>
+			<table class="tu-table__element" ref="tableElement">
+				<colgroup>
+					<col v-if="rowExpand" style="width:50px" />
+					<col v-if="multiSelect" style="width:50px" />
+					<col v-for="header in table.getTableHeaders.value" 
+						:key="header.index"
+						:style="{
+							width: header.width
+						}"
+					/>
+				</colgroup>
 				<thead ref="thead" class="tu-table__thead">
+					<tu-th v-if="rowExpand" fixed  @click="expandedAll = !expandedAll">
+						<tu-icon class="tu-table__tr_expand_handle" :class="{ expanded: expandedAll }">keyboard_arrow_right</tu-icon>
+					</tu-th>
+					<tu-th v-if="multiSelect" fixed >
+						<tu-checkbox v-model="selectedAll" indeterminate />
+					</tu-th>
 					<slot name="thead" />
 				</thead>
 				<tbody class="tu-table__tbody">
 					<slot v-if="$slots.tbody" name="tbody" />
-					<tu-tr v-else :key="i" v-for="(tr, i) in table.getTableData.value" :data="tr.rowData" :rowId="tr.index" @rowClick="rowListeners.click($event)">
-						<tu-td v-for="(th, j) in table.getTableHeaders.value" :key="j" >
-							{{ tr.rowData[th.field] ?? "undefined" }}
+					<tu-tr
+						v-else
+						v-for="tr in table.getTableData.value"
+						:key="tr.index"
+						:data="tr.rowData"
+						:rowId="tr.index"
+						:expanded="expandedAll"
+						:expandHandle="rowExpand"
+						@rowExpanded="tr.expanded = $event"
+						@rowClick="rowListeners.click($event)"
+					>
+						<tu-td expand v-if="rowExpand">
+							<tu-icon class="tu-table__tr_expand_handle" :class="{ expanded: tr.expanded }">keyboard_arrow_right</tu-icon>
 						</tu-td>
+						<tu-td checkbox v-if="multiSelect">
+							<tu-checkbox v-model="tr.selected" :checked="selectedAll" />
+						</tu-td>
+						<tu-td
+							v-for="(th, j) in table.getTableHeaders.value"
+							:key="j"
+						>
+							<span
+								:title="tr.rowData[th.field]"
+								v-if="_.isArrayLike(tr.rowData[th.field]) || _.isUndefined(tr.rowData[th.field])"
+							>
+								{{ tr.rowData[th.field] ?? "undefined" }}
+							</span>
+							<component v-else-if="_.isObjectLike(tr.rowData[th.field])" :is="tr.rowData[th.field].component ?? require(`${tr.rowData[th.field].componentName}`)" v-bind="tr.rowData[th.field].props" />							
+						</tu-td>
+						<template #expand v-if="tr.rowData['expanded']" >
+								<component :is="tr.rowData['expanded'].component ?? require(`${tr.rowData['expanded'].componentName}`)" v-bind="tr.rowData['expanded'].props" />
+						</template>
 					</tu-tr>
 				</tbody>
 			</table>
@@ -33,10 +77,21 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onBeforeUnmount, onMounted, ref, watch } from "vue";
+import {
+	computed,
+	defineComponent,
+	nextTick,
+	onBeforeUnmount,
+	onMounted,
+	PropType,
+	reactive,
+	ref,
+	watch
+} from "vue";
 import * as _ from "lodash";
 import tuComponent from "../tuComponent";
-import { TableIdentifierAuto, TuTable } from "./tuTableStore";
+import { TableIdentifierAuto, TuTable, TuTableServerModel } from "./tuTableStore";
+import resizableGrid from "./resizable";
 
 export default defineComponent({
 	name: "TuTable",
@@ -50,6 +105,10 @@ export default defineComponent({
 		page: {
 			type: Number,
 			default: 0
+		},
+		numPages: {
+			type: Number,
+			default: 1
 		},
 		/**
 		 * Enables striped rows on the table
@@ -73,6 +132,10 @@ export default defineComponent({
 			type: String,
 			default: "fitData"
 		},
+		columnMode: {
+			type: String,
+			default: "fitDataStretch"
+		},
 		/**
 		 * Specifies the model for the table. Server side model will send pagination, sorting and filtering params to the server.
 		 * @values server, local
@@ -93,9 +156,23 @@ export default defineComponent({
 		id: {
 			type: String,
 			default: () => `tu-table-${TableIdentifierAuto.id++}`
+		},
+		multiSelect: {
+			type: Boolean,
+			default: false
+		},
+		serverSideConfig: {
+			type: Object as PropType<TuTableServerModel>,
+			default: () => {
+				return { };
+			}
+		},
+		rowExpand: {
+			type: Boolean,
+			default: false
 		}
 	},
-	emits: ["update:modelValue"],
+	emits: ["update:modelValue", "update:numPages"],
 	provide () {
 		return {
 			selected: (data) => {
@@ -108,10 +185,26 @@ export default defineComponent({
 	setup (props, context) {
 		const colspan = ref(0);
 		const thead = ref<HTMLHeadElement>();
+		const tableElement = ref<HTMLTableElement>();
+		let table: TuTable;
 
-		let table = new TuTable(props.id);
-		table.setTableData(props.data);
+		if (props.multiSelect && props.rowExpand)
+			table = new TuTable(props.id, 2);
+		else if (props.multiSelect || props.rowExpand)
+			table = new TuTable(props.id, 1);
+		else
+			table = new TuTable(props.id, 0);
+
+		if (props.model === "local")
+			table.setTableData(props.data);
+		else {
+			table.serverSideModel = true;
+			table.serverModelProps = reactive(props.serverSideConfig);
+		}
+
 		table.constructHeaders(context.slots.thead());
+		const selectedAll = ref(false);
+		const expandedAll = ref(false);
 
 		const isMultipleSelected = computed(() => {
 			return _.isArray(props.modelValue);
@@ -132,26 +225,52 @@ export default defineComponent({
 
 		const rowListeners = {
 			click: function (event, tr) {
-				console.log(tr);
+				console.log("Row clicked");
 			}
 		};
 
 		onMounted(() => {
 			if (thead.value)
 				colspan.value = thead.value.querySelectorAll("th").length;
+
+			
 		});
 
 		onBeforeUnmount(() => {
 			table = undefined; // Force free up mem on next gc call
 		});
 
-		watch([() => props.pageSize, () => props.page], () => {
-			table.setPaging(props.pageSize, props.page);
-		}, {
-			immediate: true
+		watch(
+			[() => props.pageSize, () => props.page],
+			() => {
+				table.setPaging(props.pageSize, props.page);
+			},
+			{
+				immediate: true
+			}
+		);
+
+		watch(table.pageLength, (newVal) => {
+			context.emit("update:numPages", newVal);
+		});
+
+		watch(
+			() => props.data,
+			() => {
+				table.setTableData(props.data);
+			}
+		);
+
+		watch(table.getSelectedRows, () => {
+			const newVal = table.getSelectedRows.value as Array<any>;
+			context.emit("update:modelValue", newVal);
 		});
 
 		return {
+			tableElement,
+			selectedAll,
+			expandedAll,
+			_: _,
 			thead,
 			isMultipleSelected,
 			selected,
@@ -170,6 +289,13 @@ export default defineComponent({
 
 	// box-shadow: 0px 5px 22px 0px rgba(0,0,0, -var(shadow-opacity))
 	border-radius: 16px;
+	footer {
+		padding-top: 10px;
+	}
+}
+
+.tu-table__element {
+	table-layout: fixed;
 }
 
 .tu-table {
@@ -190,6 +316,14 @@ export default defineComponent({
 			&:nth-child(even) {
 				background: -getColor("gray-1") !important;
 			}
+		}
+	}
+
+	&__tr_expand_handle {
+
+		transition: all 0.25s ease;
+		&.expanded {
+			transform: rotate(90deg);
 		}
 	}
 
@@ -216,6 +350,13 @@ export default defineComponent({
 				// width: 100%
 			}
 		}
+	}
+
+	&__cell__data {
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		overflow: hidden;
+		display: table-cell;
 	}
 
 	&__tbody {
@@ -262,7 +403,9 @@ export default defineComponent({
 
 	&__thead {
 		width: 100%;
-
+		position: sticky;
+		top:0;
+		z-index: 2;
 		::v-deep(.tu-table__th) {
 			background: -getColor("gray-2");
 

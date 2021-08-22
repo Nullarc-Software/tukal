@@ -10,18 +10,31 @@
 	>
 		<slot />
 	</tr>
+	<transition name="expand-row" appear>
+		<tr v-if="$slots.expand && expand" class="tu-table__tr__expand">
+				<td class="tu-table__expand__td" :colspan="colSpan">
+					<div class="tu-table__expand__td__content" ref="content">
+						<div class="tu-table__expand__td__content__sub">
+							<slot name="expand" />
+						</div>
+					</div>
+				</td>
+		</tr>
+	</transition>
 </template>
 
 <script lang="ts">
+import _ from "lodash";
 import {
 	computed,
 	defineComponent,
 	getCurrentInstance,
 	inject,
-	ref
+	ref,
+	watch
 } from "vue";
 import tuComponent from "../tuComponent";
-import tuTableExpand from "./tuTableExpand.vue";
+import { TuTable } from "./tuTableStore";
 
 export default defineComponent({
 	name: "TuTr",
@@ -33,23 +46,35 @@ export default defineComponent({
 			type: Boolean
 		},
 		notClickSelected: {
-			default: false,
+			default: true,
 			type: Boolean
 		},
-		openExpandOnlyId: {
+		expandHandle: {
 			default: false,
 			type: Boolean
 		},
 		rowId: {
 			type: Number
+		},
+		hidden: {
+			type: Boolean,
+			default: false
+		},
+		expanded: {
+			type: Boolean, 
+			default: false
 		}
 	},
+	emits: ["rowClick", "selected", "rowExpanded"],
 	setup (props, context) {
 		const expand = ref(false);
-		const instanceExpand = ref<any>(null);
 		const instance = getCurrentInstance();
 		const selected = inject<Function>("selected");
+		const tableInstance = inject<TuTable>("tableInstance");
+		const instanceExpand = ref<any>(null);
 		const isSelected = ref(false);
+		const colSpan = ref(0);
+		colSpan.value = tableInstance.headerCount.value;
 
 		const computeSelected = computed(() => {
 			if (isSelected.value) return true;
@@ -67,40 +92,27 @@ export default defineComponent({
 				instance.vnode.el.parentNode.appendChild(element);
 		}
 
-		function handleClickHasExpand () {
-			if (instanceExpand.value) {
-				instanceExpand.value.props.hidden =
-					!instanceExpand.value.props.hidden;
-				instanceExpand.value = null;
-				// this.expand = false
-			}
-			else {
-				const colspan =
-					instance.parent.vnode.el.querySelectorAll(
-						"thead th"
-					).length;
-				instanceExpand.value = new tuTableExpand();
-				instanceExpand.value.$props.colspan = colspan;
-				instanceExpand.value.$slots.default = context.slots.expand;
-				instanceExpand.value.vm = instanceExpand.value.$mount();
-				instanceExpand.value.$data.hidden = false;
-				insertAfter(instanceExpand.value.vnode.el);
-				// this.expand = true
-			}
+		function handleClickHasExpand (expanded?: boolean) {
+
+			if (_.isUndefined(expanded) === false)
+				expand.value = expanded;
+			else
+				expand.value = !expand.value;
+			context.emit("rowExpanded", expand.value);
 		}
 
-		const rowClick = function (event: any) {
+		const rowClick = function (event: Event) {
 			if (context.slots.expand) {
-				if (
-					(props.openExpandOnlyId
-						? event.target.nodeName === "TD"
-						: true) &&
-					!event.target.className.includes("isEdit")
+				if (!props.expandHandle &&
+					!(event as any).isInput &&
+					!(event.currentTarget as HTMLElement).className.includes("isCheck")
 				)
+					handleClickHasExpand();
+				else if (props.expandHandle && (event as any).isExpand)
 					handleClickHasExpand();
 			}
 
-			if (event.target.nodeName === "TD" && !props.notClickSelected) {
+			if (!props.notClickSelected) {
 				// isSelected.value = true;
 				selected.call(null, props.data);
 				context.emit("selected", props.data);
@@ -109,8 +121,13 @@ export default defineComponent({
 			context.emit("rowClick", event);
 		};
 
+		watch(() => props.expanded, () => {
+			handleClickHasExpand(props.expanded);
+		});
+
 		return {
 			rowClick,
+			colSpan,
 			expand,
 			instanceExpand,
 			computeSelected
@@ -118,6 +135,26 @@ export default defineComponent({
 	}
 });
 </script>
+
+<style lang="scss">
+.expand-row-enter-active,
+.expand-row-leave-active {
+	transition: all 2.25s ease;
+}
+
+.expand-row-enter-from,
+.expand-row-leave-to {
+	opacity: 0;
+	.tu-table__expand__td__content {
+		height: 0px;
+	}
+}
+
+.expand-row-enter-to,
+.expand-row-leave-from {
+	opacity: 1;
+}
+</style>
 
 <style lang="scss" scoped>
 @import "../../style/sass/_mixins";
@@ -218,7 +255,6 @@ export default defineComponent({
 .tu-table__tr__expand {
 	transition: all 0.25s ease;
 	border: 0px;
-
 	::v-deep(td) {
 		transition: all 0.25s ease;
 		padding: 0px;
@@ -227,8 +263,7 @@ export default defineComponent({
 
 		.tu-table__expand__td__content {
 			overflow: hidden;
-			display: block;
-			transition: all 0.25s ease;
+			display: block;		
 
 			&__sub {
 				padding: 10px 15px;
@@ -239,19 +274,5 @@ export default defineComponent({
 	}
 }
 
-.fade-expand-enter-active,
-.fade-expand-leave-active {
-	transition: all 0.25s ease;
-}
 
-.fade-expand-enter,
-.fade-expand-leave-to {
-	opacity: 0;
-
-	::v-deep(td) {
-		::v-deep(.tu-table__expand__td__content) {
-			height: 0px !important;
-		}
-	}
-}
 </style>

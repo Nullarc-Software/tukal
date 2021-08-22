@@ -144,7 +144,7 @@ export default defineComponent({
 						{
 							class: "dotted"
 						},
-						["..."]
+						"..."
 					),
 					h(
 						"span",
@@ -281,6 +281,8 @@ export default defineComponent({
 		watch(
 			() => props.length,
 			() => {
+				val.value = 1;
+				setValuePage(1);
 				nextTick(() => {
 					setTimeout(() => {
 						activeClassMove.value = false;

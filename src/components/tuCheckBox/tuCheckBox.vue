@@ -33,6 +33,7 @@
 			</div>
 		</div>
 		<label
+			v-if="$slots.default"
 			:for="`input-${uid}`"
 			:class="['tu-checkbox-label', { ['lineThrough']: lineThrough }]"
 		>
@@ -61,9 +62,13 @@ export default defineComponent({
 		disabled: { type: Boolean, default: false },
 		checkedForce: { type: Boolean, default: false },
 		loading: { type: Boolean, default: false },
-		labelBefore: { type: Boolean, default: false }
+		labelBefore: { type: Boolean, default: false },
+		eventBubble: {
+			type: Boolean,
+			default: false
+		}
 	},
-	emits: ["update:modelValue", "change", "mousedown", "blur"],
+	emits: ["update:modelValue", "change", "click", "blur"],
 	setup (props, context) {
 		const uid = uid_++;
 
@@ -78,10 +83,17 @@ export default defineComponent({
 		const listeners = computed(() => {
 			return {
 				// ...$listeners,
-				input: (evt: any) => {
-					if (typeof props.modelValue === "boolean") {
+				input: (evt: Event) => {
+					if (props.eventBubble)
+						context.emit("click", evt);
+					else {
+						evt.stopPropagation();
+						evt.preventDefault();
+					}
+
+					if (typeof props.modelValue === "boolean")
 						context.emit("update:modelValue", !props.modelValue);
-					} else if (
+					else if (
 						typeof props.modelValue === "object" &&
 						props.modelValue !== null
 					) {
@@ -97,29 +109,27 @@ export default defineComponent({
 							if (
 								JSON.stringify(item) ===
 								JSON.stringify(props.val)
-							) {
+							)
 								indexVal = index;
-							}
 						});
 
-						if (containValue) {
+						if (containValue)
 							array.push(props.val);
-						} else {
+						else
 							array.splice(indexVal, 1);
-						}
 
 						context.emit("update:modelValue", array);
-					} else {
-						if (props.val !== props.modelValue) {
+					}
+					else {
+						if (props.val !== props.modelValue)
 							context.emit("update:modelValue", props.val);
-						} else {
+						else {
 							context.emit(
 								"update:modelValue",
 								props.notValue || null
 							);
 						}
 					}
-					context.emit("mousedown", evt);
 				},
 				blur: (evt: EventTarget) => {
 					context.emit("blur", evt);
@@ -134,9 +144,9 @@ export default defineComponent({
 			let isChecked = false;
 
 			if (props.modelValue) {
-				if (typeof props.modelValue === "boolean") {
+				if (typeof props.modelValue === "boolean")
 					isChecked = props.modelValue;
-				} else if (
+				 else if (
 					typeof props.modelValue === "object" &&
 					props.modelValue !== null
 				) {
@@ -149,28 +159,30 @@ export default defineComponent({
 					let indexVal = 0;
 
 					array.forEach((item: any, index: number) => {
-						if (JSON.stringify(item) === JSON.stringify(props.val)) {
+						if (JSON.stringify(item) === JSON.stringify(props.val))
 							indexVal = index;
-						}
 					});
 
-					if (containValue) {
+					if (containValue)
 						return false;
-					} else {
+					 else
 						return true;
-					}
 				}
-			} else {
-				isChecked = false;
 			}
+			else
+				isChecked = false;
+
 			return isChecked;
 		});
-		
+
+		watch(() => props.checked, () => {
+			if (typeof props.modelValue === "boolean")
+				context.emit("update:modelValue", props.checked);
+		});
 
 		onMounted(() => {
-			if (props.checked && typeof props.modelValue === "boolean") {
+			if (props.checked && typeof props.modelValue === "boolean")
 				context.emit("update:modelValue", true);
-			}
 		});
 
 		return {

@@ -53,7 +53,7 @@ export { tuPopper, tuPopupMenu, tuPopupItem } from "./components/tuPopper";
 export { default as tuDialog } from "./components/tuDialog";
 export { tuCollapse, tuCollapseItem } from "./components/tuCollapse";
 export { default as tuTextArea } from "./components/tuTextArea";
-export { tuTable, tuTableExpand, tuTd, tuTh, tuTr } from "./components/tuTable";
+export { tuTable, tuTd, tuTh, tuTr } from "./components/tuTable";
 
 // New Component import
 

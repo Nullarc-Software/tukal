@@ -25,10 +25,19 @@ export default defineComponent({
 		edit: {
 			type: Boolean,
 			default: false
+		},
+		expand: {
+			type: Boolean,
+			default: false
 		}
 	},
 	setup (props, context) {
-		const clickHandler = function (event) {
+		const clickHandler = function (event: MouseEvent) {
+			
+			if (props.checkbox || props.edit)
+				(event as any).isInput = true;
+			else if (props.expand)
+				(event as any).isExpand = true;
 			context.emit("tdClick", event);
 		};
 
@@ -45,6 +54,7 @@ export default defineComponent({
   transition: all 0.25s ease;
   font-size: 0.8rem;
   border: 0px;
+  word-wrap: normal;
 
   &:last-child {
     border-radius: 0px 15px 15px 0px;

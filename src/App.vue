@@ -859,7 +859,7 @@
 			<h4>Pagination:</h4>
 			<hr />
 
-			<tu-pagination progress not-margin v-model="page" :length="20" />
+			<!-- <tu-pagination progress not-margin v-model="page" :length="20" />
 			<tu-pagination
 				progress
 				dark
@@ -867,7 +867,7 @@
 				not-margin
 				v-model="page"
 				:length="20"
-			/>
+			/> -->
 		</div>
 
 		<div class="showcase-component">
@@ -926,50 +926,38 @@
 		<div class="showcase-component">
 			<h4>Table:</h4>
 			<hr />
-
-			<tu-table v-model="selected" :page="page" :pageSize="3" :data="users">
+			{{selected}}
+			<tu-table
+				row-expand
+				multi-select
+				striped
+				v-model="selected"
+				v-model:numPages="numPages"
+				:page="page"
+				:pageSize="25"
+				:data="universities">
 				<template #thead>
-					<tu-th field="name" search> Name </tu-th>
-					<tu-th field="email" search> Email </tu-th>
-					<tu-th field="id" search> Id </tu-th>
-					<tu-th field="something" search> No value </tu-th>
+					<tu-th field="country" sort search> Country </tu-th>
+					<tu-th field="name" sort search width="100px"> Name </tu-th>
+					<tu-th field="web_pages" sort search> Web site </tu-th>
+					<tu-th field="something" sort search> No value </tu-th>
 				</template>
 				<template #footer>
-					<tu-pagination v-model="page" :length="Math.ceil(users.length/ 3)" />
+					<tu-pagination not-margin  flat v-model="page" :length="numPages" />
 				</template>
 			</tu-table>
 			<br />
 			Striped:
 			<tu-table striped>
 				<template #thead>
-					<tu-tr>
-						<tu-th>
-							<tu-checkbox
-								:indeterminate="
-									selected && selected.length == users.length
-								"
-								@change="
-									selected = $vs.checkAll(selected, users)
-								"
-							/>
-						</tu-th>
+					<tu-tr>					
 						<tu-th> Name </tu-th>
 						<tu-th> Email </tu-th>
 						<tu-th> Id </tu-th>
 					</tu-tr>
 				</template>
 				<template #tbody>
-					<tu-tr :key="i" v-for="(tr, i) in users" :data="tr">
-						<tu-td>
-							<tu-checkbox
-								:indeterminate="
-									selected && selected.length == users.length
-								"
-								@change="
-									selected = $vs.checkAll(selected, users)
-								"
-							/>
-						</tu-td>
+					<tu-tr :key="i" v-for="(tr, i) in users" :data="tr">					
 						<tu-td>
 							{{ tr.name }}
 						</tu-td>
@@ -1021,12 +1009,12 @@ import {
 	computed,
 	defineComponent,
 	provide,
-	reactive,
 	ref,
-	watch
+	watch,
+	reactive,
+	shallowRef
 } from "vue";
 import * as components from "./components";
-import { tuButton } from "./components/tuButton";
 import {
 	Notification,
 	NotificationAttributes
@@ -1036,7 +1024,11 @@ import {
 	Loading as LoadingConstructor,
 	LoadingAttributes
 } from "./components/tuLoading";
+import tuCheckbox from "./components/tuCheckBox";
+import testComponent from "./components/TestComponent.vue";
 import "material-icons/iconfont/material-icons.css";
+import axios from "axios";
+import * as _ from "lodash";
 
 export default defineComponent({
 	components: {
@@ -1079,7 +1071,7 @@ export default defineComponent({
 		const notifShow = ref(false);
 		const isOpen = ref(false);
 		const openNav = ref(false);
-		const opts: any = ref(['luis']);
+		const opts: any = ref(["luis"]);
 		const inpValue = ref("");
 		const navValue = ref("guide");
 		const selectValue = ref([]);
@@ -1161,7 +1153,7 @@ export default defineComponent({
 				id: 1,
 				name: "Leanne Graham",
 				username: "Bret",
-				email: "Sincere@april.biz teeasssssssssssssssssssssssssaaaaaa asdadqw qweqwe qwdasdaczxcz x",
+				email: "Sincere@april.biz",
 				website: "hildegard.org"
 			},
 			{
@@ -1229,17 +1221,34 @@ export default defineComponent({
 			}
 		];
 
-		const selected = ref(null);
+		const numPages = ref(Math.ceil(users.length / 3));
+
+		const selected = ref([]);
 		const tabName = ref("ho");
 
 		function resetOpts () {
-			opts.value = ['carols'];
-			console.log(opts.value)
+			opts.value = ["carols"];
+			console.log(opts.value);
 		}
+		const editStatic = ref("Some Text");
+		const universities = shallowRef([]);
+		axios.get("http://universities.hipolabs.com/search?country=India").then((response) => {
 
-		let editStatic = ref("Some Text");
+			const temp = response.data;
+			temp.forEach((value) => {
+				value.expanded = {
+					component: testComponent,
+					props: {
+						name: value.name
+					}
+				};
+			});
+			universities.value = temp;
+		});
 
 		return {
+			universities,
+			numPages,
 			editStatic,
 			selected,
 			active1,
