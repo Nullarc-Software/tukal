@@ -18,6 +18,7 @@ export { Loading, LoadingAttributes } from "./tuLoading";
 export { default as tuDivider } from "./tuDivider";
 export { default as tuIcon } from "./tuIcon";
 export { tuTable, tuTd, tuTh, tuTr } from "./tuTable";
+export * from "./tuTable";
 export { tuNavbar, tuNavbarGroup, tuNavbarItem } from "./tuNavbar";
 export { Notification, NotificationAttributes } from "./tuNotifications";
 export { tuSidebar, tuSidebarGroup, tuSidebarItem } from "./tuSideBar";

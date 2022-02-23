@@ -1,13 +1,13 @@
 <template>
-    <td class="tu-table__td"
-        :class="{
-            isCheck: checkbox,
-            isEdit: edit
-        }"
-        @click="clickHandler"
-    >
-        <slot />
-    </td>
+	<td class="tu-table__td"
+		:class="{
+			isCheck: checkbox,
+			isEdit: edit
+		}"
+		@click="clickHandler"
+	>
+		<slot />
+	</td>
 </template>
 
 <script lang="ts">
@@ -54,23 +54,22 @@ export default defineComponent({
   transition: all 0.25s ease;
   font-size: 0.8rem;
   border: 0px;
-  word-wrap: normal;
-
+	padding-bottom: 20px;
   &:last-child {
-    border-radius: 0px 15px 15px 0px;
+	border-radius: 0px 15px 15px 0px;
   }
 
   &:first-child {
-    border-radius: 15px 0px 0px 15px;
+	border-radius: 15px 0px 0px 15px;
   }
 
   &.isCheckbox {
-    width: 23px;
+	width: 23px;
   }
 
   &.isEdit {
-    text-decoration: underline;
-    cursor: pointer;
+	text-decoration: underline;
+	cursor: pointer;
   }
 }
 </style>

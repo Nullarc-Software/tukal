@@ -1,6 +1,6 @@
 
 import _ from "lodash";
-import { computed, ComputedRef, markRaw, reactive, ref, Ref, shallowReactive, toRaw } from "vue";
+import { computed, ComputedRef, reactive, ref, Ref, shallowReactive } from "vue";
 
 export class TableIdentifierAuto {
 	public static id = 0;
@@ -17,50 +17,64 @@ export interface TuTableRow {
 
 export interface TuFilterDefn {
 	field: string,
-	value: string
+	type: string,
+	value: any
 }
 
 export interface TuHeaderDefn {
-	index: number,
+	index?: number,
 	minWidth?: number | string,
 	maxWidth?: number | string,
 	width?: number | string,
-	field: string
+	field: string,
+	caption: string,
+	element?: HTMLElement,
+	props?: {
+		search: boolean,
+		sort: boolean
+	},
+	valueFormatter?: Function
+}
+
+export interface TuTableSorterDefn {
+	field: string,
+	dir: "asc" | "desc" | boolean
 }
 
 export interface TuTableDefn {
 	headers: Array<TuHeaderDefn>,
 	data: Array<TuTableRow>,
-	currentFilters: {
-		[field:string] : string
-	},
-	currentSort: {
-		[field:string] : "asc" | "desc"
-	},
+	currentFilters: TuFilterDefn[],
+	currentSort: TuTableSorterDefn[],
 	pageSize?: number,
 	currentPage?: number
 }
 
-export interface TuTableSorterDefn {
-	[field:string]: string
+export interface TuTableServerModel {
+	ajaxUrl: string,
+	method?: string,
+	ajaxLoadedFn?: Function,
+	ajaxErrorFn?: Function
+}
+
+export interface TuTableProps {
+	multiSelect?: boolean,
+	serverSideConfig?: TuTableServerModel,
+	columns: TuHeaderDefn[],
+	model: string,
+	size: string,
 }
 
 export class TableFunctions {
 
 }
 
-export interface TuTableServerModel {
-	ajaxUrl: string,
-	ajaxLoadedFn?: Function,
-	ajaxErrorFn?: Function
-}
-
-export class TuTable {
+export class TuTableStore {
 	private id: string;
 	private table: TuTableDefn;
 	private headerIndexCtr: number = 0;
 	private rowIndexCtr: number = 0;
-	private activeSort: string;
+	private activeSort: Ref<number>;
 
 	public serverSideModel: boolean = false;
 	public serverModelProps: TuTableServerModel;
@@ -69,47 +83,64 @@ export class TuTable {
 	public pageLength: Ref<number>;
 	public getTableData: ComputedRef<TuTableRow[]>;
 	public getTableHeaders: ComputedRef<TuHeaderDefn[]>;
-	public getSorters: ComputedRef<TuTableSorterDefn>;
+	public getSorters: ComputedRef<TuTableSorterDefn[]>;
+	public getFilters: ComputedRef<TuFilterDefn[]>;
 	public getSelectedRows: ComputedRef<TuTableRow[]>;
+
+	private getField (obj:any, field:string) {
+		let temp = Object.assign({}, obj);
+		for (const key of field.split(".")) {
+			if (temp[key])
+				temp = temp[key];
+		}
+		return temp;
+	}
 
 	constructor (tableId: string, columnsInitial:number = 0) {
 		this.id = tableId;
 		this.table = reactive({
 			headers: [],
-			rowIndexCtr: 0,
 			data: [],
-			currentFilters: {},
-			currentSort: {},
+			currentFilters: [],
+			currentSort: [],
 			pageSize: 25,
-			currentPage: 0
+			currentPage: 1
 		});
 
 		this.headerCount = ref(columnsInitial);
 		this.pageLength = ref(1);
+		this.activeSort = ref(0);
 
 		this.getTableData = computed(() => {
 			let data: any[] = [];
 			if (this.serverSideModel === false) {
 				// apply search filter
 				data = _.filter(this.table.data, (value: TuTableRow) => {
-					return _.every(this.table.currentFilters, (filterValue, key) => {
-						if (filterValue === "")
+					return _.every(this.table.currentFilters, (filterValue) => {
+						const fieldValue = this.getField(value.rowData, filterValue.field);
+						if (filterValue.value === "")
 							return true;
-						else if (value.rowData[key] !== undefined)
-							return String(value.rowData[key]).toLowerCase().includes(filterValue.toLowerCase());
+						else if (fieldValue !== undefined)
+							return String(fieldValue).toLowerCase().includes(String(filterValue.value).toLowerCase());
 						else
 							return true;
 					});
 				});
 
 				// apply sorters
-				const order = this.table.currentSort[this.activeSort] ?? false;
-				if (order)
-					data = _.orderBy(data, `rowData.${this.activeSort}`, [order]);
+				const fields = _.map(this.table.currentSort, (value) => {
+					return `rowData.${value.field}`;
+				});
+				const sortDirs = _.map(this.table.currentSort, (value) => {
+					return value.dir;
+				});
+
+				if (fields.length)
+					data = _.orderBy(data, fields, sortDirs);
 
 				this.pageLength.value = Math.ceil(data.length / this.table.pageSize);
 				if (this.table.pageSize > 0)
-					data = _.slice(data, this.table.pageSize * this.table.currentPage, (this.table.pageSize * this.table.currentPage) + this.table.pageSize);
+					data = _.slice(data, this.table.pageSize * (this.table.currentPage - 1), (this.table.pageSize * (this.table.currentPage - 1)) + this.table.pageSize);
 			}
 			else {
 				const request: XMLHttpRequest = new XMLHttpRequest();
@@ -122,19 +153,28 @@ export class TuTable {
 							const obj = JSON.parse(request.responseText);
 							inst.setTableData(obj.data);
 						}
+						else {
+							const obj = JSON.parse(request.responseText);
+							inst.setTableData(obj.data);
+						}
+						inst.pageLength.value = Math.ceil(data.length / inst.table.pageSize);
+						data = inst.table.data;
 					}
 				};
 				const props: any = {
-					filters: this.table.currentFilters,
-					sorters: this.table.currentSort,
-					paging: {
-						size: this.table.pageSize,
-						page: this.table.currentPage
-					}
+					filters: this.getFilters.value,
+					sorters: this.getSorters.value,
+					size: this.table.pageSize,
+					page: this.table.currentPage
 				};
-				request.open("GET", this.serverModelProps.ajaxUrl, true);
+
+				if (_.isUndefined(this.serverModelProps.method))
+					this.serverModelProps.method = "GET";
+
+				request.open(this.serverModelProps.method, this.serverModelProps.ajaxUrl, true);
 				request.setRequestHeader("Content-Type", "application/json");
-				request.send(props);
+				request.send(JSON.stringify(props));
+				data = this.table.data;
 			}
 			return data;
 		});
@@ -153,6 +193,10 @@ export class TuTable {
 			});
 		});
 
+		this.getFilters = computed(() => {
+			return this.table.currentFilters;
+		});
+
 		this.serverModelProps = reactive({
 			ajaxUrl: ""
 		});
@@ -166,11 +210,11 @@ export class TuTable {
 
 	public setPaging (pageSize: number, page: number) {
 		this.table.pageSize = pageSize;
-		this.table.currentPage = page - 1;
+		this.table.currentPage = page;
 	}
 
 	public setTableData (data: any) {
-		this.table.data = [];
+		this.table.data.splice(0);
 		_.forEach(data, (value: Object) => {
 			const row: TuTableRow = shallowReactive({
 				index: ++this.rowIndexCtr,
@@ -184,14 +228,19 @@ export class TuTable {
 	};
 
 	public constructHeaders (headers: any[]) {
+		if (headers.length === 1 && typeof headers[0].type === "symbol")
+			headers = headers[0].children;
 		_.forEach(headers, (value) => {
-			if (value.props && value.props.field) {
+			if (value && value.field) {
 				const header: TuHeaderDefn = {
-					index: ++this.headerIndexCtr,
-					field: value.props.field,
-					maxWidth: value.props.maxWidth,
-					minWidth: value.props.minWidth,
-					width: value.props.width
+					index: this.headerIndexCtr++,
+					field: value.field,
+					maxWidth: value.maxWidth ?? Number.MAX_SAFE_INTEGER,
+					minWidth: value.minWidth ?? 100,
+					width: value.width,
+					caption: value.caption,
+					props: value.props,
+					valueFormatter: value.valueFormatter
 				};
 				this.table.headers.push(header);
 				this.headerCount.value++;
@@ -205,45 +254,79 @@ export class TuTable {
 		});
 	}
 
-	public setFilter (field: string, value: string) {
-		this.table.currentFilters[field] = value;
+	public setFilter (field: string, type: string, value: string) {
+		const idx = _.findIndex(this.table.currentFilters, (value) => {
+			return value.field === field;
+		});
+
+		if (idx < 0) {
+			this.table.currentFilters.push({
+				field,
+				type,
+				value
+			});
+		}
+		else {
+			this.table.currentFilters[idx].value = value;
+			this.table.currentFilters[idx].field = field;
+			this.table.currentFilters[idx].type = type;
+		}
 	}
 
 	public deleteFilter (field: string) {
-		delete this.table.currentFilters[field];
+		_.remove(this.table.currentFilters, (item) => {
+			return item.field === field;
+		});
 	}
 
 	public clearFilters () {
-		this.table.currentFilters = {};
+		this.table.currentFilters = [];
 	}
 
-	public getHeaderObject (field: string) {
+	public getHeaderObject (field: string | number) {
 		let header: TuHeaderDefn = null;
-		_.forEach(this.table.headers, (value) => {
-			if (value.field === field) {
-				header = value;
-				return false;
-			}
-		});
+		if (typeof field === "string") {
+			_.forEach(this.table.headers, (value) => {
+				if (value.field === field) {
+					header = value;
+					return false;
+				}
+			});
+		}
+		else if (field >= 0)
+			header = this.table.headers[field];
+		else if (this.table.headers.length)
+			header = this.table.headers[this.table.headers.length - 1];
 		return header;
 	}
 
 	public toggleSort (field:string) {
-		this.table.currentSort = _.pickBy(this.table.currentSort, (x, y) => y === field);
-		if (Object.prototype.hasOwnProperty.call(this.table.currentSort, field) === false) {
-			this.table.currentSort[field] = "asc";
-			this.activeSort = field;
-			return "asc";
-		}
-		else if (this.table.currentSort[field] === "asc") {
-			this.table.currentSort[field] = "desc";
-			this.activeSort = field;
-			return "desc";
+		const obj = _.find(this.table.currentSort, (value) => {
+			return value.field === field;
+		});
+
+		if (obj) {
+			_.remove(this.table.currentSort, (value, index) => {
+				return value.field !== field;
+			});
+			if (obj.dir === "asc") {
+				obj.dir = "desc";
+				return "desc";
+			}
+			else {
+				_.remove(this.table.currentSort, obj);
+				return "none";
+			}
 		}
 		else {
-			delete this.table.currentSort[field];
-			this.activeSort = field;
-			return "none";
+			_.remove(this.table.currentSort, (value, index) => {
+				return value.field !== field;
+			});
+			this.table.currentSort.push({
+				field,
+				dir: "asc"
+			});
+			return "asc";
 		}
 	}
 };

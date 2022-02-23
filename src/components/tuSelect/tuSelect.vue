@@ -196,7 +196,7 @@ import {
 } from "vue";
 import tuComponent from "../tuComponent";
 import { insertBody, removeBody, setCords } from "@/utils";
-import { default as tuOption } from "../tuSelect/tuSelectOption.vue";
+import tuOption from "../tuSelect/tuSelectOption.vue";
 import tuIcon from "../tuIcon/tuIcon.vue";
 import * as _ from "lodash";
 import { SelectOptionConstants } from ".";
@@ -225,7 +225,7 @@ export default defineComponent({
 		loading: { type: Boolean, default: false },
 		state: { type: String, default: null },
 		block: { type: Boolean, default: false },
-		selectItems: { type: Array, default: [] }
+		selectItems: { type: Array, default: () => [] }
 	},
 	provide () {
 		return {
@@ -301,25 +301,22 @@ export default defineComponent({
 		const setHover = function () {
 			let index: number = -1;
 			childOptions.value.forEach((item: any, i: number) => {
-				if (item.value == props.modelValue) {
+				if (item.value === props.modelValue)
 					index = i;
-				}
 			});
 
 			hoverOption.value = index;
 		};
 
 		const handleWindowClick = function (evt: any) {
-			if (!targetSelectInput.value) {
+			if (!targetSelectInput.value)
 				handleBlur();
-			}
 
-			if (props.filter && !activeOptions.value) {
+			if (props.filter && !activeOptions.value)
 				activeFilter.value = false;
-			}
 
 			if (
-				evt.target == input.value &&
+				evt.target === input.value &&
 				activeOptions.value &&
 				!props.filter
 			) {
@@ -341,20 +338,18 @@ export default defineComponent({
 			window.removeEventListener("click", handleWindowClick);
 			if (activeOptions.value) {
 				textFilter.value = "";
-				if (!props.multiple) {
+				if (!props.multiple)
 					activeFilter.value = false;
-				}
 			}
 		};
 
 		const clickOption = function (value: any, label: any) {
 			if (props.multiple) {
 				const oldVal = [...(props.modelValue as Array<any>)];
-				if (_.indexOf(oldVal, value) === -1) {
+				if (_.indexOf(oldVal, value) === -1)
 					oldVal.push(value);
-				} else {
+				else
 					oldVal.splice(_.indexOf(oldVal, value), 1);
-				}
 
 				const labels = _.reduce(
 					childOptions.value,
@@ -372,20 +367,19 @@ export default defineComponent({
 
 				context.emit("update:modelValue", oldVal);
 				valueLabel.value = labels;
-			} else {
+			}
+			else {
 				context.emit("update:modelValue", value);
 				valueLabel.value = label;
 			}
 
 			setTimeout(() => {
-				if (props.multiple && activeOptions.value) {
+				if (props.multiple && activeOptions.value)
 					chips.value?.focus();
-				}
 			}, 10);
 
-			if (!props.multiple) {
+			if (!props.multiple)
 				handleBlur();
-			}
 		};
 
 		const onClickOption = function (value: any, label: any) {
@@ -393,7 +387,7 @@ export default defineComponent({
 		};
 
 		const isValue = computed(() => {
-			if (Array.isArray(props.modelValue)) { return props.modelValue.length !== 0; } else {
+			if (Array.isArray(props.modelValue)) return props.modelValue.length !== 0; else {
 				return !(
 					_.isNull(props.modelValue) &&
 					!_.isUndefined(props.modelValue)
@@ -424,9 +418,8 @@ export default defineComponent({
 										}, 100);
 										if (!activeOptions.value) {
 											chips.value?.blur();
-											if (props.filter) {
+											if (props.filter)
 												chipsInput.value?.blur();
-											}
 										}
 										clickOption(item.value, item.label);
 										evt.stopPropagation();
@@ -485,10 +478,10 @@ export default defineComponent({
 			const filterOptions = options.filter((option: any): boolean => {
 				return typeof props.modelValue === "number" ||
 					typeof props.modelValue === "string"
-					? props.modelValue == option.value
+					? props.modelValue === option.value
 					: _.find(props.modelValue as Array<any>, {
 						value: option.value
-					  }) !== undefined;
+					}) !== undefined;
 			});
 
 			const label: any[] = [];
@@ -509,9 +502,9 @@ export default defineComponent({
 				valueLabelTemp.forEach((item: any) => {
 					labels.push(item.label);
 				});
-			} else {
-				labels = valueLabelTemp;
 			}
+			else
+				labels = valueLabelTemp;
 
 			return labels;
 		});
@@ -537,21 +530,21 @@ export default defineComponent({
 					setCords(optionsTemp, select.value);
 				}, index);
 			}
-			if (evt.code == "ArrowDown") {
+			if (evt.code === "ArrowDown") {
 				evt.preventDefault();
-				if (hoverOption.value < childOptions.value?.length - 1) {
+				if (hoverOption.value < childOptions.value?.length - 1)
 					hoverOption.value++;
-				} else {
+				else
 					hoverOption.value = 0;
-				}
-			} else if (evt.code == "ArrowUp") {
+			}
+			else if (evt.code === "ArrowUp") {
 				evt.preventDefault();
-				if (hoverOption.value > 0) {
+				if (hoverOption.value > 0)
 					hoverOption.value--;
-				} else {
+				else
 					hoverOption.value = childOptions.value?.length - 1;
-				}
-			} else if (evt.code == "Enter") {
+			}
+			else if (evt.code === "Enter") {
 				evt.preventDefault();
 				if (hoverOption.value !== -1) {
 					if (!childOptions.value?.[hoverOption.value].disabled) {
@@ -579,9 +572,9 @@ export default defineComponent({
 				focus: (evt: Event) => {
 					activeOptions.value = true;
 					context.emit("focus", evt);
-					if (props.filter) {
+					if (props.filter)
 						activeFilter.value = true;
-					}
+
 					window.addEventListener("mousedown", handleWindowClick);
 				},
 				// blur: this.blur,
@@ -605,9 +598,9 @@ export default defineComponent({
 						activeOptions.value = true;
 						context.emit("focus", evt);
 					}
-					if (props.filter && props.multiple) {
+					if (props.filter && props.multiple)
 						(chipsInput.value as HTMLElement).focus();
-					}
+
 					window.addEventListener("mousedown", handleWindowClick);
 				},
 				blur: blur
@@ -633,27 +626,25 @@ export default defineComponent({
 			let newChildOptions: any = [];
 
 			childOptions.value.forEach((option: any): any => {
-				if (!option.hiddenOption) {
+				if (!option.hiddenOption)
 					newChildOptions.push(option);
-				}
 			});
 
 			newChildOptions = childOptions.value.filter(item => {
-				if (item.optionGroup) {
+				if (item.optionGroup)
 					return !item.hiddenOptionGroup;
-				}
+
 				return true;
 			});
 
-			return newChildOptions.length == 0;
+			return newChildOptions.length === 0;
 		});
 
 		const iconClicked = function () {
-			if (activeOptions.value) {
+			if (activeOptions.value)
 				activeOptions.value = false;
-			} else {
+			else
 				input.value?.focus();
-			}
 		};
 
 		const beforeEnter = function (el: any) {
@@ -687,9 +678,9 @@ export default defineComponent({
 
 		const handleResize = function () {
 			const optionsTemp = options.value as HTMLElement;
-			if (!optionsTemp) {
+			if (!optionsTemp)
 				return;
-			}
+
 			nextTick(() => {
 				setCords(optionsTemp, select.value);
 			});
@@ -703,16 +694,15 @@ export default defineComponent({
 
 		const handleScroll = function () {
 			const optionsTemp = options.value as HTMLElement;
-			if (optionsTemp) {
+			if (optionsTemp)
 				setCords(optionsTemp, select.value);
-			}
 		};
 
 		onMounted(() => {
 			// getValue();
 
 			let children: any = instance?.slots.default?.();
-			if (children?.length == 1 && typeof children[0].type === "symbol") { children = children[0].children; }
+			if (children?.length === 1 && typeof children[0].type === "symbol") children = children[0].children;
 			const reduced = _.reduce(
 				children,
 				function (result: any[], item, index) {
@@ -729,7 +719,8 @@ export default defineComponent({
 			if (!Array.isArray(props.modelValue)) {
 				const labelValue = _.find(reduced, { value: props.modelValue });
 				if (labelValue) valueLabel.value = labelValue.label;
-			} else {
+			}
+			else {
 				const newLabelValues: any[] = [];
 				props.modelValue.forEach(value => {
 					const labelValue = _.find(reduced, { value: value });
@@ -994,8 +985,8 @@ export default defineComponent({
 			border-radius: 12px 12px 0px 0px;
 			border: 1px solid -getColor("text", 0.09);
 			background: -getColor("background");
-			box-shadow: 0px 5px 25px -4px rgba(0, 0, 0, -var(shadow-opacity));
-			transform: translate(0, -4px);
+			//box-shadow: 0px 5px 25px -4px rgba(0, 0, 0, -var(shadow-opacity));
+			//transform: translate(0, -4px);
 			transition: all 0.25s ease, height 0s;
 			border: 2px solid transparent;
 			color: -getColor("text", 1);
@@ -1030,7 +1021,7 @@ export default defineComponent({
 		opacity: 1;
 		background: transparent;
 		padding: 7px 13px;
-		border: 1px solid -getColor("text", 0.09);		
+		border: 1px solid -getColor("text", 0.09);
 		border-radius: 12px;
 		cursor: pointer;
 		transition: all 0.25s ease, height 0s;
@@ -1053,15 +1044,15 @@ export default defineComponent({
 		&:focus {
 			border-radius: 12px 12px 0px 0px;
 			background: -getColor("background");
-			box-shadow: 0px 5px 25px -4px rgba(0, 0, 0, -var(shadow-opacity));
-			transform: translate(0, -4px);
+			//box-shadow: 0px 5px 25px -4px rgba(0, 0, 0, -var(shadow-opacity));
+			//transform: translate(0, -4px);
 			transition: all 0.25s ease;
 
 			~ .tu-select__label--placeholder {
 				opacity: 1;
 				visibility: visible;
 				pointer-events: auto;
-				transform: translate(-3%, -28px) !important;
+				//transform: translate(-3%, -28px) !important;
 				font-size: 0.8rem;
 				margin-top: 0px !important;
 			}
@@ -1069,8 +1060,8 @@ export default defineComponent({
 
 		&:hover {
 			background: -getColor("background");
-			box-shadow: 0px 5px 25px -4px rgba(0, 0, 0, -var(shadow-opacity));
-			transform: translate(0, -4px);
+			//box-shadow: 0px 5px 25px -4px rgba(0, 0, 0, -var(shadow-opacity));
+			//transform: translate(0, -4px);
 
 			~ .tu-select__label {
 				margin-top: -4px;
@@ -1104,15 +1095,15 @@ export default defineComponent({
 		&:focus {
 			border-radius: 12px 12px 0px 0px;
 			background: -getColor("background");
-			box-shadow: 0px 5px 25px -4px rgba(0, 0, 0, -var(shadow-opacity));
-			transform: translate(0, -4px);
+			//box-shadow: 0px 5px 25px -4px rgba(0, 0, 0, -var(shadow-opacity));
+			//transform: translate(0, -4px);
 			transition: all 0.25s ease;
 		}
 
 		&:hover {
 			background: -getColor("background");
-			box-shadow: 0px 5px 25px -4px rgba(0, 0, 0, -var(shadow-opacity));
-			transform: translate(0, -8px);
+			//box-shadow: 0px 5px 25px -4px rgba(0, 0, 0, -var(shadow-opacity));
+			//transform: translate(0, -8px);
 			&.chips-hovered-multiple {
 				transform: translate(0, -8px);
 			}

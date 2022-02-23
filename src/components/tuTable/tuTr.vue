@@ -34,7 +34,7 @@ import {
 	watch
 } from "vue";
 import tuComponent from "../tuComponent";
-import { TuTable } from "./tuTableStore";
+import { TuTableStore } from "./tuTableStore";
 
 export default defineComponent({
 	name: "TuTr",
@@ -61,7 +61,7 @@ export default defineComponent({
 			default: false
 		},
 		expanded: {
-			type: Boolean, 
+			type: Boolean,
 			default: false
 		}
 	},
@@ -70,7 +70,7 @@ export default defineComponent({
 		const expand = ref(false);
 		const instance = getCurrentInstance();
 		const selected = inject<Function>("selected");
-		const tableInstance = inject<TuTable>("tableInstance");
+		const tableInstance = inject<TuTableStore>("tableInstance");
 		const instanceExpand = ref<any>(null);
 		const isSelected = ref(false);
 		const colSpan = ref(0);
@@ -170,7 +170,7 @@ export default defineComponent({
 .tu-table__tr {
 	padding: 5px;
 	border: 0px;
-
+	border-bottom: 1px solid -getColor("text", 0.2);
 	&.expand {
 		cursor: pointer;
 	}

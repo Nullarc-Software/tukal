@@ -10,9 +10,8 @@ tuComponent.install = (vue: any) => {
 	vue.component(tuComponent4.name, tuComponent4);
 };
 
-
-
 if (typeof window !== "undefined" && (<any>window).Vue)
 	tuComponent.install((<any>window).Vue);
 
+export * from "./tuTableStore";
 export { tuComponent as tuTable, tuComponent2 as tuTh, tuComponent3 as tuTr, tuComponent4 as tuTd };

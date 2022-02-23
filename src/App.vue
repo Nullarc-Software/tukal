@@ -600,7 +600,7 @@
 				multiple
 				label-placeholder="Label-placeholder"
 				v-model="selectValue"
-				style="margin: 10px"
+
 				filter
 			>
 				<tu-option label="Test" value="1"> Test </tu-option>
@@ -931,71 +931,26 @@
 				row-expand
 				multi-select
 				striped
+				size=""
 				v-model="selected"
 				v-model:numPages="numPages"
 				:page="page"
 				:pageSize="25"
-				:data="universities">
-				<template #thead>
+				:data="universities"
+				:columns="columns"
+				>
+				<!-- <template #thead>
 					<tu-th field="country" sort search> Country </tu-th>
-					<tu-th field="name" sort search width="100px"> Name </tu-th>
+					<tu-th field="name" sort search :index="1" width="500px"> Name </tu-th>
+					<tu-th field="name" sort search :index="2" width="500px"> Name </tu-th>
+					<tu-th field="name" sort search :index="3" width="500px"> Name </tu-th>
+					<tu-th field="name" sort search :index="4" width="500px"> Name </tu-th>
+					<tu-th field="name" sort search :index="5" width="500px"> Name </tu-th>
 					<tu-th field="web_pages" sort search> Web site </tu-th>
 					<tu-th field="something" sort search> No value </tu-th>
-				</template>
+				</template> -->
 				<template #footer>
 					<tu-pagination not-margin  flat v-model="page" :length="numPages" />
-				</template>
-			</tu-table>
-			<br />
-			Striped:
-			<tu-table striped>
-				<template #thead>
-					<tu-tr>					
-						<tu-th> Name </tu-th>
-						<tu-th> Email </tu-th>
-						<tu-th> Id </tu-th>
-					</tu-tr>
-				</template>
-				<template #tbody>
-					<tu-tr :key="i" v-for="(tr, i) in users" :data="tr">					
-						<tu-td>
-							{{ tr.name }}
-						</tu-td>
-						<tu-td>
-							{{ tr.email }}
-						</tu-td>
-						<tu-td>
-							{{ tr.id }}
-						</tu-td>
-						<template #expand>
-							<div class="con-content">
-								<div>
-									<tu-avatar>
-										<img
-											:src="`/avatars/avatar-${
-												i + 1
-											}.png`"
-											alt=""
-										/>
-									</tu-avatar>
-									<p>
-										{{ tr.name }}
-									</p>
-								</div>
-								<div>
-									<tu-button flat icon>
-										<i class="bx bx-lock-open-alt"></i>
-									</tu-button>
-									<tu-button flat icon>
-										Send Email
-									</tu-button>
-									<tu-button border danger>
-										Remove User
-									</tu-button>
-								</div>
-							</div>
-						</template>
-					</tu-tr>
 				</template>
 			</tu-table>
 		</div>
@@ -1011,7 +966,6 @@ import {
 	provide,
 	ref,
 	watch,
-	reactive,
 	shallowRef
 } from "vue";
 import * as components from "./components";
@@ -1024,11 +978,9 @@ import {
 	Loading as LoadingConstructor,
 	LoadingAttributes
 } from "./components/tuLoading";
-import tuCheckbox from "./components/tuCheckBox";
 import testComponent from "./components/TestComponent.vue";
 import "material-icons/iconfont/material-icons.css";
 import axios from "axios";
-import * as _ from "lodash";
 
 export default defineComponent({
 	components: {
@@ -1148,6 +1100,45 @@ export default defineComponent({
 			console.log("picked: " + picked.value);
 		});
 
+		const columns = [
+			{
+				field: "country",
+				caption: "Country",
+				props: {
+					sort: true
+				},
+				valueFormatter: function (cellData, rowData) {
+					console.log("formatter called");
+					return cellData.substr(0, 2);
+				}
+			},
+			{
+				field: "name",
+				caption: "Name",
+				props: {
+					sort: true
+				},
+				valueFormatter: function (cellData, rowData) {
+					console.log(rowData);
+					return cellData.substr(0, 2);
+				}
+			},
+			{
+				field: "web_pages",
+				caption: "Web Page",
+				props: {
+					sort: true
+				}
+			},
+			{
+				field: "something",
+				caption: "Undefined Col",
+				props: {
+					sort: true
+				}
+			}
+		];
+
 		const users = [
 			{
 				id: 1,
@@ -1233,7 +1224,6 @@ export default defineComponent({
 		const editStatic = ref("Some Text");
 		const universities = shallowRef([]);
 		axios.get("http://universities.hipolabs.com/search?country=India").then((response) => {
-
 			const temp = response.data;
 			temp.forEach((value) => {
 				value.expanded = {
@@ -1247,6 +1237,7 @@ export default defineComponent({
 		});
 
 		return {
+			columns,
 			universities,
 			numPages,
 			editStatic,
