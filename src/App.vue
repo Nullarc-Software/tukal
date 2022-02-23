@@ -236,7 +236,7 @@
 			<h3>Cards:</h3>
 			<hr />
 			<tu-card-group>
-				<tu-card type="2" v-for="(card, key) in 6" :key="key">
+				<tu-card type="2" v-for="card in 6" :key="card">
 					<template #title>
 						<h3>Pot with a plant</h3>
 					</template>
@@ -970,7 +970,6 @@ import {
 } from "vue";
 import * as components from "./components";
 import {
-	Notification,
 	NotificationAttributes
 } from "./components/tuNotifications";
 import Popper from "vue3-popper";
@@ -981,6 +980,8 @@ import {
 import testComponent from "./components/TestComponent.vue";
 import "material-icons/iconfont/material-icons.css";
 import axios from "axios";
+import { TuHeaderDefn, TuTableContextMenuEntry } from "./components";
+import tuTableContextMenuVue from "./components/tuTable/tuTableContextMenu.vue";
 
 export default defineComponent({
 	components: {
@@ -1082,12 +1083,12 @@ export default defineComponent({
 				progressAuto: true
 			};
 
-			new Notification(notificationAttrs);
+			/* new Notification(notificationAttrs);
 			notificationAttrs.position = "top-center";
 			notificationAttrs.color = "primary";
 			notificationAttrs.sticky = true;
 			notificationAttrs.flat = false;
-			new Notification(notificationAttrs);
+			new Notification(notificationAttrs); */
 		};
 
 		watch(selectValue, () => {
@@ -1100,7 +1101,32 @@ export default defineComponent({
 			console.log("picked: " + picked.value);
 		});
 
-		const columns = [
+		const menu : TuTableContextMenuEntry[] = [
+			{
+				caption: "Some Option",
+				hasSubMenu: true,
+				subMenu: [
+					{
+						caption: "Sample",
+						onClicked: (data) => {
+							console.log("Some data");
+						}
+					}
+				]
+			}
+		];
+
+		const columns : TuHeaderDefn[] = [
+			{
+				caption: "Action",
+				field: "test",
+				isComponent: true,
+				component: tuTableContextMenuVue,
+				componentProps: {
+					modelValue: menu
+				}
+
+			},
 			{
 				field: "country",
 				caption: "Country",

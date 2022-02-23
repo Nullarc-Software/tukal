@@ -38,8 +38,8 @@
 							minWidth: header.minWidth,
 							maxWidth: header.maxWidth,
 						}"
-						:sort="header.props.sort"
-						:search="header.props.search"
+						:sort="header.props ? header.props.sort : false"
+						:search="header.props ? header.props.search : false"
 					>
 						{{ header.caption }}
 					</tu-th>
@@ -76,22 +76,15 @@
 						>
 							<span
 								:title="tr.rowData[th.field]"
-								v-if="
-									ldash.isArrayLike(tr.rowData[th.field]) ||
-									ldash.isUndefined(tr.rowData[th.field])
-								"
+								v-if="th.isComponent === false"
 							>
 								{{ th.valueFormatter ? th.valueFormatter(tr.rowData[th.field], tr.rowData) : tr.rowData[th.field] ?? "undefined" }}
 							</span>
 							<component
-								v-else-if="ldash.isObjectLike(tr.rowData[th.field])"
-								:is="
-									tr.rowData[th.field].component ??
-									require(`${
-										tr.rowData[th.field].componentName
-									}`)
-								"
-								v-bind="tr.rowData[th.field].props"
+								v-else-if="th.isComponent"
+								:is="th.component"
+								v-bind="th.componentProps"
+								:rowData="tr.rowData"
 							/>
 						</tu-td>
 						<template #expand v-if="tr.rowData['expanded']">
@@ -115,6 +108,7 @@
 
 <script lang="ts">
 import {
+	Component,
 	computed,
 	defineComponent,
 	onBeforeUnmount,
@@ -129,7 +123,8 @@ import tuComponent from "../tuComponent";
 import {
 	TableIdentifierAuto,
 	TuTableStore,
-	TuTableServerModel
+	TuTableServerModel,
+	TuTableRow
 } from "./tuTableStore";
 
 export default defineComponent({
@@ -184,7 +179,7 @@ export default defineComponent({
 			default: "local"
 		},
 		/**
-		 * The Data for the table. ignored in Server Side model
+		 * The Data for the table. ignored in Server Side model. SSM This contains the table data.
 		 */
 		data: {
 			type: Object,
@@ -215,7 +210,7 @@ export default defineComponent({
 			default: () => []
 		}
 	},
-	emits: ["update:modelValue", "update:numPages"],
+	emits: ["update:modelValue", "update:numPages", "update:data"],
 	provide () {
 		return {
 			selected: (data) => {
@@ -293,6 +288,11 @@ export default defineComponent({
 			}
 		);
 
+		watch(table.getTableData, () => {
+			const newVal = table.getTableData.value as Array<TuTableRow>;
+			context.emit("update:data", newVal);
+		});
+
 		watch(table.getSelectedRows, () => {
 			const newVal = table.getSelectedRows.value as Array<any>;
 			context.emit("update:modelValue", newVal);
@@ -313,6 +313,13 @@ export default defineComponent({
 			table = undefined; // Force free up mem on next gc call
 		});
 
+		const getElement = function (element: HTMLElement | Component | string) {
+			if (typeof element === "string")
+				return require(element);
+			else
+				return element;
+		};
+
 		return {
 			tableContainer,
 			tableElement,
@@ -323,7 +330,8 @@ export default defineComponent({
 			isMultipleSelected,
 			selected,
 			table,
-			rowListeners
+			rowListeners,
+			getElement
 		};
 	}
 });

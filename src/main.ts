@@ -8,6 +8,7 @@ import { createApp } from "@vue/runtime-dom";
 
 import "material-design-icons/iconfont/material-icons.css";
 import { createPinia } from "pinia";
+import { createRouter, createWebHashHistory } from "vue-router";
 
 const install = function (Vue : App, options : any = {}) {
 	// set default options
@@ -34,6 +35,11 @@ if (typeof window !== "undefined" && (<any>window).Vue)
 	install((<any>window).Vue);
 
 const pinia = createPinia();
+const router = createRouter({
+	routes: [],
+	history: createWebHashHistory()
+});
+appVm.use(router);
 appVm.use(pinia);
 appVm.mount("#app");
 

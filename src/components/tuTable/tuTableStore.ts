@@ -1,6 +1,6 @@
 
 import _ from "lodash";
-import { computed, ComputedRef, reactive, ref, Ref, shallowReactive } from "vue";
+import { Component, computed, ComputedRef, reactive, ref, Ref, shallowReactive } from "vue";
 
 export class TableIdentifierAuto {
 	public static id = 0;
@@ -26,12 +26,15 @@ export interface TuHeaderDefn {
 	minWidth?: number | string,
 	maxWidth?: number | string,
 	width?: number | string,
-	field: string,
-	caption: string,
+	field?: string,
+	caption?: string,
+	isComponent?: boolean,
 	element?: HTMLElement,
+	component?: HTMLElement | Component | string,
+	componentProps?: any,
 	props?: {
-		search: boolean,
-		sort: boolean
+		search?: boolean,
+		sort?: boolean
 	},
 	valueFormatter?: Function
 }
@@ -63,6 +66,17 @@ export interface TuTableProps {
 	columns: TuHeaderDefn[],
 	model: string,
 	size: string,
+}
+
+export interface TuTableContextMenuEntry {
+	caption: string,
+	icon?: HTMLElement,
+	hasSubMenu?: boolean,
+	onClicked?: Function,
+	data?: any,
+	closeOnClick?: boolean,
+	divider?: boolean,
+	subMenu?: TuTableContextMenuEntry[]
 }
 
 export class TableFunctions {
@@ -238,6 +252,9 @@ export class TuTableStore {
 					maxWidth: value.maxWidth ?? Number.MAX_SAFE_INTEGER,
 					minWidth: value.minWidth ?? 100,
 					width: value.width,
+					isComponent: value.isComponent ?? false,
+					component: value.component,
+					componentProps: value.componentProps,
 					caption: value.caption,
 					props: value.props,
 					valueFormatter: value.valueFormatter
@@ -298,6 +315,10 @@ export class TuTableStore {
 		else if (this.table.headers.length)
 			header = this.table.headers[this.table.headers.length - 1];
 		return header;
+	}
+
+	public getRowData (index: number) {
+		return this.table.data[index].rowData;
 	}
 
 	public toggleSort (field:string) {

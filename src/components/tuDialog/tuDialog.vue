@@ -31,9 +31,9 @@
 				<div v-if="loading" class="tu-dialog__loading">
 					<div class="tu-dialog__loading__load"></div>
 				</div>
-				<tu-button v-if="!notClose" color="#1e2023" class="tu-dialog__close" @click="closeClick" >					
+				<tu-button v-if="!notClose" color="#1e2023" class="tu-dialog__close" @click="closeClick" >
 					<tu-icon >close </tu-icon>
-				</tu-button>				
+				</tu-button>
 				<header v-if="$slots.header" class="tu-dialog__header">
 					<slot name="header" />
 				</header>
@@ -52,7 +52,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, nextTick, ref, watch } from "vue";
+import { defineComponent, ref, watch } from "vue";
 import tuButton from "../tuButton/tuButton.vue";
 import tuIcon from "../tuIcon/tuIcon.vue";
 import tuComponent from "../tuComponent";
@@ -64,81 +64,81 @@ export default defineComponent({
 	props: {
 		modelValue: {
 			type: Boolean,
-			default: false,
+			default: false
 		},
 		loading: {
 			type: Boolean,
-			default: false,
+			default: false
 		},
 		fullScreen: {
 			type: Boolean,
-			default: false,
+			default: false
 		},
 		notClose: {
 			type: Boolean,
-			default: false,
+			default: false
 		},
 		preventClose: {
 			type: Boolean,
-			default: false,
+			default: false
 		},
 		notPadding: {
 			type: Boolean,
-			default: false,
+			default: false
 		},
 		overflowHidden: {
 			type: Boolean,
-			default: false,
+			default: false
 		},
 		blur: {
 			type: Boolean,
-			default: false,
+			default: false
 		},
 		square: {
 			type: Boolean,
-			default: false,
+			default: false
 		},
 		autoWidth: {
 			type: Boolean,
-			default: false,
+			default: false
 		},
 		scroll: {
 			type: Boolean,
-			default: false,
+			default: false
 		},
 		notCenter: {
 			type: Boolean,
-			default: false,
+			default: false
 		},
 		routerClose: {
 			type: Boolean,
-			default: false,
+			default: false
 		},
 		width: {
 			type: String,
-			default: null,
+			default: null
 		},
-    footerClasses: {
-      type: Object,
-      default:null
-    }
+		footerClasses: {
+			type: Object,
+			default: null
+		}
 	},
 	emits: ["update:modelValue", "close"],
-	setup(props, context) {
-		let rebound = ref(false);
+	setup (props, context) {
+		const rebound = ref(false);
 
-		const esc = function(evt: any) {
+		const esc = function (evt: any) {
 			if (evt.which == 27 && !props.preventClose) {
 				context.emit("update:modelValue", false);
 				context.emit("close");
 			}
 		};
 
-		const addEsc = function() {
+		const addEsc = function () {
 			window.addEventListener("keydown", esc);
 		};
 
-		const insertDialog = function() {
+		const insertDialog = function () {
 			addEsc();
 			/* nextTick(() => {
 				const dialog = this.$refs["dialog-content"] as HTMLElement;
@@ -151,10 +151,10 @@ export default defineComponent({
 			(newVal, prevVal) => {
 				if (newVal) {
 					insertDialog();
-					if (props.overflowHidden) {
+					if (props.overflowHidden)
 						document.body.style.overflow = "hidden";
-					}
-				} else {
+				}
+				else {
 					if (props.overflowHidden) {
 						document.body.style.overflow = "";
 						window.removeEventListener("keydown", esc);
@@ -163,8 +163,8 @@ export default defineComponent({
 			}
 		);
 
-		const click = function(evt) {
-			if (!evt.target.closest(".tu-dialog")  && !props.preventClose) {
+		const click = function (evt) {
+			if (!evt.target.closest(".tu-dialog") && !props.preventClose) {
 				context.emit("update:modelValue", !props.modelValue);
 				context.emit("close");
 			}
@@ -177,11 +177,10 @@ export default defineComponent({
 			}
 		};
 
-		const closeClick = function(evt) {
+		const closeClick = function (evt) {
 			context.emit("update:modelValue", !props.modelValue);
 			context.emit("close");
 		};
-
 
 		return {
 			rebound,
@@ -190,8 +189,8 @@ export default defineComponent({
 			insertDialog,
 			esc,
 			addEsc
-		}
-	},
+		};
+	}
 });
 </script>
 

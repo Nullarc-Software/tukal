@@ -1,6 +1,6 @@
 <template>
     <div
-        ref="dropOptions"       
+        ref="dropOptions"
         @mouseleave="mouseleavex"
         @mouseenter="mouseenterx"
     >
@@ -16,35 +16,34 @@
 import { insertBody } from "@/utils";
 
 import Popper from "vue3-popper";
-import * as _ from "lodash";
 import {
 	defineComponent,
 	getCurrentInstance,
-	onBeforeUnmount,	
-	onMounted,	
+	onBeforeUnmount,
+	onMounted,
 	reactive,
 	ref,
-	toRefs,
+	toRefs
 } from "vue";
 
 export default defineComponent({
 	name: "TuPopupMenu",
 	components: {
-		Popper,
+		Popper
 	},
 	emits: ["remove", "shown"],
-	setup(props, context) {
-		let data = reactive({
+	setup (props, context) {
+		const data = reactive({
 			dropdownVisible: false,
 			leftAfter: 20,
 			rightx: true,
 			tuDropRight: false,
 			widthx: 0,
-			tuCustomContent: false,
+			tuCustomContent: false
 		});
-		
-		let dropOptions = ref<HTMLDivElement>();		
-		let instance = getCurrentInstance();
+
+		const dropOptions = ref<HTMLDivElement>();
+		const instance = getCurrentInstance();
 
 		onBeforeUnmount(() => {
 			context.emit("remove", instance);
@@ -52,14 +51,14 @@ export default defineComponent({
 
 		onMounted(() => {
 			context.emit("shown", instance);
-		})
+		});
 
 		return {
 			...toRefs(data),
 			insertBody,
-			dropOptions,
+			dropOptions
 		};
-	},	
+	}
 });
 </script>
 

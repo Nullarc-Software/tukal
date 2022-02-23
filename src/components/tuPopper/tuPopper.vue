@@ -1,5 +1,5 @@
 <template>
-	<div class="popper-contatiner" 
+	<div class="popper-contatiner"
        :class="{
         'pointer-hand': cursorPointer
        }"
@@ -32,87 +32,87 @@ import clickAway from "./directives/click-away";
  */
 
 const Placement = ["auto",
-					"auto-start",
-					"auto-end",
-					"top",
-					"top-start",
-					"top-end",
-					"bottom",
-					"bottom-start",
-					"bottom-end",
-					"right",
-					"right-start",
-					"right-end",
-					"left",
-					"left-start",
-					"left-end"] as const;
-export type PlacementType =  typeof Placement[number];
+	"auto-start",
+	"auto-end",
+	"top",
+	"top-start",
+	"top-end",
+	"bottom",
+	"bottom-start",
+	"bottom-end",
+	"right",
+	"right-start",
+	"right-end",
+	"left",
+	"left-start",
+	"left-end"] as const;
+export type PlacementType = typeof Placement[number];
 
 export default defineComponent({
 	name: "TuPopper",
 	emits: ["show:popper", "hide:popper"],
 	directives: {
-		clickAway,
+		clickAway
 	},
-    provide(){
-        return {
-            closeParent : () => {
-               this.hide();
-            }
-        }
-    },
+	provide () {
+		return {
+			closeParent: () => {
+				this.hide();
+			}
+		};
+	},
 	props: {
 		/**
 		 * Preferred [placement](https://popper.js.org/docs/v2/constructors/#options)
 		 */
 		placement: {
 			type: String,
-			default: "bottom",			
+			default: "bottom"
 		},
 		/**
 		 * Customize the [offset](https://popper.js.org/docs/v2/modifiers/offset/) of the popper
 		 */
 		offsetX: {
 			type: String,
-			default: "0",
+			default: "0"
 		},
 		offsetY: {
 			type: String,
-			default: "12",
+			default: "12"
 		},
 		/**
 		 * Show the popper on hover
 		 */
 		hover: {
 			type: Boolean,
-			default: false,
+			default: false
 		},
 		timeout: {
 			type: Number,
-			default: -1,
+			default: -1
 		},
 		/**
 		 * Add an arrow to the popper
 		 */
 		arrow: {
 			type: Boolean,
-			default: false,
+			default: false
 		},
 		/**
 		 * Stop arrow from reaching the edge of the Popper
 		 */
 		arrowPadding: {
 			type: String,
-			default: "0",
+			default: "0"
 		},
-        cursorPointer: {
-            type: Boolean,
-            default: true
-        }
+		cursorPointer: {
+			type: Boolean,
+			default: true
+		}
 	},
-	setup(props, { slots, emit }) {
+	setup (props, { slots, emit }) {
 		const children = slots.default?.();
-        
+
 		if (children && children.length > 1) {
 			return console.error(
 				`[Popper]: The <Popper> component expects only one child element at its root. You passed ${children.length} child nodes.`
@@ -128,17 +128,17 @@ export default defineComponent({
 			toggle,
 			popperInstance,
 			popperNode,
-			triggerNode,
+			triggerNode
 		} = usePopper({ offsetX, offsetY, arrowPadding, placement });
 
 		const listeners = computed(() => {
 			const hover = {
 				mouseover: show,
-				mouseleave: hide,
+				mouseleave: hide
 			};
 
 			const onClick = {
-				click: toggle,
+				click: toggle
 			};
 
 			return {
@@ -148,7 +148,7 @@ export default defineComponent({
 				},
 				blur: () => {
 					hide();
-				},
+				}
 			};
 		});
 
@@ -156,32 +156,31 @@ export default defineComponent({
 			if (isOpen) {
 				emit("show:popper");
 
-				if(props.timeout > 0){
+				if (props.timeout > 0) {
 					setTimeout(() => {
 						hide();
 					}, props.timeout);
 				}
-
-			} else {
-				emit("hide:popper");
 			}
+			else
+				emit("hide:popper");
 		});
 
 		onBeforeUnmount(() => {
-			if(popperInstance.value)
-                (popperInstance.value as any).destroy();
+			if (popperInstance.value)
+				(popperInstance.value as any).destroy();
 		});
 
 		return {
-            hideFn: hide,
+			hideFn: hide,
 			isOpen,
 			popperNode,
 			triggerNode,
 			toggle,
 			hide,
-			listeners,
+			listeners
 		};
-	},
+	}
 });
 </script>
 
