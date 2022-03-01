@@ -1,4 +1,4 @@
-import { TreeViewItem } from "../types";
+import { TuTreeViewItemDefn } from "../types";
 
 export function useTreeViewItemMouseActions () {
 	const addHoverClass = (event: DragEvent): void => {
@@ -15,14 +15,14 @@ export function useTreeViewItemMouseActions () {
 			target.classList.remove("drag-over");
 	};
 
-	const onDragNode = (item: TreeViewItem, event: DragEvent): void => {
+	const onDragNode = (item: TuTreeViewItemDefn, event: DragEvent): void => {
 		if (event.dataTransfer)
 			event.dataTransfer.setData("text/plain", JSON.stringify(item));
 	};
 
-	const onDropNode = (dropHost: TreeViewItem, event: DragEvent, isDropValid: (item1: TreeViewItem, item2: TreeViewItem) => boolean): void => {
+	const onDropNode = (dropHost: TuTreeViewItemDefn, event: DragEvent, isDropValid: (item1: TuTreeViewItemDefn, item2: TuTreeViewItemDefn) => boolean): void => {
 		if (event.dataTransfer) {
-			const droppedNode = JSON.parse(event.dataTransfer.getData("text/plain")) as TreeViewItem;
+			const droppedNode = JSON.parse(event.dataTransfer.getData("text/plain")) as TuTreeViewItemDefn;
 
 			removeHoverClass(event);
 

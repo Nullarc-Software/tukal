@@ -63,7 +63,7 @@
 	</ul>
 </template>
 <script lang="ts" >
-import { IsValidDropCallback, TreeState, TreeViewItem } from "./types";
+import { IsValidDropCallback, TreeState, TuTreeViewItemDefn } from "./types";
 import TreeItemComponent from "./tuTreeItem.vue";
 import { useTreeViewItemMouseActions } from "./composables/use-tree-mouse-actions";
 import { useGraph } from "./composables/use-graph";
@@ -79,17 +79,17 @@ export default defineComponent({
 			default: false
 		},
 		items: {
-			type: Array as PropType<TreeViewItem[]>,
+			type: Array as PropType<TuTreeViewItemDefn[]>,
 			required: true,
 			default: () => {
 				return [];
 			}
 		},
 		selectedItem: {
-			type: Object as PropType<TreeViewItem>
+			type: Object as PropType<TuTreeViewItemDefn>
 		},
 		checkedItems: {
-			type: Array as PropType<TreeViewItem[]>
+			type: Array as PropType<TuTreeViewItemDefn[]>
 		},
 		isCheckable: {
 			type: Boolean
@@ -124,12 +124,12 @@ export default defineComponent({
 	emits: ["update:selectedItem", "update:checkedItems", "onContextMenu", "onSelect", "onCheck"],
 
 	setup (props, { emit, attrs }) {
-		const parent = computed<TreeViewItem>(() => attrs.parent as TreeViewItem);
+		const parent = computed<TuTreeViewItemDefn>(() => attrs.parent as TuTreeViewItemDefn);
 
 		const treeState = ref<TreeState>();
 		const expandedKeys = new Set<string>([...props.expandedTypes, ...props.expandedIds]);
 		// Create a tree state object for only root nodes.
-		if (props.treeState != null)
+		if (props.treeState !== null)
 			treeState.value = props.treeState;
 
 		else {

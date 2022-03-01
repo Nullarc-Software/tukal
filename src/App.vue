@@ -991,7 +991,7 @@ import "material-icons/iconfont/material-icons.css";
 import axios from "axios";
 import { TuHeaderDefn, TuTableContextMenuEntry } from "./components";
 import tuTableContextMenuVue from "./components/tuTable/tuTableContextMenu.vue";
-import { TreeViewItem } from "./components/tuTreeView";
+import { TuTreeViewItemDefn } from "./components/tuTreeView";
 
 export default defineComponent({
 	components: {
@@ -1275,10 +1275,10 @@ export default defineComponent({
 			universities.value = temp;
 		});
 
-		const treeSelectedItems = ref<TreeViewItem[]>([
+		const treeSelectedItems = ref<TuTreeViewItemDefn[]>([
 
 		]);
-		const treeItems = ref<TreeViewItem[]>([
+		const treeItems = ref<TuTreeViewItemDefn[]>([
 			{
 				id: "aru",
 				name: "test",
@@ -1313,6 +1313,10 @@ export default defineComponent({
 				]
 			}
 		]); // define your tree items here.
+
+		watch(treeSelectedItems, (value) => {
+			console.log(value);
+		});
 
 		return {
 			treeSelectedItems,

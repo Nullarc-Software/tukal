@@ -2,9 +2,9 @@ import { Component } from "vue";
 
 export type CheckedState = "true" | "false" | "indeterminate";
 export type SelectState = "selected" | "unselected";
-export interface TreeViewItem {
+export interface TuTreeViewItemDefn {
 
-    children?: TreeViewItem[]
+    children?: TuTreeViewItemDefn[]
     type: string
     checkedStatus?: CheckedState,
     name: string,
@@ -16,16 +16,16 @@ export interface TreeViewItem {
 }
 
 export interface ItemEventArgs {
-    item: TreeViewItem,
+    item: TuTreeViewItemDefn,
     change: CheckedState | SelectState
 }
 
 export interface TreeState {
-    getParent(childId: string): TreeViewItem | undefined;
-    trackNode(childNode: TreeViewItem, parentNode: TreeViewItem): void;
-    untrackNode(childNode: TreeViewItem): void;
-    emitItemSelected(node: TreeViewItem): void;
-    emitItemCheckedChange(node: TreeViewItem): void;
+    getParent(childId: string): TuTreeViewItemDefn | undefined;
+    trackNode(childNode: TuTreeViewItemDefn, parentNode: TuTreeViewItemDefn): void;
+    untrackNode(childNode: TuTreeViewItemDefn): void;
+    emitItemSelected(node: TuTreeViewItemDefn): void;
+    emitItemCheckedChange(node: TuTreeViewItemDefn): void;
     isNodeExpanded(id: string, type: string): boolean;
 }
 
@@ -34,4 +34,4 @@ export interface TreeEvents {
     updateSingleSelectedItem(): void;
 }
 
-export type IsValidDropCallback = (droppedItem: TreeViewItem, dropHost: TreeViewItem) => boolean;
+export type IsValidDropCallback = (droppedItem: TuTreeViewItemDefn, dropHost: TuTreeViewItemDefn) => boolean;

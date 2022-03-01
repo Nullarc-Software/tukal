@@ -67,7 +67,7 @@ import {
 	cascadeStateToDescendants,
 	notifyParentOfSelection
 } from "./composables/use-tree-traversal";
-import { TreeState, TreeViewItem } from "./types";
+import { TreeState, TuTreeViewItemDefn } from "./types";
 
 export default defineComponent({
 	name: "TuTreeItem",
@@ -79,14 +79,14 @@ export default defineComponent({
 			default: false
 		},
 		item: {
-			type: Object as PropType<TreeViewItem>,
+			type: Object as PropType<TuTreeViewItemDefn>,
 			required: true
 		},
 		isCheckable: {
 			type: Boolean
 		},
 		selectedItem: {
-			type: Object as PropType<TreeViewItem>
+			type: Object as PropType<TuTreeViewItemDefn>
 		},
 		treeState: {
 			type: Object as PropType<TreeState>
@@ -99,8 +99,8 @@ export default defineComponent({
 		const isSelected = computed(
 			() => props.selectedItem?.id === props.item.id
 		);
-		const parent = computed<TreeViewItem>(
-			() => attrs.parent as TreeViewItem
+		const parent = computed<TuTreeViewItemDefn>(
+			() => attrs.parent as TuTreeViewItemDefn
 		);
 
 		const itemClone = ref(props.item);

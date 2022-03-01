@@ -1,4 +1,4 @@
-import { ItemEventArgs, TreeState, TreeViewItem } from "../types";
+import { ItemEventArgs, TreeState, TuTreeViewItemDefn } from "../types";
 
 /**
  * Initialises the root state of a tree.
@@ -12,27 +12,27 @@ import { ItemEventArgs, TreeState, TreeViewItem } from "../types";
  * @returns
  */
 export function useGraph (
-	selectedItem: TreeViewItem | undefined,
-	onItemSelected: (item: TreeViewItem) => void,
-	checkedItems: TreeViewItem[] | undefined,
-	onItemsChecked: (selectedItems: TreeViewItem[]) => void,
+	selectedItem: TuTreeViewItemDefn | undefined,
+	onItemSelected: (item: TuTreeViewItemDefn) => void,
+	checkedItems: TuTreeViewItemDefn[] | undefined,
+	onItemsChecked: (selectedItems: TuTreeViewItemDefn[]) => void,
 	isNodeExpanded: (id: string, type: string) => boolean,
 	itemSelectedEventHandler: (args: ItemEventArgs) => void,
 	itemCheckedEventHandler: (args: ItemEventArgs) => void): TreeState {
-	const childParentLookUp: {[childId: string]: TreeViewItem | undefined } = {};
+	const childParentLookUp: {[childId: string]: TuTreeViewItemDefn | undefined } = {};
 
 	const getParent = (childId: string) => childParentLookUp[childId];
-	const trackNode = (node: TreeViewItem, parentNode: TreeViewItem) => {
+	const trackNode = (node: TuTreeViewItemDefn, parentNode: TuTreeViewItemDefn) => {
 		childParentLookUp[node.id] = parentNode;
 	};
-	const untrackNode = (node: TreeViewItem) => delete (childParentLookUp[node.id]);
+	const untrackNode = (node: TuTreeViewItemDefn) => delete (childParentLookUp[node.id]);
 
-	const checkedItemsLookup: {[childId: string]: TreeViewItem } = {};
+	const checkedItemsLookup: {[childId: string]: TuTreeViewItemDefn } = {};
 	checkedItems?.forEach(node => {
 		checkedItemsLookup[node.id] = node;
 	});
 
-	const emitItemSelected = (node: TreeViewItem) => {
+	const emitItemSelected = (node: TuTreeViewItemDefn) => {
 		if (node === selectedItem) return;
 
 		itemSelectedEventHandler({
@@ -43,7 +43,7 @@ export function useGraph (
 		selectedItem = node;
 		onItemSelected(node);
 	};
-	const emitItemCheckedChange = (node: TreeViewItem) => {
+	const emitItemCheckedChange = (node: TuTreeViewItemDefn) => {
 		itemCheckedEventHandler({
 			item: node,
 			change: node.checkedStatus!
