@@ -125,21 +125,24 @@ export default defineComponent({
 		const button = ref<HTMLButtonElement>();
 
 		const clickButton = function (event) {
-			if (props.to) {
+			if (props.to)
 				ComponentConstants.router.push(props.to);
-			} else if (props.href) {
+
+			else if (props.href)
 				window.open(props.href, (props.blank && "_blank") || "_self");
 				// console.log(this.blank && '_self')
-			}
+
 			context.emit("click", event);
 		};
 
 		const mousedown = event => {
-			if (rippleDir.value === "reverse") {
+			if (rippleDir.value === "reverse")
 				rippleReverse(event);
-			} else if (rippleDir.value === "cut") {
+
+			else if (rippleDir.value === "cut")
 				rippleCut(event);
-			} else {
+
+			else {
 				if (props.flat) {
 					ripple(
 						event,
@@ -152,9 +155,9 @@ export default defineComponent({
 							!props.active &&
 							document.activeElement !== button.value
 					);
-				} else {
-					ripple(event, null, false);
 				}
+				else
+					ripple(event, null, false);
 			}
 		};
 

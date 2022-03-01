@@ -57,7 +57,7 @@
 						<tu-icon
 							:icon-pack="child.iconPack"
 							:icon="child.tag"
-							
+
 						></tu-icon>
 					</button>
 				</li>
@@ -71,7 +71,7 @@
 				<div class="tu-tabs-progress-header">
 					<div class="tu-tabs--progress__info">
 						<span>
-							
+
 						</span>
 						<span style="margin-left: 5px">
 							<span
@@ -394,13 +394,15 @@ export default defineComponent({
 			}
 			else {
 				const update = () => {
-					reactiveData.leftx = elem.offsetLeft;
-					reactiveData.widthx = elem.offsetWidth;
-					if (ul.value) {
-						reactiveData.topx =
+					if (elem) {
+						reactiveData.leftx = elem.offsetLeft;
+						reactiveData.widthx = elem.offsetWidth;
+						if (ul.value) {
+							reactiveData.topx =
 							elem.offsetHeight +
 							(elem.getBoundingClientRect().top -
 								ul.value.getBoundingClientRect().top);
+						}
 					}
 				};
 				if (!initialAnimation)

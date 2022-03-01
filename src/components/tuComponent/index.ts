@@ -5,7 +5,7 @@ import { getColor } from "../../utils";
 
 class ComponentConstants {
 	public static router : Router;
-    public static iconPackGlobal : string;
+	public static iconPackGlobal : string;
 }
 
 export default defineComponent({
@@ -20,9 +20,9 @@ export default defineComponent({
 		const approuter = inject<Router|null>("appRouter", null);
 		const iconPackGlobal = inject<string|null>("iconPackGlobal", null);
 
-		if (approuter) { ComponentConstants.router = approuter; }
+		if (approuter) ComponentConstants.router = approuter;
 
-		if (iconPackGlobal) { ComponentConstants.iconPackGlobal = iconPackGlobal; }
+		if (iconPackGlobal) ComponentConstants.iconPackGlobal = iconPackGlobal;
 
 		return {
 			componentColor,

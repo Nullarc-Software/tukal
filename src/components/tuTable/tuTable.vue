@@ -78,12 +78,18 @@
 								:title="tr.rowData[th.field]"
 								v-if="th.isComponent === false"
 							>
-								{{ th.valueFormatter ? th.valueFormatter(tr.rowData[th.field], tr.rowData) : tr.rowData[th.field] ?? "undefined" }}
+								{{
+									th.valueFormatter ?
+										th.valueFormatter(tr.rowData[th.field], tr.rowData) :
+										(th.field.indexOf(".") !== -1) ? getNestedField(tr.rowData, th.field) :
+										tr.rowData[th.field] ?? "undefined"
+								}}
 							</span>
 							<component
 								v-else-if="th.isComponent"
 								:is="th.component"
 								v-bind="th.componentProps"
+								:rowIndex="tr.index"
 								:rowData="tr.rowData"
 							/>
 						</tu-td>
@@ -108,7 +114,6 @@
 
 <script lang="ts">
 import {
-	Component,
 	computed,
 	defineComponent,
 	onBeforeUnmount,
@@ -210,7 +215,7 @@ export default defineComponent({
 			default: () => []
 		}
 	},
-	emits: ["update:modelValue", "update:numPages", "update:data"],
+	emits: ["update:modelValue", "update:numPages", "update:data", "update:tableInstance"],
 	provide () {
 		return {
 			selected: (data) => {
@@ -267,8 +272,7 @@ export default defineComponent({
 			}
 		};
 
-		watch(
-			[() => props.pageSize, () => props.page],
+		watch([() => props.pageSize, () => props.page],
 			() => {
 				table.setPaging(props.pageSize, props.page);
 			},
@@ -307,17 +311,23 @@ export default defineComponent({
 				const len = tableContainer.value.offsetWidth + tableContainer.value.offsetLeft;
 				lastHeader.width = (tableContainer.value.offsetWidth - lastHeader.element.offsetLeft ?? 0) + "px";
 			}
+
+			context.emit("update:tableInstance", table);
 		});
 
 		onBeforeUnmount(() => {
 			table = undefined; // Force free up mem on next gc call
 		});
 
-		const getElement = function (element: HTMLElement | Component | string) {
-			if (typeof element === "string")
-				return require(element);
-			else
-				return element;
+		const getNestedField = function (rowData: any, key: string) {
+			const keys = key.split(".");
+			let obj: any = rowData;
+			for (const key of keys) {
+				if (obj[key])
+					obj = obj[key];
+			}
+
+			return obj;
 		};
 
 		return {
@@ -331,7 +341,7 @@ export default defineComponent({
 			selected,
 			table,
 			rowListeners,
-			getElement
+			getNestedField
 		};
 	}
 });

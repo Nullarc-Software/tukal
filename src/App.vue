@@ -954,6 +954,14 @@
 				</template>
 			</tu-table>
 		</div>
+		<div class="showcase-component">
+			<h4>Tree view component:</h4>
+			<hr />
+			<tu-tree-view :items="treeItems"
+                   :isCheckable="true"
+                   :hideGuideLines="false"
+                   v-model:checkedItems="treeSelectedItems"/>
+		</div>
 	</div>
 </template>
 
@@ -966,7 +974,8 @@ import {
 	provide,
 	ref,
 	watch,
-	shallowRef
+	shallowRef,
+	markRaw
 } from "vue";
 import * as components from "./components";
 import {
@@ -982,6 +991,7 @@ import "material-icons/iconfont/material-icons.css";
 import axios from "axios";
 import { TuHeaderDefn, TuTableContextMenuEntry } from "./components";
 import tuTableContextMenuVue from "./components/tuTable/tuTableContextMenu.vue";
+import { TreeViewItem } from "./components/tuTreeView";
 
 export default defineComponent({
 	components: {
@@ -1103,13 +1113,14 @@ export default defineComponent({
 
 		const menu : TuTableContextMenuEntry[] = [
 			{
-				caption: "Some Option",
+				caption: "More Options >",
 				hasSubMenu: true,
 				subMenu: [
 					{
 						caption: "Sample",
 						onClicked: (data) => {
 							console.log("Some data");
+							console.log(data);
 						}
 					}
 				]
@@ -1121,11 +1132,13 @@ export default defineComponent({
 				caption: "Action",
 				field: "test",
 				isComponent: true,
-				component: tuTableContextMenuVue,
+				component: markRaw(tuTableContextMenuVue),
 				componentProps: {
-					modelValue: menu
+					modelValue: menu,
+					customIcon: {
+						icon: "desktop_windows"
+					}
 				}
-
 			},
 			{
 				field: "country",
@@ -1262,7 +1275,48 @@ export default defineComponent({
 			universities.value = temp;
 		});
 
+		const treeSelectedItems = ref<TreeViewItem[]>([
+
+		]);
+		const treeItems = ref<TreeViewItem[]>([
+			{
+				id: "aru",
+				name: "test",
+				type: "folder",
+				children: [
+					{
+						id: "temp",
+						name: "Hello",
+						type: "switch",
+						isComponent: true,
+						component: "TuSwitch"
+					},
+					{
+						id: "temp1",
+						name: "Hello ABC",
+						type: "folder",
+						children: [
+							{
+								id: "temp",
+								name: "Hello",
+								type: "switch",
+								isComponent: true,
+								component: "TuSwitch"
+							},
+							{
+								id: "temp1",
+								name: "Hello ABC",
+								type: "folder"
+							}
+						]
+					}
+				]
+			}
+		]); // define your tree items here.
+
 		return {
+			treeSelectedItems,
+			treeItems,
 			columns,
 			universities,
 			numPages,

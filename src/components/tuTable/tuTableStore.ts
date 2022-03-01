@@ -69,7 +69,7 @@ export interface TuTableProps {
 }
 
 export interface TuTableContextMenuEntry {
-	caption: string,
+	caption: string | HTMLElement,
 	icon?: HTMLElement,
 	hasSubMenu?: boolean,
 	onClicked?: Function,
@@ -89,6 +89,7 @@ export class TuTableStore {
 	private headerIndexCtr: number = 0;
 	private rowIndexCtr: number = 0;
 	private activeSort: Ref<number>;
+	private refreshTable: Ref<boolean>;
 
 	public serverSideModel: boolean = false;
 	public serverModelProps: TuTableServerModel;
@@ -124,8 +125,9 @@ export class TuTableStore {
 		this.headerCount = ref(columnsInitial);
 		this.pageLength = ref(1);
 		this.activeSort = ref(0);
-
+		this.refreshTable = ref(false);
 		this.getTableData = computed(() => {
+			this.refreshTable.value = !this.refreshTable.value;
 			let data: any[] = [];
 			if (this.serverSideModel === false) {
 				// apply search filter
@@ -157,8 +159,8 @@ export class TuTableStore {
 					data = _.slice(data, this.table.pageSize * (this.table.currentPage - 1), (this.table.pageSize * (this.table.currentPage - 1)) + this.table.pageSize);
 			}
 			else {
-				const request: XMLHttpRequest = new XMLHttpRequest();
 				const inst = this;
+				const request: XMLHttpRequest = new XMLHttpRequest();
 				request.onreadystatechange = function () {
 					if (request.readyState === XMLHttpRequest.DONE && request.status === 200) {
 						if (request.responseType === "json")
@@ -187,6 +189,7 @@ export class TuTableStore {
 
 				request.open(this.serverModelProps.method, this.serverModelProps.ajaxUrl, true);
 				request.setRequestHeader("Content-Type", "application/json");
+				request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
 				request.send(JSON.stringify(props));
 				data = this.table.data;
 			}
@@ -225,6 +228,10 @@ export class TuTableStore {
 	public setPaging (pageSize: number, page: number) {
 		this.table.pageSize = pageSize;
 		this.table.currentPage = page;
+	}
+
+	public refresh () {
+		this.refreshTable.value = !this.refreshTable.value;
 	}
 
 	public setTableData (data: any) {

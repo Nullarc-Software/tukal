@@ -26,6 +26,8 @@ export { tuPopper, tuPopupMenu, tuPopupItem } from "./tuPopper";
 export { default as tuDialog } from "./tuDialog";
 
 export { tuCollapse, tuCollapseItem } from "./tuCollapse";
+export { tuTreeView, tuTreeItem } from "./tuTreeView";
+export * from "./tuTreeView/types";
 
 // New Component import
 

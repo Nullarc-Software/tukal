@@ -5,7 +5,8 @@
     v-bind="$attrs"
     class="tu-icon notranslate icon-scale unselectable"
   >
-    <slot>{{ iconPack == 'material-icons' ? icon : '' }}</slot>
+	{{ (getIconPack.includes("material-icons") && icon !== null) ? icon : '' }}
+    <slot v-if="$slots.default"></slot>
   </i>
 </template>
 <script lang="ts">
@@ -18,7 +19,7 @@ export class IconPackConstants {
 }
 
 export default defineComponent({
-	name: "tuIcon",
+	name: "TuIcon",
 	extends: tuComponent,
 	props: {
 		icon: {
@@ -76,8 +77,8 @@ export default defineComponent({
 				width: /(px)/.test(props.size) ? props.size : /(em)/.test(props.size) ? props.size : null,
 				height: /(px)/.test(props.size) ? props.size : /(em)/.test(props.size) ? props.size : null,
 				"font-size": /(px)/.test(props.size) ? props.size : /(em)/.test(props.size) ? props.size : null,
-				color: getColor,
-				background: getBgColor,
+				color: getColor.value,
+				background: getBgColor.value,
 				cursor: "pointer"
 			};
 			return style;
