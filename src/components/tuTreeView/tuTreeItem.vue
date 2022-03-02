@@ -21,6 +21,7 @@
 		>
 			<div>
 				<div v-if="isCheckable" style="display: flex">
+					<!-- <tu-checkbox :checked="checkboxState"  :indeterminate="checkboxIndeterminate">{{ itemClone.name }}</tu-checkbox> -->
 					<input
 						@contextmenu.prevent
 						@change="updateCheckState"
@@ -96,6 +97,8 @@ export default defineComponent({
 
 	setup (props, { emit, attrs }) {
 		const checkbox = ref<HTMLInputElement>();
+		// const checkboxState = ref(false);
+		// const checkboxIndeterminate = ref(false);
 		const isSelected = computed(
 			() => props.selectedItem?.id === props.item.id
 		);
@@ -119,6 +122,10 @@ export default defineComponent({
 			notifyParentOfSelection(props.item!, props.treeState!);
 			cascadeStateToDescendants(props.item!, props.treeState!);
 		};
+
+		/* 	watch(checkboxState, (value) => {
+			updateCheckState();
+		}); */
 
 		watch(
 			() => props.item.checkedStatus,
@@ -146,9 +153,9 @@ export default defineComponent({
 
 		return {
 			itemClone,
-			toggleExpand,
 			chevron,
 			isSelected,
+			toggleExpand,
 			updateCheckState,
 			parent,
 			checkbox
@@ -208,7 +215,7 @@ export default defineComponent({
 
 .horizontal-dashes {
     width: 1em;
-    border-top: 1px dashed rgb(192, 192, 192);
+    border-top: 1px solid rgb(192, 192, 192);
 }
 
 .icon-area {

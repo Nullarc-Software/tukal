@@ -127,12 +127,12 @@ export default defineComponent({
 		const parent = computed<TuTreeViewItemDefn>(() => attrs.parent as TuTreeViewItemDefn);
 
 		const treeState = ref<TreeState>();
-		const expandedKeys = new Set<string>([...props.expandedTypes, ...props.expandedIds]);
 		// Create a tree state object for only root nodes.
-		if (props.treeState !== null)
+		if (props.treeState !== null && props.treeState !== undefined)
 			treeState.value = props.treeState;
 
 		else {
+			const expandedKeys = new Set<string>([...props.expandedTypes, ...props.expandedIds]);
 			treeState.value = useGraph(
 				props.selectedItem,
 				(selectedItem) => emit("update:selectedItem", selectedItem),
@@ -203,7 +203,7 @@ li.drag-over {
 
 .node-child {
     margin-left: 37px !important;
-    border-left: 1px dashed rgb(192, 192, 192);
+    border-left: 1px solid rgb(192, 192, 192);
     display: block;
 }
 

@@ -1147,7 +1147,7 @@ export default defineComponent({
 					sort: true
 				},
 				valueFormatter: function (cellData, rowData) {
-					console.log("formatter called");
+					//  console.log("formatter called");
 					return cellData.substr(0, 2);
 				}
 			},
@@ -1158,7 +1158,7 @@ export default defineComponent({
 					sort: true
 				},
 				valueFormatter: function (cellData, rowData) {
-					console.log(rowData);
+					// console.log(rowData);
 					return cellData.substr(0, 2);
 				}
 			},
@@ -1297,14 +1297,14 @@ export default defineComponent({
 						type: "folder",
 						children: [
 							{
-								id: "temp",
+								id: "temp2",
 								name: "Hello",
 								type: "switch",
 								isComponent: true,
 								component: "TuSwitch"
 							},
 							{
-								id: "temp1",
+								id: "temp3",
 								name: "Hello ABC",
 								type: "folder"
 							}
