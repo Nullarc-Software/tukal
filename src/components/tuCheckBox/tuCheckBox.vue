@@ -29,7 +29,9 @@
 			/>
 			<div class="tu-checkbox-mask" :indeterminate="indeterminate">
 				<slot v-if="$slots.icon" name="icon" />
-				<tu-icon v-else>check</tu-icon>
+				<tu-icon v-else-if="!indeterminate">check</tu-icon>
+				<tu-icon v-else>horizontal_rule</tu-icon>
+
 			</div>
 		</div>
 		<label
@@ -68,7 +70,7 @@ export default defineComponent({
 			default: false
 		}
 	},
-	emits: ["update:modelValue", "change", "click", "blur"],
+	emits: ["update:modelValue", "change", "click", "blur", "update:checked"],
 	setup (props, context) {
 		const uid = uid_++;
 
@@ -130,6 +132,8 @@ export default defineComponent({
 							);
 						}
 					}
+
+					context.emit("update:checked", !props.checked);
 				},
 				blur: (evt: EventTarget) => {
 					context.emit("blur", evt);
@@ -146,7 +150,7 @@ export default defineComponent({
 			if (props.modelValue) {
 				if (typeof props.modelValue === "boolean")
 					isChecked = props.modelValue;
-				 else if (
+				else if (
 					typeof props.modelValue === "object" &&
 					props.modelValue !== null
 				) {
@@ -165,10 +169,12 @@ export default defineComponent({
 
 					if (containValue)
 						return false;
-					 else
+					else
 						return true;
 				}
 			}
+			else if (props.checked || props.indeterminate)
+				isChecked = true;
 			else
 				isChecked = false;
 

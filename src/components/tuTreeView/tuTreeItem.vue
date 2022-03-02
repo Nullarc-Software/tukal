@@ -21,8 +21,8 @@
 		>
 			<div>
 				<div v-if="isCheckable" style="display: flex">
-					<!-- <tu-checkbox :checked="checkboxState"  :indeterminate="checkboxIndeterminate">{{ itemClone.name }}</tu-checkbox> -->
-					<input
+					<tu-checkbox v-model:checked="checkboxState"  :indeterminate="checkboxIndeterminate">{{ itemClone.name }}</tu-checkbox>
+					<!-- <input
 						@contextmenu.prevent
 						@change="updateCheckState"
 						type="checkbox"
@@ -34,9 +34,9 @@
 					>
 						<slot name="icon"></slot>
 						<slot name="prepend"></slot>
-					</div>
+					</div> -->
 					<component v-if="item.isComponent" :is="item.component" v-bind="item.componentProps" />
-					<label v-else for="checkbox">{{ itemClone.name }}</label>
+					<!-- <label v-else for="checkbox">{{ itemClone.name }}</label> -->
 				</div>
 				<div
 					class="d-flex"
@@ -97,8 +97,8 @@ export default defineComponent({
 
 	setup (props, { emit, attrs }) {
 		const checkbox = ref<HTMLInputElement>();
-		// const checkboxState = ref(false);
-		// const checkboxIndeterminate = ref(false);
+		const checkboxState = ref(false);
+		const checkboxIndeterminate = ref(false);
 		const isSelected = computed(
 			() => props.selectedItem?.id === props.item.id
 		);
@@ -116,26 +116,31 @@ export default defineComponent({
 		onUnmounted(() => props.treeState?.untrackNode(props.item));
 
 		const updateCheckState = () => {
-			itemClone.value.checkedStatus = checkbox.value?.checked === true ? "true" : "false";
+			itemClone.value.checkedStatus = checkboxState.value === true ? "true" : "false";
 			emit("update:item", itemClone);
 			props.treeState!.emitItemCheckedChange(props.item);
 			notifyParentOfSelection(props.item!, props.treeState!);
 			cascadeStateToDescendants(props.item!, props.treeState!);
 		};
 
-		/* 	watch(checkboxState, (value) => {
+		watch(checkboxState, (value) => {
 			updateCheckState();
-		}); */
+		});
 
 		watch(
 			() => props.item.checkedStatus,
 			() => {
-				if (props.item.checkedStatus === "indeterminate")
-					checkbox.value!.indeterminate = true;
+				if (props.item.checkedStatus === "indeterminate") {
+					console.log(props.item.id + ":" + props.item.checkedStatus);
+					// checkbox.value!.indeterminate = true;
+					checkboxIndeterminate.value = true;
+					// checkboxState.value = true;
+				}
 				else {
-					checkbox.value!.indeterminate = false;
-					checkbox.value!.checked =
-						props.item.checkedStatus === "true";
+					checkboxIndeterminate.value = false;
+					checkboxState.value = props.item.checkedStatus === "true";
+					// checkbox.value!.indeterminate = false;
+					// checkbox.value!.checked = props.item.checkedStatus === "true";
 				}
 			}
 		);
@@ -152,6 +157,8 @@ export default defineComponent({
 		};
 
 		return {
+			checkboxState,
+			checkboxIndeterminate,
 			itemClone,
 			chevron,
 			isSelected,

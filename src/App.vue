@@ -274,6 +274,7 @@
 				</template>
 				{{ checkBox1 }}
 			</tu-checkbox>
+			<tu-checkbox v-model:checked="checkBox9" indeterminate>{{ checkBox9 }}</tu-checkbox>
 			<div class="">
 				<button @click="resetOpts" > Reset </button>
 				<ul class="centerx">
@@ -1025,6 +1026,7 @@ export default defineComponent({
 	setup (props, context) {
 		const active1 = ref(true);
 		const checkBox1 = ref(false);
+		const checkBox9 = ref(false);
 		const checkBox2 = ref(["luis"]);
 		const loading = ref(false);
 		const sideBar = ref("home");
@@ -1314,9 +1316,9 @@ export default defineComponent({
 			}
 		]); // define your tree items here.
 
-		watch(treeSelectedItems, (value) => {
+		/* 	watch(treeSelectedItems, (value) => {
 			console.log(value);
-		});
+		}); */
 
 		return {
 			treeSelectedItems,
@@ -1329,6 +1331,7 @@ export default defineComponent({
 			active1,
 			checkBox1,
 			checkBox2,
+			checkBox9,
 			justLoad,
 			resetOpts,
 			loading,
