@@ -703,7 +703,7 @@
 			<h4>Dropdown:</h4>
 			<hr />
 			aaa
-			<tu-popper arrow>
+			<tu-popper arrow border-radius="20px">
 				<button>click me</button>
 				<template #content>
 					<tu-popup-menu>
@@ -982,7 +982,6 @@ import * as components from "./components";
 import {
 	NotificationAttributes
 } from "./components/tuNotifications";
-import Popper from "vue3-popper";
 import {
 	Loading as LoadingConstructor,
 	LoadingAttributes
@@ -996,8 +995,7 @@ import { TuTreeViewItemDefn } from "./components/tuTreeView";
 
 export default defineComponent({
 	components: {
-		...components,
-		Popper
+		...components
 	},
 	data: () => ({
 		colors: [
@@ -1277,9 +1275,7 @@ export default defineComponent({
 			universities.value = temp;
 		});
 
-		const treeSelectedItems = ref<TuTreeViewItemDefn[]>([
-
-		]);
+		const treeSelectedItems = ref<TuTreeViewItemDefn[]>([]);
 		const treeItems = ref<TuTreeViewItemDefn[]>([
 			{
 				id: "aru",
@@ -1316,9 +1312,9 @@ export default defineComponent({
 			}
 		]); // define your tree items here.
 
-		/* 	watch(treeSelectedItems, (value) => {
+		watch(treeSelectedItems, (value) => {
 			console.log(value);
-		}); */
+		});
 
 		return {
 			treeSelectedItems,

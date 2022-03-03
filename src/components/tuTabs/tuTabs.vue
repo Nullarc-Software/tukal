@@ -130,7 +130,10 @@
 			<span :style="stylex" class="line-tu-tabs" />
 		</div>
 
-		<div class="con-slot-tabs">
+		<div class="con-slot-tabs" :style="{
+					width: fixedWidth,
+					height: fixedHeight,
+			}">
 			<slot />
 		</div>
 	</div>

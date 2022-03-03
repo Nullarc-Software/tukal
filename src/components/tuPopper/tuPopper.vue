@@ -5,7 +5,9 @@
        }"
        v-click-away="hide"
       >
-		<div ref="triggerNode" v-on="listeners" class="inline-block">
+		<div ref="triggerNode" v-on="listeners" class="inline-block" :style="{
+				width: fitPopperContainer ? '100%' : 'unset'
+			}">
 			<!-- The default slot to trigger the popper  -->
 			<slot />
 		</div>
@@ -13,6 +15,9 @@
 			<div
 				v-if="isOpen"
 				:class="['popper', isOpen ? 'inline-block' : null]"
+				:style="{
+					'border-radius': borderRadius ? `${borderRadius} !important` : null
+				}"
 				ref="popperNode"
 			>
 				<!-- A slot for the popper content -->
@@ -105,9 +110,17 @@ export default defineComponent({
 			type: String,
 			default: "0"
 		},
+		borderRadius: {
+			type: String,
+			default: null
+		},
 		cursorPointer: {
 			type: Boolean,
 			default: true
+		},
+		fitPopperContainer: {
+			type: Boolean,
+			default: false
 		}
 	},
 	setup (props, { slots, emit }) {

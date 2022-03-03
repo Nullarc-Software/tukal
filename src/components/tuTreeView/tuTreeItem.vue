@@ -130,17 +130,11 @@ export default defineComponent({
 		watch(
 			() => props.item.checkedStatus,
 			() => {
-				if (props.item.checkedStatus === "indeterminate") {
-					console.log(props.item.id + ":" + props.item.checkedStatus);
-					// checkbox.value!.indeterminate = true;
+				if (props.item.checkedStatus === "indeterminate")
 					checkboxIndeterminate.value = true;
-					// checkboxState.value = true;
-				}
 				else {
 					checkboxIndeterminate.value = false;
 					checkboxState.value = props.item.checkedStatus === "true";
-					// checkbox.value!.indeterminate = false;
-					// checkbox.value!.checked = props.item.checkedStatus === "true";
 				}
 			}
 		);
