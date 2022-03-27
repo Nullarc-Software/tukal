@@ -28,7 +28,7 @@
 				'min-width': getMinWidth,
 				'min-height': height,
 				...maxSize
-			}"			
+			}"
 		>
 		</textarea>
 
@@ -83,7 +83,7 @@ export default defineComponent({
 		width: {
 			default: null,
 			type: String
-		}		
+		}
 	},
 	setup (props, context) {
 		const isFocus = ref(false);
@@ -139,13 +139,13 @@ export default defineComponent({
 		watch(
 			localValue,
 			() => {
-				if (					
+				if (
 					localValue.value.length > props.counter
-				) {
+				)
 					context.emit("update:counterDanger", true);
-				} else {
+
+				else
 					context.emit("update:counterDanger", false);
-				}
 			}
 		);
 

@@ -51,7 +51,10 @@ export { default as tuDialog } from "./components/tuDialog";
 export { tuCollapse, tuCollapseItem } from "./components/tuCollapse";
 export { default as tuTextArea } from "./components/tuTextArea";
 export { tuTable, tuTd, tuTh, tuTr } from "./components/tuTable";
-
+export * from "./components/tuTable";
+export { tuTreeView, tuTreeItem } from "./components/tuTreeView";
+export { tuUpload } from "./components/tuUpload";
+export * from "./components/tuTreeView/types";
 // New Component import
 
 // layout

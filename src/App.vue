@@ -963,6 +963,12 @@
                    :hideGuideLines="false"
                    v-model:checkedItems="treeSelectedItems"/>
 		</div>
+
+		<div class="showcase-component">
+			<h4>Upload Component:</h4>
+			<hr />
+			<tu-upload singleUpload :limit="1"/>
+		</div>
 	</div>
 </template>
 

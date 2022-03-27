@@ -1,7 +1,7 @@
 <template>
   <i
     :style="iconStyle"
-    :class="[getIconPack, icon, iconClass, getBg, getBgSize, {'round':round}]"
+    :class="[getIconPack, icon, iconClass, getBg, getBgSize, {'round':round}, {'outlined': outlined}]"
     v-bind="$attrs"
     class="tu-icon notranslate icon-scale unselectable"
   >
@@ -45,6 +45,10 @@ export default defineComponent({
 		round: {
 			default: false,
 			type: Boolean
+		},
+		outlined: {
+			default: false,
+			type: Boolean
 		}
 
 	},
@@ -69,7 +73,8 @@ export default defineComponent({
 			classes[props.size] = true;
 			if (_color.isColor(props.color))
 				classes[`tu-icon-${props.color}`] = true;
-
+			if (getIconPack.value.includes("material-icons") && props.outlined)
+				classes["material-icons-outlined"] = true;
 			return classes;
 		});
 		const iconStyle = computed(() => {
