@@ -236,7 +236,7 @@
 			<h3>Cards:</h3>
 			<hr />
 			<tu-card-group>
-				<tu-card type="2" v-for="(card, key) in 6" :key="key">
+				<tu-card type="2" v-for="card in 6" :key="card">
 					<template #title>
 						<h3>Pot with a plant</h3>
 					</template>
@@ -274,6 +274,7 @@
 				</template>
 				{{ checkBox1 }}
 			</tu-checkbox>
+			<tu-checkbox v-model:checked="checkBox9" indeterminate>{{ checkBox9 }}</tu-checkbox>
 			<div class="">
 				<button @click="resetOpts" > Reset </button>
 				<ul class="centerx">
@@ -600,7 +601,7 @@
 				multiple
 				label-placeholder="Label-placeholder"
 				v-model="selectValue"
-				style="margin: 10px"
+
 				filter
 			>
 				<tu-option label="Test" value="1"> Test </tu-option>
@@ -702,7 +703,7 @@
 			<h4>Dropdown:</h4>
 			<hr />
 			aaa
-			<tu-popper arrow>
+			<tu-popper arrow border-radius="20px">
 				<button>click me</button>
 				<template #content>
 					<tu-popup-menu>
@@ -931,73 +932,42 @@
 				row-expand
 				multi-select
 				striped
+				size=""
 				v-model="selected"
 				v-model:numPages="numPages"
 				:page="page"
 				:pageSize="25"
-				:data="universities">
-				<template #thead>
+				:data="universities"
+				:columns="columns"
+				>
+				<!-- <template #thead>
 					<tu-th field="country" sort search> Country </tu-th>
-					<tu-th field="name" sort search width="100px"> Name </tu-th>
+					<tu-th field="name" sort search :index="1" width="500px"> Name </tu-th>
+					<tu-th field="name" sort search :index="2" width="500px"> Name </tu-th>
+					<tu-th field="name" sort search :index="3" width="500px"> Name </tu-th>
+					<tu-th field="name" sort search :index="4" width="500px"> Name </tu-th>
+					<tu-th field="name" sort search :index="5" width="500px"> Name </tu-th>
 					<tu-th field="web_pages" sort search> Web site </tu-th>
 					<tu-th field="something" sort search> No value </tu-th>
-				</template>
+				</template> -->
 				<template #footer>
 					<tu-pagination not-margin  flat v-model="page" :length="numPages" />
 				</template>
 			</tu-table>
-			<br />
-			Striped:
-			<tu-table striped>
-				<template #thead>
-					<tu-tr>					
-						<tu-th> Name </tu-th>
-						<tu-th> Email </tu-th>
-						<tu-th> Id </tu-th>
-					</tu-tr>
-				</template>
-				<template #tbody>
-					<tu-tr :key="i" v-for="(tr, i) in users" :data="tr">					
-						<tu-td>
-							{{ tr.name }}
-						</tu-td>
-						<tu-td>
-							{{ tr.email }}
-						</tu-td>
-						<tu-td>
-							{{ tr.id }}
-						</tu-td>
-						<template #expand>
-							<div class="con-content">
-								<div>
-									<tu-avatar>
-										<img
-											:src="`/avatars/avatar-${
-												i + 1
-											}.png`"
-											alt=""
-										/>
-									</tu-avatar>
-									<p>
-										{{ tr.name }}
-									</p>
-								</div>
-								<div>
-									<tu-button flat icon>
-										<i class="bx bx-lock-open-alt"></i>
-									</tu-button>
-									<tu-button flat icon>
-										Send Email
-									</tu-button>
-									<tu-button border danger>
-										Remove User
-									</tu-button>
-								</div>
-							</div>
-						</template>
-					</tu-tr>
-				</template>
-			</tu-table>
+		</div>
+		<div class="showcase-component">
+			<h4>Tree view component:</h4>
+			<hr />
+			<tu-tree-view :items="treeItems"
+                   :isCheckable="true"
+                   :hideGuideLines="false"
+                   v-model:checkedItems="treeSelectedItems"/>
+		</div>
+
+		<div class="showcase-component">
+			<h4>Upload Component:</h4>
+			<hr />
+			<tu-upload singleUpload :limit="1"/>
 		</div>
 	</div>
 </template>
@@ -1011,29 +981,27 @@ import {
 	provide,
 	ref,
 	watch,
-	reactive,
-	shallowRef
+	shallowRef,
+	markRaw
 } from "vue";
 import * as components from "./components";
 import {
-	Notification,
 	NotificationAttributes
 } from "./components/tuNotifications";
-import Popper from "vue3-popper";
 import {
 	Loading as LoadingConstructor,
 	LoadingAttributes
 } from "./components/tuLoading";
-import tuCheckbox from "./components/tuCheckBox";
 import testComponent from "./components/TestComponent.vue";
 import "material-icons/iconfont/material-icons.css";
 import axios from "axios";
-import * as _ from "lodash";
+import { TuHeaderDefn, TuTableContextMenuEntry } from "./components";
+import tuTableContextMenuVue from "./components/tuTable/tuTableContextMenu.vue";
+import { TuTreeViewItemDefn } from "./components/tuTreeView";
 
 export default defineComponent({
 	components: {
-		...components,
-		Popper
+		...components
 	},
 	data: () => ({
 		colors: [
@@ -1062,6 +1030,7 @@ export default defineComponent({
 	setup (props, context) {
 		const active1 = ref(true);
 		const checkBox1 = ref(false);
+		const checkBox9 = ref(false);
 		const checkBox2 = ref(["luis"]);
 		const loading = ref(false);
 		const sideBar = ref("home");
@@ -1130,12 +1099,12 @@ export default defineComponent({
 				progressAuto: true
 			};
 
-			new Notification(notificationAttrs);
+			/* new Notification(notificationAttrs);
 			notificationAttrs.position = "top-center";
 			notificationAttrs.color = "primary";
 			notificationAttrs.sticky = true;
 			notificationAttrs.flat = false;
-			new Notification(notificationAttrs);
+			new Notification(notificationAttrs); */
 		};
 
 		watch(selectValue, () => {
@@ -1147,6 +1116,73 @@ export default defineComponent({
 		watch(picked, () => {
 			console.log("picked: " + picked.value);
 		});
+
+		const menu : TuTableContextMenuEntry[] = [
+			{
+				caption: "More Options >",
+				hasSubMenu: true,
+				subMenu: [
+					{
+						caption: "Sample",
+						onClicked: (data) => {
+							console.log("Some data");
+							console.log(data);
+						}
+					}
+				]
+			}
+		];
+
+		const columns : TuHeaderDefn[] = [
+			{
+				caption: "Action",
+				field: "test",
+				isComponent: true,
+				component: markRaw(tuTableContextMenuVue),
+				componentProps: {
+					modelValue: menu,
+					customIcon: {
+						icon: "desktop_windows"
+					}
+				}
+			},
+			{
+				field: "country",
+				caption: "Country",
+				props: {
+					sort: true
+				},
+				valueFormatter: function (cellData, rowData) {
+					//  console.log("formatter called");
+					return cellData.substr(0, 2);
+				}
+			},
+			{
+				field: "name",
+				caption: "Name",
+				props: {
+					sort: true
+				},
+				valueFormatter: function (cellData, rowData) {
+					// console.log(rowData);
+					return cellData.substr(0, 2);
+				}
+			},
+			{
+				field: "web_pages",
+				caption: "Web Page",
+				props: {
+					sort: true
+				}
+			},
+			{
+				field: "something",
+				caption: "Undefined Col",
+				props: {
+					sort: true
+				}
+			}
+		];
 
 		const users = [
 			{
@@ -1233,7 +1269,6 @@ export default defineComponent({
 		const editStatic = ref("Some Text");
 		const universities = shallowRef([]);
 		axios.get("http://universities.hipolabs.com/search?country=India").then((response) => {
-
 			const temp = response.data;
 			temp.forEach((value) => {
 				value.expanded = {
@@ -1246,7 +1281,51 @@ export default defineComponent({
 			universities.value = temp;
 		});
 
+		const treeSelectedItems = ref<TuTreeViewItemDefn[]>([]);
+		const treeItems = ref<TuTreeViewItemDefn[]>([
+			{
+				id: "aru",
+				name: "test",
+				type: "folder",
+				children: [
+					{
+						id: "temp",
+						name: "Hello",
+						type: "switch",
+						isComponent: true,
+						component: "TuSwitch"
+					},
+					{
+						id: "temp1",
+						name: "Hello ABC",
+						type: "folder",
+						children: [
+							{
+								id: "temp2",
+								name: "Hello",
+								type: "switch",
+								isComponent: true,
+								component: "TuSwitch"
+							},
+							{
+								id: "temp3",
+								name: "Hello ABC",
+								type: "folder"
+							}
+						]
+					}
+				]
+			}
+		]); // define your tree items here.
+
+		watch(treeSelectedItems, (value) => {
+			console.log(value);
+		});
+
 		return {
+			treeSelectedItems,
+			treeItems,
+			columns,
 			universities,
 			numPages,
 			editStatic,
@@ -1254,6 +1333,7 @@ export default defineComponent({
 			active1,
 			checkBox1,
 			checkBox2,
+			checkBox9,
 			justLoad,
 			resetOpts,
 			loading,

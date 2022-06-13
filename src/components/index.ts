@@ -17,7 +17,8 @@ export { Loading, LoadingAttributes } from "./tuLoading";
 
 export { default as tuDivider } from "./tuDivider";
 export { default as tuIcon } from "./tuIcon";
-export { tuTable, tuTd, tuTh, tuTr } from "./tuTable";
+export { tuTable, tuTd, tuTh, tuTr, tuTableContextMenu } from "./tuTable";
+export * from "./tuTable";
 export { tuNavbar, tuNavbarGroup, tuNavbarItem } from "./tuNavbar";
 export { Notification, NotificationAttributes } from "./tuNotifications";
 export { tuSidebar, tuSidebarGroup, tuSidebarItem } from "./tuSideBar";
@@ -25,6 +26,9 @@ export { tuPopper, tuPopupMenu, tuPopupItem } from "./tuPopper";
 export { default as tuDialog } from "./tuDialog";
 
 export { tuCollapse, tuCollapseItem } from "./tuCollapse";
+export { tuTreeView, tuTreeItem } from "./tuTreeView";
+export { tuUpload } from "./tuUpload";
+export * from "./tuTreeView/types";
 
 // New Component import
 

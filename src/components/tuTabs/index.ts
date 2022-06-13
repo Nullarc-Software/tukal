@@ -1,15 +1,14 @@
-import tuComponent from './tuTabs.vue'
-import tuComponent2 from './tuTab.vue'
-import { VNode } from 'vue';
+import tuComponent from "./tuTabs.vue";
+import tuComponent2 from "./tuTab.vue";
+import { VNode } from "vue";
 
 tuComponent.install = (vue: any) => {
-  vue.component(tuComponent.name, tuComponent);
-  vue.component(tuComponent2.name, tuComponent2)
-}
+	vue.component(tuComponent.name, tuComponent);
+	vue.component(tuComponent2.name, tuComponent2);
+};
 
-if (typeof window !== 'undefined' && (<any>window).Vue) {
-  tuComponent.install((<any>window).Vue)  
-}
+if (typeof window !== "undefined" && (<any>window).Vue)
+	tuComponent.install((<any>window).Vue);
 
 export interface ChildData {
 	label: string;
@@ -28,7 +27,7 @@ export interface ChildData {
 
 export class TabId {
 	public tabId = 0;
-	public resetId() {
+	public resetId () {
 		this.tabId = 0;
 	}
 }

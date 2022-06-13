@@ -5,8 +5,6 @@ import DefineVuesaxMixin from "./defineGlobalMixin";
 
 import { App } from "vue";
 
-import "material-design-icons/iconfont/material-icons.css";
-
 const install = function (Vue : App, options : any = {}) {
 	// set default options
 
@@ -17,9 +15,8 @@ const install = function (Vue : App, options : any = {}) {
 	if (options) {
 		if (Object.prototype.hasOwnProperty.call(options, "theme")) {
 			if (Object.prototype.hasOwnProperty.call(options, "color")) {
-				if (typeof window !== "undefined") {
+				if (typeof window !== "undefined")
 					tuTheme.tufunction(options.theme.colors);
-				}
 			}
 		}
 	}
@@ -54,12 +51,14 @@ export { default as tuDialog } from "./components/tuDialog";
 export { tuCollapse, tuCollapseItem } from "./components/tuCollapse";
 export { default as tuTextArea } from "./components/tuTextArea";
 export { tuTable, tuTd, tuTh, tuTr } from "./components/tuTable";
-
+export * from "./components/tuTable";
+export { tuTreeView, tuTreeItem } from "./components/tuTreeView";
+export { tuUpload } from "./components/tuUpload";
+export * from "./components/tuTreeView/types";
 // New Component import
 
 // layout
 export { default as tuRow } from "./layout/tuRow";
 export { default as tuCol } from "./layout/tuCol";
 
-
-export * from "./utils"
+export * from "./utils";

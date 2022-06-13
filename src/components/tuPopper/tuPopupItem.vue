@@ -16,13 +16,12 @@
 			v-bind="$attrs"
 			:class="{'disabled':disabled}"
 			class="tu-dropdown--item-link"
-			v-on="$listeners"
 		>
 			{{ $attrs.disabled }}
 			<slot/>
 		</router-link>
-		<a	
-		v-else	
+		<a
+		v-else
 			v-bind="$attrs"
 			:class="{ disabled: disabled }"
 			class="tu-dropdown--item-link"
@@ -36,11 +35,7 @@
 import {
 	defineComponent,
 	inject,
-	onMounted,
-	onUpdated,
-	provide,
-	Ref,
-	ref,
+	ref
 } from "vue";
 import _color from "../../utils/color";
 export default defineComponent({
@@ -48,42 +43,42 @@ export default defineComponent({
 	inheritAttrs: false,
 	props: {
 		to: {},
-        onClickClose: {
-            default: false,
-            type: Boolean
-        },
+		onClickClose: {
+			default: false,
+			type: Boolean
+		},
 		disabled: {
 			default: false,
-			type: Boolean,
+			type: Boolean
 		},
 		divider: {
 			default: false,
-			type: Boolean,
-		},
+			type: Boolean
+		}
 	},
-	setup(props, context) {
-		let hoverx = ref(false);
-		let tuDropDownItem = ref(true);
-		let color = ref("");		
-        const closeParent = inject<Function>("closeParent");
-					
+	setup (props, context) {
+		const hoverx = ref(false);
+		const tuDropDownItem = ref(true);
+		const color = ref("");
+		const closeParent = inject<Function>("closeParent");
+
 		const giveColor = function (opacity = 1) {
 			return _color.rColor(color.value, opacity);
-		};		
+		};
 
-        const clickClose = function(){
-            if(props.onClickClose)
-                closeParent?.call(null);
-        }
+		const clickClose = function () {
+			if (props.onClickClose)
+				closeParent?.call(null);
+		};
 
 		return {
-            clickClose,
+			clickClose,
 			hoverx,
 			tuDropDownItem,
 			color,
-			giveColor,
+			giveColor
 		};
-	},
+	}
 });
 </script>
 

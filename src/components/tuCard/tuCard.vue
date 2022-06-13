@@ -7,7 +7,9 @@
 			:class="{ fitContent: fitContent, content: content, fillParent: fillParent}"
 			v-bind="$attrs"
 		>
-			<div v-if="type == '6'" class="tu-card__header">
+			<div v-if="type == '6'" class="tu-card__header" :style="{
+				'justify-content': justifyHeader
+			}">
 				<slot name="header" />
 			</div>
 			<div
@@ -44,13 +46,17 @@ export default defineComponent({
 			default: "1",
 			type: [String, Boolean]
 		},
+		justifyHeader: {
+			type: String,
+			default: "flex-end"
+		},
 		content: { type: Boolean, default: false },
 		fitContent: { type: Boolean, default: false },
 		fillParent: { type: Boolean, default: false },
-		backgroundColor: { type: String, default: "0x00000011" },
-		
+		backgroundColor: { type: String, default: "0x00000011" }
+
 	},
-	setup(props, context) {}
+	setup (props, context) {}
 });
 </script>
 
@@ -59,7 +65,7 @@ export default defineComponent({
 @import "../../style/sass/root";
 
 .tu-card-content {
-	--tu-color: var(--tu-primary);	
+	--tu-color: var(--tu-primary);
 
 	&.fillParent {
 		width: 100% !important;
@@ -279,7 +285,7 @@ export default defineComponent({
 
 				&:not(.content) {
 					transform: translate(0, 5px);
-				}				
+				}
 
 				.tu-card__content {
 					img {
@@ -292,7 +298,6 @@ export default defineComponent({
 
 	&.type-6 {
 
-		
 		.tu-card {
 
 			display: flex;
@@ -304,7 +309,7 @@ export default defineComponent({
 			}
 
 			&__text {
-				
+
 				bottom: 0;
 				display: flex;
 				flex-direction: column;
@@ -316,10 +321,10 @@ export default defineComponent({
 			}
 
 			&:hover {
-			
+
 				&:not(.content) {
 					transform: translate(0, 5px);
-				}				
+				}
 
 				.tu-card__content {
 					img {
@@ -375,7 +380,7 @@ export default defineComponent({
 
 	&__header {
 		display: flex;
-		justify-content: flex-end;
+
 		padding: 5px;
 	}
 
@@ -422,8 +427,6 @@ export default defineComponent({
 	&.fillParent {
 		width: 100% !important;
 		height: 100% !important;
-
-		
 
 	}
 

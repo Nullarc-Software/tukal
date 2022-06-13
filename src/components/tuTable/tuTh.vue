@@ -19,16 +19,17 @@
 			</div>
 			<tu-input v-if="search" block border v-model="colSearch" type="search" @keypress="keyPressed" />
 		</div>
-		<div class="tu-table__th__resizer_right" v-on="resizeListeners" v-if="!fixed">
+		<div class="tu-table__th__resizer_right" :class="{active: headerElement ? true : false}" v-on="resizeListeners" v-if="!fixed">
 		</div>
 	</th>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, getCurrentInstance, inject, onMounted, reactive, ref, watch } from "vue";
+import _ from "lodash";
+import { computed, defineComponent, getCurrentInstance, inject, onMounted, ref, watch } from "vue";
 import tuComponent from "../tuComponent";
 import tuIcon from "../tuIcon";
-import { TuTable } from "./tuTableStore";
+import { TuTableStore } from "./tuTableStore";
 
 export default defineComponent({
 	name: "TuTh",
@@ -60,29 +61,54 @@ export default defineComponent({
 		fixed: {
 			type: Boolean,
 			default: false
+		},
+		type: {
+			type: String,
+			default: "text"
+		},
+		index: {
+			type: Number,
+			default: null
 		}
 	},
 	setup (props, context) {
 		const instance = getCurrentInstance();
-		const tableInstance = inject<TuTable>("tableInstance");
+		const tableInstance = inject<TuTableStore>("tableInstance");
 		const tableId = inject<string>("tableId");
 		const colSearch = ref("");
 		const theader = ref<HTMLElement>();
 		const sortType = computed(() => {
-			return tableInstance.getSorters.value[props.field] ?? "none";
+			const item = _.find(tableInstance.getSorters.value, (value) => {
+				return value.field === props.field;
+			});
+			return item ? item.dir : "none";
 		});
-		const headerDefn = tableInstance.getHeaderObject(props.field);
+		const headerDefn = tableInstance.getHeaderObject(props.index ?? props.field);
 
-		let headerElement;
+		let headerElement = ref<HTMLElement>();
 		let startOffset = 0;
 
 		function keyPressed (event: KeyboardEvent) {
-			if (event.key === "Enter")
-				tableInstance.setFilter(props.field, colSearch.value);
+			if (event.key === "Enter") {
+				switch (props.type) {
+				case "text":
+					tableInstance.setFilter(props.field, "like", colSearch.value);
+					break;
+				case "number":
+					tableInstance.setFilter(props.field, "equals", colSearch.value);
+					break;
+				case "date":
+					tableInstance.setFilter(props.field, "in", colSearch.value);
+					break;
+				default:
+					break;
+				}
+			}
 		};
 
 		function toggleSort (event) {
-			tableInstance.toggleSort(props.field);
+			if (props.sort)
+				tableInstance.toggleSort(props.field);
 		}
 
 		watch(colSearch, (value) => {
@@ -91,27 +117,37 @@ export default defineComponent({
 		});
 
 		function trackMouseMove (event: MouseEvent) {
-			if (headerElement)
-				headerDefn.width = startOffset + event.pageX + "px";
+			if (headerElement.value) {
+				const newWidth = startOffset + event.pageX;
+				if (newWidth >= headerDefn.minWidth && newWidth <= headerDefn.maxWidth)
+					headerDefn.width = startOffset + event.pageX + "px";
+				else if (newWidth < headerDefn.minWidth)
+					headerDefn.width = headerDefn.minWidth + "px";
+				else
+					headerDefn.width = headerDefn.maxWidth + "px";
+ 			}
 		}
 
 		function trackMouseUp (event) {
-			headerElement = undefined;
+			headerElement.value = undefined;
 		}
 
 		const resizeListeners = {
 			mousedown: function (event) {
-				headerElement = theader.value;
-				startOffset = headerElement.offsetWidth - event.pageX;
+				headerElement.value = theader.value;
+				startOffset = headerElement.value.offsetWidth - event.pageX;
 				document.addEventListener("mousemove", trackMouseMove);
 				document.addEventListener("mouseup", trackMouseUp);
 			}
 		};
 
 		onMounted(() => {
+			if (headerDefn)
+				headerDefn.element = theader.value;
 		});
 
 		return {
+			headerElement,
 			theader,
 			colSearch,
 			sortType,
@@ -128,7 +164,7 @@ export default defineComponent({
 .tu-table__th {
 	padding: 10px 12px;
 	text-align: left;
-	transition: all 0.25s ease;
+	
 	font-size: 0.8rem;
 	border: 0px;
 	position: relative;
@@ -163,11 +199,16 @@ export default defineComponent({
 	&__resizer {
 		&_right {
 			position: absolute;
-			width: 5px;
+			width: 2px;
 			cursor: w-resize;
 			right: 0;
 			top: 0;
 			bottom: 0;
+			background-color: -getColor("text", 0.05);
+
+			&.active {
+				background-color: -getColor("primary");
+			}
 		}
 	}
 

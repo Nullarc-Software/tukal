@@ -48,10 +48,10 @@ const setVar = (propertyName: string, value: string, el: any) => {
 			`--tu-${propertyName}`,
 			value
 		);
-	} else {
-		if (el.nodeName !== "#comment") {
+	}
+	else {
+		if (el.nodeName !== "#comment")
 			el.style.setProperty(`--tu-${propertyName}`, value);
-		}
 	}
 };
 
@@ -89,38 +89,37 @@ const setColor = (
 	let newColor;
 
 	if (color === "dark" && el) {
-		if (addClass) {
+		if (addClass)
 			el.classList.add("tu-component-dark");
-		}
 	}
 
 	if (isRGB) {
 		const arrayColor = color.replace(/[rgba()]/g, "").split(",");
 		newColor = `${arrayColor[0]},${arrayColor[1]},${arrayColor[2]}`;
 		setVar(colorName, newColor, el);
-		if (addClass) {
+		if (addClass)
 			el.classList.add("tu-change-color");
-		}
-	} else if (isHEX) {
+	}
+	else if (isHEX) {
 		const rgb = hexToRgb(color);
 		newColor = `${rgb!.r},${rgb!.g},${rgb!.b}`;
 		setVar(colorName, newColor, el);
-		if (addClass) {
+		if (addClass)
 			el.classList.add("tu-change-color");
-		}
-	} else if (isColor(color)) {
+	}
+	else if (isColor(color)) {
 		const style = window.getComputedStyle(document.body);
 		newColor = style.getPropertyValue("--tu-" + color);
 		setVar(colorName, newColor, el);
-		if (addClass) {
+		if (addClass)
 			el.classList.add("tu-change-color");
-		}
-	} else if (isRGBNumbers) {
+	}
+	else if (isRGBNumbers) {
 		setVar(colorName, color, el);
-		if (addClass) {
+		if (addClass)
 			el.classList.add("tu-change-color");
-		}
-	} else {
+	}
+	else {
 		//     consolee.warn({
 		//       el,
 		//       link: 'https://lusaxweb.github.io/vuesax/',
@@ -170,15 +169,18 @@ const getColor = (color: string, alphax = 1) => {
 	if (isRGB) {
 		const arrayColor = color.replace(/[rgba()]/g, "").split(",");
 		newColor = `${arrayColor[0]},${arrayColor[1]},${arrayColor[2]}`;
-	} else if (isHEX) {
+	}
+	else if (isHEX) {
 		const rgb = hexToRgb(color);
 		newColor = `${rgb!.r},${rgb!.g},${rgb!.b}`;
-	} else if (isColor(color)) {
+	}
+	else if (isColor(color)) {
 		const style = window.getComputedStyle(document.body);
 		newColor = style.getPropertyValue("--tu-" + color);
-	} else if (isRGBNumbers) {
-		newColor = color;
 	}
+	else if (isRGBNumbers)
+		newColor = color;
+
 	return newColor;
 };
 
@@ -210,7 +212,8 @@ const setCords = (element: any, parent: any) => {
 		style.width = `${w}px`;
 		element.classList.add("top");
 		parent.classList.add("top");
-	} else {
+	}
+	else {
 		style.top = `${y + scrollTop + h - 4}px`;
 		style.left = `${x}px`;
 		style.width = `${w}px`;
@@ -252,39 +255,46 @@ const setCordsPosition = (element: any, parent: any, position: string) => {
 		const left = x + (w - element.getBoundingClientRect().width) / 2;
 
 		if (left + element.getBoundingClientRect().width < window.innerWidth) {
-			if (left > 0) {
+			if (left > 0)
 				style.left = `${left}px`;
-			} else {
+
+			else {
 				style.left = "10px";
 				element.classList.add("notArrow");
 			}
-		} else {
+		}
+		else {
 			style.left = "auto";
 			style.right = "10px";
 			element.classList.add("notArrow");
 		}
-	} else if (position == "bottom") {
+	}
+	else if (position == "bottom") {
 		style.top = `${y + scrollTop + h + 8}px`;
 		const left = x + (w - element.getBoundingClientRect().width) / 2;
 
 		if (left + element.getBoundingClientRect().width < window.innerWidth) {
-			if (left > 0) {
+			if (left > 0)
 				style.left = `${left}px`;
-			} else {
+
+			else {
 				style.left = "10px";
 				element.classList.add("notArrow");
 			}
-		} else {
+		}
+		else {
 			style.left = "auto";
 			style.right = "10px";
 			element.classList.add("notArrow");
 		}
-	} else if (position == "left") {
+	}
+	else if (position == "left") {
 		style.top = `${y +
 			scrollTop +
 			(h - element.getBoundingClientRect().height) / 2}px`;
 		style.left = `${x - element.getBoundingClientRect().width - 8}px`;
-	} else if (position == "right") {
+	}
+	else if (position == "right") {
 		style.top = `${y +
 			scrollTop +
 			(h - element.getBoundingClientRect().height) / 2}px`;

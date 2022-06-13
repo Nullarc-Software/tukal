@@ -1,5 +1,5 @@
 <template>
-	<div class="tu-table-content">
+	<div class="tu-table-content" ref="tableContainer">
 		<header v-if="$slots.header" class="tu-table__header">
 			<slot name="header" />
 		</header>
@@ -13,24 +13,36 @@
 			}"
 		>
 			<table class="tu-table__element" ref="tableElement">
-				<colgroup>
-					<col v-if="rowExpand" style="width:50px" />
-					<col v-if="multiSelect" style="width:50px" />
-					<col v-for="header in table.getTableHeaders.value" 
-						:key="header.index"
-						:style="{
-							width: header.width
-						}"
-					/>
-				</colgroup>
 				<thead ref="thead" class="tu-table__thead">
-					<tu-th v-if="rowExpand" fixed  @click="expandedAll = !expandedAll">
-						<tu-icon class="tu-table__tr_expand_handle" :class="{ expanded: expandedAll }">keyboard_arrow_right</tu-icon>
+					<tu-th
+						v-if="rowExpand"
+						fixed
+						@click="expandedAll = !expandedAll"
+						style="width: 50px"
+					>
+						<tu-icon
+							class="tu-table__tr_expand_handle"
+							:class="{ expanded: expandedAll }"
+							>keyboard_arrow_right</tu-icon
+						>
 					</tu-th>
-					<tu-th v-if="multiSelect" fixed >
+					<tu-th v-if="multiSelect" fixed style="width: 50px">
 						<tu-checkbox v-model="selectedAll" indeterminate />
 					</tu-th>
-					<slot name="thead" />
+					<tu-th
+						v-for="header in table.getTableHeaders.value"
+						:key="header.index"
+						:field="header.field"
+						:style="{
+							width: header.width,
+							minWidth: header.minWidth,
+							maxWidth: header.maxWidth,
+						}"
+						:sort="header.props ? header.props.sort : false"
+						:search="header.props ? header.props.search : false"
+					>
+						{{ header.caption }}
+					</tu-th>
 				</thead>
 				<tbody class="tu-table__tbody">
 					<slot v-if="$slots.tbody" name="tbody" />
@@ -43,13 +55,20 @@
 						:expanded="expandedAll"
 						:expandHandle="rowExpand"
 						@rowExpanded="tr.expanded = $event"
-						@rowClick="rowListeners.click($event)"
+						@rowClick="rowListeners.click($event, this)"
 					>
 						<tu-td expand v-if="rowExpand">
-							<tu-icon class="tu-table__tr_expand_handle" :class="{ expanded: tr.expanded }">keyboard_arrow_right</tu-icon>
+							<tu-icon
+								class="tu-table__tr_expand_handle"
+								:class="{ expanded: tr.expanded }"
+								>keyboard_arrow_right</tu-icon
+							>
 						</tu-td>
 						<tu-td checkbox v-if="multiSelect">
-							<tu-checkbox v-model="tr.selected" :checked="selectedAll" />
+							<tu-checkbox
+								v-model="tr.selected"
+								:checked="selectedAll"
+							/>
 						</tu-td>
 						<tu-td
 							v-for="(th, j) in table.getTableHeaders.value"
@@ -57,20 +76,37 @@
 						>
 							<span
 								:title="tr.rowData[th.field]"
-								v-if="_.isArrayLike(tr.rowData[th.field]) || _.isUndefined(tr.rowData[th.field])"
+								v-if="th.isComponent === false"
 							>
-								{{ tr.rowData[th.field] ?? "undefined" }}
+								{{
+									th.valueFormatter ?
+										th.valueFormatter(tr.rowData[th.field], tr.rowData) :
+										(th.field.indexOf(".") !== -1) ? getNestedField(tr.rowData, th.field) :
+										tr.rowData[th.field] ?? "undefined"
+								}}
 							</span>
-							<component v-else-if="_.isObjectLike(tr.rowData[th.field])" :is="tr.rowData[th.field].component ?? require(`${tr.rowData[th.field].componentName}`)" v-bind="tr.rowData[th.field].props" />							
+							<component
+								v-else-if="th.isComponent"
+								:is="th.component"
+								v-bind="th.componentProps"
+								:rowIndex="tr.index"
+								:rowData="tr.rowData"
+							/>
 						</tu-td>
-						<template #expand v-if="tr.rowData['expanded']" >
-								<component :is="tr.rowData['expanded'].component ?? require(`${tr.rowData['expanded'].componentName}`)" v-bind="tr.rowData['expanded'].props" />
+						<template #expand v-if="tr.rowData['expanded']">
+							<component
+								:is="
+									tr.rowData['expanded'].component ??
+									require(`${tr.rowData['expanded'].componentName}`)
+								"
+								v-bind="tr.rowData['expanded'].props"
+							/>
 						</template>
 					</tu-tr>
 				</tbody>
 			</table>
 		</div>
-		<footer v-if="$slots.footer">
+		<footer style="display: flex" v-if="$slots.footer">
 			<slot name="footer" />
 		</footer>
 	</div>
@@ -80,7 +116,6 @@
 import {
 	computed,
 	defineComponent,
-	nextTick,
 	onBeforeUnmount,
 	onMounted,
 	PropType,
@@ -90,8 +125,12 @@ import {
 } from "vue";
 import * as _ from "lodash";
 import tuComponent from "../tuComponent";
-import { TableIdentifierAuto, TuTable, TuTableServerModel } from "./tuTableStore";
-import resizableGrid from "./resizable";
+import {
+	TableIdentifierAuto,
+	TuTableStore,
+	TuTableServerModel,
+	TuTableRow
+} from "./tuTableStore";
 
 export default defineComponent({
 	name: "TuTable",
@@ -100,11 +139,11 @@ export default defineComponent({
 		modelValue: {},
 		pageSize: {
 			type: Number,
-			default: -1
+			default: 10
 		},
 		page: {
 			type: Number,
-			default: 0
+			default: 1
 		},
 		numPages: {
 			type: Number,
@@ -145,7 +184,7 @@ export default defineComponent({
 			default: "local"
 		},
 		/**
-		 * The Data for the table. ignored in Server Side model
+		 * The Data for the table. ignored in Server Side model. SSM This contains the table data.
 		 */
 		data: {
 			type: Object,
@@ -164,15 +203,19 @@ export default defineComponent({
 		serverSideConfig: {
 			type: Object as PropType<TuTableServerModel>,
 			default: () => {
-				return { };
+				return {};
 			}
 		},
 		rowExpand: {
 			type: Boolean,
 			default: false
+		},
+		columns: {
+			type: Object as () => any[],
+			default: () => []
 		}
 	},
-	emits: ["update:modelValue", "update:numPages"],
+	emits: ["update:modelValue", "update:numPages", "update:data", "update:tableInstance"],
 	provide () {
 		return {
 			selected: (data) => {
@@ -186,25 +229,25 @@ export default defineComponent({
 		const colspan = ref(0);
 		const thead = ref<HTMLHeadElement>();
 		const tableElement = ref<HTMLTableElement>();
-		let table: TuTable;
+		const tableContainer = ref<HTMLDivElement>();
+		const selectedAll = ref(false);
+		const expandedAll = ref(false);
+
+		let table: TuTableStore;
 
 		if (props.multiSelect && props.rowExpand)
-			table = new TuTable(props.id, 2);
+			table = new TuTableStore(props.id, 2);
 		else if (props.multiSelect || props.rowExpand)
-			table = new TuTable(props.id, 1);
-		else
-			table = new TuTable(props.id, 0);
+			table = new TuTableStore(props.id, 1);
+		else table = new TuTableStore(props.id, 0);
 
-		if (props.model === "local")
-			table.setTableData(props.data);
+		if (props.model === "local") table.setTableData(props.data);
 		else {
 			table.serverSideModel = true;
 			table.serverModelProps = reactive(props.serverSideConfig);
 		}
 
-		table.constructHeaders(context.slots.thead());
-		const selectedAll = ref(false);
-		const expandedAll = ref(false);
+		table.constructHeaders(props.columns);
 
 		const isMultipleSelected = computed(() => {
 			return _.isArray(props.modelValue);
@@ -229,19 +272,7 @@ export default defineComponent({
 			}
 		};
 
-		onMounted(() => {
-			if (thead.value)
-				colspan.value = thead.value.querySelectorAll("th").length;
-
-			
-		});
-
-		onBeforeUnmount(() => {
-			table = undefined; // Force free up mem on next gc call
-		});
-
-		watch(
-			[() => props.pageSize, () => props.page],
+		watch([() => props.pageSize, () => props.page],
 			() => {
 				table.setPaging(props.pageSize, props.page);
 			},
@@ -261,21 +292,56 @@ export default defineComponent({
 			}
 		);
 
+		watch(table.getTableData, () => {
+			const newVal = table.getTableData.value as Array<TuTableRow>;
+			context.emit("update:data", newVal);
+		});
+
 		watch(table.getSelectedRows, () => {
 			const newVal = table.getSelectedRows.value as Array<any>;
 			context.emit("update:modelValue", newVal);
 		});
 
+		onMounted(() => {
+			if (thead.value)
+				colspan.value = thead.value.querySelectorAll("th").length;
+
+			const lastHeader = table.getHeaderObject(-1);
+			if (lastHeader) {
+				const len = tableContainer.value.offsetWidth + tableContainer.value.offsetLeft;
+				lastHeader.width = (tableContainer.value.offsetWidth - lastHeader.element.offsetLeft ?? 0) + "px";
+			}
+
+			context.emit("update:tableInstance", table);
+		});
+
+		onBeforeUnmount(() => {
+			table = undefined; // Force free up mem on next gc call
+		});
+
+		const getNestedField = function (rowData: any, key: string) {
+			const keys = key.split(".");
+			let obj: any = rowData;
+			for (const key of keys) {
+				if (obj[key])
+					obj = obj[key];
+			}
+
+			return obj;
+		};
+
 		return {
+			tableContainer,
 			tableElement,
 			selectedAll,
 			expandedAll,
-			_: _,
+			ldash: _,
 			thead,
 			isMultipleSelected,
 			selected,
 			table,
-			rowListeners
+			rowListeners,
+			getNestedField
 		};
 	}
 });
@@ -285,7 +351,7 @@ export default defineComponent({
 @import "../../style/sass/_mixins";
 
 .tu-table-content {
-	width: fit-content;
+	width: 100%;
 
 	// box-shadow: 0px 5px 22px 0px rgba(0,0,0, -var(shadow-opacity))
 	border-radius: 16px;
@@ -296,10 +362,10 @@ export default defineComponent({
 
 .tu-table__element {
 	table-layout: fixed;
+	width: max-content;
 }
 
 .tu-table {
-	width: 100%;
 	font-size: 0.9rem;
 	margin: 0px;
 	overflow: auto;
@@ -307,7 +373,7 @@ export default defineComponent({
 	::v-deep(table) {
 		margin: 0px;
 		border-collapse: collapse;
-		width: 100%;
+
 		border: 0px;
 	}
 
@@ -320,7 +386,6 @@ export default defineComponent({
 	}
 
 	&__tr_expand_handle {
-
 		transition: all 0.25s ease;
 		&.expanded {
 			transform: rotate(90deg);
@@ -360,6 +425,7 @@ export default defineComponent({
 	}
 
 	&__tbody {
+		background-color: -getColor("background");
 		&:empty {
 			display: none;
 			background: #000;
@@ -404,8 +470,9 @@ export default defineComponent({
 	&__thead {
 		width: 100%;
 		position: sticky;
-		top:0;
+		top: 0;
 		z-index: 2;
+		border-bottom: 1px solid -getColor("text", 0.2);
 		::v-deep(.tu-table__th) {
 			background: -getColor("gray-2");
 
