@@ -24,9 +24,7 @@ module.exports = {
 		config.optimization.minimize(true);		
 	},
 	css: {
-		extract: {
-			ignoreOrder: true
-		}
+		extract: false
 	},
 	parallel: false
 };

@@ -190,7 +190,7 @@ export default defineComponent({
 	--tu-button-margin: 5px;
 	--tu-button-border-radius: 12px;
 	--tu-button-text-color: 255, 255, 255;
-	border: 0px;
+	border: 0px;	
 	margin: 5px;
 	border-radius: -var(button-border-radius);
 	transition: all 0.25s ease;
