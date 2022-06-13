@@ -1,22 +1,24 @@
 {
   "name": "tukal",
-  "version": "0.1.0",
-  "private": true,
+  "version": "0.0.6",
   "types": "dist/index.d.ts",
   "scripts": {
     "serve": "vue-cli-service serve src/main.ts",
     "inspect": "vue-cli-service inspect",
-    "build": "vue-cli-service build --mode development --target lib --name tukal src/main.lib.ts",
+    "build": "vue-cli-service build --target lib --name tukal ./src/index.ts",
     "lint": "vue-cli-service lint"
   },
-  "main": "dist/tukal.cjs.js",
+  "main": "./dist/tukal.common.js",
+  "files": [
+    "dist/*"
+  ],
   "unpkg": "dist/tukal.umd.min.js",
   "jsdelivr": "dist/tukal.umd.min.js",
   "dependencies": {
     "@babel/runtime": "^7.17.2",
     "babel-loader": "^8.2.3",
     "copy-webpack-plugin": "^10.2.4",
-    "core-js": "^3.21.1",
+    "core-js": "^3.8.3",
     "lodash": "^4.17.21",
     "material-design-icons": "^3.0.1",
     "node": "^17.4.0",
@@ -24,8 +26,8 @@
     "pinia": "2.0.11",
     "sass": "^1.49.8",
     "ts-loader": "^9.2.6",
-    "vue": "3.2.31",
-    "vue-router": "^4.0.12",
+    "vue": "^3.2.13",
+    "vue-router": "^4.0.3",
     "vue-sfc-rollup": "^4.1.1",
     "vue3-popper": "^1.4.1",
     "webpack": "^5.69.1"
