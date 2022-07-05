@@ -1,97 +1,90 @@
 <template>
-  <transition
-	@before-enter="beforeEnter"
-	@enter="enter"
-	@leave="leave"
-	>
+	<transition @before-enter="beforeEnter" @enter="enter" @leave="leave">
+		<div
+			v-if="active"
+			ref="alert"
+			:class="[
+				`con-tu-alert-${color}`,
+				{
+					'con-icon': icon
+				}
+			]"
+			:style="styleAlert"
+			class="con-tu-alert"
+			v-bind="$attrs"
+		>
+			<div
+				v-if="closable"
+				class="con-x tu-alert--close"
+				@click="$emit('update:active', false)"
+			>
+				<tu-icon :icon-pack="iconPack" :icon="closeIcon"></tu-icon>
+			</div>
 
-	<div
-	  v-if="active"
-	  ref="alert"
-	  :class="[`con-tu-alert-${color}`,{
-		'con-icon':icon,
-	  }]"
-	  :style="styleAlert"
-	  class="con-tu-alert"
-	  v-bind="$attrs"
-	  >
-	  <div
-		v-if="closable"
-		class="con-x tu-alert--close"
-		@click="$emit('update:active',false)">
-		<tu-icon
-		  :icon-pack="iconPack"
-		  :icon="closeIcon"
-		></tu-icon>
-	  </div>
+			<h4
+				v-if="title"
+				:style="styleTitle"
+				class="titlex tu-alert--title"
+				v-text="title"
+			></h4>
 
-	  <h4
-		v-if="title"
-		:style="styleTitle"
-		class="titlex tu-alert--title"
-		v-text="title"
-	  ></h4>
-
-	  <div
-		:class="{'con-icon': icon}"
-		class="tu-alert">
-		<tu-icon
-		  v-if="icon"
-		  :icon-pack="iconPack"
-		  :icon="icon"
-		  class="icon-alert"
-		></tu-icon>
-		<slot/>
-	  </div>
-	</div>
-  </transition>
+			<div :class="{ 'con-icon': icon }" class="tu-alert">
+				<tu-icon
+					v-if="icon"
+					:icon-pack="iconPack"
+					:icon="icon"
+					class="icon-alert"
+				></tu-icon>
+				<slot />
+			</div>
+		</div>
+	</transition>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, getCurrentInstance, nextTick, onMounted, ref } from "vue";
+import { computed, defineComponent, nextTick, onMounted, ref } from "vue";
 import _color from "../../utils/color";
-import tuIcon from "../tuIcon"
+import tuIcon from "../tuIcon";
 
 export default defineComponent({
 	name: "TuAlert",
-	
+
 	props: {
 		active: {
 			type: [Boolean, String],
-			default: true,
+			default: true
 		},
 		title: {
 			type: String,
-			default: null,
+			default: null
 		},
 		closable: {
 			type: Boolean,
-			default: false,
+			default: false
 		},
 		color: {
 			type: String,
-			default: "primary",
+			default: "primary"
 		},
 		margin: {
 			type: [String, Boolean],
-			default: "10px",
+			default: "10px"
 		},
 		icon: {
 			type: String,
-			default: null,
+			default: null
 		},
 		closeIcon: {
 			type: String,
-			default: "close",
+			default: "close"
 		},
 		iconPack: {
 			type: String,
-			default: "material-icons",
-		},
+			default: "material-icons"
+		}
 	},
-	setup(props, context) {
-		
-		let alert = ref<HTMLDivElement>();
+	setup (props, context) {
+		const alert = ref<HTMLDivElement>();
 
 		const styleAlert = computed(() => {
 			return {
@@ -100,7 +93,7 @@ export default defineComponent({
 					props.color,
 					0.15
 				)}`,
-				color: _color.getColor(props.color, 1),
+				color: _color.getColor(props.color, 1)
 			};
 		});
 		const styleTitle = computed(() => {
@@ -108,7 +101,7 @@ export default defineComponent({
 				boxShadow: `0px 6px 15px -7px ${_color.getColor(
 					props.color,
 					0.4
-				)}`,
+				)}`
 			};
 		});
 
@@ -117,7 +110,7 @@ export default defineComponent({
 			el.style.opacity = 0;
 		};
 		const enter = (el, done) => {
-			let h = alert.value?.scrollHeight;
+			const h = alert.value?.scrollHeight;
 			(alert.value as any).style.height = h + "px";
 			el.style.opacity = 1;
 			done();
@@ -125,18 +118,16 @@ export default defineComponent({
 		const leave = (el, done) => {
 			el.style.height = 0 + "px";
 			el.style.opacity = 0;
-		
-		}
+		};
 
 		onMounted(() => {
-			if(alert.value){
+			if (alert.value) {
 				nextTick(() => {
-					let h = alert.value?.scrollHeight;
-					(alert.value as any).style.height = h + "px";	
+					const h = alert.value?.scrollHeight;
+					(alert.value as any).style.height = h + "px";
 				});
 			}
 		});
-
 
 		return {
 			alert,
@@ -145,7 +136,7 @@ export default defineComponent({
 			beforeEnter,
 			enter,
 			leave
-		}
+		};
 	},
 	components: {
 		tuIcon
@@ -154,7 +145,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-
 @import "../../style/sass/_mixins";
 @import "../../style/sass/_colors";
 
@@ -197,26 +187,23 @@ export default defineComponent({
 	cursor: pointer;
 	transition: all 0.2s ease;
 	&:hover {
-		box-shadow: 0px 5px 15px 0px rgba(0,0,0,0.1);
+		box-shadow: 0px 5px 15px 0px rgba(0, 0, 0, 0.1);
 	}
 }
 
-@each $color, $index in --tu-colors{
-    .con-tu-alert-#{$color}{
-        background: -getColor($color, .15);
-        box-shadow: 0px 0px 25px 0px -getColor($color, .15);
-        color: -getColor($color, 1);
-        h4{
-            box-shadow: 0px 6px 15px -7px -getColor($color, .4);
-        }
-        
-        .con-x{
-            background: -getColor($color, 1);
-            color: rgb(255,255,255);
-        }   
-        
-    }    
+@each $color, $index in --tu-colors {
+	.con-tu-alert-#{$color} {
+		background: -getColor($color, 0.15);
+		box-shadow: 0px 0px 25px 0px -getColor($color, 0.15);
+		color: -getColor($color, 1);
+		h4 {
+			box-shadow: 0px 6px 15px -7px -getColor($color, 0.4);
+		}
+
+		.con-x {
+			background: -getColor($color, 1);
+			color: rgb(255, 255, 255);
+		}
+	}
 }
-
-
 </style>

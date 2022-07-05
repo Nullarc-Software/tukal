@@ -63,7 +63,7 @@ export interface TuTableServerModel {
 export interface TuTableProps {
 	multiSelect?: boolean,
 	serverSideConfig?: TuTableServerModel,
-	columns: TuHeaderDefn[],
+	columns: Array<TuHeaderDefn|null>,
 	model: string,
 	size: string,
 }

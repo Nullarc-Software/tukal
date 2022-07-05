@@ -956,12 +956,7 @@
 			</tu-table>
 		</div>
 		<div class="showcase-component">
-			<h4>Tree view component:</h4>
-			<hr />
-			<tu-tree-view :items="treeItems"
-                   :isCheckable="true"
-                   :hideGuideLines="false"
-                   v-model:checkedItems="treeSelectedItems"/>
+
 		</div>
 
 		<div class="showcase-component">

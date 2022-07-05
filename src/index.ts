@@ -1,3 +1,4 @@
+import "./style/sass/vuesax.scss";
 export { tuButton, tuButtonGroup } from "./components/tuButton";
 export { tuSelect, tuSelectOption, tuSelectOptionGroup } from "./components/tuSelect";
 export { default as tuSwitch } from "./components/tuSwitch";
@@ -33,3 +34,5 @@ export * from "./components/tuTreeView/types";
 // layout
 export { default as tuRow } from "./layout/tuRow";
 export { default as tuCol } from "./layout/tuCol";
+
+export { getColor } from "./utils/index";

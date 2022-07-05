@@ -22,17 +22,18 @@ export default {
 			const c = this.hexToRgb(colorx);
 
 			if (c) {
-				if (alphax == 1) {
+				if (alphax === 1)
 					colorx = `rgb(${c.r},${c.g},${c.b})`;
-				} else {
+
+				else
 					colorx = `rgba(${c.r},${c.g},${c.b},${alphax})`;
-				}
 			}
-		} else if (/^rgba/.test(colorx)) {
-			if (colorx.search(/.([0-9]\))$/) == -1 && !defaultx) {
+		}
+		else if (/^rgba/.test(colorx)) {
+			if (colorx.search(/.([0-9]\))$/) == -1 && !defaultx)
 				colorx = colorx.replace(/.?([0-9]\))$/, `${alphax})`);
-			}
-		} else if (/^(rgb)/.test(colorx)) {
+		}
+		else if (/^(rgb)/.test(colorx)) {
 			// change rgb and rgba
 			if (alphax != 1) {
 				colorx = colorx.replace(/^(rgb)/, "rgba");
@@ -55,12 +56,14 @@ export default {
 		if (/^[#]/.test(colorx)) {
 			const c = this.hexToRgb(colorx);
 			colorx = c ? `rgba(${c.r},${c.g},${c.b},${opacity})` : "";
-		} else if (/^[rgb]/.test(colorx)) {
+		}
+		else if (/^[rgb]/.test(colorx)) {
 			let colorSplit = colorx.split(")")[0];
 			if (!/^[rgba]/.test(colorx)) {
 				colorSplit.replace("rgb", "rgba");
 				colorSplit += `,${opacity})`;
-			} else {
+			}
+			else {
 				// colorSplit.replace('rgb','rgba')
 				colorSplit += ")";
 			}
@@ -69,18 +72,19 @@ export default {
 
 		const tucolors = ["primary", "success", "danger", "warning", "dark"];
 		if (colorx) {
-			if (/[#()]/.test(colorx)) {
+			if (/[#()]/.test(colorx))
 				return colorx;
-			} else {
-				if (tucolors.includes(colorx)) {
+
+			else {
+				if (tucolors.includes(colorx))
 					return `rgba(var(--tu-${colorx}),${opacity})`;
-				} else {
+
+				else
 					return `rgba(var(--tu-primary),${opacity})`;
-				}
 			}
-		} else {
-			return `rgba(var(--tu-primary),${opacity})`;
 		}
+		else
+			return `rgba(var(--tu-primary),${opacity})`;
 	},
 	contrastColor (elementx: string) {
 		let c = elementx;
@@ -98,16 +102,15 @@ export default {
 				Number.parseInt(rgb[1]) * 587 +
 				Number.parseInt(rgb[2]) * 114) /
 			1000;
-		if (yiq >= 128) {
+		if (yiq >= 128)
 			return true;
-		} else {
+
+		else
 			return false;
-		}
 	},
 	setCssVariable (propertyName: string, value: any) {
-		if (typeof window !== "undefined") {
+		if (typeof window !== "undefined")
 			document.documentElement.style.setProperty(propertyName, value);
-		}
 	},
 	hexToRgb (hex: string) {
 		// Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
@@ -135,15 +138,17 @@ export default {
 		if (colores.includes(colorInicial)) {
 			const style = getComputedStyle(document.documentElement);
 			colorx = this.getVariable(style, "--tu-" + colorInicial);
-		} else {
-			if (/[rgb()]/g.test(colorInicial)) {
+		}
+		else {
+			if (/[rgb()]/g.test(colorInicial))
 				colorx = colorInicial.replace(/[rgb()]/g, "");
-			} else if (/[#]/g.test(colorInicial)) {
+
+			else if (/[#]/g.test(colorInicial)) {
 				const rgbx = this.hexToRgb(colorInicial);
 				colorx = rgbx ? `${rgbx.r},${rgbx.g},${rgbx.b}` : "";
-			} else {
-				colorx = "--tu-" + colorInicial;
 			}
+			else
+				colorx = "--tu-" + colorInicial;
 		}
 		return colorx;
 		// this.setCssVariable('--tu-'+clave,colorx)
