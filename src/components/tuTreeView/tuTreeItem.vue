@@ -1,14 +1,17 @@
 <template>
 	<div
 		class="d-flex align-items-center"
-		@contextmenu.prevent="$emit('onContextMenu', { itemClone, event: $event })"
+		@contextmenu.prevent="
+			$emit('onContextMenu', { itemClone, event: $event })
+		"
 	>
 		<div class="horizontal-dashes" v-if="isNested" />
 		<span
 			class="chevron-right"
 			ref="chevron"
 			:class="{
-				'hide-chevron': !itemClone.children || itemClone.children.length < 1,
+				'hide-chevron':
+					!itemClone.children || itemClone.children.length < 1
 			}"
 			@click="toggleExpand()"
 		>
@@ -21,7 +24,11 @@
 		>
 			<div>
 				<div v-if="isCheckable" style="display: flex">
-					<tu-checkbox v-model:checked="checkboxState"  :indeterminate="checkboxIndeterminate">{{ itemClone.name }}</tu-checkbox>
+					<tu-checkbox
+						v-model:checked="checkboxState"
+						:indeterminate="checkboxIndeterminate"
+						>{{ itemClone.name }}</tu-checkbox
+					>
 					<!-- <input
 						@contextmenu.prevent
 						@change="updateCheckState"
@@ -35,7 +42,11 @@
 						<slot name="icon"></slot>
 						<slot name="prepend"></slot>
 					</div> -->
-					<component v-if="item.isComponent" :is="item.component" v-bind="item.componentProps" />
+					<component
+						v-if="itemClone.isComponent"
+						:is="itemClone.component"
+						v-bind="itemClone.componentProps"
+					/>
 					<!-- <label v-else for="checkbox">{{ itemClone.name }}</label> -->
 				</div>
 				<div
@@ -43,34 +54,42 @@
 					v-else
 					@click="treeState?.emitItemSelected(itemClone)"
 				>
-					<slot v-if="!item.isComponent" name="icon"></slot>
-					<slot v-if="!item.isComponent" name="prepend"></slot>
-					<span v-if="!item.isComponent"> {{ itemClone.name }} </span>
-					<component v-if="item.isComponent" :is="item.component" v-bind="item.componentProps" />
+					<slot v-if="!itemClone.isComponent" name="icon"></slot>
+					<slot v-if="!itemClone.isComponent" name="prepend"></slot>
+					<span v-if="!itemClone.isComponent">
+						{{ itemClone.name }}
+					</span>
+					<component
+						v-if="itemClone.isComponent"
+						:is="itemClone.component"
+						v-bind="itemClone.componentProps"
+					/>
 				</div>
 			</div>
 		</div>
 	</div>
 </template>
 
-<script lang="ts" >
+<script lang="ts">
+/* eslint-disable unused-imports/no-unused-vars */
 import {
 	computed,
 	defineComponent,
 	onMounted,
 	onUnmounted,
 	PropType,
+	Ref,
 	ref,
 	watch
 } from "vue";
-import tuComponent from "../tuComponent";
 import {
 	cascadeStateToDescendants,
 	notifyParentOfSelection
 } from "./composables/use-tree-traversal";
 import { TreeState, TuTreeViewItemDefn } from "./types";
+import tuComponent from "../tuComponent";
 
-export default defineComponent({
+const component = defineComponent({
 	name: "TuTreeItem",
 	extends: tuComponent,
 	inheritAttrs: true,
@@ -81,7 +100,7 @@ export default defineComponent({
 		},
 		item: {
 			type: Object as PropType<TuTreeViewItemDefn>,
-			required: true
+			default: null
 		},
 		isCheckable: {
 			type: Boolean
@@ -106,7 +125,7 @@ export default defineComponent({
 			() => attrs.parent as TuTreeViewItemDefn
 		);
 
-		const itemClone = ref(props.item);
+		const itemClone: Ref<TuTreeViewItemDefn> = ref(props.item);
 
 		onMounted(() => {
 			props.treeState?.trackNode(props.item, parent.value);
@@ -116,7 +135,8 @@ export default defineComponent({
 		onUnmounted(() => props.treeState?.untrackNode(props.item));
 
 		const updateCheckState = () => {
-			itemClone.value.checkedStatus = checkboxState.value === true ? "true" : "false";
+			itemClone.value.checkedStatus =
+				checkboxState.value === true ? "true" : "false";
 			emit("update:item", itemClone);
 			props.treeState!.emitItemCheckedChange(props.item);
 			notifyParentOfSelection(props.item!, props.treeState!);
@@ -163,10 +183,11 @@ export default defineComponent({
 		};
 	}
 });
+
+export default component;
 </script>
 
 <style lang="scss" scoped>
-
 .selected-tree-item {
 	background: rgba(235, 106, 59, 0.795);
 	color: white;
@@ -185,64 +206,63 @@ export default defineComponent({
 }
 
 .chevron-right {
-    box-sizing: border-box;
-    position: relative;
-    display: block;
-    transform: scale(var(--ggs,1));
-    width: 22px;
-    height: 22px;
-    border: 2px solid transparent;
-    border-radius: 100px;
-    transition: .2s;
+	box-sizing: border-box;
+	position: relative;
+	display: block;
+	transform: scale(var(--ggs, 1));
+	width: 22px;
+	height: 22px;
+	border: 2px solid transparent;
+	border-radius: 100px;
+	transition: 0.2s;
 }
 
 .chevron-right.rotate-90::after {
-    transform: rotateZ(45deg);
+	transform: rotateZ(45deg);
 }
 
 .chevron-right::after {
-    content: "";
-    display: block;
-    box-sizing: border-box;
-    position: absolute;
-    width: 7px;
-    height: 7px;
-    border-bottom: 2px solid;
-    border-right: 2px solid;
-    transform: rotate(-45deg);
-    right: 6px;
-    top: 5px
+	content: "";
+	display: block;
+	box-sizing: border-box;
+	position: absolute;
+	width: 7px;
+	height: 7px;
+	border-bottom: 2px solid;
+	border-right: 2px solid;
+	transform: rotate(-45deg);
+	right: 6px;
+	top: 5px;
 }
 
 .horizontal-dashes {
-    width: 1em;
-    border-top: 1px solid rgb(192, 192, 192);
+	width: 1em;
+	border-top: 1px solid rgb(192, 192, 192);
 }
 
 .icon-area {
-    width: 22px;
-    margin-right: 0.4em;
+	width: 22px;
+	margin-right: 0.4em;
 }
 
 .node-name {
-    cursor: pointer;
-    margin-left: 5px;
+	cursor: pointer;
+	margin-left: 5px;
 }
 
 .d-flex {
-    display: flex;
+	display: flex;
 }
 
 .align-items-center {
-    align-items: center;
+	align-items: center;
 }
 
 .hide {
-    display: none;
+	display: none;
 }
 
 .pointer {
-    cursor: pointer;
+	cursor: pointer;
 }
-
 </style>

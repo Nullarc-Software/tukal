@@ -7,7 +7,7 @@
 					? localValue && localValue.length > counter
 					: false,
 				focusx: isFocus
-			},
+			}
 		]"
 		class="tu-component tu-con-textarea"
 		:style="{
@@ -123,7 +123,7 @@ export default defineComponent({
 		const listeners = computed(() => {
 			return {
 				...context.attrs,
-				input: evt => {
+				input: (evt) => {
 					localValue.value = evt.target.value;
 					context.emit("update:modelValue", evt.target.value);
 				},
@@ -136,18 +136,11 @@ export default defineComponent({
 			};
 		});
 
-		watch(
-			localValue,
-			() => {
-				if (
-					localValue.value.length > props.counter
-				)
-					context.emit("update:counterDanger", true);
-
-				else
-					context.emit("update:counterDanger", false);
-			}
-		);
+		watch(localValue, () => {
+			if (localValue.value.length > props.counter)
+				context.emit("update:counterDanger", true);
+			else context.emit("update:counterDanger", false);
+		});
 
 		return {
 			isFocus,
@@ -237,11 +230,10 @@ export default defineComponent({
 }
 
 .focusx.tu-con-textarea {
-	border: 1px solid -getColor('color', 1) !important;
+	border: 1px solid -getColor("color", 1) !important;
 }
 
 .tu-textarea-label {
-	border-bottom: 1px solid -getColor('color', 0.2);
+	border-bottom: 1px solid -getColor("color", 0.2);
 }
-
 </style>

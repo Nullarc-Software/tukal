@@ -33,16 +33,18 @@ import {
 	watch
 } from "vue";
 import { SelectOptionConstants } from "./index";
-
+import tuCheckbox from "../tuCheckBox";
 import tuComponent from "../tuComponent";
 
 export default defineComponent({
-	name: "TuOption",
+	name: "TuSelectOption",
 	props: {
 		label: { type: String, default: null },
 		disabled: { type: Boolean, default: false },
 		value: {}
-
+	},
+	components: {
+		tuCheckbox
 	},
 	extends: tuComponent,
 	setup (props, context) {
@@ -71,33 +73,30 @@ export default defineComponent({
 		const instance = getCurrentInstance();
 
 		if (textFilter) {
-			watch(
-				textFilter,
-				val => {
-					if (val) {
-						if (
-							props.label.toLowerCase().indexOf(val.toLowerCase()) ===
+			watch(textFilter, (val) => {
+				if (val) {
+					if (
+						props.label.toLowerCase().indexOf(val.toLowerCase()) ===
 						-1
-						) {
-							hiddenOption.value = true;
-						} else {
-							hiddenOption.value = false;
-						}
-					} else {
-						hiddenOption.value = false;
-					}
+					)
+						hiddenOption.value = true;
+					else hiddenOption.value = false;
 				}
-			);
+				else hiddenOption.value = false;
+			});
 		}
 
 		const isActive = computed(() => {
-			return (typeof parentValue?.value === "number") || (typeof parentValue?.value === "string")
-				? parentValue?.value == props.value
-				: _.find(parentValue?.value, (o) => { return o === props.value; }) !== undefined;
+			return typeof parentValue?.value === "number" ||
+				typeof parentValue?.value === "string"
+				? parentValue?.value === props.value
+				: _.find(parentValue?.value, (o) => {
+					return o === props.value;
+				  }) !== undefined;
 		});
 
 		const isHover = computed(() => {
-			return uids?.value.indexOf(uid) == hoverOption?.value;
+			return uids?.value.indexOf(uid) === hoverOption?.value;
 		});
 
 		const isMultiple = computed(() => {
@@ -112,21 +111,24 @@ export default defineComponent({
 					onClickOption?.call(null, props.value, props.label);
 				},
 				blur: () => {
-					if (
-						!targetSelect?.value &&
-						!targetClose?.value
-					) {
+					if (!targetSelect?.value && !targetClose?.value)
 						updateActiveOptions?.call(null, false);
-					}
 				}
 			};
 		});
 
 		onMounted(() => {
 			if (!renderSelect?.value) {
-				addChildOption?.call(null, props.disabled, props.value, props.label, option.value?.offsetTop);
-				// console.log("added child: " + uid);
+				addChildOption?.call(
+					null,
+					props.disabled,
+					props.value,
+					props.label,
+					option.value?.offsetTop
+				);
 			}
+			// console.log("added child: " + uid);
+
 			addUid?.call(null, uid);
 
 			activeOption.value = isActive.value;
@@ -150,92 +152,91 @@ export default defineComponent({
 <style lang="scss">
 @import "../../style/sass/_mixins";
 .tu-select__option {
-  border: 0px;
-  width: 100%;
-  padding: 6px 10px;
-  text-align: left;
-  background: transparent;
-  transition: all 0.25s ease;
-  color: -getColor("text");
-  border-radius: 5px;
-  box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, -var(shadow-opacity));
-  margin: 2px 0px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  overflow: hidden;
-  opacity: 1;
-  visibility: visible;
-  max-height: 40px;
+	border: 0px;
+	width: 100%;
+	padding: 6px 10px;
+	text-align: left;
+	background: transparent;
+	transition: all 0.25s ease;
+	color: -getColor("text");
+	border-radius: 5px;
+	box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, -var(shadow-opacity));
+	margin: 2px 0px;
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	overflow: hidden;
+	opacity: 1;
+	visibility: visible;
+	max-height: 40px;
 
-  &.hiddenOption {
-    // display: none
-    opacity: 0;
-    visibility: hidden;
-    max-height: 0px;
-    padding-top: 0px;
-    padding-bottom: 0px;
-    border: 0px;
-    margin: 0px;
-  }
+	&.hiddenOption {
+		// display: none
+		opacity: 0;
+		visibility: hidden;
+		max-height: 0px;
+		padding-top: 0px;
+		padding-bottom: 0px;
+		border: 0px;
+		margin: 0px;
+	}
 
-  &.isMultiple {
-    padding: 0px;
-    padding-left: 5px;
+	&.isMultiple {
+		padding: 0px;
+		padding-left: 5px;
 
-    .tu-select__option-group {
-      padding-left: 0px;
-    }
+		.tu-select__option-group {
+			padding-left: 0px;
+		}
 
-    &.isHover {
-      background: -getColor("gray-2") !important;
-    }
+		&.isHover {
+			background: -getColor("gray-2") !important;
+		}
 
-    &:disabled {
-      .tu-checkbox-content {
-        pointer-events: none;
-      }
-    }
+		&:disabled {
+			.tu-checkbox-content {
+				pointer-events: none;
+			}
+		}
 
-    &:hover {
-      padding-left: 5px !important;
-    }
+		&:hover {
+			padding-left: 5px !important;
+		}
 
-    .tu-checkbox-content {
-      width: 100%;
-      pointer-events: none;
+		.tu-checkbox-content {
+			width: 100%;
+			pointer-events: none;
 
-      .tu-checkbox-con {
-        transform: scale(0.85);
-      }
+			.tu-checkbox-con {
+				transform: scale(0.85);
+			}
 
-      .tu-checkbox-label {
-        width: calc(100% - 23px);
-        text-align: left;
-        justify-content: flex-start;
-      }
-    }
+			.tu-checkbox-label {
+				width: calc(100% - 23px);
+				text-align: left;
+				justify-content: flex-start;
+			}
+		}
 
-    &.activeOption {
-      pointer-events: auto !important;
-    }
-  }
+		&.activeOption {
+			pointer-events: auto !important;
+		}
+	}
 
-  &.isHover {
-    background: -getColor("gray-2");
-  }
+	&.isHover {
+		background: -getColor("gray-2");
+	}
 
-  &.activeOption {
-    background: -getColor("color", 0.05);
-    color: -getColor("color", 1);
+	&.activeOption {
+		background: -getColor("color", 0.05);
+		color: -getColor("color", 1);
+	}
 
-  }
-
-  // &:last-child
-  //   border-radius: 0px 0px 12px 12px
-  &:hover:not(:disabled) {
-    color: -getColor("color");
-    padding-left: 14px;
-  }
+	// &:last-child
+	//   border-radius: 0px 0px 12px 12px
+	&:hover:not(:disabled) {
+		color: -getColor("color");
+		padding-left: 14px;
+	}
 }
 </style>

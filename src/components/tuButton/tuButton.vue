@@ -77,11 +77,7 @@
 </template>
 
 <script lang="ts">
-import {
-	computed,
-	defineComponent,
-	ref
-} from "vue";
+import { computed, defineComponent, ref } from "vue";
 import tuIcon from "../tuIcon";
 import tuComponent, { ComponentConstants } from "../tuComponent";
 
@@ -116,7 +112,6 @@ export default defineComponent({
 		inline: { type: Boolean, default: false },
 		width: { type: String, default: null },
 		height: { type: String, default: null }
-
 	},
 	emits: ["routeErr", "mouseover", "mouseout", "blur", "click"],
 	setup: function (props, context) {
@@ -125,23 +120,17 @@ export default defineComponent({
 		const button = ref<HTMLButtonElement>();
 
 		const clickButton = function (event) {
-			if (props.to)
-				ComponentConstants.router.push(props.to);
-
+			if (props.to) ComponentConstants.router.push(props.to);
 			else if (props.href)
 				window.open(props.href, (props.blank && "_blank") || "_self");
-				// console.log(this.blank && '_self')
+			// console.log(this.blank && '_self')
 
 			context.emit("click", event);
 		};
 
-		const mousedown = event => {
-			if (rippleDir.value === "reverse")
-				rippleReverse(event);
-
-			else if (rippleDir.value === "cut")
-				rippleCut(event);
-
+		const mousedown = (event) => {
+			if (rippleDir.value === "reverse") rippleReverse(event);
+			else if (rippleDir.value === "cut") rippleCut(event);
 			else {
 				if (props.flat) {
 					ripple(
@@ -156,15 +145,14 @@ export default defineComponent({
 							document.activeElement !== button.value
 					);
 				}
-				else
-					ripple(event, null, false);
+				else ripple(event, null, false);
 			}
 		};
 
 		const listeners = computed(() => {
 			return {
-				click: event => clickButton(event),
-				mousedown: event => mousedown(event)
+				click: (event) => clickButton(event),
+				mousedown: (event) => mousedown(event)
 			};
 		});
 
@@ -190,7 +178,7 @@ export default defineComponent({
 	--tu-button-margin: 5px;
 	--tu-button-border-radius: 12px;
 	--tu-button-text-color: 255, 255, 255;
-	border: 0px;	
+	border: 0px;
 	margin: 5px;
 	border-radius: -var(button-border-radius);
 	transition: all 0.25s ease;
@@ -209,8 +197,7 @@ export default defineComponent({
 
 	&.tu-component-dark {
 		&.tu-button--transparent {
-
-			@if variable-exists("--tu-color"){
+			@if variable-exists("--tu-color") {
 				color: -getColor("color") !important;
 			} @else {
 				color: -getColor("text") !important;
@@ -405,37 +392,33 @@ export default defineComponent({
 			padding: 15px 20px;
 			font-size: 1.1rem;
 		}
-
 	}
 
 	&--size-large {
 		font-size: 1rem;
 		border-radius: 15px;
 
-			.tu-button__content {
-				padding: 10px 15px;
-			}
-
+		.tu-button__content {
+			padding: 10px 15px;
+		}
 	}
 
 	&--size-small {
 		font-size: 0.75rem;
 		border-radius: 9px;
 
-			.tu-button__content {
-				padding: 5px 10px;
-			}
-
+		.tu-button__content {
+			padding: 5px 10px;
+		}
 	}
 
 	&--size-mini {
 		font-size: 0.6rem;
 		border-radius: 7px;
 
-			.tu-button__content {
-				padding: 3px 8px;
-			}
-
+		.tu-button__content {
+			padding: 3px 8px;
+		}
 	}
 
 	&--circle {
@@ -451,14 +434,13 @@ export default defineComponent({
 		align-items: center;
 		justify-content: center;
 
-			.tu-button__content {
-				padding: 8px 8px;
-			}
+		.tu-button__content {
+			padding: 8px 8px;
+		}
 
-			i {
-				font-size: 1.15rem;
-			}
-
+		i {
+			font-size: 1.15rem;
+		}
 	}
 }
 
@@ -475,7 +457,8 @@ export default defineComponent({
 		transform: translate(0, -3px);
 	}
 
-	&:hover,&:focus {
+	&:hover,
+	&:focus {
 		box-shadow: 0px 10px 20px -10px -getColor("color", 1);
 		transform: translate(0, -3px);
 	}

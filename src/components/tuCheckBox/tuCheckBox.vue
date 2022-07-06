@@ -3,7 +3,7 @@
 		class="tu-checkbox-content"
 		:class="[
 			{ 'tu-checkbox--checked': isChecked },
-			{ 'tu-checkbox--disabled': disabled},
+			{ 'tu-checkbox--disabled': disabled },
 			{ 'tu-checkbox--loading': loading },
 			{ 'tu-checkbox--label-before': labelBefore },
 
@@ -31,7 +31,6 @@
 				<slot v-if="$slots.icon" name="icon" />
 				<tu-icon v-else-if="!indeterminate">check</tu-icon>
 				<tu-icon v-else>horizontal_rule</tu-icon>
-
 			</div>
 		</div>
 		<label
@@ -46,6 +45,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, onMounted, watch } from "vue";
+import tuIcon from "../tuIcon";
 
 import tuComponent from "../tuComponent";
 
@@ -54,6 +54,9 @@ let uid_ = 0;
 export default defineComponent({
 	name: "TuCheckbox",
 	extends: tuComponent,
+	components: {
+		tuIcon
+	},
 	props: {
 		modelValue: { type: [Array, String, Boolean], default: "" },
 		val: { default: "" },
@@ -86,8 +89,7 @@ export default defineComponent({
 			return {
 				// ...$listeners,
 				input: (evt: Event) => {
-					if (props.eventBubble)
-						context.emit("click", evt);
+					if (props.eventBubble) context.emit("click", evt);
 					else {
 						evt.stopPropagation();
 						evt.preventDefault();
@@ -115,10 +117,8 @@ export default defineComponent({
 								indexVal = index;
 						});
 
-						if (containValue)
-							array.push(props.val);
-						else
-							array.splice(indexVal, 1);
+						if (containValue) array.push(props.val);
+						else array.splice(indexVal, 1);
 
 						context.emit("update:modelValue", array);
 					}
@@ -167,24 +167,23 @@ export default defineComponent({
 							indexVal = index;
 					});
 
-					if (containValue)
-						return false;
-					else
-						return true;
+					if (containValue) return false;
+					else return true;
 				}
 			}
-			else if (props.checked || props.indeterminate)
-				isChecked = true;
-			else
-				isChecked = false;
+			else if (props.checked || props.indeterminate) isChecked = true;
+			else isChecked = false;
 
 			return isChecked;
 		});
 
-		watch(() => props.checked, () => {
-			if (typeof props.modelValue === "boolean")
-				context.emit("update:modelValue", props.checked);
-		});
+		watch(
+			() => props.checked,
+			() => {
+				if (typeof props.modelValue === "boolean")
+					context.emit("update:modelValue", props.checked);
+			}
+		);
 
 		onMounted(() => {
 			if (props.checked && typeof props.modelValue === "boolean")

@@ -9,7 +9,7 @@
 				isSelectedValue: modelValue,
 				striped: striped,
 				isMultipleSelected: isMultipleSelected,
-				[`size-${size}`]: true,
+				[`size-${size}`]: true
 			}"
 		>
 			<table class="tu-table__element" ref="tableElement">
@@ -36,7 +36,7 @@
 						:style="{
 							width: header.width,
 							minWidth: header.minWidth,
-							maxWidth: header.maxWidth,
+							maxWidth: header.maxWidth
 						}"
 						:sort="header.props ? header.props.sort : false"
 						:search="header.props ? header.props.search : false"
@@ -79,10 +79,14 @@
 								v-if="th.isComponent === false"
 							>
 								{{
-									th.valueFormatter ?
-										th.valueFormatter(tr.rowData[th.field], tr.rowData) :
-										(th.field.indexOf(".") !== -1) ? getNestedField(tr.rowData, th.field) :
-										tr.rowData[th.field] ?? "undefined"
+									th.valueFormatter
+										? th.valueFormatter(
+												tr.rowData[th.field],
+												tr.rowData
+										  )
+										: th.field.indexOf(".") !== -1
+										? getNestedField(tr.rowData, th.field)
+										: tr.rowData[th.field] ?? "undefined"
 								}}
 							</span>
 							<component
@@ -132,9 +136,27 @@ import {
 	TuTableRow
 } from "./tuTableStore";
 
+import tuTh from "./tuTh.vue";
+import tuTr from "./tuTr.vue";
+import tuTd from "./tuTd.vue";
+import tuIcon from "../tuIcon";
+import tuCheckbox from "../tuCheckBox";
+
+import contextMenuComponent from "./tuTableContextMenu.vue";
+
+if (typeof window !== "undefined" && (window as any).VueInstance)
+	contextMenuComponent.install((window as any).VueInstance);
+
 export default defineComponent({
 	name: "TuTable",
 	extends: tuComponent,
+	components: {
+		tuTh,
+		tuTr,
+		tuTd,
+		tuIcon,
+		tuCheckbox
+	},
 	props: {
 		modelValue: {},
 		pageSize: {
@@ -215,7 +237,12 @@ export default defineComponent({
 			default: () => []
 		}
 	},
-	emits: ["update:modelValue", "update:numPages", "update:data", "update:tableInstance"],
+	emits: [
+		"update:modelValue",
+		"update:numPages",
+		"update:data",
+		"update:tableInstance"
+	],
 	provide () {
 		return {
 			selected: (data) => {
@@ -272,7 +299,8 @@ export default defineComponent({
 			}
 		};
 
-		watch([() => props.pageSize, () => props.page],
+		watch(
+			[() => props.pageSize, () => props.page],
 			() => {
 				table.setPaging(props.pageSize, props.page);
 			},
@@ -308,8 +336,12 @@ export default defineComponent({
 
 			const lastHeader = table.getHeaderObject(-1);
 			if (lastHeader) {
-				const len = tableContainer.value.offsetWidth + tableContainer.value.offsetLeft;
-				lastHeader.width = (tableContainer.value.offsetWidth - lastHeader.element.offsetLeft ?? 0) + "px";
+				const len =
+					tableContainer.value.offsetWidth +
+					tableContainer.value.offsetLeft;
+				lastHeader.width =
+					(tableContainer.value.offsetWidth -
+						lastHeader.element.offsetLeft ?? 0) + "px";
 			}
 
 			context.emit("update:tableInstance", table);
@@ -322,10 +354,7 @@ export default defineComponent({
 		const getNestedField = function (rowData: any, key: string) {
 			const keys = key.split(".");
 			let obj: any = rowData;
-			for (const key of keys) {
-				if (obj[key])
-					obj = obj[key];
-			}
+			for (const key of keys) if (obj[key]) obj = obj[key];
 
 			return obj;
 		};

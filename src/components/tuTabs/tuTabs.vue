@@ -3,12 +3,12 @@
 		:class="[
 			`tu-tabs-${color}`,
 			`tu-tabs-position-${position}`,
-			`tu-tabs-${tabStyle}`,
+			`tu-tabs-${tabStyle}`
 		]"
 		class="con-tu-tabs tu-tabs"
 		:style="{
 			width: fixedWidth,
-			height: fixedHeight,
+			height: fixedHeight
 		}"
 	>
 		<div class="con-ul-tabs">
@@ -26,7 +26,7 @@
 					:class="{
 						[`tu-tabs--li-${child.id}`]: true,
 						[`tu-tabs--li-${child.name}`]: child.name,
-						activeChild: childActive == child.id,
+						activeChild: childActive == child.id
 					}"
 					@mouseover="hover = true"
 					@mouseout="hover = false"
@@ -57,7 +57,6 @@
 						<tu-icon
 							:icon-pack="child.iconPack"
 							:icon="child.tag"
-
 						></tu-icon>
 					</button>
 				</li>
@@ -70,19 +69,17 @@
 			>
 				<div class="tu-tabs-progress-header">
 					<div class="tu-tabs--progress__info">
-						<span>
-
-						</span>
+						<span> </span>
 						<span style="margin-left: 5px">
 							<span
 								:style="{
-									color: `rgb(${getColor(color)})`,
+									color: `rgb(${getColor(color)})`
 								}"
 								>{{ activeIdx + 1 }}
 							</span>
 							<span
 								:style="{
-									color: `rgba(${getColor('text')}, 0.75)`,
+									color: `rgba(${getColor('text')}, 0.75)`
 								}"
 							>
 								of {{ children.length }}
@@ -123,17 +120,20 @@
 					:class="{
 						[`tu-tabs--li-${child.id}`]: true,
 						[`tu-tabs--li-${child.name}`]: child.name,
-						activeChild: childActive == child.id,
+						activeChild: childActive == child.id
 					}"
 				/>
 			</div>
 			<span :style="stylex" class="line-tu-tabs" />
 		</div>
 
-		<div class="con-slot-tabs" :style="{
-					width: fixedWidth,
-					height: fixedHeight,
-			}">
+		<div
+			class="con-slot-tabs"
+			:style="{
+				width: fixedWidth,
+				height: fixedHeight
+			}"
+		>
 			<slot />
 		</div>
 	</div>
@@ -154,7 +154,8 @@ import {
 import { ChildData, TabId } from ".";
 import * as utils from "../../utils";
 import tuComponent from "../tuComponent";
-import tuIcon from "../tuIcon/tuIcon.vue";
+import tuIcon from "../tuIcon";
+import tuProgress from "../tuProgress";
 
 interface TabData {
 	topx: string;
@@ -173,7 +174,7 @@ interface TabData {
 
 export default defineComponent({
 	name: "TuTabs",
-	components: { tuIcon },
+	components: { tuIcon, tuProgress },
 	extends: tuComponent,
 	props: {
 		modelValue: {
@@ -301,7 +302,7 @@ export default defineComponent({
 						0.5
 					)}`,
 					transform: `scaleX(${reactiveData.these ? 1.3 : 1})`
-				}
+				  }
 				: {};
 		});
 
@@ -316,19 +317,18 @@ export default defineComponent({
 					"align-items": "center",
 					"font-size": `${props.headerSize}px`,
 					cursor: "pointer"
-				}
+				  }
 				: {
 					"font-size": `${props.headerSize}px`,
 					cursor: "pointer"
-				};
+				  };
 		};
 
 		const parseIndex = function (index) {
 			let activeIndex = reactiveData.childActive;
 
 			if (typeof index === "number" || !isNaN(parseInt(index))) {
-				if (index < 0)
-					activeIndex = 0;
+				if (index < 0) activeIndex = 0;
 				else if (index >= reactiveData.children.length)
 					activeIndex = reactiveData.children.length - 1;
 				else if (reactiveData.children[index].disabled === false)
@@ -358,8 +358,7 @@ export default defineComponent({
 			}
 
 			reactiveData.children.forEach((value, key) => {
-				if (key !== index)
-					value.setActive(false);
+				if (key !== index) value.setActive(false);
 			});
 
 			if (reactiveData.childActive > index) {
@@ -392,8 +391,7 @@ export default defineComponent({
 				reactiveData.heightx = elem.offsetHeight;
 				reactiveData.widthx = 2;
 
-				if (props.position === "right")
-					reactiveData.leftx = 0;
+				if (props.position === "right") reactiveData.leftx = 0;
 			}
 			else {
 				const update = () => {
@@ -402,16 +400,14 @@ export default defineComponent({
 						reactiveData.widthx = elem.offsetWidth;
 						if (ul.value) {
 							reactiveData.topx =
-							elem.offsetHeight +
-							(elem.getBoundingClientRect().top -
-								ul.value.getBoundingClientRect().top);
+								elem.offsetHeight +
+								(elem.getBoundingClientRect().top -
+									ul.value.getBoundingClientRect().top);
 						}
 					}
 				};
-				if (!initialAnimation)
-					update();
-				else
-					setTimeout(update, 100);
+				if (!initialAnimation) update();
+				else setTimeout(update, 100);
 			}
 		};
 

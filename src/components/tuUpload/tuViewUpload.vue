@@ -52,7 +52,7 @@ export default {
 	z-index: 15000;
 	width: 100%;
 	height: 100%;
-	background: rgba(0,0,0,0.3);
+	background: rgba(0, 0, 0, 0.3);
 	top: 0px;
 	padding: 20px;
 	display: flex;
@@ -71,7 +71,7 @@ export default {
 		max-height: 100%;
 		margin: auto;
 		animation: imageRebound 0.7s ease !important;
-		box-shadow: 0px 8px 30px 0px rgba(0,0,0,0.25);
+		box-shadow: 0px 8px 30px 0px rgba(0, 0, 0, 0.25);
 		background: #fff;
 	}
 }

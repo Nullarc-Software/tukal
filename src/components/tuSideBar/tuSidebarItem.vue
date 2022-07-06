@@ -27,10 +27,14 @@ import { defineComponent, inject, onMounted, ref, Ref, watch } from "vue";
 import tuComponent, { ComponentConstants } from "../tuComponent";
 import * as _ from "lodash";
 import * as pathRegex from "path-to-regexp";
+import tuIcon from "../tuIcon";
 
 export default defineComponent({
 	name: "TuSidebarItem",
 	extends: tuComponent,
+	components: {
+		tuIcon
+	},
 	props: {
 		to: {
 			type: [Object, String],
@@ -65,23 +69,26 @@ export default defineComponent({
 		const handleRouteChange = function () {
 			if (router) {
 				if (
-					_.some(router.currentRoute.value.matched, route => {
+					_.some(router.currentRoute.value.matched, (route) => {
 						if (typeof props.to === "string") {
 							return pathRegex
 								.pathToRegexp(route.path)
 								.test(props.to as string);
 						}
 						else if (props.to && typeof props.to === "object") {
-							if (props.to.name === router.currentRoute.value.name)
+							if (
+								props.to.name === router.currentRoute.value.name
+							)
 								return true;
 							else {
 								return pathRegex
-									.pathToRegexp(router.currentRoute.value.path)
+									.pathToRegexp(
+										router.currentRoute.value.path
+									)
 									.test(props.to.path);
 							}
 						}
-						else
-							return false;
+						else return false;
 					})
 				) {
 					internalActive.value = true;

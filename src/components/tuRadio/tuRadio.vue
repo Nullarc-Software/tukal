@@ -1,57 +1,54 @@
 <template>
-    <div
-        class="tu-radio-content"
-        :style="{
-            ['--tu-color']: color ? getcolor : ''
-        }"
-        :class="[
-            {
-                disabled: disabled,
-                loading: loading,
-                active: isChecked
-            },
-            // colors
-            {
-                [`tu-component--primary`]:
-                    !danger &&
-                    !success &&
-                    !warn &&
-                    !dark &&
-                    !color
-            },
-            { [`tu-component--danger`]: !!danger },
-            { [`tu-component--warn`]: !!warn },
-            { [`tu-component--success`]: !!success },
-            { [`tu-component--dark`]: !!dark }
-        ]"
-    >
-		<label v-if="labelBefore" 
-				class="tu-radio__label"
-				:for="uid">
+	<div
+		class="tu-radio-content"
+		:style="{
+			['--tu-color']: color ? getcolor : ''
+		}"
+		:class="[
+			{
+				disabled: disabled,
+				loading: loading,
+				active: isChecked
+			},
+			// colors
+			{
+				[`tu-component--primary`]:
+					!danger && !success && !warn && !dark && !color
+			},
+			{ [`tu-component--danger`]: !!danger },
+			{ [`tu-component--warn`]: !!warn },
+			{ [`tu-component--success`]: !!success },
+			{ [`tu-component--dark`]: !!dark }
+		]"
+	>
+		<label v-if="labelBefore" class="tu-radio__label" :for="uid">
 			<slot />
 		</label>
 		<div class="tu-radio">
-			<input type="radio" :id="uid" :value="val" :name="name || modelValue" :checked="isChecked" @input="onInput" @click="onInput"/>
+			<input
+				type="radio"
+				:id="uid"
+				:value="val"
+				:name="name || modelValue"
+				:checked="isChecked"
+				@input="onInput"
+				@click="onInput"
+			/>
 			<span class="tu-radio__effect">
-				<span class="tu-radio__effect__icon" >
+				<span class="tu-radio__effect__icon">
 					<slot name="icon" />
 				</span>
-				<span class="tu-radio__effect__loading" >
-				</span>
+				<span class="tu-radio__effect__loading"> </span>
 			</span>
 		</div>
-		<label v-if="!labelBefore" 
-				class="tu-radio__label"
-				:for="uid">
+		<label v-if="!labelBefore" class="tu-radio__label" :for="uid">
 			<slot />
-			
 		</label>
-	</div>   
+	</div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, watch } from "vue";
-import _color from "../../utils/color";
+import { computed, defineComponent } from "vue";
 import tuComponent from "../tuComponent";
 
 class RadioUid {
@@ -73,23 +70,22 @@ export default defineComponent({
 		loading: { type: Boolean, default: false },
 		labelBefore: { type: Boolean, default: false }
 	},
-	emits: ["update:modelValue"],	
-	setup(props, context) {
-
-		const onInput = function(){
+	emits: ["update:modelValue"],
+	setup (props, context) {
+		const onInput = function () {
 			context.emit("update:modelValue", props.val);
-		}		
+		};
 
-		let isChecked = computed(() => {
-			return props.modelValue == props.val;
-		})
+		const isChecked = computed(() => {
+			return props.modelValue === props.val;
+		});
 
 		return {
 			isChecked,
 			uid: ++RadioUid.uid,
 			onInput
 		};
-	},
+	}
 });
 </script>
 
@@ -101,9 +97,7 @@ export default defineComponent({
 	display: flex;
 	align-items: center;
 
-
 	&.active {
-
 		::v-deep(.tu-radio__effect__icon) {
 			opacity: 0;
 			transition: all 0.25s ease;
@@ -270,10 +264,10 @@ export default defineComponent({
 		z-index: 100;
 		opacity: 0;
 		cursor: pointer;
-		&:active{
-			~ .tu-radio__effect{
-				&:after{
-					transform: scale(.9)
+		&:active {
+			~ .tu-radio__effect {
+				&:after {
+					transform: scale(0.9);
 				}
 			}
 		}

@@ -3,7 +3,7 @@
 		:class="{ divider: divider }"
 		:style="{
 			color: hoverx ? giveColor() + ' !important' : null,
-			background: hoverx ? giveColor(0.01) + ' !important' : null,
+			background: hoverx ? giveColor(0.01) + ' !important' : null
 		}"
 		class="tu-component tu-dropdown--item"
 		@click="clickClose"
@@ -14,14 +14,14 @@
 			v-if="to"
 			:to="to"
 			v-bind="$attrs"
-			:class="{'disabled':disabled}"
+			:class="{ disabled: disabled }"
 			class="tu-dropdown--item-link"
 		>
 			{{ $attrs.disabled }}
-			<slot/>
+			<slot />
 		</router-link>
 		<a
-		v-else
+			v-else
 			v-bind="$attrs"
 			:class="{ disabled: disabled }"
 			class="tu-dropdown--item-link"
@@ -32,11 +32,7 @@
 </template>
 
 <script lang="ts">
-import {
-	defineComponent,
-	inject,
-	ref
-} from "vue";
+import { defineComponent, inject, ref } from "vue";
 import _color from "../../utils/color";
 export default defineComponent({
 	name: "TuPopupItem",
@@ -67,8 +63,7 @@ export default defineComponent({
 		};
 
 		const clickClose = function () {
-			if (props.onClickClose)
-				closeParent?.call(null);
+			if (props.onClickClose) closeParent?.call(null);
 		};
 
 		return {

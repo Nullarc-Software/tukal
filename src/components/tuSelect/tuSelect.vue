@@ -197,7 +197,7 @@ import {
 import tuComponent from "../tuComponent";
 import { insertBody, removeBody, setCords } from "@/utils";
 import tuOption from "../tuSelect/tuSelectOption.vue";
-import tuIcon from "../tuIcon/tuIcon.vue";
+import tuIcon from "../tuIcon";
 import * as _ from "lodash";
 import { SelectOptionConstants } from ".";
 

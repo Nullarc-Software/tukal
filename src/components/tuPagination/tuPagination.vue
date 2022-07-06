@@ -2,7 +2,7 @@
 	<div
 		class="tu-pagination-content"
 		:style="{
-			['--tu-color']: color ? getColor(color) : '',
+			['--tu-color']: color ? getColor(color) : ''
 		}"
 		:class="[
 			{
@@ -10,16 +10,16 @@
 				circle: circle,
 				square: square,
 				disabled: disabled,
-				notMargin: notMargin,
+				notMargin: notMargin
 			},
 			{
 				[`tu-component--primary`]:
-					!danger && !success && !warn && !dark && !color,
+					!danger && !success && !warn && !dark && !color
 			},
 			{ [`tu-component--danger`]: !!danger },
 			{ [`tu-component--warn`]: !!warn },
 			{ [`tu-component--success`]: !!success },
-			{ [`tu-component--dark`]: !!dark },
+			{ [`tu-component--dark`]: !!dark }
 		]"
 		v-bind="$attrs"
 	>
@@ -30,12 +30,16 @@
 			@click="prevClicked"
 		>
 			<slot v-if="$slots.arrowPrev" name="arrowPrev" />
-			<tu-icon :style="{
-				cursor: 'pointer',
-				display: 'inline-flex',
-				'align-self': 'center',
-				'justify-content': 'center',
-			}" v-else>keyboard_arrow_left</tu-icon>
+			<tu-icon
+				:style="{
+					cursor: 'pointer',
+					display: 'inline-flex',
+					'align-self': 'center',
+					'justify-content': 'center'
+				}"
+				v-else
+				>keyboard_arrow_left</tu-icon
+			>
 		</button>
 		<slot v-if="$slots.default" />
 		<div
@@ -52,12 +56,16 @@
 			@click="nextClicked"
 		>
 			<slot v-if="$slots.arrowNext" name="arrowNext" />
-			<tu-icon :style="{
-				cursor: 'pointer',
-				display: 'inline-flex',
-				'align-self': 'center',
-				'justify-content': 'center',
-			}" v-else>keyboard_arrow_right</tu-icon>
+			<tu-icon
+				:style="{
+					cursor: 'pointer',
+					display: 'inline-flex',
+					'align-self': 'center',
+					'justify-content': 'center'
+				}"
+				v-else
+				>keyboard_arrow_right</tu-icon
+			>
 		</button>
 		<div v-if="progress" class="tu-pagination__progress">
 			<div class="progress" :style="{ width: `${getProgress}%` }"></div>
@@ -68,10 +76,14 @@
 import { computed, defineComponent, h, nextTick, ref, watch } from "vue";
 import tuIconsArrow from "../../icons/arrow";
 import tuComponent from "../tuComponent";
+import tuIcon from "../tuIcon";
 
 export default defineComponent({
 	name: "TuPagination",
 	extends: tuComponent,
+	components: {
+		tuIcon
+	},
 	props: {
 		modelValue: { type: Number, default: 1 },
 		infinite: { default: false, type: Boolean },
@@ -130,10 +142,8 @@ export default defineComponent({
 						)
 							? (val.value += props.dottedNumber)
 							: (val.value -= props.dottedNumber);
-						if (newVal > props.length)
-							newVal = props.length;
-						else if (newVal < 1)
-							newVal = 1;
+						if (newVal > props.length) newVal = props.length;
+						else if (newVal < 1) newVal = 1;
 
 						setValuePage(newVal);
 					}
@@ -173,9 +183,11 @@ export default defineComponent({
 				{
 					ref: `btn${NumberPage}`,
 					class: {
-						[`tu-pagination__button pagination-btn-${NumberPage}`]: true,
+						[`tu-pagination__button pagination-btn-${NumberPage}`]:
+							true,
 						active: NumberPage === props.modelValue,
-						"tu-pagination__active": NumberPage === props.modelValue,
+						"tu-pagination__active":
+							NumberPage === props.modelValue,
 						flat: props.flat,
 						prevActive: NumberPage === props.modelValue - 1,
 						nextActive: NumberPage === props.modelValue + 1,
@@ -198,8 +210,7 @@ export default defineComponent({
 			array.forEach((item: any) => {
 				if (item === "...>" || item === "<...")
 					buttons.push(renderDotted(item));
-				else
-					buttons.push(renderButton(item));
+				else buttons.push(renderButton(item));
 			});
 
 			return buttons;
@@ -264,18 +275,14 @@ export default defineComponent({
 
 		const prevClicked = function () {
 			const newVal = (val.value -= 1);
-			if (newVal > 0)
-				setValuePage(newVal);
-			else if (props.infinite)
-				setValuePage(props.length);
+			if (newVal > 0) setValuePage(newVal);
+			else if (props.infinite) setValuePage(props.length);
 		};
 
 		const nextClicked = function () {
 			const newVal = (val.value += 1);
-			if (newVal <= props.length)
-				setValuePage(newVal);
-			else if (props.infinite)
-				setValuePage(1);
+			if (newVal <= props.length) setValuePage(newVal);
+			else if (props.infinite) setValuePage(1);
 		};
 
 		watch(
@@ -296,10 +303,8 @@ export default defineComponent({
 			(valNew, prevValue) => {
 				if (isDisabledItem(valNew) || isLoadingItem(valNew)) {
 					let newVal = valNew;
-					if (valNew > prevValue)
-						newVal += 1;
-					else
-						newVal -= 1;
+					if (valNew > prevValue) newVal += 1;
+					else newVal -= 1;
 
 					if (newVal > props.length)
 						newVal = props.infinite ? 1 : prevValue;
@@ -540,12 +545,10 @@ export default defineComponent({
 				height: 2px;
 			}
 		}
-
 	}
 
 	&__active {
-
-		&.flat{
+		&.flat {
 			background: -getColor("color", 0.15) !important;
 			color: -getColor("color", 1) !important;
 		}

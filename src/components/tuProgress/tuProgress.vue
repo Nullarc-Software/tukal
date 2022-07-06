@@ -20,13 +20,7 @@
 
 <script lang="ts">
 import { getApplyColor } from "@/utils";
-import {
-	computed,
-	defineComponent,
-	onMounted,
-	ref,
-	watch
-} from "vue";
+import { computed, defineComponent, onMounted, ref, watch } from "vue";
 import tuComponent from "../tuComponent";
 
 export default defineComponent({
@@ -69,7 +63,7 @@ export default defineComponent({
 
 		watch(
 			() => props.percent,
-			newVal => {
+			(newVal) => {
 				percentx.value = newVal;
 			}
 		);

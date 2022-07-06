@@ -1,15 +1,11 @@
 <template>
-    <div
-        ref="dropOptions"
-        @mouseleave="mouseleavex"
-        @mouseenter="mouseenterx"
-    >
-        <!-- @mouseout="toggleMenu($event)" -->
-        <!-- @mouseover="toggleMenu($event)" -->
-        <ul class="tu-component tu-dropdown--menu">
-            <slot />
-        </ul>
-    </div>
+	<div ref="dropOptions" @mouseleave="mouseleavex" @mouseenter="mouseenterx">
+		<!-- @mouseout="toggleMenu($event)" -->
+		<!-- @mouseover="toggleMenu($event)" -->
+		<ul class="tu-component tu-dropdown--menu">
+			<slot />
+		</ul>
+	</div>
 </template>
 
 <script lang="ts">

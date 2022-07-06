@@ -117,25 +117,24 @@ export default defineComponent({
 		const parentMax = inject<Ref<Number>>("parentMax", null);
 
 		const getParent = function () {
-			if (instance?.parent) {
+			if (instance?.parent)
 				return instance.parent.type.name === "TuAvatarGroup";
-			}
+
 			return false;
 		};
 
 		const getText = computed(() => {
-			if (props.text.length <= 5) {
-				return props.text;
-			}
+			if (props.text.length <= 5) return props.text;
+
 			const exp = /\s/g;
 			let letras = "";
 			if (exp.test(props.text)) {
-				props.text.split(exp).forEach(word => {
+				props.text.split(exp).forEach((word) => {
 					letras += word[0].toUpperCase();
 				});
-			} else {
-				letras = props.text[0].toUpperCase();
 			}
+			else letras = props.text[0].toUpperCase();
+
 			return letras.length > 5 ? letras[0] : letras;
 		});
 

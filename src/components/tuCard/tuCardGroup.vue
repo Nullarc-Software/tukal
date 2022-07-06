@@ -1,41 +1,55 @@
 <template>
-  <div class="tu-card__group">
-    <button class="tu-card__group-prev" @click="handleClick($event, 'left')">
-      <tu-icon>keyboard_arrow_left</tu-icon>
-    </button>
-    <div class="tu-card__group-cards" ref="cards">
-      <slot />
-      <div class="tu-card__group-space"></div>
-    </div>
-	<button class="tu-card__group-next" @click="handleClick($event, 'right')">
-      <tu-icon>keyboard_arrow_right</tu-icon>
-    </button>
-  </div>
+	<div class="tu-card__group">
+		<button
+			class="tu-card__group-prev"
+			@click="handleClick($event, 'left')"
+		>
+			<tu-icon>keyboard_arrow_left</tu-icon>
+		</button>
+		<div class="tu-card__group-cards" ref="cards">
+			<slot />
+			<div class="tu-card__group-space"></div>
+		</div>
+		<button
+			class="tu-card__group-next"
+			@click="handleClick($event, 'right')"
+		>
+			<tu-icon>keyboard_arrow_right</tu-icon>
+		</button>
+	</div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
-import tuIcon from "../tuIcon/tuIcon.vue";
+import tuIcon from "../tuIcon";
 export default defineComponent({
-
 	name: "TuCardGroup",
-	setup(props, context) {
+	components: {
+		tuIcon
+	},
+	setup (props, context) {
+		const cards = ref<HTMLDivElement>();
 
-		let cards = ref<HTMLDivElement>();
-
-		const handleClick = function(evt, dir) {
-			if(dir == "left")
-				cards.value?.scrollTo(cards.value?.scrollLeft - cards.value?.clientWidth, 0);
-			else
-				cards.value?.scrollTo(cards.value?.scrollLeft + cards.value?.clientWidth, 0);
-		}
+		const handleClick = function (evt, dir) {
+			if (dir == "left") {
+				cards.value?.scrollTo(
+					cards.value?.scrollLeft - cards.value?.clientWidth,
+					0
+				);
+			}
+			else {
+				cards.value?.scrollTo(
+					cards.value?.scrollLeft + cards.value?.clientWidth,
+					0
+				);
+			}
+		};
 
 		return {
 			cards,
 			handleClick
-		}
+		};
 	}
-
 });
 </script>
 

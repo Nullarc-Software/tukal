@@ -202,8 +202,7 @@ export default defineComponent({
 		transitionClass.value = [];
 
 		const clickNoti = function () {
-			if (props.onClick)
-				props.onClick();
+			if (props.onClick) props.onClick();
 		};
 
 		const handleClickClose = function () {
@@ -212,10 +211,8 @@ export default defineComponent({
 				"notification-leave-to"
 			];
 			setTimeout(() => {
-				if (props.clickClose) {
-					if (props.onClickClose)
-						props.onClickClose();
-				}
+				if (props.clickClose)
+					if (props.onClickClose) props.onClickClose();
 			}, 100);
 		};
 
@@ -227,10 +224,8 @@ export default defineComponent({
 		const enter = function (el: any, done: any) {
 			const h = el.scrollHeight;
 			el.style.maxHeight = `${h + 40}px`;
-			if (window.innerWidth < 600)
-				el.style.padding = "15px";
-			 else
-				el.style.padding = "20px";
+			if (window.innerWidth < 600) el.style.padding = "15px";
+			else el.style.padding = "20px";
 
 			done();
 		};
@@ -248,10 +243,8 @@ export default defineComponent({
 			if (props.sticky === false) {
 				let value = 0;
 				intervalProgress.value = setInterval(() => {
-					if (props.progressAuto)
-						internalProgress.value++;
-					else
-						value++;
+					if (props.progressAuto) internalProgress.value++;
+					else value++;
 
 					if (internalProgress.value >= 100 || value >= 100) {
 						clearInterval(intervalProgress.value);

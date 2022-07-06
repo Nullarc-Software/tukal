@@ -1,4 +1,3 @@
-
 <template>
 	<div style="position: relative">
 		<h1 style="text-align: cente; margin-top: 50px">
@@ -203,20 +202,20 @@
 				:items="[
 					{
 						title: 'Dashboard',
-						url: 'dashboard',
+						url: 'dashboard'
 					},
 					{
 						title: 'Link 1',
-						url: 'link-1',
+						url: 'link-1'
 					},
 					{
 						title: 'Link 2',
-						disabled: true,
+						disabled: true
 					},
 					{
 						title: 'Active',
-						active: true,
-					},
+						active: true
+					}
 				]"
 			></tu-breadcrumb>
 
@@ -274,9 +273,11 @@
 				</template>
 				{{ checkBox1 }}
 			</tu-checkbox>
-			<tu-checkbox v-model:checked="checkBox9" indeterminate>{{ checkBox9 }}</tu-checkbox>
+			<tu-checkbox v-model:checked="checkBox9" indeterminate>{{
+				checkBox9
+			}}</tu-checkbox>
 			<div class="">
-				<button @click="resetOpts" > Reset </button>
+				<button @click="resetOpts">Reset</button>
 				<ul class="centerx">
 					<li class="modelx">
 						{{ opts }}
@@ -292,7 +293,10 @@
 						>
 					</li>
 					<li>
-						<tu-checkbox :disabled="true" v-model="opts" val="summer"
+						<tu-checkbox
+							:disabled="true"
+							v-model="opts"
+							val="summer"
 							>Summer</tu-checkbox
 						>
 					</li>
@@ -601,16 +605,29 @@
 				multiple
 				label-placeholder="Label-placeholder"
 				v-model="selectValue"
-
 				filter
 			>
-				<tu-option label="Test" value="1"> Test </tu-option>
-				<tu-option label="Test1" value="2"> Test1 </tu-option>
-				<tu-option label="Javascript" value="3"> Javascript </tu-option>
-				<tu-option disabled label="Sass" value="4"> Sass </tu-option>
-				<tu-option label="Typescript" value="5"> Typescript </tu-option>
-				<tu-option label="Webpack" value="6"> Webpack </tu-option>
-				<tu-option label="Nodejs" value="7"> Nodejs </tu-option>
+				<tu-select-option label="Test" value="1">
+					Test
+				</tu-select-option>
+				<tu-select-option label="Test1" value="2">
+					Test1
+				</tu-select-option>
+				<tu-select-option label="Javascript" value="3">
+					Javascript
+				</tu-select-option>
+				<tu-select-option disabled label="Sass" value="4">
+					Sass
+				</tu-select-option>
+				<tu-select-option label="Typescript" value="5">
+					Typescript
+				</tu-select-option>
+				<tu-select-option label="Webpack" value="6">
+					Webpack
+				</tu-select-option>
+				<tu-select-option label="Nodejs" value="7">
+					Nodejs
+				</tu-select-option>
 			</tu-select>
 
 			<tu-select
@@ -620,13 +637,27 @@
 				style="margin: 10px"
 				filter
 			>
-				<tu-option label="Test" value="1"> Test </tu-option>
-				<tu-option label="Test1" value="2"> Test1 </tu-option>
-				<tu-option label="Javascript" value="3"> Javascript </tu-option>
-				<tu-option disabled label="Sass" value="4"> Sass </tu-option>
-				<tu-option label="Typescript" value="5"> Typescript </tu-option>
-				<tu-option label="Webpack" value="6"> Webpack </tu-option>
-				<tu-option label="Nodejs" value="7"> Nodejs </tu-option>
+				<tu-select-option label="Test" value="1">
+					Test
+				</tu-select-option>
+				<tu-select-option label="Test1" value="2">
+					Test1
+				</tu-select-option>
+				<tu-select-option label="Javascript" value="3">
+					Javascript
+				</tu-select-option>
+				<tu-select-option disabled label="Sass" value="4">
+					Sass
+				</tu-select-option>
+				<tu-select-option label="Typescript" value="5">
+					Typescript
+				</tu-select-option>
+				<tu-select-option label="Webpack" value="6">
+					Webpack
+				</tu-select-option>
+				<tu-select-option label="Nodejs" value="7">
+					Nodejs
+				</tu-select-option>
 			</tu-select>
 
 			<tu-select
@@ -635,13 +666,27 @@
 				v-model="selectValue"
 				style="margin: 10px"
 			>
-				<tu-option label="Test" value="1"> Test </tu-option>
-				<tu-option label="Test1" value="2"> Test1 </tu-option>
-				<tu-option label="Javascript" value="3"> Javascript </tu-option>
-				<tu-option disabled label="Sass" value="4"> Sass </tu-option>
-				<tu-option label="Typescript" value="5"> Typescript </tu-option>
-				<tu-option label="Webpack" value="6"> Webpack </tu-option>
-				<tu-option label="Nodejs" value="7"> Nodejs </tu-option>
+				<tu-select-option label="Test" value="1">
+					Test
+				</tu-select-option>
+				<tu-select-option label="Test1" value="2">
+					Test1
+				</tu-select-option>
+				<tu-select-option label="Javascript" value="3">
+					Javascript
+				</tu-select-option>
+				<tu-select-option disabled label="Sass" value="4">
+					Sass
+				</tu-select-option>
+				<tu-select-option label="Typescript" value="5">
+					Typescript
+				</tu-select-option>
+				<tu-select-option label="Webpack" value="6">
+					Webpack
+				</tu-select-option>
+				<tu-select-option label="Nodejs" value="7">
+					Nodejs
+				</tu-select-option>
 			</tu-select>
 
 			<tu-select
@@ -651,34 +696,56 @@
 				v-model="selectValue2"
 				style="margin: 10px"
 			>
-				<tu-option label="Test" value="1"> Test </tu-option>
-				<tu-option label="Test1" value="2"> Test1 </tu-option>
-				<tu-option label="Javascript" value="3">
+				<tu-select-option label="Test" value="1">
+					Test
+				</tu-select-option>
+				<tu-select-option label="Test1" value="2">
+					Test1
+				</tu-select-option>
+				<tu-select-option label="Javascript" value="3">
 					Javascript <tu-icon>home</tu-icon>
-				</tu-option>
-				<tu-option disabled label="Sass" value="4"> Sass </tu-option>
-				<tu-option label="Typescript" value="5"> Typescript </tu-option>
-				<tu-option label="Webpack" value="6"> Webpack </tu-option>
-				<tu-option label="Nodejs" value="7"> Nodejs </tu-option>
+				</tu-select-option>
+				<tu-select-option disabled label="Sass" value="4">
+					Sass
+				</tu-select-option>
+				<tu-select-option label="Typescript" value="5">
+					Typescript
+				</tu-select-option>
+				<tu-select-option label="Webpack" value="6">
+					Webpack
+				</tu-select-option>
+				<tu-select-option label="Nodejs" value="7">
+					Nodejs
+				</tu-select-option>
 			</tu-select>
 			<tu-select inline label="Group" placeholder="Group">
-				<tu-option-group>
+				<tu-select-option-group>
 					<template v-slot:title> Vuejs </template>
-					<tu-option label="Vuesax" value="1"> Vuesax </tu-option>
-					<tu-option label="Vue" value="2"> Vue </tu-option>
-					<tu-option label="Javascript" value="3">
+					<tu-select-option label="Vuesax" value="1">
+						Vuesax
+					</tu-select-option>
+					<tu-select-option label="Vue" value="2">
+						Vue
+					</tu-select-option>
+					<tu-select-option label="Javascript" value="3">
 						Javascript
-					</tu-option>
-				</tu-option-group>
-				<tu-option-group>
+					</tu-select-option>
+				</tu-select-option-group>
+				<tu-select-option-group>
 					<template v-slot:title> Others </template>
-					<tu-option label="Sass" value="4"> Sass </tu-option>
-					<tu-option label="Typescript" value="5">
+					<tu-select-option label="Sass" value="4">
+						Sass
+					</tu-select-option>
+					<tu-select-option label="Typescript" value="5">
 						Typescript
-					</tu-option>
-					<tu-option label="Webpack" value="6"> Webpack </tu-option>
-					<tu-option label="Nodejs" value="7"> Nodejs </tu-option>
-				</tu-option-group>
+					</tu-select-option>
+					<tu-select-option label="Webpack" value="6">
+						Webpack
+					</tu-select-option>
+					<tu-select-option label="Nodejs" value="7">
+						Nodejs
+					</tu-select-option>
+				</tu-select-option-group>
 			</tu-select>
 
 			<tu-select
@@ -690,13 +757,23 @@
 				placeholder="Select"
 				v-model="color.value"
 			>
-				<tu-option value="1"> Vuesax </tu-option>
-				<tu-option label="Vue" value="2"> Vue </tu-option>
-				<tu-option label="Javascript" value="3"> Javascript </tu-option>
-				<tu-option label="Sass" value="4"> Sass </tu-option>
-				<tu-option label="Typescript" value="5"> Typescript </tu-option>
-				<tu-option label="Webpack" value="6"> Webpack </tu-option>
-				<tu-option label="Nodejs" value="7"> Nodejs </tu-option>
+				<tu-select-option value="1"> Vuesax </tu-select-option>
+				<tu-select-option label="Vue" value="2"> Vue </tu-select-option>
+				<tu-select-option label="Javascript" value="3">
+					Javascript
+				</tu-select-option>
+				<tu-select-option label="Sass" value="4">
+					Sass
+				</tu-select-option>
+				<tu-select-option label="Typescript" value="5">
+					Typescript
+				</tu-select-option>
+				<tu-select-option label="Webpack" value="6">
+					Webpack
+				</tu-select-option>
+				<tu-select-option label="Nodejs" value="7">
+					Nodejs
+				</tu-select-option>
 			</tu-select>
 		</div>
 		<div class="showcase-component">
@@ -919,15 +996,19 @@
 		<div class="showcase-component">
 			<h4>Text Area:</h4>
 			<hr />
-				<tu-textarea  />
-				<tu-textarea width="300px" />
-				<tu-textarea label="Label in Textarea" height="100px" />
-				<tu-textarea counter="20" label="Label in Textarea" height="100px" />
+			<tu-textarea />
+			<tu-textarea width="300px" />
+			<tu-textarea label="Label in Textarea" height="100px" />
+			<tu-textarea
+				counter="20"
+				label="Label in Textarea"
+				height="100px"
+			/>
 		</div>
 		<div class="showcase-component">
 			<h4>Table:</h4>
 			<hr />
-			{{selected}}
+			{{ selected }}
 			<tu-table
 				row-expand
 				multi-select
@@ -939,7 +1020,7 @@
 				:pageSize="25"
 				:data="universities"
 				:columns="columns"
-				>
+			>
 				<!-- <template #thead>
 					<tu-th field="country" sort search> Country </tu-th>
 					<tu-th field="name" sort search :index="1" width="500px"> Name </tu-th>
@@ -951,18 +1032,21 @@
 					<tu-th field="something" sort search> No value </tu-th>
 				</template> -->
 				<template #footer>
-					<tu-pagination not-margin  flat v-model="page" :length="numPages" />
+					<tu-pagination
+						not-margin
+						flat
+						v-model="page"
+						:length="numPages"
+					/>
 				</template>
 			</tu-table>
 		</div>
-		<div class="showcase-component">
-
-		</div>
+		<div class="showcase-component"></div>
 
 		<div class="showcase-component">
 			<h4>Upload Component:</h4>
 			<hr />
-			<tu-upload singleUpload :limit="1"/>
+			<tu-upload singleUpload :limit="1" />
 		</div>
 	</div>
 </template>
@@ -980,9 +1064,7 @@ import {
 	markRaw
 } from "vue";
 import * as components from "./components";
-import {
-	NotificationAttributes
-} from "./components/tuNotifications";
+import { NotificationAttributes } from "./components/tuNotifications";
 import {
 	Loading as LoadingConstructor,
 	LoadingAttributes
@@ -1112,7 +1194,7 @@ export default defineComponent({
 			console.log("picked: " + picked.value);
 		});
 
-		const menu : TuTableContextMenuEntry[] = [
+		const menu: TuTableContextMenuEntry[] = [
 			{
 				caption: "More Options >",
 				hasSubMenu: true,
@@ -1128,7 +1210,7 @@ export default defineComponent({
 			}
 		];
 
-		const columns : TuHeaderDefn[] = [
+		const columns: TuHeaderDefn[] = [
 			{
 				caption: "Action",
 				field: "test",
@@ -1263,18 +1345,20 @@ export default defineComponent({
 		}
 		const editStatic = ref("Some Text");
 		const universities = shallowRef([]);
-		axios.get("http://universities.hipolabs.com/search?country=India").then((response) => {
-			const temp = response.data;
-			temp.forEach((value) => {
-				value.expanded = {
-					component: testComponent,
-					props: {
-						name: value.name
-					}
-				};
+		axios
+			.get("http://universities.hipolabs.com/search?country=India")
+			.then((response) => {
+				const temp = response.data;
+				temp.forEach((value) => {
+					value.expanded = {
+						component: testComponent,
+						props: {
+							name: value.name
+						}
+					};
+				});
+				universities.value = temp;
 			});
-			universities.value = temp;
-		});
 
 		const treeSelectedItems = ref<TuTreeViewItemDefn[]>([]);
 		const treeItems = ref<TuTreeViewItemDefn[]>([

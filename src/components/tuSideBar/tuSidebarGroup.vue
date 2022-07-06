@@ -2,7 +2,7 @@
 	<div
 		class="tu-sidebar__group"
 		:class="{ open: openState }"
-		ref="sidebar_group"
+		ref="sidebarGroup"
 	>
 		<div class="tu-sidebar__group__header" @click="openState = !openState">
 			<slot name="header" />
@@ -27,16 +27,16 @@ export default defineComponent({
 	props: {
 		open: {
 			default: false,
-			type: Boolean,
-		},
+			type: Boolean
+		}
 	},
-	setup(props, context) {
-		let group = ref(true);
-		let openState = ref(false);
-		let sidebar_group = ref<HTMLDivElement>();
-		let content = ref<HTMLDivElement>();
-		let parentValue = inject<any>("parentValue");
-		let parentHandleClickItem = inject<Function>("handleClickItem");
+	setup (props, context) {
+		const group = ref(true);
+		const openState = ref(false);
+		const sidebarGroup = ref<HTMLDivElement>();
+		const content = ref<HTMLDivElement>();
+		const parentValue = inject<any>("parentValue");
+		const parentHandleClickItem = inject<Function>("handleClickItem");
 
 		const handleClickItem = function (id: string) {
 			parentHandleClickItem?.call(null, id);
@@ -58,9 +58,8 @@ export default defineComponent({
 		};
 
 		onMounted(() => {
-			if (sidebar_group.value?.querySelector(".active") || props.open) {
+			if (sidebarGroup.value?.querySelector(".active") || props.open)
 				openState.value = true;
-			}
 		});
 
 		watch(
@@ -70,9 +69,10 @@ export default defineComponent({
 					const h = content.value?.scrollHeight;
 					if (group.value) {
 						if (val) {
-							//parent.$refs.content.style.height = `${parent.$refs.content.scrollHeight + h -1}px`;
-						} else {
-							//parent.$refs.content.style.height = `${parent.$refs.content.scrollHeight -h +1}px`;
+							// parent.$refs.content.style.height = `${parent.$refs.content.scrollHeight + h -1}px`;
+						}
+						else {
+							// parent.$refs.content.style.height = `${parent.$refs.content.scrollHeight -h +1}px`;
 						}
 					}
 				});
@@ -86,18 +86,18 @@ export default defineComponent({
 			beforeEnter,
 			parentValue,
 			group,
-			openState,
+			openState
 		};
-	},
+	}
 });
 </script>
 
-<style lang="scss" >
+<style lang="scss">
 @import "../../style/sass/_mixins";
 
 .tu-sidebar__group {
 	padding: 0px;
-	
+
 	position: relative;
 
 	&.open {
@@ -157,8 +157,8 @@ export default defineComponent({
 		::v-deep(.tu-sidebar__item):hover:not(.hasIcon) {
 			padding-left: 20px;
 		}
-		::v-deep(.tu-sidebar__item){
-			&.hasIcon:hover{
+		::v-deep(.tu-sidebar__item) {
+			&.hasIcon:hover {
 				padding-left: 5px;
 			}
 		}

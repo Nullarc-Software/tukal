@@ -1,13 +1,19 @@
 <template>
-	<div class="popper-contatiner"
-       :class="{
-        'pointer-hand': cursorPointer
-       }"
-       v-click-away="hide"
-      >
-		<div ref="triggerNode" v-on="listeners" class="inline-block" :style="{
+	<div
+		class="popper-contatiner"
+		:class="{
+			'pointer-hand': cursorPointer
+		}"
+		v-click-away="hide"
+	>
+		<div
+			ref="triggerNode"
+			v-on="listeners"
+			class="inline-block"
+			:style="{
 				width: fitPopperContainer ? '100%' : 'unset'
-			}">
+			}"
+		>
 			<!-- The default slot to trigger the popper  -->
 			<slot />
 		</div>
@@ -16,7 +22,9 @@
 				v-if="isOpen"
 				:class="['popper', isOpen ? 'inline-block' : null]"
 				:style="{
-					'border-radius': borderRadius ? `${borderRadius} !important` : null
+					'border-radius': borderRadius
+						? `${borderRadius} !important`
+						: null
 				}"
 				ref="popperNode"
 			>
@@ -36,7 +44,8 @@ import clickAway from "./directives/click-away";
  * The Popper component.
  */
 
-const Placement = ["auto",
+const Placement = [
+	"auto",
 	"auto-start",
 	"auto-end",
 	"top",
@@ -50,7 +59,8 @@ const Placement = ["auto",
 	"right-end",
 	"left",
 	"left-start",
-	"left-end"] as const;
+	"left-end"
+] as const;
 export type PlacementType = typeof Placement[number];
 
 export default defineComponent({
@@ -175,13 +185,11 @@ export default defineComponent({
 					}, props.timeout);
 				}
 			}
-			else
-				emit("hide:popper");
+			else emit("hide:popper");
 		});
 
 		onBeforeUnmount(() => {
-			if (popperInstance.value)
-				(popperInstance.value as any).destroy();
+			if (popperInstance.value) (popperInstance.value as any).destroy();
 		});
 
 		return {
@@ -210,9 +218,8 @@ export default defineComponent({
 </style>
 
 <style scoped>
-
-.pointer-hand{
-   cursor: pointer;
+.pointer-hand {
+	cursor: pointer;
 }
 
 .popper-contatiner {
