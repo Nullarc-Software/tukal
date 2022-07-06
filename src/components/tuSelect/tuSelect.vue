@@ -209,7 +209,8 @@ export default defineComponent({
 	name: "TuSelect",
 	extends: tuComponent,
 	components: {
-		tuOption
+		tuOption,
+		tuIcon
 	},
 	props: {
 		modelValue: {},

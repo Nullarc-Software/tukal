@@ -2,7 +2,7 @@
 	<div
 		class="tu-input-parent"
 		:style="{
-			['--tu-getColor']: color ? getColor(color) : '',
+			['--tu-getColor']: color ? getColor(color) : ''
 		}"
 		:class="[
 			`tu-input-parent--state-${state}`,
@@ -17,14 +17,14 @@
 			// colors
 			{
 				[`tu-component--primary`]:
-					!danger && !success && !warn && !dark && !color,
+					!danger && !success && !warn && !dark && !color
 			},
 			{ [`tu-component--danger`]: !!danger },
 			{ [`tu-component--warn`]: !!warn },
 			{ [`tu-component--success`]: !!success },
 			{ [`tu-component--dark`]: !!dark },
 			{ [`tu-component--is-getColor`]: !!isColor },
-			{ [`tu-component-static-editable`] : !!editableStaticInternal }
+			{ [`tu-component-static-editable`]: !!editableStaticInternal }
 		]"
 	>
 		<div
@@ -32,8 +32,8 @@
 			:class="[
 				{ [`tu-input-content--has-getColor`]: hasColor },
 				{
-					[`tu-input-content--has-label`]: label || labelPlaceholder,
-				},
+					[`tu-input-content--has-label`]: label || labelPlaceholder
+				}
 			]"
 		>
 			<input
@@ -41,7 +41,7 @@
 				:value="modelValue"
 				:class="[
 					{ ['tu-input--has-icon']: !!$slots.icon },
-					{ ['tu-input--has-icon--after']: !!iconAfter },
+					{ ['tu-input--has-icon--after']: !!iconAfter }
 				]"
 				v-bind="$attrs"
 				@input="onInput"
@@ -54,7 +54,7 @@
 				:for="getId"
 				:class="[
 					'tu-input__label',
-					{ 'tu-input__label--hidden': modelValue !== '' },
+					{ 'tu-input__label--hidden': modelValue !== '' }
 				]"
 			>
 				{{ placeholder }}
@@ -68,9 +68,9 @@
 						'tu-input__label--hidden':
 							modelValue !== '' ||
 							$attrs.type == 'date' ||
-							$attrs.type == 'time',
+							$attrs.type == 'time'
 					},
-					{ 'tu-input__label--label': label },
+					{ 'tu-input__label--label': label }
 				]"
 			>
 				{{ label || placeholder || labelPlaceholder }}
@@ -80,7 +80,7 @@
 				class="tu-input__icon"
 				:class="[
 					{ 'tu-input__icon--after': iconAfter },
-					{ 'tu-input__icon--click': !!$attrs['click-icon'] },
+					{ 'tu-input__icon--click': !!$attrs['click-icon'] }
 				]"
 				@click="iconClick"
 			>
@@ -92,14 +92,16 @@
 				class="tu-input__icon__editable"
 				:class="[
 					{ 'tu-input__icon--after': true },
-					{ 'tu-input__icon--click': !!$attrs['click-icon'] },
+					{ 'tu-input__icon--click': !!$attrs['click-icon'] }
 				]"
 			>
-				<tu-icon icon-pack="material-icons" @click="editableStaticInternal = false">mode_edit</tu-icon>
+				<tu-icon
+					icon-pack="material-icons"
+					@click="editableStaticInternal = false"
+					>mode_edit</tu-icon
+				>
 			</span>
-			<div v-if="editableStaticInternal">
-
-			</div>
+			<div v-if="editableStaticInternal"></div>
 			<div v-if="loading" class="tu-input__loading" />
 			<div class="tu-input__affects">
 				<div class="tu-input__affects__1" />
@@ -114,9 +116,9 @@
 			:class="[
 				{ 'tu-input__progress--danger': progress < 33 },
 				{
-					'tu-input__progress--warn': progress < 66 && progress > 33,
+					'tu-input__progress--warn': progress < 66 && progress > 33
 				},
-				{ 'tu-input__progress--success': progress > 66 },
+				{ 'tu-input__progress--success': progress > 66 }
 			]"
 		>
 			<div
@@ -161,6 +163,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref, watch } from "vue";
+import tuIcon from "../tuIcon";
 import tuComponent from "../tuComponent";
 
 class InputConstants {
@@ -170,6 +173,9 @@ class InputConstants {
 export default defineComponent({
 	name: "TuInput",
 	extends: tuComponent,
+	components: {
+		tuIcon
+	},
 	props: {
 		modelValue: { default: "" },
 		labelPlaceholder: { default: "" },
@@ -229,7 +235,7 @@ export default defineComponent({
 		};
 
 		const onInput = function (evt) {
-    		context.emit("update:modelValue", evt.target.value);
+			context.emit("update:modelValue", evt.target.value);
 		};
 
 		const iconClick = function (evt) {
@@ -246,8 +252,7 @@ export default defineComponent({
 				setTimeout(() => {
 					if (value === false)
 						document.addEventListener("click", editable);
-					else
-						document.removeEventListener("click", editable);
+					else document.removeEventListener("click", editable);
 				}, 200);
 			});
 		}
@@ -288,8 +293,8 @@ export default defineComponent({
 .tu-input-parent {
 	--tu-color: var(--tu-primary);
 	display: flex;
-  flex-direction: column;
-  max-width: max-content;
+	flex-direction: column;
+	max-width: max-content;
 
 	&.inline {
 		display: inline-flex;
@@ -306,7 +311,6 @@ export default defineComponent({
 	&.square {
 		.tu-input-content {
 			border-radius: 0px !important;
-
 		}
 	}
 
@@ -324,7 +328,7 @@ export default defineComponent({
 
 	&.block {
 		width: 100%;
-    max-width: unset;
+		max-width: unset;
 		.tu-input {
 			width: 100%;
 		}
@@ -365,7 +369,7 @@ export default defineComponent({
 
 	+ .tu-input__message {
 		padding-top: 2px;
-    display: flex;
+		display: flex;
 	}
 
 	&--has-getColor {
@@ -792,17 +796,16 @@ export default defineComponent({
 .tu-input-parent.tu-component-static-editable {
 	::v-deep(.tu-input-content) {
 		border: none !important;
-	};
+	}
 	::v-deep(.tu-input) {
 		cursor: text;
 		//pointer-events: none;
 		background-color: transparent;
-	};
+	}
 	::v-deep(.tu-input__icon__editable) {
 		i {
 			font-size: 16px;
 		}
 	}
-
 }
 </style>
