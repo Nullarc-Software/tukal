@@ -27,7 +27,10 @@
 						>
 					</tu-th>
 					<tu-th v-if="multiSelect" fixed style="width: 50px">
-						<tu-checkbox v-model="selectedAll" indeterminate />
+						<tu-checkbox
+							v-model="selectedAll"
+							:indeterminate="table.isPartiallyChecked.value"
+						/>
 					</tu-th>
 					<tu-th
 						v-for="header in table.getTableHeaders.value"
@@ -209,10 +212,8 @@ export default defineComponent({
 		 * The Data for the table. ignored in Server Side model. SSM This contains the table data.
 		 */
 		data: {
-			type: Object,
-			default: () => {
-				return {};
-			}
+			type: Array,
+			default: () => []
 		},
 		id: {
 			type: String,
@@ -295,7 +296,7 @@ export default defineComponent({
 
 		const rowListeners = {
 			click: function (event, tr) {
-				console.log("Row clicked");
+				// console.log("Row clicked");
 			}
 		};
 

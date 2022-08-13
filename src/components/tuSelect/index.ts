@@ -8,12 +8,11 @@ tuComponent.install = (vue: any) => {
 	vue.component(tuComponent3.name, tuComponent3);
 };
 
-if (typeof window !== "undefined" && (<any>window).Vue) {
+if (typeof window !== "undefined" && (<any>window).Vue)
 	tuComponent.install((<any>window).Vue);
-}
 
 class SelectOptionConstants {
 	public static id : number = 0;
 }
 
-export { SelectOptionConstants, tuComponent as tuSelect, tuComponent2 as tuSelectOption, tuComponent3 as tuSelectOptionGroup };
+export { SelectOptionConstants, tuComponent as tuSelect, tuComponent2 as tuSelectOptionGroup, tuComponent3 as tuSelectOption };

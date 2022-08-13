@@ -3,7 +3,7 @@
 		class="tu-table__th"
 		:class="{
 			sort: sort,
-			search: search,
+			search: search
 		}"
 		v-bind="$attrs"
 		:data-sort-type="sortType"
@@ -17,24 +17,44 @@
 					<tu-icon class="icon-sort-2">keyboard_arrow_down</tu-icon>
 				</div>
 			</div>
-			<tu-input v-if="search" block border v-model="colSearch" type="search" @keypress="keyPressed" />
+			<tu-input
+				v-if="search"
+				block
+				border
+				v-model="colSearch"
+				type="search"
+				@keypress="keyPressed"
+			/>
 		</div>
-		<div class="tu-table__th__resizer_right" :class="{active: headerElement ? true : false}" v-on="resizeListeners" v-if="!fixed">
-		</div>
+		<div
+			class="tu-table__th__resizer_right"
+			:class="{ active: headerElement ? true : false }"
+			v-on="resizeListeners"
+			v-if="!fixed"
+		></div>
 	</th>
 </template>
 
 <script lang="ts">
 import _ from "lodash";
-import { computed, defineComponent, getCurrentInstance, inject, onMounted, ref, watch } from "vue";
+import {
+	computed,
+	defineComponent,
+	getCurrentInstance,
+	inject,
+	onMounted,
+	ref,
+	watch
+} from "vue";
 import tuComponent from "../tuComponent";
 import tuIcon from "../tuIcon";
+import tuInput from "../tuInput";
 import { TuTableStore } from "./tuTableStore";
 
 export default defineComponent({
 	name: "TuTh",
 	extends: tuComponent,
-	components: { tuIcon },
+	components: { tuIcon, tuInput },
 	props: {
 		/**
 		 * Enables sorting options for the column
@@ -83,49 +103,63 @@ export default defineComponent({
 			});
 			return item ? item.dir : "none";
 		});
-		const headerDefn = tableInstance.getHeaderObject(props.index ?? props.field);
+		const headerDefn = tableInstance.getHeaderObject(
+			props.index ?? props.field
+		);
 
-		let headerElement = ref<HTMLElement>();
+		const headerElement = ref<HTMLElement>();
 		let startOffset = 0;
 
 		function keyPressed (event: KeyboardEvent) {
 			if (event.key === "Enter") {
 				switch (props.type) {
 				case "text":
-					tableInstance.setFilter(props.field, "like", colSearch.value);
+					tableInstance.setFilter(
+						props.field,
+						"like",
+						colSearch.value
+					);
 					break;
 				case "number":
-					tableInstance.setFilter(props.field, "equals", colSearch.value);
+					tableInstance.setFilter(
+						props.field,
+						"equals",
+						colSearch.value
+					);
 					break;
 				case "date":
-					tableInstance.setFilter(props.field, "in", colSearch.value);
+					tableInstance.setFilter(
+						props.field,
+						"in",
+						colSearch.value
+					);
 					break;
 				default:
 					break;
 				}
 			}
-		};
+		}
 
 		function toggleSort (event) {
-			if (props.sort)
-				tableInstance.toggleSort(props.field);
+			if (props.sort) tableInstance.toggleSort(props.field);
 		}
 
 		watch(colSearch, (value) => {
-			if	(value === "")
-				tableInstance.deleteFilter(props.field);
+			if (value === "") tableInstance.deleteFilter(props.field);
 		});
 
 		function trackMouseMove (event: MouseEvent) {
 			if (headerElement.value) {
 				const newWidth = startOffset + event.pageX;
-				if (newWidth >= headerDefn.minWidth && newWidth <= headerDefn.maxWidth)
+				if (
+					newWidth >= headerDefn.minWidth &&
+					newWidth <= headerDefn.maxWidth
+				)
 					headerDefn.width = startOffset + event.pageX + "px";
 				else if (newWidth < headerDefn.minWidth)
 					headerDefn.width = headerDefn.minWidth + "px";
-				else
-					headerDefn.width = headerDefn.maxWidth + "px";
- 			}
+				else headerDefn.width = headerDefn.maxWidth + "px";
+			}
 		}
 
 		function trackMouseUp (event) {
@@ -142,8 +176,7 @@ export default defineComponent({
 		};
 
 		onMounted(() => {
-			if (headerDefn)
-				headerDefn.element = theader.value;
+			if (headerDefn) headerDefn.element = theader.value;
 		});
 
 		return {
@@ -164,7 +197,7 @@ export default defineComponent({
 .tu-table__th {
 	padding: 10px 12px;
 	text-align: left;
-	
+
 	font-size: 0.8rem;
 	border: 0px;
 	position: relative;
@@ -257,7 +290,7 @@ export default defineComponent({
 			display: flex;
 			flex-direction: row;
 			align-items: center;
-			cursor: pointer
+			cursor: pointer;
 		}
 
 		&__icons {

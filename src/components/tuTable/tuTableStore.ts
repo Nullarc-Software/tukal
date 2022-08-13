@@ -1,4 +1,3 @@
-
 import _ from "lodash";
 import { Component, computed, ComputedRef, reactive, ref, Ref, shallowReactive } from "vue";
 
@@ -96,7 +95,9 @@ export class TuTableStore {
 
 	public headerCount: Ref<number>;
 	public pageLength: Ref<number>;
+
 	public getTableData: ComputedRef<TuTableRow[]>;
+	public isPartiallyChecked: ComputedRef<boolean>;
 	public getTableHeaders: ComputedRef<TuHeaderDefn[]>;
 	public getSorters: ComputedRef<TuTableSorterDefn[]>;
 	public getFilters: ComputedRef<TuFilterDefn[]>;
@@ -216,6 +217,17 @@ export class TuTableStore {
 
 		this.serverModelProps = reactive({
 			ajaxUrl: ""
+		});
+
+		this.isPartiallyChecked = computed(() => {
+			const filteredRows = _.filter(this.table.data, (row) => {
+				return row.selected;
+			});
+			if (filteredRows.length > 0) {
+			// console.log("Total : " + this.rowIndexCtr + ", Selected : " + filteredRows.length + ", Value : " + (this.rowIndexCtr !== filteredRows.length));
+				return this.rowIndexCtr !== filteredRows.length;
+			}
+			else return false;
 		});
 	};
 

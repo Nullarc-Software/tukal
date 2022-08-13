@@ -77,13 +77,13 @@ export default defineComponent({
 	setup (props, context) {
 		const uid = uid_++;
 
-		watch(
+		/* watch(
 			() => props.indeterminate,
 			(val: boolean) => {
 				if (val) context.emit("update:modelValue", true);
 				else context.emit("update:modelValue", false);
 			}
-		);
+		); */
 
 		const listeners = computed(() => {
 			return {

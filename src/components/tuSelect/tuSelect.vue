@@ -302,16 +302,14 @@ export default defineComponent({
 		const setHover = function () {
 			let index: number = -1;
 			childOptions.value.forEach((item: any, i: number) => {
-				if (item.value === props.modelValue)
-					index = i;
+				if (item.value === props.modelValue) index = i;
 			});
 
 			hoverOption.value = index;
 		};
 
 		const handleWindowClick = function (evt: any) {
-			if (!targetSelectInput.value)
-				handleBlur();
+			if (!targetSelectInput.value) handleBlur();
 
 			if (props.filter && !activeOptions.value)
 				activeFilter.value = false;
@@ -339,18 +337,15 @@ export default defineComponent({
 			window.removeEventListener("click", handleWindowClick);
 			if (activeOptions.value) {
 				textFilter.value = "";
-				if (!props.multiple)
-					activeFilter.value = false;
+				if (!props.multiple) activeFilter.value = false;
 			}
 		};
 
 		const clickOption = function (value: any, label: any) {
 			if (props.multiple) {
 				const oldVal = [...(props.modelValue as Array<any>)];
-				if (_.indexOf(oldVal, value) === -1)
-					oldVal.push(value);
-				else
-					oldVal.splice(_.indexOf(oldVal, value), 1);
+				if (_.indexOf(oldVal, value) === -1) oldVal.push(value);
+				else oldVal.splice(_.indexOf(oldVal, value), 1);
 
 				const labels = _.reduce(
 					childOptions.value,
@@ -375,12 +370,10 @@ export default defineComponent({
 			}
 
 			setTimeout(() => {
-				if (props.multiple && activeOptions.value)
-					chips.value?.focus();
+				if (props.multiple && activeOptions.value) chips.value?.focus();
 			}, 10);
 
-			if (!props.multiple)
-				handleBlur();
+			if (!props.multiple) handleBlur();
 		};
 
 		const onClickOption = function (value: any, label: any) {
@@ -388,7 +381,9 @@ export default defineComponent({
 		};
 
 		const isValue = computed(() => {
-			if (Array.isArray(props.modelValue)) return props.modelValue.length !== 0; else {
+			if (Array.isArray(props.modelValue))
+				return props.modelValue.length !== 0;
+			else {
 				return !(
 					_.isNull(props.modelValue) &&
 					!_.isUndefined(props.modelValue)
@@ -413,7 +408,7 @@ export default defineComponent({
 								"span",
 								{
 									class: "tu-select__chips__chip__close",
-									onClick: evt => {
+									onClick: (evt) => {
 										setTimeout(() => {
 											targetClose.value = false;
 										}, 100);
@@ -431,7 +426,7 @@ export default defineComponent({
 									onMouseEnter: () => {
 										targetClose.value = true;
 									},
-									onMouseDown: evt => {
+									onMouseDown: (evt) => {
 										evt.stopPropagation();
 									}
 								},
@@ -482,7 +477,7 @@ export default defineComponent({
 					? props.modelValue === option.value
 					: _.find(props.modelValue as Array<any>, {
 						value: option.value
-					}) !== undefined;
+					  }) !== undefined;
 			});
 
 			const label: any[] = [];
@@ -504,8 +499,7 @@ export default defineComponent({
 					labels.push(item.label);
 				});
 			}
-			else
-				labels = valueLabelTemp;
+			else labels = valueLabelTemp;
 
 			return labels;
 		});
@@ -526,24 +520,19 @@ export default defineComponent({
 
 		const handleKeydown = function (evt: any) {
 			const optionsTemp = options.value;
-			for (let index = 0; index < 300; index++) {
-				setTimeout(() => {
-					setCords(optionsTemp, select.value);
-				}, index);
-			}
+			setTimeout(() => {
+				setCords(optionsTemp, select.value);
+			}, 50);
 			if (evt.code === "ArrowDown") {
 				evt.preventDefault();
 				if (hoverOption.value < childOptions.value?.length - 1)
 					hoverOption.value++;
-				else
-					hoverOption.value = 0;
+				else hoverOption.value = 0;
 			}
 			else if (evt.code === "ArrowUp") {
 				evt.preventDefault();
-				if (hoverOption.value > 0)
-					hoverOption.value--;
-				else
-					hoverOption.value = childOptions.value?.length - 1;
+				if (hoverOption.value > 0) hoverOption.value--;
+				else hoverOption.value = childOptions.value?.length - 1;
 			}
 			else if (evt.code === "Enter") {
 				evt.preventDefault();
@@ -573,8 +562,7 @@ export default defineComponent({
 				focus: (evt: Event) => {
 					activeOptions.value = true;
 					context.emit("focus", evt);
-					if (props.filter)
-						activeFilter.value = true;
+					if (props.filter) activeFilter.value = true;
 
 					window.addEventListener("mousedown", handleWindowClick);
 				},
@@ -588,10 +576,10 @@ export default defineComponent({
 		const chipsListener = computed(() => {
 			return {
 				keydown: handleKeydown,
-				mouseover: event => {
+				mouseover: (event) => {
 					chipsHovered.value = true;
 				},
-				mouseout: event => {
+				mouseout: (event) => {
 					chipsHovered.value = false;
 				},
 				focus: (evt: Event) => {
@@ -627,13 +615,11 @@ export default defineComponent({
 			let newChildOptions: any = [];
 
 			childOptions.value.forEach((option: any): any => {
-				if (!option.hiddenOption)
-					newChildOptions.push(option);
+				if (!option.hiddenOption) newChildOptions.push(option);
 			});
 
-			newChildOptions = childOptions.value.filter(item => {
-				if (item.optionGroup)
-					return !item.hiddenOptionGroup;
+			newChildOptions = childOptions.value.filter((item) => {
+				if (item.optionGroup) return !item.hiddenOptionGroup;
 
 				return true;
 			});
@@ -642,10 +628,8 @@ export default defineComponent({
 		});
 
 		const iconClicked = function () {
-			if (activeOptions.value)
-				activeOptions.value = false;
-			else
-				input.value?.focus();
+			if (activeOptions.value) activeOptions.value = false;
+			else input.value?.focus();
 		};
 
 		const beforeEnter = function (el: any) {
@@ -666,7 +650,11 @@ export default defineComponent({
 		const insertOptions = function () {
 			const optionsTemp = options.value as HTMLElement;
 			insertBody(optionsTemp, document.body);
-			setCords(options.value, select.value);
+			setCords(optionsTemp, select.value);
+
+			setTimeout(() => {
+				setCords(optionsTemp, select.value);
+			}, 50);
 		};
 
 		watch(activeOptions, (val: boolean) => {
@@ -679,31 +667,28 @@ export default defineComponent({
 
 		const handleResize = function () {
 			const optionsTemp = options.value as HTMLElement;
-			if (!optionsTemp)
-				return;
+			if (!optionsTemp) return;
 
 			nextTick(() => {
 				setCords(optionsTemp, select.value);
 			});
 
-			for (let index = 0; index < 300; index++) {
-				setTimeout(() => {
-					setCords(optionsTemp, select.value);
-				}, index);
-			}
+			setTimeout(() => {
+				setCords(optionsTemp, select.value);
+			}, 50);
 		};
 
 		const handleScroll = function () {
 			const optionsTemp = options.value as HTMLElement;
-			if (optionsTemp)
-				setCords(optionsTemp, select.value);
+			if (optionsTemp) setCords(optionsTemp, select.value);
 		};
 
 		onMounted(() => {
 			// getValue();
 
 			let children: any = instance?.slots.default?.();
-			if (children?.length === 1 && typeof children[0].type === "symbol") children = children[0].children;
+			if (children?.length === 1 && typeof children[0].type === "symbol")
+				children = children[0].children;
 			const reduced = _.reduce(
 				children,
 				function (result: any[], item, index) {
@@ -723,7 +708,7 @@ export default defineComponent({
 			}
 			else {
 				const newLabelValues: any[] = [];
-				props.modelValue.forEach(value => {
+				props.modelValue.forEach((value) => {
 					const labelValue = _.find(reduced, { value: value });
 					if (labelValue) newLabelValues.push(labelValue);
 				});

@@ -17,10 +17,14 @@
 <script lang="ts">
 import { computed, inject, Ref, ref, watch } from "vue";
 import tuComponent from "../tuComponent";
+import tuSelectOption from "./tuSelectOption.vue";
 export default {
 	name: "TuSelectOptionGroup",
 	inheritAttrs: false,
 	extends: tuComponent,
+	components: {
+		tuSelectOption
+	},
 	props: {
 		disabled: {
 			type: Boolean,

@@ -21,7 +21,7 @@ module.exports = {
 		config.module.rule("js").uses.delete("cache-loader");
 		config.module.rule("ts").uses.delete("cache-loader");
 		config.module.rule("tsx").uses.delete("cache-loader");
-		config.optimization.minimize(true);		
+		config.optimization.minimize(true);
 	},
 	css: {
 		extract: false

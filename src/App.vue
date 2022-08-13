@@ -1,3 +1,4 @@
+<!-- eslint-disable unused-imports/no-unused-vars -->
 <template>
 	<div style="position: relative">
 		<h1 style="text-align: cente; margin-top: 50px">
@@ -599,7 +600,6 @@
 		<div class="showcase-component">
 			<h4>Select:</h4>
 			<hr />
-
 			<tu-select
 				block
 				multiple
@@ -664,7 +664,6 @@
 				inline
 				label-placeholder="Label-placeholder"
 				v-model="selectValue"
-				style="margin: 10px"
 			>
 				<tu-select-option label="Test" value="1">
 					Test
@@ -1046,7 +1045,7 @@
 		<div class="showcase-component">
 			<h4>Upload Component:</h4>
 			<hr />
-			<tu-upload singleUpload :limit="1" />
+			<!-- <tu-upload singleUpload :limit="1" /> -->
 		</div>
 	</div>
 </template>
@@ -1074,7 +1073,7 @@ import "material-icons/iconfont/material-icons.css";
 import axios from "axios";
 import { TuHeaderDefn, TuTableContextMenuEntry } from "./components";
 import tuTableContextMenuVue from "./components/tuTable/tuTableContextMenu.vue";
-import { TuTreeViewItemDefn } from "./components/tuTreeView";
+// import { TuTreeViewItemDefn } from "./components/tuTreeView";
 
 export default defineComponent({
 	components: {
@@ -1127,7 +1126,7 @@ export default defineComponent({
 
 		const notificationComponent = ref(null);
 		const validEmail = computed(function () {
-			return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(
+			return /^\w+([\\.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(
 				inpValue.value
 			);
 		});
@@ -1357,9 +1356,10 @@ export default defineComponent({
 						}
 					};
 				});
-				universities.value = temp;
+				universities.value = temp.slice(0, 3);
 			});
 
+		/*
 		const treeSelectedItems = ref<TuTreeViewItemDefn[]>([]);
 		const treeItems = ref<TuTreeViewItemDefn[]>([
 			{
@@ -1399,11 +1399,11 @@ export default defineComponent({
 
 		watch(treeSelectedItems, (value) => {
 			console.log(value);
-		});
+		}); */
 
 		return {
-			treeSelectedItems,
-			treeItems,
+			// treeSelectedItems,
+			// treeItems,
 			columns,
 			universities,
 			numPages,
