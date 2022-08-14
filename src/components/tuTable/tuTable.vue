@@ -92,7 +92,16 @@
 										: tr.rowData[th.field] ?? "undefined"
 								}}
 							</span>
+							<!--
+								v-model is always instance specific. So, if any component needs to echo values to the parent, they should only use generic 'v-models'
+								and not specifics like "v-mode:xyz"
+
+								the value of the component's output is available to be consumed at row.componentValue
+
+								This component will try and bind to the inbuild componentValue Ref first, if a user defined modelValue is defined in the header, that will be used instead
+							-->
 							<component
+								v-model="tr.componentValues[th.field]"
 								v-else-if="th.isComponent"
 								:is="th.component"
 								v-bind="th.componentProps"
@@ -269,13 +278,13 @@ export default defineComponent({
 			table = new TuTableStore(props.id, 1);
 		else table = new TuTableStore(props.id, 0);
 
+		table.constructHeaders(props.columns);
+
 		if (props.model === "local") table.setTableData(props.data);
 		else {
 			table.serverSideModel = true;
 			table.serverModelProps = reactive(props.serverSideConfig);
 		}
-
-		table.constructHeaders(props.columns);
 
 		const isMultipleSelected = computed(() => {
 			return _.isArray(props.modelValue);

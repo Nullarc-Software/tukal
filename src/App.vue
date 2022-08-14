@@ -1254,9 +1254,8 @@ export default defineComponent({
 			{
 				field: "something",
 				caption: "Undefined Col",
-				props: {
-					sort: true
-				}
+				isComponent: true,
+				component: markRaw(components.tuInput)
 			}
 		];
 
@@ -1350,6 +1349,7 @@ export default defineComponent({
 				const temp = response.data;
 				temp.forEach((value) => {
 					value.expanded = {
+						isComponent: true,
 						component: testComponent,
 						props: {
 							name: value.name

@@ -9,6 +9,9 @@ export interface TuTableRow {
 	index: number,
 	selected: boolean,
 	expanded: boolean,
+	componentValues?: {
+		[fieldName: string] : any
+	},
 	rowData?: {
 		[name:string] : any
 	}
@@ -231,6 +234,11 @@ export class TuTableStore {
 		});
 	};
 
+	public getRowsMatching (filter: any) : TuTableRow[] {
+		const filteredRows = _.filter(this.table.data, _.matches(filter));
+		return filteredRows;
+	};
+
 	public setServerModelProps (props: TuTableServerModel) {
 		this.serverModelProps.ajaxUrl = props.ajaxUrl;
 		this.serverModelProps.ajaxErrorFn = props.ajaxErrorFn;
@@ -253,11 +261,27 @@ export class TuTableStore {
 				index: ++this.rowIndexCtr,
 				selected: false,
 				expanded: false,
-				rowData: shallowReactive(value)
-			});
+				rowData: shallowReactive(value),
+				componentValues: null
 
+			});
 			this.table.data.push(row);
 		});
+
+		const componentValueObject = {};
+
+		_.forEach(this.table.headers, (header) => {
+			if (header.isComponent) {
+				if (header.componentProps && _.isNil(header.componentProps.modelValue))
+					componentValueObject[header.field] = ref();
+			}
+		});
+
+		if (_.matches<{}>(componentValueObject)) {
+			_.forEach(this.table.data, (row) => {
+				row.componentValues = _.clone(componentValueObject);
+			});
+		};
 	};
 
 	public constructHeaders (headers: any[]) {
