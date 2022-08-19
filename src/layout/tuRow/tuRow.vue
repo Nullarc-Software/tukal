@@ -1,17 +1,18 @@
 <template>
-  <div
-    :style="{
-        justifyContent: justify,
-        alignItems: align,
-        flexDirection: direction
-      }"
-    class="tu-row">
-    <slot/>
-  </div>
+	<div
+		:style="{
+			justifyContent: justify,
+			alignItems: align,
+			flexDirection: direction
+		}"
+		class="tu-row"
+	>
+		<slot />
+	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue"
+import { defineComponent } from "vue";
 
 export default defineComponent({
 	name: "TuRow",

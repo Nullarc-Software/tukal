@@ -85,6 +85,12 @@ export class TableFunctions {
 
 }
 
+export interface TuTableInitialComponentValues {
+	selector: any,
+	key: string,
+	value: any
+}
+
 export class TuTableStore {
 	private id: string;
 	private table: TuTableDefn;
@@ -254,15 +260,31 @@ export class TuTableStore {
 		this.refreshTable.value = !this.refreshTable.value;
 	}
 
+	public updateComponentValuesForRows (rows: TuTableInitialComponentValues[]) {
+		for (const row of rows) {
+			const filtered = _.filter(this.table.data, row.selector);
+			if (filtered.length > 0) {
+				filtered.forEach(selectedRow => {
+					selectedRow.componentValues[row.key] = ref(row.value);
+				});
+			}
+		}
+	}
+
 	public setTableData (data: any) {
 		this.table.data.splice(0);
-		_.forEach(data, (value: Object) => {
+		_.forEach(data, (value: any) => {
+			let componentValues = null;
+			if (value.componentValues) {
+				componentValues = ref(value.componentValues);
+				delete value.componentValues;
+			}
 			const row: TuTableRow = shallowReactive({
 				index: ++this.rowIndexCtr,
 				selected: false,
 				expanded: false,
 				rowData: shallowReactive(value),
-				componentValues: null
+				componentValues: componentValues
 
 			});
 			this.table.data.push(row);
@@ -279,10 +301,11 @@ export class TuTableStore {
 
 		if (_.matches<{}>(componentValueObject)) {
 			_.forEach(this.table.data, (row) => {
-				row.componentValues = _.clone(componentValueObject);
+				if (row.componentValues === null)
+					row.componentValues = componentValueObject;
 			});
 		};
-	};
+	}
 
 	public constructHeaders (headers: any[]) {
 		if (headers.length === 1 && typeof headers[0].type === "symbol")

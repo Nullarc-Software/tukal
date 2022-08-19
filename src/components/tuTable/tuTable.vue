@@ -145,7 +145,8 @@ import {
 	TableIdentifierAuto,
 	TuTableStore,
 	TuTableServerModel,
-	TuTableRow
+	TuTableRow,
+	TuTableInitialComponentValues
 } from "./tuTableStore";
 
 import tuTh from "./tuTh.vue";
@@ -244,6 +245,13 @@ export default defineComponent({
 		},
 		columns: {
 			type: Object as () => any[],
+			default: () => []
+		},
+		/**
+		 * Initial values for all the components in the rows of the table.
+		 */
+		initialComponentValues: {
+			type: Object as PropType<Array<TuTableInitialComponentValues>>,
 			default: () => []
 		}
 	},
