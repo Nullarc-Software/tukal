@@ -60,7 +60,6 @@ export default defineComponent({
 		};
 
 		const onClick = () => {
-			debugger;
 			if (props.id) handleClickItem?.call(null, props.id);
 
 			handleClick();

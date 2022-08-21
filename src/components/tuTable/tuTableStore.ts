@@ -98,6 +98,7 @@ export class TuTableStore {
 	private rowIndexCtr: number = 0;
 	private activeSort: Ref<number>;
 	private refreshTable: Ref<boolean>;
+	private firstDataSet: boolean;
 
 	public serverSideModel: boolean = false;
 	public serverModelProps: TuTableServerModel;
@@ -241,7 +242,7 @@ export class TuTableStore {
 	};
 
 	public getRowsMatching (filter: any) : TuTableRow[] {
-		const filteredRows = _.filter(this.table.data, _.matches(filter));
+		const filteredRows = _.filter(this.table.data, _.matches({ rowData: filter }));
 		return filteredRows;
 	};
 
@@ -265,7 +266,10 @@ export class TuTableStore {
 			const filtered = _.filter(this.table.data, row.selector);
 			if (filtered.length > 0) {
 				filtered.forEach(selectedRow => {
-					selectedRow.componentValues[row.key] = ref(row.value);
+					if (selectedRow.componentValues[row.key])
+						selectedRow.componentValues.row.key.value = row.value;
+					else
+						selectedRow.componentValues[row.key] = ref(row.value);
 				});
 			}
 		}
@@ -290,21 +294,19 @@ export class TuTableStore {
 			this.table.data.push(row);
 		});
 
-		const componentValueObject = {};
-
-		_.forEach(this.table.headers, (header) => {
-			if (header.isComponent) {
-				if (header.componentProps && _.isNil(header.componentProps.modelValue))
-					componentValueObject[header.field] = ref();
-			}
-		});
-
-		if (_.matches<{}>(componentValueObject)) {
-			_.forEach(this.table.data, (row) => {
-				if (row.componentValues === null)
-					row.componentValues = componentValueObject;
+		// TODO: Optimize this stuff, horrible perf
+		_.forEach(this.table.data, (row) => {
+			const componentValueObject = {};
+			_.forEach(this.table.headers, (header) => {
+				if (header.isComponent) {
+					if (_.isNil(header.componentProps) === false && _.isNil(header.componentProps.modelValue))
+						componentValueObject[header.field] = ref(undefined);
+				}
 			});
-		};
+
+			if (row.componentValues === null)
+				row.componentValues = _.cloneDeep(componentValueObject);
+		});
 	}
 
 	public constructHeaders (headers: any[]) {

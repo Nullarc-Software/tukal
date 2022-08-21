@@ -1,6 +1,6 @@
 {
 	"name": "tukal-vue",
-	"version": "0.1.15",
+	"version": "0.1.23",
 	"types": "dist/index.d.ts",
 	"scripts": {
 		"serve": "vue-cli-service serve src/main.ts",
@@ -36,6 +36,7 @@
 		"@babel/core": "^7.17.5",
 		"@babel/plugin-transform-runtime": "^7.17.0",
 		"@babel/preset-typescript": "^7.16.7",
+		"@types/events": "^3.0.0",
 		"@types/lodash": "^4.14.178",
 		"@types/node": "^17.0.19",
 		"@typescript-eslint/eslint-plugin": "^5.12.1",

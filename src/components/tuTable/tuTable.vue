@@ -101,7 +101,7 @@
 								This component will try and bind to the inbuild componentValue Ref first, if a user defined modelValue is defined in the header, that will be used instead
 							-->
 							<component
-								v-model="tr.componentValues[th.field]"
+								v-model="tr.componentValues[th.field].value"
 								v-else-if="th.isComponent"
 								:is="th.component"
 								v-bind="th.componentProps"
@@ -246,6 +246,10 @@ export default defineComponent({
 		columns: {
 			type: Object as () => any[],
 			default: () => []
+		},
+		tableInstance: {
+			type: TuTableStore,
+			default: null
 		},
 		/**
 		 * Initial values for all the components in the rows of the table.
