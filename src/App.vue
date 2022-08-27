@@ -229,7 +229,6 @@
 					<a href="#" title="Profil">Profil</a
 					><span class="tu-breadcrum--separator">/</span>
 				</li>
-				<li aria-current="page" class="active">Infos</li>
 			</tu-breadcrumb>
 		</div>
 		<div class="showcase-component">
@@ -406,7 +405,7 @@
 				<template v-slot:header>
 					<h4>Welcome to <b>Vuesax3</b></h4>
 				</template>
-
+				<tu-text-area />
 				<div class="con-content">
 					Vuesax3 is a relatively new framework with a refreshing
 					design and in the latest trends, vuesax based on vuejs which
@@ -444,7 +443,7 @@
 					<h4>Welcome to <b>Vuesax3</b></h4>
 					<tu-divider color="rgba(0,0,0,0.5)" />
 				</template>
-
+				<tu-text-area />
 				<div class="con-content">
 					<p>
 						Vuesax3 is a relatively new framework with a refreshing
@@ -995,7 +994,7 @@
 		<div class="showcase-component">
 			<h4>Text Area:</h4>
 			<hr />
-			<tu-textarea />
+			<tu-textarea width="400px" />
 			<tu-textarea width="300px" />
 			<tu-textarea label="Label in Textarea" height="100px" />
 			<tu-textarea

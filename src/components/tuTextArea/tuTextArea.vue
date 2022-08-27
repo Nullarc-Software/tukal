@@ -11,8 +11,11 @@
 		]"
 		class="tu-component tu-con-textarea"
 		:style="{
-			'--tu-color': color ? getColor(color) : ''
+			'--tu-color': color ? getColor(color) : '',
+			height: height,
+			width: width
 		}"
+		ref="parent"
 	>
 		<div v-if="label" ref="labelElem" class="tu-textarea-label">
 			{{ label }}
@@ -26,7 +29,7 @@
 			v-on="listeners"
 			:style="{
 				'min-width': getMinWidth,
-				'min-height': height,
+				'min-height': getMinHeight,
 				...maxSize
 			}"
 		>
@@ -40,7 +43,7 @@
 
 <script lang="ts">
 import { getApplyColor } from "@/utils";
-import { computed, defineComponent, ref, watch } from "vue";
+import { computed, defineComponent, onMounted, ref, watch } from "vue";
 import tuComponent from "../tuComponent";
 
 export default defineComponent({
@@ -55,6 +58,18 @@ export default defineComponent({
 					"max-height": null
 				};
 			}
+		},
+		minWidth: {
+			type: String,
+			default: "200px"
+		},
+		minHeight: {
+			type: String,
+			default: "75px"
+		},
+		minSizeToParent: {
+			type: Boolean,
+			default: true
 		},
 		modelValue: {
 			type: [String, Object],
@@ -90,8 +105,8 @@ export default defineComponent({
 		const textarea = ref<HTMLTextAreaElement>();
 		const localValue = ref(props.modelValue);
 		const labelElem = ref<HTMLDivElement>();
-
-		const style = computed(() => {
+		const parent = ref<HTMLDivElement>();
+		const styleComputed = computed(() => {
 			const style: any = {};
 
 			style.border = `1px solid ${
@@ -105,6 +120,9 @@ export default defineComponent({
 			return style;
 		});
 
+		const parentWidth = ref(0);
+		const parentHeight = ref(0);
+
 		function focus () {
 			isFocus.value = true;
 			context.emit("focus");
@@ -115,9 +133,28 @@ export default defineComponent({
 			context.emit("blur");
 		}
 
+		onMounted(() => {
+			if (parent.value) {
+				parentWidth.value = parent.value.clientWidth;
+				parentHeight.value = parent.value.clientHeight;
+			}
+		});
+
 		const getMinWidth = computed(() => {
 			if (labelElem.value) return `${labelElem.value.clientWidth}px`;
-			else return props.width;
+			else if (props.minSizeToParent) {
+				console.log("Returning something");
+				return `${parentWidth.value}px`;
+			}
+			else return props.minWidth;
+		});
+
+		const getMinHeight = computed(() => {
+			if (props.minSizeToParent) {
+				console.log("Returning something");
+				return `${parentHeight.value}px`;
+			}
+			else return props.minHeight;
 		});
 
 		const listeners = computed(() => {
@@ -145,10 +182,12 @@ export default defineComponent({
 		return {
 			isFocus,
 			listeners,
-			style,
+			styleComputed,
 			localValue,
 			labelElem,
-			getMinWidth
+			getMinWidth,
+			getMinHeight,
+			parent
 		};
 	}
 });
@@ -165,7 +204,6 @@ export default defineComponent({
 	border-radius: 10px;
 	transition: boxShadow 0.25s ease, border 0.25s ease, transform 0.25s ease;
 	transform: translate(0, 0px);
-	margin-bottom: 16px;
 	max-width: 100%;
 	background: -getColor("gray-2");
 	&.focusx {

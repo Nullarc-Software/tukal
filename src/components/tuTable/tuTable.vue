@@ -101,7 +101,17 @@
 								This component will try and bind to the inbuild componentValue Ref first, if a user defined modelValue is defined in the header, that will be used instead
 							-->
 							<component
+								v-else-if="
+									th.isComponent &&
+									tr.componentValues[th.field]
+								"
 								v-model="tr.componentValues[th.field].value"
+								:is="th.component"
+								v-bind="th.componentProps"
+								:rowIndex="tr.index"
+								:rowData="tr.rowData"
+							/>
+							<component
 								v-else-if="th.isComponent"
 								:is="th.component"
 								v-bind="th.componentProps"
@@ -413,7 +423,7 @@ export default defineComponent({
 
 .tu-table__element {
 	table-layout: fixed;
-	width: max-content;
+	width: 100%;
 }
 
 .tu-table {

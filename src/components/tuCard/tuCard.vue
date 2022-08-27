@@ -1,15 +1,27 @@
 <template>
-	<div class="tu-card-content" :class="{
-		[`type-${type}`]: true, 'fillParent' : fillParent}"
-		>
+	<div
+		class="tu-card-content"
+		:class="{
+			[`type-${type}`]: true,
+			fillParent: fillParent
+		}"
+	>
 		<div
 			class="tu-card"
-			:class="{ fitContent: fitContent, content: content, fillParent: fillParent}"
+			:class="{
+				fitContent: fitContent,
+				content: content,
+				fillParent: fillParent
+			}"
 			v-bind="$attrs"
 		>
-			<div v-if="type == '6'" class="tu-card__header" :style="{
-				'justify-content': justifyHeader
-			}">
+			<div
+				v-if="type == '6'"
+				class="tu-card__header"
+				:style="{
+					'justify-content': justifyHeader
+				}"
+			>
 				<slot name="header" />
 			</div>
 			<div
@@ -54,7 +66,6 @@ export default defineComponent({
 		fitContent: { type: Boolean, default: false },
 		fillParent: { type: Boolean, default: false },
 		backgroundColor: { type: String, default: "0x00000011" }
-
 	},
 	setup (props, context) {}
 });
@@ -297,31 +308,27 @@ export default defineComponent({
 	}
 
 	&.type-6 {
-
 		.tu-card {
-
 			display: flex;
 			flex-direction: column;
 
-			&__content{
+			&__content {
 				flex-grow: 1;
 				align-items: center;
 			}
 
 			&__text {
-
 				bottom: 0;
 				display: flex;
 				flex-direction: column;
 				width: 100%;
 
-				.tu-card__title{
+				.tu-card__title {
 					display: flex;
 				}
 			}
 
 			&:hover {
-
 				&:not(.content) {
 					transform: translate(0, 5px);
 				}
@@ -414,7 +421,7 @@ export default defineComponent({
 	&.content {
 		.tu-card__content {
 			overflow: auto;
-			cursor:default;
+			cursor: default;
 		}
 	}
 
@@ -427,7 +434,6 @@ export default defineComponent({
 	&.fillParent {
 		width: 100% !important;
 		height: 100% !important;
-
 	}
 
 	&.fitContent {
