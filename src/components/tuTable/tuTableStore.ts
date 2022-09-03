@@ -32,6 +32,7 @@ export interface TuHeaderDefn {
 	caption?: string,
 	isComponent?: boolean,
 	element?: HTMLElement,
+	inputComponent?: Boolean,
 	component?: HTMLElement | Component | string,
 	componentProps?: any,
 	props?: {
@@ -105,6 +106,7 @@ export class TuTableStore {
 
 	public headerCount: Ref<number>;
 	public pageLength: Ref<number>;
+	public rowCount: Ref<number>;
 
 	public getTableData: ComputedRef<TuTableRow[]>;
 	public isPartiallyChecked: ComputedRef<boolean>;
@@ -136,11 +138,13 @@ export class TuTableStore {
 		this.headerCount = ref(columnsInitial);
 		this.pageLength = ref(1);
 		this.activeSort = ref(0);
+		this.rowCount = ref(0);
 		this.refreshTable = ref(false);
 		this.getTableData = computed(() => {
 			this.refreshTable.value = !this.refreshTable.value;
 			let data: any[] = [];
 			if (this.serverSideModel === false) {
+				this.rowCount.value = this.table.data.length;
 				// apply search filter
 				data = _.filter(this.table.data, (value: TuTableRow) => {
 					return _.every(this.table.currentFilters, (filterValue) => {
@@ -174,14 +178,18 @@ export class TuTableStore {
 				const request: XMLHttpRequest = new XMLHttpRequest();
 				request.onreadystatechange = function () {
 					if (request.readyState === XMLHttpRequest.DONE && request.status === 200) {
-						if (request.responseType === "json")
+						if (request.responseType === "json") {
 							inst.setTableData(request.response.data);
+							inst.rowCount.value = request.response.total_rows;
+						}
 						else if (request.responseType === "text") {
 							const obj = JSON.parse(request.responseText);
+							inst.rowCount.value = obj.total_rows;
 							inst.setTableData(obj.data);
 						}
 						else {
 							const obj = JSON.parse(request.responseText);
+							inst.rowCount.value = obj.total_rows;
 							inst.setTableData(obj.data);
 						}
 						inst.pageLength.value = Math.ceil(data.length / inst.table.pageSize);
@@ -298,14 +306,16 @@ export class TuTableStore {
 		_.forEach(this.table.data, (row) => {
 			const componentValueObject = {};
 			_.forEach(this.table.headers, (header) => {
-				if (header.isComponent) {
+				if (header.isComponent && header.inputComponent) {
 					if (_.isNil(header.componentProps) === false && _.isNil(header.componentProps.modelValue))
+						componentValueObject[header.field] = ref(undefined);
+					else if (_.isNil(header.componentProps))
 						componentValueObject[header.field] = ref(undefined);
 				}
 			});
 
 			if (row.componentValues === null)
-				row.componentValues = _.cloneDeep(componentValueObject);
+				row.componentValues = componentValueObject;
 		});
 	}
 
@@ -321,6 +331,7 @@ export class TuTableStore {
 					minWidth: value.minWidth ?? 100,
 					width: value.width,
 					isComponent: value.isComponent ?? false,
+					inputComponent: value.inputComponent,
 					component: value.component,
 					componentProps: value.componentProps,
 					caption: value.caption,

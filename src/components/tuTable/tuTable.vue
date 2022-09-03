@@ -9,7 +9,8 @@
 				isSelectedValue: modelValue,
 				striped: striped,
 				isMultipleSelected: isMultipleSelected,
-				[`size-${size}`]: true
+				[`size-${size}`]: true,
+				compact: compact
 			}"
 		>
 			<table class="tu-table__element" ref="tableElement">
@@ -106,15 +107,15 @@
 									tr.componentValues[th.field]
 								"
 								v-model="tr.componentValues[th.field].value"
-								:is="th.component"
 								v-bind="th.componentProps"
+								:is="th.component"
 								:rowIndex="tr.index"
 								:rowData="tr.rowData"
 							/>
 							<component
 								v-else-if="th.isComponent"
-								:is="th.component"
 								v-bind="th.componentProps"
+								:is="th.component"
 								:rowIndex="tr.index"
 								:rowData="tr.rowData"
 							/>
@@ -260,6 +261,10 @@ export default defineComponent({
 		tableInstance: {
 			type: TuTableStore,
 			default: null
+		},
+		compact: {
+			type: Boolean,
+			default: false
 		},
 		/**
 		 * Initial values for all the components in the rows of the table.
@@ -436,6 +441,12 @@ export default defineComponent({
 		border-collapse: collapse;
 
 		border: 0px;
+	}
+
+	&.compact {
+		:deep(.tu-table__td) {
+			padding: 5px 12px !important;
+		}
 	}
 
 	&.striped {
