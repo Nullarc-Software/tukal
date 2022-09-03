@@ -1,6 +1,6 @@
 {
 	"name": "tukal-vue",
-	"version": "0.1.31",
+	"version": "0.1.40",
 	"types": "dist/index.d.ts",
 	"scripts": {
 		"serve": "vue-cli-service serve src/main.ts",
