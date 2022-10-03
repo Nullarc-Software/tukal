@@ -3,6 +3,22 @@
 		<header v-if="$slots.header" class="tu-table__header">
 			<slot name="header" />
 		</header>
+		<div v-if="columnSelecter">
+            <tu-popper arrow border-radius="20px">
+				<i class="material-icons">view_column</i>
+                <template #content>
+                    <tu-popup-menu v-for="column in totalColumns" :key="column.index">
+						<div @click="updateColumns(column.index)">
+                        <tu-popup-item> {{ column.caption }}
+							<tu-checkbox
+							:checked="true"
+						/>
+						</tu-popup-item>
+					</div>
+                    </tu-popup-menu>
+                </template>
+            </tu-popper>
+		</div>
 		<div
 			class="tu-table"
 			:class="{
@@ -165,7 +181,7 @@ import tuTr from "./tuTr.vue";
 import tuTd from "./tuTd.vue";
 import tuIcon from "../tuIcon";
 import tuCheckbox from "../tuCheckBox";
-
+import { tuPopper, tuPopupMenu } from "../tuPopper";
 import contextMenuComponent from "./tuTableContextMenu.vue";
 
 if (typeof window !== "undefined" && (window as any).VueInstance)
@@ -179,7 +195,9 @@ export default defineComponent({
 		tuTr,
 		tuTd,
 		tuIcon,
-		tuCheckbox
+		tuCheckbox,
+		tuPopper,
+		tuPopupMenu
 	},
 	props: {
 		modelValue: {},
@@ -235,6 +253,10 @@ export default defineComponent({
 		data: {
 			type: Array,
 			default: () => []
+		},
+		columnSelecter: {
+			type: Boolean,
+			default: false
 		},
 		id: {
 			type: String,
@@ -297,7 +319,7 @@ export default defineComponent({
 		const selectedAll = ref(false);
 		const expandedAll = ref(false);
 		const noOfTableValues = ref(0);
-
+		const totalColumns = ref(props.columns);
 		let table: TuTableStore;
 
 		if (props.multiSelect && props.rowExpand)
@@ -333,9 +355,19 @@ export default defineComponent({
 
 		const rowListeners = {
 			click: function (event, tr) {
-				// console.log("Row clicked");
+				console.log("Row clicked");
 			}
 		};
+		const colsControl = ref([]);
+		for (let i = 0; i < props.columns.length;i++) colsControl.value[i] = 1;
+		const updateColumns = (colIndex: any) => {
+			let index = colIndex - 1;
+			let selectedColumns = [];
+			if (colsControl.value[index] === 1) colsControl.value[index] = 0;
+			else colsControl.value[index] = 1;
+			for (let i = 0; i < colsControl.value.length; i++) if(colsControl.value[i] === 1) selectedColumns.push(props.columns[i])
+			table.selectColumn(selectedColumns);
+		}
 
 		watch(
 			[() => props.pageSize, () => props.page],
@@ -411,7 +443,11 @@ export default defineComponent({
 			selected,
 			table,
 			rowListeners,
-			getNestedField
+			getNestedField,
+			// columnsSelected,
+			// colsSelected,
+			totalColumns,
+			updateColumns
 		};
 	}
 });

@@ -344,6 +344,11 @@ export class TuTableStore {
 		});
 	}
 
+	public selectColumn (headers: any[]) {
+		this.table.headers = [];
+		this.constructHeaders(headers);
+	}
+	
 	public deleteRow (index: number) {
 		_.remove(this.table.data, (value: TuTableRow) => {
 			return value.index === index;

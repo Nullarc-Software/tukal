@@ -76,7 +76,6 @@ export default defineComponent({
 	emits: ["update:modelValue", "change", "click", "blur", "update:checked"],
 	setup (props, context) {
 		const uid = uid_++;
-
 		/* watch(
 			() => props.indeterminate,
 			(val: boolean) => {
