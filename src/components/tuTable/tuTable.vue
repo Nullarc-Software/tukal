@@ -296,6 +296,7 @@ export default defineComponent({
 		const tableContainer = ref<HTMLDivElement>();
 		const selectedAll = ref(false);
 		const expandedAll = ref(false);
+		const noOfTableValues = ref(0);
 
 		let table: TuTableStore;
 
@@ -360,11 +361,14 @@ export default defineComponent({
 		watch(table.getTableData, () => {
 			const newVal = table.getTableData.value as Array<TuTableRow>;
 			context.emit("update:data", newVal);
+			noOfTableValues.value = newVal.length;
 		});
 
 		watch(table.getSelectedRows, () => {
 			const newVal = table.getSelectedRows.value as Array<any>;
 			context.emit("update:modelValue", newVal);
+			if (newVal.length === noOfTableValues.value) selectedAll.value = true;
+			if (newVal.length === 0) selectedAll.value = false;
 		});
 
 		onMounted(() => {
