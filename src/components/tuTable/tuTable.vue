@@ -333,7 +333,7 @@ export default defineComponent({
 
 		const rowListeners = {
 			click: function (event, tr) {
-				console.log("Row clicked");
+				// console.log("Row clicked");
 			}
 		};
 
