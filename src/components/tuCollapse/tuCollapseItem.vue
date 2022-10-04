@@ -17,7 +17,7 @@
 				<hr style="border-top: 1px solid #ffffff55; margin-bottom: 5px"/>
 
 				<div class="con-content--item">
-					<slot />
+					<slot/>
 				</div>
 			</div>
 	</details>
