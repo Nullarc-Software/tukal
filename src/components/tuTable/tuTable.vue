@@ -4,21 +4,23 @@
 			<slot name="header" />
 		</header>
 		<div v-if="columnSelecter">
-            <tu-popper arrow border-radius="20px">
+			<tu-popper arrow border-radius="20px">
 				<i class="material-icons">view_column</i>
-                <template #content>
-                    <tu-popup-menu v-for="column in totalColumns" :key="column.index">
-						<span @click="updateColumns(column.index)">
-                        <tu-popup-item> {{ column.caption }}
+				<template #content>
+					<tu-popup-menu
+						v-for="column in totalColumns"
+						:key="column.index"
+					>
+						<tu-popup-item>
 							<tu-checkbox
-							class="display-inline"
-							:checked="func(column.index)"
-						/>
+								v-model="colsControl[column.index - 1]"
+							>
+								{{ column.caption }}
+							</tu-checkbox>
 						</tu-popup-item>
-						</span>
-                    </tu-popup-menu>
-                </template>
-            </tu-popper>
+					</tu-popup-menu>
+				</template>
+			</tu-popper>
 		</div>
 		<div
 			class="tu-table"
@@ -360,15 +362,27 @@ export default defineComponent({
 			}
 		};
 		const colsControl = ref([]);
-		for (let i = 0; i < props.columns.length;i++) colsControl.value[i] = 1;
-		const updateColumns = (colIndex: any) => {
-			let index = colIndex - 1;
-			let selectedColumns = [];
-			if (colsControl.value[index] === 1) colsControl.value[index] = 0;
-			else colsControl.value[index] = 1;
-			for (let i = 0; i < colsControl.value.length; i++) if(colsControl.value[i] === 1) selectedColumns.push(props.columns[i])
+		for (let i = 0; i < props.columns.length; i++)
+			colsControl.value[i] = true;
+
+		const updateColumns = () => {
+			const selectedColumns = [];
+			for (let i = 0; i < colsControl.value.length; i++) {
+				if (colsControl.value[i])
+					selectedColumns.push(props.columns[i]);
+			}
 			table.selectColumn(selectedColumns);
-		}
+		};
+
+		watch(
+			colsControl,
+			() => {
+				updateColumns();
+			},
+			{
+				deep: true
+			}
+		);
 
 		watch(
 			[() => props.pageSize, () => props.page],
@@ -400,7 +414,8 @@ export default defineComponent({
 		watch(table.getSelectedRows, () => {
 			const newVal = table.getSelectedRows.value as Array<any>;
 			context.emit("update:modelValue", newVal);
-			if (newVal.length === noOfTableValues.value) selectedAll.value = true;
+			if (newVal.length === noOfTableValues.value)
+				selectedAll.value = true;
 			if (newVal.length === 0) selectedAll.value = false;
 		});
 
@@ -433,10 +448,10 @@ export default defineComponent({
 			return obj;
 		};
 		const func = (index) => {
-			let ind = index - 1;
+			const ind = index - 1;
 			if (colsControl.value[ind] === 1) return true;
-			else return false
-		}
+			else return false;
+		};
 
 		return {
 			tableContainer,
@@ -449,6 +464,7 @@ export default defineComponent({
 			selected,
 			table,
 			rowListeners,
+			colsControl,
 			getNestedField,
 			// columnsSelected,
 			// colsSelected,
@@ -480,8 +496,6 @@ export default defineComponent({
 
 .display-inline {
 	display: inline-block !important;
-	float: right;
-	padding-left: 50px;
 }
 .tu-table {
 	font-size: 0.9rem;
