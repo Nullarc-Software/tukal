@@ -1,11 +1,7 @@
 <template>
-	<div
-		:class="{ 'open-item': maxHeight != '0px', disabledx: disabled }"
-		class="tu-collapse-item"
-		@mouseover="mouseover"
-		@mouseout="mouseout"
-	>
-		<header class="tu-collapse-item--header" @click="toggleContent">
+	<details :open="maxHeight != '0px' ? true : false">
+		<summary>
+			<header class="tu-collapse-item--header" @click="toggleContent">
 			<slot name="header"></slot>
 			<span
 				v-if="!notArrow"
@@ -14,19 +10,17 @@
 				<tu-icon :icon-pack="iconPack" :icon="iconArrow" />
 			</span>
 		</header>
-		
-		<div
-			ref="content"
-			:style="styleContent"
-			class="tu-collapse-item--content"
-		>
-			<hr style="border-top: 1px solid #ffffff55; margin-bottom: 5px"/>
+		</summary>
+			<div
+				ref="content"
+			>
+				<hr style="border-top: 1px solid #ffffff55; margin-bottom: 5px"/>
 
-			<div class="con-content--item">
-				<slot />
+				<div class="con-content--item">
+					<slot />
+				</div>
 			</div>
-		</div>
-	</div>
+	</details>
 </template>
 <script lang="ts">
 import { computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, Ref, watch } from 'vue';
@@ -179,6 +173,11 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+details > summary {
+  padding: 2px 6px;
+  cursor: pointer;
+  list-style: none;
+}
 .tu-collapse-item {
 	border-bottom: 1px solid rgba(0,0,0,0.04);
 	cursor: pointer;
@@ -221,7 +220,7 @@ export default defineComponent({
 	padding: 10px;
 	padding-top: 0px;
 	font-size: 0.85rem;
-	opacity: 0.2;
+	opacity: 1;
 	transition: all 0.25s ease;
 }
 </style>
