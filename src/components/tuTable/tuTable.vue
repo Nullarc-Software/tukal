@@ -8,13 +8,14 @@
 				<i class="material-icons">view_column</i>
                 <template #content>
                     <tu-popup-menu v-for="column in totalColumns" :key="column.index">
-						<div @click="updateColumns(column.index)">
+						<span @click="updateColumns(column.index)">
                         <tu-popup-item> {{ column.caption }}
 							<tu-checkbox
-							:checked="true"
+							class="display-inline"
+							:checked="func(column.index)"
 						/>
 						</tu-popup-item>
-					</div>
+						</span>
                     </tu-popup-menu>
                 </template>
             </tu-popper>
@@ -431,6 +432,11 @@ export default defineComponent({
 
 			return obj;
 		};
+		const func = (index) => {
+			let ind = index - 1;
+			if (colsControl.value[ind] === 1) return true;
+			else return false
+		}
 
 		return {
 			tableContainer,
@@ -447,7 +453,8 @@ export default defineComponent({
 			// columnsSelected,
 			// colsSelected,
 			totalColumns,
-			updateColumns
+			updateColumns,
+			func
 		};
 	}
 });
@@ -471,6 +478,11 @@ export default defineComponent({
 	width: 100%;
 }
 
+.display-inline {
+	display: inline-block !important;
+	float: right;
+	padding-left: 50px;
+}
 .tu-table {
 	font-size: 0.9rem;
 	margin: 0px;

@@ -1,6 +1,6 @@
 <template>
 	<li
-		:class="{ divider: divider }"
+		:class="{ 'divider': divider }"
 		:style="{
 			color: hoverx ? giveColor() + ' !important' : null,
 			background: hoverx ? giveColor(0.01) + ' !important' : null
@@ -14,7 +14,6 @@
 			v-if="to"
 			:to="to"
 			v-bind="$attrs"
-			:class="{ disabled: disabled }"
 			class="tu-dropdown--item-link"
 		>
 			{{ $attrs.disabled }}
