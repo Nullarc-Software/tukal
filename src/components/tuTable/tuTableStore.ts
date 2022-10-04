@@ -40,7 +40,7 @@ export interface TuHeaderDefn {
 		sort?: boolean
 	},
 	valueFormatter?: Function,
-	hidden?: Ref<boolean>
+	hidden?: boolean
 }
 
 export interface TuTableSorterDefn {
@@ -217,7 +217,7 @@ export class TuTableStore {
 		});
 
 		this.getTableHeaders = computed(() => {
-			return _.filter(this.table.headers, (header) => header.hidden.value === false);
+			return _.filter(this.table.headers, { hidden: false }) as TuHeaderDefn[];
 			// return this.table.headers;
 		});
 
@@ -339,7 +339,7 @@ export class TuTableStore {
 					caption: value.caption,
 					props: value.props,
 					valueFormatter: value.valueFormatter,
-					hidden: ref(false)
+					hidden: false
 				};
 				this.table.headers.push(header);
 				this.headerCount.value++;
@@ -347,8 +347,8 @@ export class TuTableStore {
 		});
 	}
 
-	public setColumnVisibility (columnIndex: number, value: bolean) {
-		this.table.headers[columnIndex].hidden = true;
+	public setColumnVisibility (columnIndex: number, value: boolean) {
+		this.table.headers[columnIndex].hidden = value;
 	}
 
 	public deleteRow (index: number) {

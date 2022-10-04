@@ -366,12 +366,8 @@ export default defineComponent({
 			colsControl.value[i] = true;
 
 		const updateColumns = () => {
-			const selectedColumns = [];
-			for (let i = 0; i < colsControl.value.length; i++) {
-				if (colsControl.value[i])
-					selectedColumns.push(props.columns[i]);
-			}
-			table.selectColumn(selectedColumns);
+			for (let i = 0; i < colsControl.value.length; i++)
+				table.setColumnVisibility(i, !colsControl.value[i]);
 		};
 
 		watch(
