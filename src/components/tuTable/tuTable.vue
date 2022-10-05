@@ -3,6 +3,25 @@
 		<header v-if="$slots.header" class="tu-table__header">
 			<slot name="header" />
 		</header>
+		<div v-if="columnSelecter">
+			<tu-popper arrow border-radius="20px">
+				<i class="material-icons">view_column</i>
+				<template #content>
+					<tu-popup-menu
+						v-for="column in totalColumns"
+						:key="column.index"
+					>
+						<tu-popup-item>
+							<tu-checkbox
+								v-model="colsControl[column.index - 1]"
+							>
+								{{ column.caption }}
+							</tu-checkbox>
+						</tu-popup-item>
+					</tu-popup-menu>
+				</template>
+			</tu-popper>
+		</div>
 		<div
 			class="tu-table"
 			:class="{
@@ -165,7 +184,7 @@ import tuTr from "./tuTr.vue";
 import tuTd from "./tuTd.vue";
 import tuIcon from "../tuIcon";
 import tuCheckbox from "../tuCheckBox";
-
+import { tuPopper, tuPopupMenu } from "../tuPopper";
 import contextMenuComponent from "./tuTableContextMenu.vue";
 
 if (typeof window !== "undefined" && (window as any).VueInstance)
@@ -179,7 +198,9 @@ export default defineComponent({
 		tuTr,
 		tuTd,
 		tuIcon,
-		tuCheckbox
+		tuCheckbox,
+		tuPopper,
+		tuPopupMenu
 	},
 	props: {
 		modelValue: {},
@@ -235,6 +256,10 @@ export default defineComponent({
 		data: {
 			type: Array,
 			default: () => []
+		},
+		columnSelecter: {
+			type: Boolean,
+			default: false
 		},
 		id: {
 			type: String,
@@ -296,7 +321,8 @@ export default defineComponent({
 		const tableContainer = ref<HTMLDivElement>();
 		const selectedAll = ref(false);
 		const expandedAll = ref(false);
-
+		const noOfTableValues = ref(0);
+		const totalColumns = ref(props.columns);
 		let table: TuTableStore;
 
 		if (props.multiSelect && props.rowExpand)
@@ -332,9 +358,27 @@ export default defineComponent({
 
 		const rowListeners = {
 			click: function (event, tr) {
-				// console.log("Row clicked");
+				console.log("Row clicked");
 			}
 		};
+		const colsControl = ref([]);
+		for (let i = 0; i < props.columns.length; i++)
+			colsControl.value[i] = true;
+
+		const updateColumns = () => {
+			for (let i = 0; i < colsControl.value.length; i++)
+				table.setColumnVisibility(i, !colsControl.value[i]);
+		};
+
+		watch(
+			colsControl,
+			() => {
+				updateColumns();
+			},
+			{
+				deep: true
+			}
+		);
 
 		watch(
 			[() => props.pageSize, () => props.page],
@@ -360,11 +404,15 @@ export default defineComponent({
 		watch(table.getTableData, () => {
 			const newVal = table.getTableData.value as Array<TuTableRow>;
 			context.emit("update:data", newVal);
+			noOfTableValues.value = newVal.length;
 		});
 
 		watch(table.getSelectedRows, () => {
 			const newVal = table.getSelectedRows.value as Array<any>;
 			context.emit("update:modelValue", newVal);
+			if (newVal.length === noOfTableValues.value)
+				selectedAll.value = true;
+			if (newVal.length === 0) selectedAll.value = false;
 		});
 
 		onMounted(() => {
@@ -395,6 +443,11 @@ export default defineComponent({
 
 			return obj;
 		};
+		const func = (index) => {
+			const ind = index - 1;
+			if (colsControl.value[ind] === 1) return true;
+			else return false;
+		};
 
 		return {
 			tableContainer,
@@ -407,7 +460,13 @@ export default defineComponent({
 			selected,
 			table,
 			rowListeners,
-			getNestedField
+			colsControl,
+			getNestedField,
+			// columnsSelected,
+			// colsSelected,
+			totalColumns,
+			updateColumns,
+			func
 		};
 	}
 });
@@ -431,6 +490,9 @@ export default defineComponent({
 	width: 100%;
 }
 
+.display-inline {
+	display: inline-block !important;
+}
 .tu-table {
 	font-size: 0.9rem;
 	margin: 0px;
