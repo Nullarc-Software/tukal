@@ -443,11 +443,6 @@ export default defineComponent({
 
 			return obj;
 		};
-		const func = (index) => {
-			const ind = index - 1;
-			if (colsControl.value[ind] === 1) return true;
-			else return false;
-		};
 
 		return {
 			tableContainer,
@@ -462,11 +457,8 @@ export default defineComponent({
 			rowListeners,
 			colsControl,
 			getNestedField,
-			// columnsSelected,
-			// colsSelected,
 			totalColumns,
-			updateColumns,
-			func
+			updateColumns
 		};
 	}
 });

@@ -1006,7 +1006,9 @@
         <div class="showcase-component">
             <h4>Table:</h4>
             <hr />
-
+            <button @click="exportTable">
+				Export
+			</button>
             {{ selected }}
             <tu-table
                 row-expand
@@ -1019,7 +1021,7 @@
                 :pageSize="25"
                 :data="universities"
                 :columns="columns"
-				:columnSelecter= true
+                :columnSelecter="true"
             >
                 <!-- <template #thead>
 					<tu-th field="country" sort search> Country </tu-th>
@@ -1055,20 +1057,21 @@
 /* eslint no-unused-vars: "off" */
 
 import {
-    computed,
-    defineComponent,
-    provide,
-    ref,
-    watch,
-    shallowRef,
-    markRaw,
+	computed,
+	defineComponent,
+	provide,
+	ref,
+	watch,
+	shallowRef,
+	markRaw,
 } from "vue";
 import * as components from "./components";
 import { NotificationAttributes } from "./components/tuNotifications";
 import {
-    Loading as LoadingConstructor,
-    LoadingAttributes
+	Loading as LoadingConstructor,
+	LoadingAttributes
 } from "./components/tuLoading";
+import { ExportData } from "./components/tuTable";
 import testComponent from "./components/TestComponent.vue";
 import "material-icons/iconfont/material-icons.css";
 import axios from "axios";
@@ -1076,64 +1079,69 @@ import { TuHeaderDefn, TuTableContextMenuEntry } from "./components";
 import tuTableContextMenuVue from "./components/tuTable/tuTableContextMenu.vue";
 // import { TuTreeViewItemDefn } from "./components/tuTreeView";
 export default defineComponent({
-    components: {
-        ...components
-    },
-    data: () => ({
-        colors: [
-            {
-                color: "primary",
-                value: "1"
-            },
-            {
-                color: "danger",
-                value: "1"
-            },
-            {
-                color: "success",
-                value: "2"
-            },
-            {
-                color: "warn",
-                value: "3"
-            },
-            {
-                color: "dark",
-                value: "4"
-            },
-        ],
-    }),
-    setup(props, context) {
-        const active1 = ref(true);
-        const checkBox1 = ref(false);
-        const checkBox9 = ref(false);
-        const checkBox2 = ref(["luis"]);
-        const loading = ref(false);
-        const sideBar = ref("home");
-        const activeDialog = ref(false);
-        const activeDialog1 = ref(false);
-        const activeDialog2 = ref(false);
-        const notifShow = ref(false);
-        const isOpen = ref(false);
-        const openNav = ref(false);
-        const opts: any = ref(["luis"]);
-        const inpValue = ref("");
-        const navValue = ref("guide");
-        const selectValue = ref([]);
-        const selectValue2 = ref("1");
-        const selectValue1 = ref(null);
-        const page = ref(1);
+	components: {
+		...components
+	},
+	data: () => ({
+		colors: [
+			{
+				color: "primary",
+				value: "1"
+			},
+			{
+				color: "danger",
+				value: "1"
+			},
+			{
+				color: "success",
+				value: "2"
+			},
+			{
+				color: "warn",
+				value: "3"
+			},
+			{
+				color: "dark",
+				value: "4"
+			},
+		],
+	}),
+	setup (props, context) {
+		const active1 = ref(true);
+		const checkBox1 = ref(false);
+		const checkBox9 = ref(false);
+		const checkBox2 = ref(["luis"]);
+		const loading = ref(false);
+		const sideBar = ref("home");
+		const activeDialog = ref(false);
+		const activeDialog1 = ref(false);
+		const activeDialog2 = ref(false);
+		const notifShow = ref(false);
+		const isOpen = ref(false);
+		const openNav = ref(false);
+		const opts: any = ref(["luis"]);
+		const inpValue = ref("");
+		const navValue = ref("guide");
+		const selectValue = ref([]);
+		const selectValue2 = ref("1");
+		const selectValue1 = ref(null);
+		const page = ref(1);
+		const Export: ExportData = new ExportData();
 
-        const notificationComponent = ref(null);
-        const validEmail = computed(function () {
-            return /^\w+([\\.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(
-                inpValue.value
-            );
-        });
+		const notificationComponent = ref(null);
+		const validEmail = computed(function () {
+			return /^\w+([\\.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(
+				inpValue.value
+			);
+		});
 
-        provide("appRouter", null);
-        provide("iconPackGlobal", "material-icons-outlined");
-        /*
+		const exportTable = () => {
+			Export.table(universities.value);
+		};
+
+		provide("appRouter", null);
+		provide("iconPackGlobal", "material-icons-outlined");
+		/*
         waves
         corners
         border
@@ -1145,225 +1153,226 @@ export default defineComponent({
         square-rotate
         scale
         */
-        const loadingDiv = ref();
-        const justShowLoading = function () {
-            const attrs: LoadingAttributes = {
-                target: null,
-                color: "dark",
-                type: "circles",
-                scale: "1.0",
-            };
+		const loadingDiv = ref();
+		const justShowLoading = function () {
+			const attrs: LoadingAttributes = {
+				target: null,
+				color: "dark",
+				type: "circles",
+				scale: "1.0",
+			};
 
-            const load = new LoadingConstructor(attrs);
-        };
+			const load = new LoadingConstructor(attrs);
+		};
 
-        const justLoad = function () {
-            const notificationAttrs: NotificationAttributes = {
-                title: "Documentation Vuesax 4.0+",
-                text: `These documents refer to the latest version of vuesax (4.0+),
+		const justLoad = function () {
+			const notificationAttrs: NotificationAttributes = {
+				title: "Documentation Vuesax 4.0+",
+				text: `These documents refer to the latest version of vuesax (4.0+),
 					to see the documents of the previous versions you can do it here 👉 Vuesax3.x`,
-                flat: true,
+				flat: true,
 
-                onClickClose: function () {
-                    console.log("notif closed");
-                },
-                onClick: function () {
-                    console.log("clicked");
-                },
-                color: "#7d33ff",
-                progressAuto: true,
-            };
+				onClickClose: function () {
+					console.log("notif closed");
+				},
+				onClick: function () {
+					console.log("clicked");
+				},
+				color: "#7d33ff",
+				progressAuto: true,
+			};
 
-            /* new Notification(notificationAttrs);
+			/* new Notification(notificationAttrs);
 			notificationAttrs.position = "top-center";
 			notificationAttrs.color = "primary";
 			notificationAttrs.sticky = true;
 			notificationAttrs.flat = false;
 			new Notification(notificationAttrs); */
-        };
+		};
 
-        watch(selectValue, () => {
-            console.log(selectValue.value);
-        });
+		watch(selectValue, () => {
+			console.log(selectValue.value);
+		});
 
-        const picked = ref("1");
+		const picked = ref("1");
 
-        watch(picked, () => {
-            console.log("picked: " + picked.value);
-        });
+		watch(picked, () => {
+			console.log("picked: " + picked.value);
+		});
 
-        const menu: TuTableContextMenuEntry[] = [
-            {
-                caption: "More Options >",
-                hasSubMenu: true,
-                subMenu: [
-                    {
-                        caption: "Sample",
-                        onClicked: (data) => {
-                            console.log("Some data");
-                            console.log(data);
-                        },
-                    },
-                ],
-            },
-        ];
+		const menu: TuTableContextMenuEntry[] = [
+			{
+				caption: "More Options >",
+				hasSubMenu: true,
+				subMenu: [
+					{
+						caption: "Sample",
+						onClicked: (data) => {
+							console.log("Some data");
+							console.log(data);
+						},
+					},
+				],
+			},
+		];
 
-        const columns: TuHeaderDefn[] = [
-            {
-				index:1,
-                caption: "Action",
-                field: "test",
-                isComponent: true,
-                component: markRaw(tuTableContextMenuVue),
-                componentProps: {
-                    modelValue: menu,
-                    customIcon: {
-                        icon: "desktop_windows",
-                    },
-                },
-            },
-            {
+		const columns: TuHeaderDefn[] = [
+			{
+				index: 1,
+				caption: "Action",
+				field: "test",
+				isComponent: true,
+				component: markRaw(tuTableContextMenuVue),
+				componentProps: {
+					modelValue: menu,
+					customIcon: {
+						icon: "desktop_windows",
+					},
+				},
+			},
+			{
 				index: 2,
-                field: "country",
-                caption: "Country",
-                props: {
-                    sort: true,
-                },
-                valueFormatter: function (cellData, rowData) {
-                    //  console.log("formatter called");
-                    return cellData.substr(0, 2);
-                },
-            },
-            {
+				field: "country",
+				caption: "Country",
+				props: {
+					sort: true,
+				},
+				valueFormatter: function (cellData, rowData) {
+					//  console.log("formatter called");
+					return cellData.substr(0, 2);
+				},
+			},
+			{
 				index: 3,
-                field: "name",
-                caption: "Name",
-                props: {
-                    sort: true,
-                },
-                valueFormatter: function (cellData, rowData) {
-                    // console.log(rowData);
-                    return cellData.substr(0, 2);
-                },
-            },
-            {
-				index:4,
-                field: "web_pages",
-                caption: "Web Page",
-                props: {
-                    sort: true,
-                },
-            },
-            {
-				index:5,
-                field: "something",
-                caption: "Undefined Col",
-                isComponent: true,
-                component: markRaw(components.tuInput),
-            },
-        ];
+				field: "name",
+				caption: "Name",
+				props: {
+					sort: true,
+				},
+				valueFormatter: function (cellData, rowData) {
+					// console.log(rowData);
+					return cellData.substr(0, 2);
+				},
+			},
+			{
+				index: 4,
+				field: "web_pages",
+				caption: "Web Page",
+				props: {
+					sort: true,
+				}
+			},
+			{
+				index: 5,
+				field: "something",
+				caption: "Undefined Col",
+				isComponent: true,
+				component: markRaw(components.tuInput)
+			}
+		];
 
-        const users = [
-            {
-                id: 1,
-                name: "Leanne Graham",
-                username: "Bret",
-                email: "Sincere@april.biz",
-                website: "hildegard.org",
-            },
-            {
-                id: 2,
-                name: "Ervin Howell",
-                username: "Antonette",
-                email: "Shanna@melissa.tv",
-                website: "anastasia.net",
-            },
-            {
-                id: 3,
-                name: "Clementine Bauch",
-                username: "Samantha",
-                email: "Nathan@yesenia.net",
-                website: "ramiro.info",
-            },
-            {
-                id: 4,
-                name: "Patricia Lebsack",
-                username: "Karianne",
-                email: "Julianne.OConner@kory.org",
-                website: "kale.biz",
-            },
-            {
-                id: 5,
-                name: "Chelsey Dietrich",
-                username: "Kamren",
-                email: "Lucio_Hettinger@annie.ca",
-                website: "demarco.info",
-            },
-            {
-                id: 6,
-                name: "Mrs. Dennis Schulist",
-                username: "Leopoldo_Corkery",
-                email: "Karley_Dach@melissa.tv",
-                website: "ola.org",
-            },
-            {
-                id: 7,
-                name: "Kurtis Weissnat",
-                username: "Elwyn.Skiles",
-                email: "Telly.Hoeger@billy.biz",
-                website: "elvis.io",
-            },
-            {
-                id: 8,
-                name: "Nicholas Runolfsdottir V",
-                username: "Maxime_Nienow",
-                email: "Sherwood@rosamond.me",
-                website: "jacynthe.com",
-            },
-            {
-                id: 9,
-                name: "Glenna Reichert",
-                username: "Delphine",
-                email: "Chaim_McDermott@dana.io",
-                website: "conrad.com",
-            },
-            {
-                id: 10,
-                name: "Clementina DuBuque",
-                username: "Moriah.Stanton",
-                email: "Rey.Padberg@karina.biz",
-                website: "ambrose.net",
-            },
-        ];
+		const users = [
+			{
+				id: 1,
+				name: "Leanne Graham",
+				username: "Bret",
+				email: "Sincere@april.biz",
+				website: "hildegard.org"
+			},
+			{
+				id: 2,
+				name: "Ervin Howell",
+				username: "Antonette",
+				email: "Shanna@melissa.tv",
+				website: "anastasia.net"
+			},
+			{
+				id: 3,
+				name: "Clementine Bauch",
+				username: "Samantha",
+				email: "Nathan@yesenia.net",
+				website: "ramiro.info"
+			},
+			{
+				id: 4,
+				name: "Patricia Lebsack",
+				username: "Karianne",
+				email: "Julianne.OConner@kory.org",
+				website: "kale.biz"
+			},
+			{
+				id: 5,
+				name: "Chelsey Dietrich",
+				username: "Kamren",
+				email: "Lucio_Hettinger@annie.ca",
+				website: "demarco.info"
+			},
+			{
+				id: 6,
+				name: "Mrs. Dennis Schulist",
+				username: "Leopoldo_Corkery",
+				email: "Karley_Dach@melissa.tv",
+				website: "ola.org"
+			},
+			{
+				id: 7,
+				name: "Kurtis Weissnat",
+				username: "Elwyn.Skiles",
+				email: "Telly.Hoeger@billy.biz",
+				website: "elvis.io"
+			},
+			{
+				id: 8,
+				name: "Nicholas Runolfsdottir V",
+				username: "Maxime_Nienow",
+				email: "Sherwood@rosamond.me",
+				website: "jacynthe.com"
+			},
+			{
+				id: 9,
+				name: "Glenna Reichert",
+				username: "Delphine",
+				email: "Chaim_McDermott@dana.io",
+				website: "conrad.com"
+			},
+			{
+				id: 10,
+				name: "Clementina DuBuque",
+				username: "Moriah.Stanton",
+				email: "Rey.Padberg@karina.biz",
+				website: "ambrose.net"
+			}
+		];
 
-        const numPages = ref(Math.ceil(users.length / 3));
+		const numPages = ref(Math.ceil(users.length / 3));
 
-        const selected = ref([]);
-        const tabName = ref("ho");
+		const selected = ref([]);
+		const tabName = ref("ho");
 
-        function resetOpts() {
-            opts.value = ["carols"];
-            console.log(opts.value);
-        }
-        const editStatic = ref("Some Text");
-        const universities = shallowRef([]);
-        axios
-            .get("http://universities.hipolabs.com/search?country=India")
-            .then((response) => {
-                const temp = response.data;
-                temp.forEach((value) => {
-                    value.expanded = {
-                        isComponent: true,
-                        component: testComponent,
-                        props: {
-                            name: value.name,
-                        },
-                    };
-                });
-                universities.value = temp.slice(0, 3);
-            });
+		function resetOpts () {
+			opts.value = ["carols"];
+			console.log(opts.value);
+		}
+		const editStatic = ref("Some Text");
+		const universities = shallowRef([]);
+		axios
+			.get("http://universities.hipolabs.com/search?country=India")
+			.then((response) => {
+				const temp = response.data;
+				temp.forEach((value) => {
+					value.expanded = {
+						isComponent: true,
+						component: testComponent,
+						props: {
+							name: value.name
+						}
+					};
+				});
+				console.log(typeof (temp));
+				universities.value = temp.slice(0, 3);
+			});
 
-        /*
+		/*
 		const treeSelectedItems = ref<TuTreeViewItemDefn[]>([]);
 		const treeItems = ref<TuTreeViewItemDefn[]>([
 			{
@@ -1405,45 +1414,46 @@ export default defineComponent({
 			console.log(value);
 		}); */
 
-        return {
-            // treeSelectedItems,
-            // treeItems,
-            columns,
-            universities,
-            numPages,
-            editStatic,
-            selected,
-            active1,
-            checkBox1,
-            checkBox2,
-            checkBox9,
-            justLoad,
-            resetOpts,
-            loading,
-            activeDialog,
-            activeDialog1,
-            activeDialog2,
-            notificationComponent,
-            notifShow,
-            opts,
-            inpValue,
-            validEmail,
-            selectValue,
-            sideBar,
-            isOpen,
-            navValue,
-            openNav,
-            selectValue1,
-            selectValue2,
-            radios1: "luis",
-            picked,
-            page,
-            loadingDiv,
-            tabName,
-            justShowLoading,
-            users,
-        };
-    },
+		return {
+			// treeSelectedItems,
+			// treeItems,
+			columns,
+			universities,
+			numPages,
+			editStatic,
+			selected,
+			active1,
+			checkBox1,
+			checkBox2,
+			checkBox9,
+			justLoad,
+			resetOpts,
+			loading,
+			activeDialog,
+			activeDialog1,
+			activeDialog2,
+			notificationComponent,
+			notifShow,
+			opts,
+			inpValue,
+			validEmail,
+			selectValue,
+			sideBar,
+			isOpen,
+			navValue,
+			openNav,
+			selectValue1,
+			selectValue2,
+			radios1: "luis",
+			picked,
+			page,
+			loadingDiv,
+			tabName,
+			justShowLoading,
+			users,
+            exportTable
+		};
+	},
 });
 </script>
 
