@@ -1136,7 +1136,7 @@ export default defineComponent({
 		});
 
 		const exportTable = () => {
-			Export.table(universities.value);
+			Export.table(universities.value, ["country", "expanded.props.name"]);
 		};
 
 		provide("appRouter", null);
