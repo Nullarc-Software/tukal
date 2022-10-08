@@ -2,7 +2,7 @@ import { ref } from "vue";
 import _ from "lodash";
 
 export class ExportData {
-	private manipulateData (data: any, columns: string[]) {
+	private manipulateData (data: Array<any>, columns: string[]) {
 		const newItems = [];
 		data.forEach((item: []) => {
 			newItems.push(_.pick(item, columns));
@@ -25,7 +25,7 @@ export class ExportData {
 		return newItems;
 	};
 
-	private convertJSONToCSV (items: any) {
+	private convertJSONToCSV (items: Array<any>) {
 		const replacer = (key, value) => value === null ? "" : value; // specify how you want to handle null values here
 		const header = Object.keys(items[0]); // it will return all the keys of the object
 		const csv = [
@@ -41,7 +41,7 @@ export class ExportData {
 		downloadLink.click(); // calling the onclick event on the a tag to redirect to the href mentioned above
 	};
 
-	public table (data: any, columns: string[]) {
+	public table (data: Array<any>, columns: string[]) {
 		const items = this.manipulateData(data, columns);
 		this.convertJSONToCSV(items);
 	};
