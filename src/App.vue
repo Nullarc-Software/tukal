@@ -1063,7 +1063,7 @@ import {
 	ref,
 	watch,
 	shallowRef,
-	markRaw,
+	markRaw
 } from "vue";
 import * as components from "./components";
 import { NotificationAttributes } from "./components/tuNotifications";
@@ -1103,8 +1103,8 @@ export default defineComponent({
 			{
 				color: "dark",
 				value: "4"
-			},
-		],
+			}
+		]
 	}),
 	setup (props, context) {
 		const active1 = ref(true);
@@ -1136,7 +1136,7 @@ export default defineComponent({
 		});
 
 		const exportTable = () => {
-			Export.table(universities.value, ["country", "expanded.props.name"]);
+			Export.table(universities.value, ["email", "country", "name"]);
 		};
 
 		provide("appRouter", null);
@@ -1159,7 +1159,7 @@ export default defineComponent({
 				target: null,
 				color: "dark",
 				type: "circles",
-				scale: "1.0",
+				scale: "1.0"
 			};
 
 			const load = new LoadingConstructor(attrs);
@@ -1179,7 +1179,7 @@ export default defineComponent({
 					console.log("clicked");
 				},
 				color: "#7d33ff",
-				progressAuto: true,
+				progressAuto: true
 			};
 
 			/* new Notification(notificationAttrs);
@@ -1210,10 +1210,10 @@ export default defineComponent({
 						onClicked: (data) => {
 							console.log("Some data");
 							console.log(data);
-						},
-					},
-				],
-			},
+						}
+					}
+				]
+			}
 		];
 
 		const columns: TuHeaderDefn[] = [
@@ -1226,40 +1226,40 @@ export default defineComponent({
 				componentProps: {
 					modelValue: menu,
 					customIcon: {
-						icon: "desktop_windows",
-					},
-				},
+						icon: "desktop_windows"
+					}
+				}
 			},
 			{
 				index: 2,
 				field: "country",
 				caption: "Country",
 				props: {
-					sort: true,
+					sort: true
 				},
 				valueFormatter: function (cellData, rowData) {
 					//  console.log("formatter called");
 					return cellData.substr(0, 2);
-				},
+				}
 			},
 			{
 				index: 3,
 				field: "name",
 				caption: "Name",
 				props: {
-					sort: true,
+					sort: true
 				},
 				valueFormatter: function (cellData, rowData) {
 					// console.log(rowData);
 					return cellData.substr(0, 2);
-				},
+				}
 			},
 			{
 				index: 4,
 				field: "web_pages",
 				caption: "Web Page",
 				props: {
-					sort: true,
+					sort: true
 				}
 			},
 			{
@@ -1364,7 +1364,8 @@ export default defineComponent({
 						isComponent: true,
 						component: testComponent,
 						props: {
-							name: value.name
+							name: value.name,
+							email: "user@gmail.com"
 						}
 					};
 				});
@@ -1451,9 +1452,9 @@ export default defineComponent({
 			tabName,
 			justShowLoading,
 			users,
-            exportTable
+			exportTable
 		};
-	},
+	}
 });
 </script>
 

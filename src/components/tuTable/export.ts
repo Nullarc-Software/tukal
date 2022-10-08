@@ -1,27 +1,31 @@
-import { TuTableRow } from "./tuTableStore";
+import { ref } from "vue";
 import _ from "lodash";
 
 export class ExportData {
-	private manipulateData = (data: Array<TuTableRow>, columns: Array<String>) => {
-		const items = data;
+	private manipulateData (data: any, columns: string[]) {
 		const newItems = [];
-		items.forEach((item) => {
-			newItems.push(_.pick(item, `${columns}`.split(",")));
+		data.forEach((item: []) => {
+			newItems.push(_.pick(item, columns));
 		});
+		const iterate = (obj: Object, column : string) => {
+			Object.keys(obj).forEach(key => {
+				if (`${key}` === column) {
+					newItems.forEach((item) => {
+						item[`${key}`] = `${obj[key]}`;
+					});
+				}
+				if (typeof obj[key] === "object" && obj[key] !== null)
+					iterate(obj[key], column);
+			});
+		};
 		columns.forEach((column) => {
-			if (column.includes("expanded")) {
-				const arr = `${column}`.split(".");
-				const l = arr.length;
-				newItems.forEach((item) => {
-					item[`${arr[l - 1]}`] = item.expanded.props[`${arr[l - 1]}`];
-					delete item.expanded;
-				});
-			}
+			if (!Object.keys(data[0]).includes(column))
+				iterate(data[0], column);
 		});
 		return newItems;
 	};
 
-	private convertJSONToCSV = (items: Array<TuTableRow>) => {
+	private convertJSONToCSV (items: any) {
 		const replacer = (key, value) => value === null ? "" : value; // specify how you want to handle null values here
 		const header = Object.keys(items[0]); // it will return all the keys of the object
 		const csv = [
@@ -37,7 +41,7 @@ export class ExportData {
 		downloadLink.click(); // calling the onclick event on the a tag to redirect to the href mentioned above
 	};
 
-	public table = (data: Array<TuTableRow>, columns: Array<String>) => {
+	public table (data: any, columns: string[]) {
 		const items = this.manipulateData(data, columns);
 		this.convertJSONToCSV(items);
 	};
