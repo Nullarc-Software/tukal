@@ -14,8 +14,10 @@ export class ExportData {
 						item[`${key}`] = `${obj[key]}`;
 					});
 				}
-				if (typeof obj[key] === "object" && obj[key] !== null)
-					iterate(obj[key], column);
+				else {
+					if (typeof obj[key] === "object" && obj[key] !== null)
+						iterate(obj[key], column);
+				}
 			});
 		};
 		columns.forEach((column) => {
