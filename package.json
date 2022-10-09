@@ -19,6 +19,8 @@
 		"babel-loader": "^8.2.2",
 		"copy-webpack-plugin": "^8.1.1",
 		"core-js": "^3.8.3",
+		"jspdf": "^2.5.1",
+		"jspdf-autotable": "^3.5.25",
 		"lodash": "^4.17.21",
 		"material-design-icons": "^3.0.1",
 		"node": "^16.13.2",

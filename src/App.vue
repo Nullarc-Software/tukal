@@ -1009,6 +1009,9 @@
             <button @click="exportTable">
 				Export
 			</button>
+            <button @click="exportTableToPDF">
+				Export to pdf
+			</button>
             {{ selected }}
             <tu-table
                 row-expand
@@ -1136,7 +1139,11 @@ export default defineComponent({
 		});
 
 		const exportTable = () => {
-			Export.table(universities.value, ["email", "country", "name"], "Data");
+			Export.tableToCSV(universities.value, ["email", "country", "name"], "Data");
+		};
+
+		const exportTableToPDF = () => {
+			Export.tableToPDF(universities.value, ["email", "country", "name"], "Data");
 		};
 
 		provide("appRouter", null);
@@ -1369,10 +1376,8 @@ export default defineComponent({
 						}
 					};
 				});
-				console.log(typeof (temp));
 				universities.value = temp.slice(0, 3);
 			});
-
 		/*
 		const treeSelectedItems = ref<TuTreeViewItemDefn[]>([]);
 		const treeItems = ref<TuTreeViewItemDefn[]>([
@@ -1452,7 +1457,8 @@ export default defineComponent({
 			tabName,
 			justShowLoading,
 			users,
-			exportTable
+			exportTable,
+            exportTableToPDF
 		};
 	}
 });

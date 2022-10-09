@@ -1,4 +1,5 @@
-
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 import _ from "lodash";
 
 export class ExportData {
@@ -43,8 +44,40 @@ export class ExportData {
 		downloadLink.click(); // calling the onclick event on the a tag to redirect to the href mentioned above
 	};
 
-	public table (data: Array<any>, columns: string[], name: string) {
+	private convertJSONToPDF (items: Array<any>, name: string) {
+		const doc = new jsPDF();
+		const headers = Object.keys(items[0]);
+		const arr = [];
+		const iterate = (obj: Array<any>) => {
+			Object.keys(obj).forEach((key) => {
+				arr.push(obj[key]);
+			});
+		};
+		items.forEach((item) => {
+			iterate(item);
+		});
+		const body = _.chunk(arr, headers.length);
+		autoTable(doc, {
+			head: [headers],
+			body: body,
+			margin: { top: 20 },
+			styles: {
+				minCellHeight: 9,
+				halign: "left",
+				valign: "middle",
+				fontSize: 11
+			}
+		});
+		doc.save(`${name}.pdf`);
+	}
+
+	public tableToCSV (data: Array<any>, columns: string[], name: string) {
 		const items = this.manipulateData(data, columns);
 		this.convertJSONToCSV(items, name);
 	};
+
+	public tableToPDF (data: Array<any>, columns: string[], name: string) {
+		const items = this.manipulateData(data, columns);
+		this.convertJSONToPDF(items, name);
+	}
 }
