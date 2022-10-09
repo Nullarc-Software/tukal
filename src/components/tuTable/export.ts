@@ -27,7 +27,7 @@ export class ExportData {
 		return newItems;
 	};
 
-	private convertJSONToCSV (items: Array<any>) {
+	private convertJSONToCSV (items: Array<any>, name: string) {
 		const replacer = (key, value) => value === null ? "" : value; // specify how you want to handle null values here
 		const header = Object.keys(items[0]); // it will return all the keys of the object
 		const csv = [
@@ -36,15 +36,15 @@ export class ExportData {
 		].join("\r\n"); // convert all the object keys and values to csv
 		const csvFile = new Blob([csv], { type: "text/csv" }); // creating a csf blob with above csv variable
 		const downloadLink = document.createElement("a"); // creating a html link
-		downloadLink.download = "Info"; // naming the file info
+		downloadLink.download = name; // naming the file info
 		downloadLink.href = window.URL.createObjectURL(csvFile); // creating href link using csv blob
 		downloadLink.style.display = "none"; // hiding the a tag
 		document.body.appendChild(downloadLink); // adding the a tag to the html
 		downloadLink.click(); // calling the onclick event on the a tag to redirect to the href mentioned above
 	};
 
-	public table (data: Array<any>, columns: string[]) {
+	public table (data: Array<any>, columns: string[], name: string) {
 		const items = this.manipulateData(data, columns);
-		this.convertJSONToCSV(items);
+		this.convertJSONToCSV(items, name);
 	};
 }
