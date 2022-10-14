@@ -61,10 +61,16 @@
 							minWidth: header.minWidth,
 							maxWidth: header.maxWidth
 						}"
+                        draggable="true"
+						@dragstart="startDrag($event,header)"
+						@drop="onDrop(header)"
+						@dragover.prevent
+						@dragenter.prevent
+						:class="{ opacity: isDrag && header.index === startIndex || header.index === dropIndex }"
 						:sort="header.props ? header.props.sort : false"
 						:search="header.props ? header.props.search : false"
 					>
-						{{ header.caption }}
+							{{ header.caption }}
 					</tu-th>
 				</thead>
 				<tbody class="tu-table__tbody">
@@ -96,6 +102,7 @@
 						<tu-td
 							v-for="(th, j) in table.getTableHeaders.value"
 							:key="j"
+							:class="{ opacity: isDrag && th.index === startIndex || th.index === dropIndex }"
 						>
 							<span
 								:title="tr.rowData[th.field]"
@@ -167,6 +174,7 @@ import {
 	PropType,
 	reactive,
 	ref,
+	Ref,
 	watch
 } from "vue";
 import * as _ from "lodash";
@@ -176,7 +184,8 @@ import {
 	TuTableStore,
 	TuTableServerModel,
 	TuTableRow,
-	TuTableInitialComponentValues
+	TuTableInitialComponentValues,
+	TuHeaderDefn
 } from "./tuTableStore";
 
 import tuTh from "./tuTh.vue";
@@ -265,6 +274,10 @@ export default defineComponent({
 			type: String,
 			default: () => `tu-table-${TableIdentifierAuto.id++}`
 		},
+		persistentId: {
+			type: String,
+			default: ""
+		},
 		multiSelect: {
 			type: Boolean,
 			default: false
@@ -331,13 +344,15 @@ export default defineComponent({
 			table = new TuTableStore(props.id, 1);
 		else table = new TuTableStore(props.id, 0);
 
-		table.constructHeaders(props.columns);
+		table.constructHeaders(props.columns, props.persistentId);
 
 		if (props.model === "local") table.setTableData(props.data);
 		else {
 			table.serverSideModel = true;
 			table.serverModelProps = reactive(props.serverSideConfig);
 		}
+
+		const headers : Ref<TuHeaderDefn[]> = ref(table.getTableData.value);
 
 		const isMultipleSelected = computed(() => {
 			return _.isArray(props.modelValue);
@@ -358,17 +373,25 @@ export default defineComponent({
 
 		const rowListeners = {
 			click: function (event, tr) {
-				console.log("Row clicked");
+				// console.log("Row clicked");
 			}
 		};
 		const colsControl = ref([]);
-		for (let i = 0; i < props.columns.length; i++)
-			colsControl.value[i] = true;
-
 		const updateColumns = () => {
+			localStorage.setItem(`tableColumns-${props.persistentId}`, JSON.stringify(colsControl.value));
 			for (let i = 0; i < colsControl.value.length; i++)
 				table.setColumnVisibility(i, !colsControl.value[i]);
 		};
+		if (localStorage.getItem(`tableColumns-${props.persistentId}`) === null) {
+			for (let i = 0; i < props.columns.length; i++)
+				colsControl.value[i] = true;
+			localStorage.setItem(`tableColumns-${props.persistentId}`, JSON.stringify(colsControl.value));
+		}
+		else {
+			colsControl.value = JSON.parse(localStorage.getItem(`tableColumns-${props.persistentId}`));
+			updateColumns();
+			localStorage.setItem(`tableColumns-${props.persistentId}`, JSON.stringify(colsControl.value));
+		}
 
 		watch(
 			colsControl,
@@ -383,6 +406,18 @@ export default defineComponent({
 		watch(
 			[() => props.pageSize, () => props.page],
 			() => {
+				// if (localStorage.getItem(`currentPage-${props.persistentId}`) === null) {
+				// 	localStorage.setItem(`currentPage-${props.persistentId}`, JSON.stringify(props.page));
+				// 	table.setPaging(props.pageSize, props.page);
+				// }
+				// else if (props.page !== 1) {
+				// 	localStorage.setItem(`currentPage-${props.persistentId}`, JSON.stringify(props.page));
+				// 	table.setPaging(props.pageSize, props.page);
+				// }
+				// else {
+				// 	const currentPage = JSON.parse(localStorage.getItem(`currentPage-${props.persistentId}`));
+				// 	table.setPaging(props.pageSize, currentPage);
+				// }
 				table.setPaging(props.pageSize, props.page);
 			},
 			{
@@ -444,6 +479,21 @@ export default defineComponent({
 			return obj;
 		};
 
+		const startIndex = ref(null);
+		const dropIndex = ref(null);
+		const isDrag = ref(false);
+
+		const startDrag = (evt : DragEvent, header : TuHeaderDefn) => {
+			isDrag.value = false;
+			evt.dataTransfer.effectAllowed = "copyMove";
+			startIndex.value = header.index;
+		}
+		const onDrop = (header: TuHeaderDefn) => {
+			isDrag.value = true;
+			dropIndex.value = header.index;
+			table.swapTableColumns(startIndex.value, header.index, props.persistentId);
+		};
+
 		return {
 			tableContainer,
 			tableElement,
@@ -458,7 +508,13 @@ export default defineComponent({
 			colsControl,
 			getNestedField,
 			totalColumns,
-			updateColumns
+			updateColumns,
+			headers,
+			startDrag,
+			onDrop,
+			isDrag,
+			startIndex,
+			dropIndex
 		};
 	}
 });
@@ -469,6 +525,7 @@ export default defineComponent({
 
 .tu-table-content {
 	width: 100%;
+	animation-duration: 24s;
 
 	// box-shadow: 0px 5px 22px 0px rgba(0,0,0, -var(shadow-opacity))
 	border-radius: 16px;
@@ -480,6 +537,18 @@ export default defineComponent({
 .tu-table__element {
 	table-layout: fixed;
 	width: 100%;
+}
+@keyframes bye {
+	0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.opacity {
+	animation-name: bye;
+    animation-duration: 100ms;
 }
 
 .display-inline {

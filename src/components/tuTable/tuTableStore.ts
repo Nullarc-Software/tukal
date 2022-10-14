@@ -1,96 +1,102 @@
 import _ from "lodash";
-import { Component, computed, ComputedRef, reactive, ref, Ref, shallowReactive } from "vue";
+import {
+	Component,
+	computed,
+	ComputedRef,
+	reactive,
+	ref,
+	Ref,
+	shallowReactive
+} from "vue";
 
 export class TableIdentifierAuto {
 	public static id = 0;
 }
 
 export interface TuTableRow {
-	index: number,
-	selected: boolean,
-	expanded: boolean,
-	componentValues?: {
-		[fieldName: string] : any
-	},
-	rowData?: {
-		[name:string] : any
-	}
+    index: number;
+    selected: boolean;
+    expanded: boolean;
+    componentValues?: {
+        [fieldName: string]: any;
+    };
+    rowData?: {
+        [name: string]: any;
+    };
 }
 
 export interface TuFilterDefn {
-	field: string,
-	type: string,
-	value: any
+    field: string;
+    type: string;
+    value: any;
 }
 
 export interface TuHeaderDefn {
-	index?: number,
-	minWidth?: number | string,
-	maxWidth?: number | string,
-	width?: number | string,
-	field?: string,
-	caption?: string,
-	isComponent?: boolean,
-	element?: HTMLElement,
-	inputComponent?: Boolean,
-	component?: HTMLElement | Component | string,
-	componentProps?: any,
-	props?: {
-		search?: boolean,
-		sort?: boolean
-	},
-	valueFormatter?: Function,
-	hidden?: boolean
+    index?: number;
+    minWidth?: number | string;
+    maxWidth?: number | string;
+    width?: number | string;
+    field?: string;
+    caption?: string;
+    isComponent?: boolean;
+    element?: HTMLElement;
+    inputComponent?: Boolean;
+    component?: HTMLElement | Component | string;
+    componentProps?: any;
+    props?: {
+        search?: boolean;
+        sort?: boolean;
+    };
+    valueFormatter?: Function;
+    hidden?: boolean;
 }
 
 export interface TuTableSorterDefn {
-	field: string,
-	dir: "asc" | "desc" | boolean
+    field: string;
+    dir: "asc" | "desc" | boolean;
 }
 
 export interface TuTableDefn {
-	headers: Array<TuHeaderDefn>,
-	data: Array<TuTableRow>,
-	currentFilters: TuFilterDefn[],
-	currentSort: TuTableSorterDefn[],
-	pageSize?: number,
-	currentPage?: number
+    headers: Array<TuHeaderDefn>;
+    data: Array<TuTableRow>;
+    currentFilters: TuFilterDefn[];
+    currentSort: TuTableSorterDefn[];
+    pageSize?: number;
+    currentPage?: number;
 }
 
 export interface TuTableServerModel {
-	ajaxUrl: string,
-	method?: string,
-	ajaxLoadedFn?: Function,
-	ajaxErrorFn?: Function
+    ajaxUrl: string;
+    method?: string;
+    ajaxLoadedFn?: Function;
+    ajaxErrorFn?: Function;
 }
 
 export interface TuTableProps {
-	multiSelect?: boolean,
-	serverSideConfig?: TuTableServerModel,
-	columns: Array<TuHeaderDefn|null>,
-	model: "server" | "local" | string,
-	size: string,
+    multiSelect?: boolean;
+    serverSideConfig?: TuTableServerModel;
+    columns: Array<TuHeaderDefn | null>;
+    model: "server" | "local" | string;
+    size: string;
 }
 
 export interface TuTableContextMenuEntry {
-	caption: string | HTMLElement,
-	icon?: HTMLElement,
-	hasSubMenu?: boolean,
-	onClicked?: Function,
-	data?: any,
-	closeOnClick?: boolean,
-	divider?: boolean,
-	subMenu?: TuTableContextMenuEntry[]
+    caption: string | HTMLElement;
+    icon?: HTMLElement;
+    hasSubMenu?: boolean;
+    onClicked?: Function;
+    data?: any;
+    closeOnClick?: boolean;
+    divider?: boolean;
+    subMenu?: TuTableContextMenuEntry[];
 }
 
-export class TableFunctions {
-
-}
+export class TableFunctions {}
 
 export interface TuTableInitialComponentValues {
-	selector: any,
-	key: string,
-	value: any
+    selector: any;
+    key: string;
+    value: any;
 }
 
 export class TuTableStore {
@@ -116,16 +122,15 @@ export class TuTableStore {
 	public getFilters: ComputedRef<TuFilterDefn[]>;
 	public getSelectedRows: ComputedRef<TuTableRow[]>;
 
-	private getField (obj:any, field:string) {
+	private getField (obj: any, field: string) {
 		let temp = Object.assign({}, obj);
-		for (const key of field.split(".")) {
-			if (temp[key])
-				temp = temp[key];
-		}
+		for (const key of field.split("."))
+			if (temp[key]) temp = temp[key];
+
 		return temp;
 	}
 
-	constructor (tableId: string, columnsInitial:number = 0) {
+	constructor (tableId: string, columnsInitial: number = 0) {
 		this.id = tableId;
 		this.table = reactive({
 			headers: [],
@@ -149,13 +154,19 @@ export class TuTableStore {
 				// apply search filter
 				data = _.filter(this.table.data, (value: TuTableRow) => {
 					return _.every(this.table.currentFilters, (filterValue) => {
-						const fieldValue = this.getField(value.rowData, filterValue.field);
-						if (filterValue.value === "")
-							return true;
-						else if (fieldValue !== undefined)
-							return String(fieldValue).toLowerCase().includes(String(filterValue.value).toLowerCase());
-						else
-							return true;
+						const fieldValue = this.getField(
+							value.rowData,
+							filterValue.field
+						);
+						if (filterValue.value === "") return true;
+						else if (fieldValue !== undefined) {
+							return String(fieldValue)
+								.toLowerCase()
+								.includes(
+									String(filterValue.value).toLowerCase()
+								);
+						}
+						else return true;
 					});
 				});
 
@@ -167,18 +178,28 @@ export class TuTableStore {
 					return value.dir;
 				});
 
-				if (fields.length)
-					data = _.orderBy(data, fields, sortDirs);
+				if (fields.length) data = _.orderBy(data, fields, sortDirs);
 
-				this.pageLength.value = Math.ceil(data.length / this.table.pageSize);
-				if (this.table.pageSize > 0)
-					data = _.slice(data, this.table.pageSize * (this.table.currentPage - 1), (this.table.pageSize * (this.table.currentPage - 1)) + this.table.pageSize);
+				this.pageLength.value = Math.ceil(
+					data.length / this.table.pageSize
+				);
+				if (this.table.pageSize > 0) {
+					data = _.slice(
+						data,
+						this.table.pageSize * (this.table.currentPage - 1),
+						this.table.pageSize * (this.table.currentPage - 1) +
+                            this.table.pageSize
+					);
+				}
 			}
 			else {
 				const inst = this;
 				const request: XMLHttpRequest = new XMLHttpRequest();
 				request.onreadystatechange = function () {
-					if (request.readyState === XMLHttpRequest.DONE && request.status === 200) {
+					if (
+						request.readyState === XMLHttpRequest.DONE &&
+                        request.status === 200
+					) {
 						if (request.responseType === "json") {
 							inst.setTableData(request.response.data);
 							inst.rowCount.value = request.response.total_rows;
@@ -193,7 +214,9 @@ export class TuTableStore {
 							inst.rowCount.value = obj.total_rows;
 							inst.setTableData(obj.data);
 						}
-						inst.pageLength.value = Math.ceil(data.length / inst.table.pageSize);
+						inst.pageLength.value = Math.ceil(
+							data.length / inst.table.pageSize
+						);
 						data = inst.table.data;
 					}
 				};
@@ -207,7 +230,11 @@ export class TuTableStore {
 				if (_.isUndefined(this.serverModelProps.method))
 					this.serverModelProps.method = "GET";
 
-				request.open(this.serverModelProps.method, this.serverModelProps.ajaxUrl, true);
+				request.open(
+					this.serverModelProps.method,
+					this.serverModelProps.ajaxUrl,
+					true
+				);
 				request.setRequestHeader("Content-Type", "application/json");
 				request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
 				request.send(JSON.stringify(props));
@@ -217,7 +244,9 @@ export class TuTableStore {
 		});
 
 		this.getTableHeaders = computed(() => {
-			return _.filter(this.table.headers, { hidden: false }) as TuHeaderDefn[];
+			return _.filter(this.table.headers, {
+				hidden: false
+			}) as TuHeaderDefn[];
 			// return this.table.headers;
 		});
 
@@ -244,17 +273,20 @@ export class TuTableStore {
 				return row.selected;
 			});
 			if (filteredRows.length > 0) {
-			// console.log("Total : " + this.rowIndexCtr + ", Selected : " + filteredRows.length + ", Value : " + (this.rowIndexCtr !== filteredRows.length));
+				// console.log("Total : " + this.rowIndexCtr + ", Selected : " + filteredRows.length + ", Value : " + (this.rowIndexCtr !== filteredRows.length));
 				return this.rowIndexCtr !== filteredRows.length;
 			}
 			else return false;
 		});
-	};
+	}
 
-	public getRowsMatching (filter: any) : TuTableRow[] {
-		const filteredRows = _.filter(this.table.data, _.matches({ rowData: filter }));
+	public getRowsMatching (filter: any): TuTableRow[] {
+		const filteredRows = _.filter(
+			this.table.data,
+			_.matches({ rowData: filter })
+		);
 		return filteredRows;
-	};
+	}
 
 	public setServerModelProps (props: TuTableServerModel) {
 		this.serverModelProps.ajaxUrl = props.ajaxUrl;
@@ -265,6 +297,7 @@ export class TuTableStore {
 	public setPaging (pageSize: number, page: number) {
 		this.table.pageSize = pageSize;
 		this.table.currentPage = page;
+		console.log(this.table.currentPage);
 	}
 
 	public refresh () {
@@ -275,11 +308,10 @@ export class TuTableStore {
 		for (const row of rows) {
 			const filtered = _.filter(this.table.data, row.selector);
 			if (filtered.length > 0) {
-				filtered.forEach(selectedRow => {
+				filtered.forEach((selectedRow) => {
 					if (selectedRow.componentValues[row.key])
 						selectedRow.componentValues.row.key.value = row.value;
-					else
-						selectedRow.componentValues[row.key] = ref(row.value);
+					else selectedRow.componentValues[row.key] = ref(row.value);
 				});
 			}
 		}
@@ -299,7 +331,6 @@ export class TuTableStore {
 				expanded: false,
 				rowData: shallowReactive(value),
 				componentValues: componentValues
-
 			});
 			this.table.data.push(row);
 		});
@@ -309,7 +340,10 @@ export class TuTableStore {
 			const componentValueObject = {};
 			_.forEach(this.table.headers, (header) => {
 				if (header.isComponent && header.inputComponent) {
-					if (_.isNil(header.componentProps) === false && _.isNil(header.componentProps.modelValue))
+					if (
+						_.isNil(header.componentProps) === false &&
+                        _.isNil(header.componentProps.modelValue)
+					)
 						componentValueObject[header.field] = ref(undefined);
 					else if (_.isNil(header.componentProps))
 						componentValueObject[header.field] = ref(undefined);
@@ -321,7 +355,11 @@ export class TuTableStore {
 		});
 	}
 
-	public constructHeaders (headers: any[]) {
+	public constructHeaders (headers: any[], persistentId: string) {
+		if (localStorage.getItem(`tableHeaders-${persistentId}`) !== null) {
+			this.table.headers = JSON.parse(localStorage.getItem(`tableHeaders-${persistentId}`));
+			return;
+		}
 		if (headers.length === 1 && typeof headers[0].type === "symbol")
 			headers = headers[0].children;
 		_.forEach(headers, (value) => {
@@ -345,10 +383,22 @@ export class TuTableStore {
 				this.headerCount.value++;
 			}
 		});
+		console.log(this.table.headers);
 	}
 
 	public setColumnVisibility (columnIndex: number, value: boolean) {
-		this.table.headers[columnIndex].hidden = value;
+		for (let i = 0; i < this.table.headers.length; i++) {
+			if (this.table.headers[i].index === columnIndex) {
+				this.table.headers[i].hidden = value;
+				break;
+			}
+		}
+	}
+
+	public swapTableColumns (indexOne: number, indexTwo: number, persistentId: string) {
+		[this.table.headers[indexOne], this.table.headers[indexTwo]] = [this.table.headers[indexTwo], this.table.headers[indexOne]];
+		// localStorage.setItem(`tableHeaders-${persistentId}`, JSON.stringify(this.table.headers));
+		console.log(this.table.headers);
 	}
 
 	public deleteRow (index: number) {
@@ -396,8 +446,7 @@ export class TuTableStore {
 				}
 			});
 		}
-		else if (field >= 0)
-			header = this.table.headers[field];
+		else if (field >= 0) header = this.table.headers[field];
 		else if (this.table.headers.length)
 			header = this.table.headers[this.table.headers.length - 1];
 		return header;
@@ -407,7 +456,7 @@ export class TuTableStore {
 		return this.table.data[index].rowData;
 	}
 
-	public toggleSort (field:string) {
+	public toggleSort (field: string) {
 		const obj = _.find(this.table.currentSort, (value) => {
 			return value.field === field;
 		});
@@ -436,4 +485,4 @@ export class TuTableStore {
 			return "asc";
 		}
 	}
-};
+}

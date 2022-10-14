@@ -1018,10 +1018,11 @@
                 multi-select
                 striped
                 size=""
+                :persistentId="1"
                 v-model="selected"
                 v-model:numPages="numPages"
                 :page="page"
-                :pageSize="25"
+                :pageSize="5"
                 :data="universities"
                 :columns="columns"
                 :columnSelecter="true"
@@ -1041,6 +1042,7 @@
                         not-margin
                         flat
                         v-model="page"
+                        :persistentId="1"
                         :length="numPages"
                     />
                 </template>
@@ -1145,7 +1147,6 @@ export default defineComponent({
 		const exportTableToPDF = () => {
 			Export.tableToPDF(universities.value, ["email", "country", "name"], "Data");
 		};
-
 		provide("appRouter", null);
 		provide("iconPackGlobal", "material-icons-outlined");
 		/*
@@ -1375,9 +1376,12 @@ export default defineComponent({
 							email: "user@gmail.com"
 						}
 					};
+					value.number = 2;
 				});
-				universities.value = temp.slice(0, 3);
+				universities.value = temp.slice(0, 8);
+				console.log(universities.value);
 			});
+
 		/*
 		const treeSelectedItems = ref<TuTreeViewItemDefn[]>([]);
 		const treeItems = ref<TuTreeViewItemDefn[]>([
@@ -1458,7 +1462,7 @@ export default defineComponent({
 			justShowLoading,
 			users,
 			exportTable,
-            exportTableToPDF
+			exportTableToPDF
 		};
 	}
 });
