@@ -1,3 +1,4 @@
+
 import _ from "lodash";
 import {
 	Component,
@@ -78,6 +79,15 @@ export interface TuTableProps {
     columns: Array<TuHeaderDefn | null>;
     model: "server" | "local" | string;
     size: string;
+}
+
+export interface TuTableLocalColumn {
+	header?: string;
+	visibility?: boolean;
+}
+
+export interface TuTableLocal {
+	columns?: Array<TuTableLocalColumn>;
 }
 
 export interface TuTableContextMenuEntry {
@@ -356,10 +366,6 @@ export class TuTableStore {
 	}
 
 	public constructHeaders (headers: any[], persistentId: string) {
-		if (localStorage.getItem(`tableHeaders-${persistentId}`) !== null) {
-			this.table.headers = JSON.parse(localStorage.getItem(`tableHeaders-${persistentId}`));
-			return;
-		}
 		if (headers.length === 1 && typeof headers[0].type === "symbol")
 			headers = headers[0].children;
 		_.forEach(headers, (value) => {
@@ -383,7 +389,24 @@ export class TuTableStore {
 				this.headerCount.value++;
 			}
 		});
-		console.log(this.table.headers);
+		if (localStorage.getItem(`table-${persistentId}`) !== null) {
+			const persistentColumns = JSON.parse(localStorage.getItem(`table-${persistentId}`));
+			const getNextHeader = (i: number) => {
+				const header = persistentColumns.columns[i].header;
+				let requiredHeader: TuHeaderDefn;
+				for (let j = 0; j < this.table.headers.length; j++) {
+					if (this.table.headers[j].field === header) {
+						requiredHeader = this.table.headers[j];
+						break;
+					}
+				}
+				return requiredHeader;
+			};
+			const prevHeaders: TuHeaderDefn[] = [];
+			for (let i = 0; i < this.table.headers.length; i++)
+				prevHeaders.push(getNextHeader(i));
+			this.table.headers = prevHeaders;
+		}
 	}
 
 	public setColumnVisibility (columnIndex: number, value: boolean) {
@@ -395,10 +418,30 @@ export class TuTableStore {
 		}
 	}
 
-	public swapTableColumns (indexOne: number, indexTwo: number, persistentId: string) {
-		[this.table.headers[indexOne], this.table.headers[indexTwo]] = [this.table.headers[indexTwo], this.table.headers[indexOne]];
-		// localStorage.setItem(`tableHeaders-${persistentId}`, JSON.stringify(this.table.headers));
-		console.log(this.table.headers);
+	public reOrderTableColumns (indexOne: number, indexTwo: number, persistentId?: string) {
+		let indexOneFound = false;
+		let indexTwoFound = false;
+		for (let i = 0; i < this.table.headers.length; i++) {
+			if (!indexOneFound) {
+				if (this.table.headers[i].index === indexOne) {
+					indexOne = i;
+					indexOneFound = true;
+				}
+			}
+			if (!indexTwoFound) {
+				if (this.table.headers[i].index === indexTwo) {
+					indexTwo = i;
+					indexTwoFound = true;
+				}
+			}
+		}
+		this.table.headers.splice(indexTwo, 0, this.table.headers.splice(indexOne, 1)[0]);
+		if (persistentId) {
+			const persistentColumns = JSON.parse(localStorage.getItem(`table-${persistentId}`));
+			for (let i = 0; i < this.table.headers.length; i++)
+				persistentColumns.columns[i].header = this.table.headers[i].field;
+			localStorage.setItem(`table-${persistentId}`, JSON.stringify(persistentColumns));
+		}
 	}
 
 	public deleteRow (index: number) {

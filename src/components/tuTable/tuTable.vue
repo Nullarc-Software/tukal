@@ -66,7 +66,7 @@
 						@drop="onDrop(header)"
 						@dragover.prevent
 						@dragenter.prevent
-						:class="{ opacity: isDrag && header.index === startIndex || header.index === dropIndex }"
+						:class="{ 'animation-table': isDrag && header.index === dragIndex || header.index === dropIndex }"
 						:sort="header.props ? header.props.sort : false"
 						:search="header.props ? header.props.search : false"
 					>
@@ -102,7 +102,7 @@
 						<tu-td
 							v-for="(th, j) in table.getTableHeaders.value"
 							:key="j"
-							:class="{ opacity: isDrag && th.index === startIndex || th.index === dropIndex }"
+							:class="{ 'animation-table' : isDrag && th.index === dragIndex || th.index === dropIndex }"
 						>
 							<span
 								:title="tr.rowData[th.field]"
@@ -174,7 +174,6 @@ import {
 	PropType,
 	reactive,
 	ref,
-	Ref,
 	watch
 } from "vue";
 import * as _ from "lodash";
@@ -185,7 +184,9 @@ import {
 	TuTableServerModel,
 	TuTableRow,
 	TuTableInitialComponentValues,
-	TuHeaderDefn
+	TuHeaderDefn,
+	TuTableLocal,
+	TuTableLocalColumn
 } from "./tuTableStore";
 
 import tuTh from "./tuTh.vue";
@@ -351,8 +352,19 @@ export default defineComponent({
 			table.serverSideModel = true;
 			table.serverModelProps = reactive(props.serverSideConfig);
 		}
+		let persistentColumns: TuTableLocal = {
+			columns: []
+		};
 
-		const headers : Ref<TuHeaderDefn[]> = ref(table.getTableData.value);
+		if (props.persistentId !== null) {
+			for (let i = 0; i < table.getTableHeaders.value.length; i++) {
+				const column: TuTableLocalColumn = {
+					header: table.getTableHeaders.value[i].field,
+					visibility: false
+				};
+				persistentColumns.columns.push(column);
+			}
+		}
 
 		const isMultipleSelected = computed(() => {
 			return _.isArray(props.modelValue);
@@ -378,21 +390,28 @@ export default defineComponent({
 		};
 		const colsControl = ref([]);
 		const updateColumns = () => {
-			localStorage.setItem(`tableColumns-${props.persistentId}`, JSON.stringify(colsControl.value));
+			for (let i = 0; i < props.columns.length; i++)
+				persistentColumns.columns[i].visibility = colsControl.value[i];
+			localStorage.setItem(`table-${props.persistentId}`, JSON.stringify(persistentColumns));
 			for (let i = 0; i < colsControl.value.length; i++)
 				table.setColumnVisibility(i, !colsControl.value[i]);
 		};
-		if (localStorage.getItem(`tableColumns-${props.persistentId}`) === null) {
-			for (let i = 0; i < props.columns.length; i++)
-				colsControl.value[i] = true;
-			localStorage.setItem(`tableColumns-${props.persistentId}`, JSON.stringify(colsControl.value));
+		if (props.persistentId !== null) {
+			if (localStorage.getItem(`table-${props.persistentId}`) === null) {
+				for (let i = 0; i < props.columns.length; i++) {
+					colsControl.value[i] = true;
+					persistentColumns.columns[i].visibility = true;
+				}
+				localStorage.setItem(`table-${props.persistentId}`, JSON.stringify(persistentColumns));
+			}
+			else {
+				persistentColumns = JSON.parse(localStorage.getItem(`table-${props.persistentId}`));
+				for (let i = 0; i < props.columns.length; i++)
+					colsControl.value[i] = persistentColumns.columns[i].visibility;
+				updateColumns();
+				localStorage.setItem(`table-${props.persistentId}`, JSON.stringify(persistentColumns));
+			}
 		}
-		else {
-			colsControl.value = JSON.parse(localStorage.getItem(`tableColumns-${props.persistentId}`));
-			updateColumns();
-			localStorage.setItem(`tableColumns-${props.persistentId}`, JSON.stringify(colsControl.value));
-		}
-
 		watch(
 			colsControl,
 			() => {
@@ -406,18 +425,6 @@ export default defineComponent({
 		watch(
 			[() => props.pageSize, () => props.page],
 			() => {
-				// if (localStorage.getItem(`currentPage-${props.persistentId}`) === null) {
-				// 	localStorage.setItem(`currentPage-${props.persistentId}`, JSON.stringify(props.page));
-				// 	table.setPaging(props.pageSize, props.page);
-				// }
-				// else if (props.page !== 1) {
-				// 	localStorage.setItem(`currentPage-${props.persistentId}`, JSON.stringify(props.page));
-				// 	table.setPaging(props.pageSize, props.page);
-				// }
-				// else {
-				// 	const currentPage = JSON.parse(localStorage.getItem(`currentPage-${props.persistentId}`));
-				// 	table.setPaging(props.pageSize, currentPage);
-				// }
 				table.setPaging(props.pageSize, props.page);
 			},
 			{
@@ -479,19 +486,23 @@ export default defineComponent({
 			return obj;
 		};
 
-		const startIndex = ref(null);
+		const dragIndex = ref(null);
 		const dropIndex = ref(null);
 		const isDrag = ref(false);
 
 		const startDrag = (evt : DragEvent, header : TuHeaderDefn) => {
 			isDrag.value = false;
 			evt.dataTransfer.effectAllowed = "copyMove";
-			startIndex.value = header.index;
-		}
+			dragIndex.value = header.index;
+		};
 		const onDrop = (header: TuHeaderDefn) => {
 			isDrag.value = true;
 			dropIndex.value = header.index;
-			table.swapTableColumns(startIndex.value, header.index, props.persistentId);
+			if (props.persistentId)
+				table.reOrderTableColumns(dragIndex.value, dropIndex.value, props.persistentId);
+
+			else
+				table.reOrderTableColumns(dragIndex.value, header.index);
 		};
 
 		return {
@@ -509,11 +520,10 @@ export default defineComponent({
 			getNestedField,
 			totalColumns,
 			updateColumns,
-			headers,
 			startDrag,
 			onDrop,
 			isDrag,
-			startIndex,
+			dragIndex,
 			dropIndex
 		};
 	}
@@ -538,7 +548,7 @@ export default defineComponent({
 	table-layout: fixed;
 	width: 100%;
 }
-@keyframes bye {
+@keyframes fadeIn {
 	0% {
     transform: scale(0);
   }
@@ -546,8 +556,8 @@ export default defineComponent({
     transform: scale(1);
   }
 }
-.opacity {
-	animation-name: bye;
+.animation-table {
+	animation-name: fadeIn;
     animation-duration: 100ms;
 }
 
