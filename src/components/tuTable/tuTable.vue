@@ -32,7 +32,7 @@
 				compact: compact
 			}"
 		>
-			<table class="tu-table__element" ref="tableElement">
+			<table id="table" class="tu-table__element" ref="tableElement">
 				<thead ref="thead" class="tu-table__thead">
 					<tu-th
 						v-if="rowExpand"
@@ -73,7 +73,7 @@
 							{{ header.caption }}
 					</tu-th>
 				</thead>
-				<tbody class="tu-table__tbody">
+				<tbody id="tbody" :class="{ 'loading-body' : !isLoaded  }" class="tu-table__tbody">
 					<slot v-if="$slots.tbody" name="tbody" />
 					<tu-tr
 						v-else
@@ -196,6 +196,10 @@ import tuIcon from "../tuIcon";
 import tuCheckbox from "../tuCheckBox";
 import { tuPopper, tuPopupMenu } from "../tuPopper";
 import contextMenuComponent from "./tuTableContextMenu.vue";
+import {
+	Loading,
+	LoadingAttributes
+} from "../tuLoading";
 
 if (typeof window !== "undefined" && (window as any).VueInstance)
 	contextMenuComponent.install((window as any).VueInstance);
@@ -336,8 +340,19 @@ export default defineComponent({
 		const selectedAll = ref(false);
 		const expandedAll = ref(false);
 		const noOfTableValues = ref(0);
+		const isLoaded = ref(false);
+		let load;
 		const totalColumns = ref(props.columns);
 		let table: TuTableStore;
+		const showLoading = function () {
+			const attrs: LoadingAttributes = {
+				target: "#tbody",
+				color: "dark",
+				type: "circles",
+				scale: "1.0"
+			};
+			load = new Loading(attrs);
+		};
 
 		if (props.multiSelect && props.rowExpand)
 			table = new TuTableStore(props.id, 2);
@@ -447,6 +462,8 @@ export default defineComponent({
 			const newVal = table.getTableData.value as Array<TuTableRow>;
 			context.emit("update:data", newVal);
 			noOfTableValues.value = newVal.length;
+			isLoaded.value = true;
+			load.close();
 		});
 
 		watch(table.getSelectedRows, () => {
@@ -470,8 +487,8 @@ export default defineComponent({
 					(tableContainer.value.offsetWidth -
 						lastHeader.element.offsetLeft ?? 0) + "px";
 			}
-
 			context.emit("update:tableInstance", table);
+			showLoading();
 		});
 
 		onBeforeUnmount(() => {
@@ -524,7 +541,8 @@ export default defineComponent({
 			onDrop,
 			isDrag,
 			dragIndex,
-			dropIndex
+			dropIndex,
+			isLoaded
 		};
 	}
 });
@@ -563,6 +581,12 @@ export default defineComponent({
 
 .display-inline {
 	display: inline-block !important;
+}
+
+.loading-body {
+	position: relative;
+	height: 50vh;
+	width: 50vw;
 }
 .tu-table {
 	font-size: 0.9rem;

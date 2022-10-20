@@ -1018,7 +1018,7 @@
                 multi-select
                 striped
                 size=""
-                :persistentId="1"
+                :persistentId="two"
                 v-model="selected"
                 v-model:numPages="numPages"
                 :page="page"
@@ -1139,7 +1139,7 @@ export default defineComponent({
 				inpValue.value
 			);
 		});
-
+        
 		const exportTable = () => {
 			Export.tableToCSV(universities.value, ["email", "country", "name"], "Data");
 		};

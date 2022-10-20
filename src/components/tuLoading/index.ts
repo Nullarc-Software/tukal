@@ -1,13 +1,12 @@
-import { App, createApp, nextTick, reactive, Ref, ref } from "vue";
+import { App, createApp, Ref, ref } from "vue";
 import tuComponent from "./tuLoading.vue";
 
 tuComponent.install = (vue: any) => {
 	vue.component(tuComponent.name, tuComponent);
 };
 
-if (typeof window !== "undefined" && (<any>window).Vue) {
+if (typeof window !== "undefined" && (<any>window).Vue)
 	tuComponent.install((<any>window).Vue);
-}
 
 interface LoadingAttributes {
 	type?: string;
@@ -30,21 +29,18 @@ class Loading {
 	isVisible: boolean = false;
 
 	public changeText (val: string) {
-		if (val) {
+		if (val)
 			this.params.value.text = val;
-		}
 	}
 
 	public changeProgress (val: number) {
-		if (val) {
+		if (val)
 			this.params.value.progress = val;
-		}
 	}
 
 	public changePercent (val: string) {
-		if (val) {
+		if (val)
 			this.params.value.percent = val;
-		}
 	}
 
 	public close () {
@@ -57,13 +53,14 @@ class Loading {
 	constructor (paramsAttr: LoadingAttributes) {
 		this.params = ref(paramsAttr);
 		let target: any = null;
-		if (typeof paramsAttr.target === "string") {
+		if (typeof paramsAttr.target === "string")
 			target = document.querySelector(this.params.value.target);
-		} else if (paramsAttr.target) {
+
+		else if (paramsAttr.target)
 			target = this.params.value.target.$el || this.params.value.target;
-		} else {
+
+		else
 			target = document.body;
-		}
 
 		this.instance = createApp(loadingConstructor, this.params.value as any);
 		const element = document.createElement("div");
