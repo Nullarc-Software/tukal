@@ -84,7 +84,7 @@
 						:expanded="expandedAll"
 						:expandHandle="rowExpand"
 						@rowExpanded="tr.expanded = $event"
-						@rowClick="rowListeners.click($event, this)"
+						@rowClick="rowListeners.click($event, this, tr.rowData)"
 					>
 						<tu-td expand v-if="rowExpand">
 							<tu-icon
@@ -321,7 +321,12 @@ export default defineComponent({
 		"update:modelValue",
 		"update:numPages",
 		"update:data",
-		"update:tableInstance"
+		"update:tableInstance",
+		"onRowClicked",
+		"onTableBeginLoad",
+		"onTableEndLoad",
+		"onCellClicked",
+		"onTableConfigUpdated"
 	],
 	provide () {
 		return {
@@ -399,8 +404,8 @@ export default defineComponent({
 		}
 
 		const rowListeners = {
-			click: function (event, tr) {
-				// console.log("Row clicked");
+			click: function (event, tr, row) {
+				context.emit("onRowClicked", row);
 			}
 		};
 		const colsControl = ref([]);
@@ -408,6 +413,7 @@ export default defineComponent({
 			for (let i = 0; i < props.columns.length; i++)
 				persistentColumns.columns[i].visibility = colsControl.value[i];
 			localStorage.setItem(`table-${props.persistentId}`, JSON.stringify(persistentColumns));
+			context.emit("onTableConfigUpdated", JSON.parse(localStorage.getItem(`table-${props.persistentId}`)));
 			for (let i = 0; i < colsControl.value.length; i++)
 				table.setColumnVisibility(i, !colsControl.value[i]);
 		};
@@ -418,6 +424,7 @@ export default defineComponent({
 					persistentColumns.columns[i].visibility = true;
 				}
 				localStorage.setItem(`table-${props.persistentId}`, JSON.stringify(persistentColumns));
+				context.emit("onTableConfigUpdated", JSON.parse(localStorage.getItem(`table-${props.persistentId}`)));
 			}
 			else {
 				persistentColumns = JSON.parse(localStorage.getItem(`table-${props.persistentId}`));
@@ -425,6 +432,7 @@ export default defineComponent({
 					colsControl.value[i] = persistentColumns.columns[i].visibility;
 				updateColumns();
 				localStorage.setItem(`table-${props.persistentId}`, JSON.stringify(persistentColumns));
+				context.emit("onTableConfigUpdated", JSON.parse(localStorage.getItem(`table-${props.persistentId}`)));
 			}
 		}
 		watch(
@@ -464,6 +472,7 @@ export default defineComponent({
 			noOfTableValues.value = newVal.length;
 			isLoaded.value = true;
 			load.close();
+			context.emit("onTableEndLoad");
 		});
 
 		watch(table.getSelectedRows, () => {
@@ -488,7 +497,10 @@ export default defineComponent({
 						lastHeader.element.offsetLeft ?? 0) + "px";
 			}
 			context.emit("update:tableInstance", table);
-			showLoading();
+			context.emit("onTableBeginLoad");
+			console.log(table.getTableData.value);
+			if (table.getTableData.value.length === 0)
+				showLoading();
 		});
 
 		onBeforeUnmount(() => {
@@ -515,9 +527,10 @@ export default defineComponent({
 		const onDrop = (header: TuHeaderDefn) => {
 			isDrag.value = true;
 			dropIndex.value = header.index;
-			if (props.persistentId)
+			if (props.persistentId) {
 				table.reOrderTableColumns(dragIndex.value, dropIndex.value, props.persistentId);
-
+				context.emit("onTableConfigUpdated", JSON.parse(localStorage.getItem(`table-${props.persistentId}`)));
+			}
 			else
 				table.reOrderTableColumns(dragIndex.value, header.index);
 		};

@@ -1026,6 +1026,10 @@
                 :data="universities"
                 :columns="columns"
                 :columnSelecter="true"
+                @onRowClicked = "rowClicked"
+                @onTableBeginLoad = "beginLoad"
+                @onTableEndLoad = "afterLoad"
+                @onTableConfigUpdated = "configUpdate"
             >
                 <!-- <template #thead>
 					<tu-th field="country" sort search> Country </tu-th>
@@ -1132,6 +1136,18 @@ export default defineComponent({
 		const selectValue1 = ref(null);
 		const page = ref(1);
 		const Export: ExportData = new ExportData();
+		const rowClicked = (tr) => {
+			console.log(tr);
+		};
+		const beginLoad = () => {
+			console.log("begin load");
+		};
+		const afterLoad = () => {
+			console.log("after load");
+		};
+		const configUpdate = (config) => {
+			console.log(config);
+		};
 
 		const notificationComponent = ref(null);
 		const validEmail = computed(function () {
@@ -1139,7 +1155,7 @@ export default defineComponent({
 				inpValue.value
 			);
 		});
-        
+
 		const exportTable = () => {
 			Export.tableToCSV(universities.value, ["email", "country", "name"], "Data");
 		};
@@ -1462,7 +1478,11 @@ export default defineComponent({
 			justShowLoading,
 			users,
 			exportTable,
-			exportTableToPDF
+			exportTableToPDF,
+			rowClicked,
+			beginLoad,
+			afterLoad,
+			configUpdate
 		};
 	}
 });
