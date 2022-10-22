@@ -1019,6 +1019,7 @@
                 striped
                 size=""
                 :persistentId="two"
+                :draggable="true"
                 v-model="selected"
                 v-model:numPages="numPages"
                 :page="page"
@@ -1046,7 +1047,6 @@
                         not-margin
                         flat
                         v-model="page"
-                        :persistentId="1"
                         :length="numPages"
                     />
                 </template>

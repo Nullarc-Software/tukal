@@ -101,7 +101,6 @@ export default defineComponent({
 		length: { default: 1, type: Number },
 		max: { default: 9, type: Number },
 		dottedNumber: { default: 5, type: Number },
-		persistentId: { default: 1, type: Number }
 	},
 	setup (props, context) {
 		const val = ref(1);
@@ -121,11 +120,6 @@ export default defineComponent({
 			context.emit("update:modelValue", NumberPage);
 		};
 
-		if (localStorage.getItem(`currentPage-${props.persistentId}`) !== null) {
-			const currentPage = JSON.parse(localStorage.getItem(`currentPage-${props.persistentId}`));
-			context.emit("update:modelValue", currentPage);
-		}
-		
 		const renderDotted = function (text: string = "...") {
 			const dotted = h(
 				"div",
