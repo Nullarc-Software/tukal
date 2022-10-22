@@ -1055,6 +1055,9 @@
             <hr />
             <!-- <tu-upload singleUpload :limit="1" /> -->
         </div>
+        <div class="showcase-component">
+            <tu-calendar />
+        </div>
     </div>
 </template>
 
@@ -1070,6 +1073,7 @@ import {
 	shallowRef,
 	markRaw
 } from "vue";
+
 import * as components from "./components";
 import { NotificationAttributes } from "./components/tuNotifications";
 import {
@@ -1462,7 +1466,7 @@ export default defineComponent({
 			justShowLoading,
 			users,
 			exportTable,
-			exportTableToPDF
+			exportTableToPDF,
 		};
 	}
 });

@@ -27,6 +27,7 @@ export { default as tuDialog } from "./tuDialog";
 
 export { tuCollapse, tuCollapseItem } from "./tuCollapse";
 export { tuTreeView, tuTreeItem } from "./tuTreeView";
+export { tuCalendar } from "./tuCalendar";
 export { tuUpload } from "./tuUpload";
 export * from "./tuTreeView/types";
 
