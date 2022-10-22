@@ -1018,7 +1018,8 @@
                 multi-select
                 striped
                 size=""
-                :persistentId="1"
+                :persistentId="one"
+                :draggable="true"
                 v-model="selected"
                 v-model:numPages="numPages"
                 :page="page"
@@ -1042,7 +1043,6 @@
                         not-margin
                         flat
                         v-model="page"
-                        :persistentId="1"
                         :length="numPages"
                     />
                 </template>

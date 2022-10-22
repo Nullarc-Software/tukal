@@ -61,7 +61,7 @@
 							minWidth: header.minWidth,
 							maxWidth: header.maxWidth
 						}"
-                        draggable="true"
+                        :draggable="`${isDraggable}`"
 						@dragstart="startDrag($event,header)"
 						@drop="onDrop(header)"
 						@dragover.prevent
@@ -283,6 +283,10 @@ export default defineComponent({
 			type: Boolean,
 			default: false
 		},
+		draggable: {
+			type: Boolean,
+			default: false
+		},
 		serverSideConfig: {
 			type: Object as PropType<TuTableServerModel>,
 			default: () => {
@@ -337,6 +341,7 @@ export default defineComponent({
 		const expandedAll = ref(false);
 		const noOfTableValues = ref(0);
 		const totalColumns = ref(props.columns);
+		const isDraggable = ref(props.draggable);
 		let table: TuTableStore;
 
 		if (props.multiSelect && props.rowExpand)
@@ -524,7 +529,8 @@ export default defineComponent({
 			onDrop,
 			isDrag,
 			dragIndex,
-			dropIndex
+			dropIndex,
+			isDraggable
 		};
 	}
 });

@@ -169,7 +169,7 @@ export class TuTableStore {
 							filterValue.field
 						);
 						if (filterValue.value === "") return true;
-						else if (fieldValue !== undefined) {
+						if (fieldValue !== undefined) {
 							return String(fieldValue)
 								.toLowerCase()
 								.includes(
@@ -393,14 +393,10 @@ export class TuTableStore {
 			const persistentColumns = JSON.parse(localStorage.getItem(`table-${persistentId}`));
 			const getNextHeader = (i: number) => {
 				const header = persistentColumns.columns[i].header;
-				let requiredHeader: TuHeaderDefn;
 				for (let j = 0; j < this.table.headers.length; j++) {
-					if (this.table.headers[j].field === header) {
-						requiredHeader = this.table.headers[j];
-						break;
-					}
+					if (this.table.headers[j].field === header)
+						return this.table.headers[j];
 				}
-				return requiredHeader;
 			};
 			const prevHeaders: TuHeaderDefn[] = [];
 			for (let i = 0; i < this.table.headers.length; i++)
@@ -434,6 +430,7 @@ export class TuTableStore {
 					indexTwoFound = true;
 				}
 			}
+			if (indexOneFound && indexTwoFound) break;
 		}
 		this.table.headers.splice(indexTwo, 0, this.table.headers.splice(indexOne, 1)[0]);
 		if (persistentId) {
