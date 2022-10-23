@@ -1056,7 +1056,19 @@
             <!-- <tu-upload singleUpload :limit="1" /> -->
         </div>
         <div class="showcase-component">
-            <tu-calendar />
+            <tu-calendar
+            :items="items"
+            @onClickDay="onClick">
+                <template #dialogHeader>
+                    <h2 class="dialog-header">Create Event</h2>
+                </template>
+                <template #dialogContent>
+                    <tu-input primary v-model="newItemTitle" state="primary" placeholder="Title" />
+                    <tu-input type="date" v-model="newItemStartDate" label="Date" />
+                    <tu-input type="date" v-model="newItemEndDate" label="Date" />
+                    <tu-button success @click="submitNewItem"> Submit </tu-button>
+                </template>
+            </tu-calendar>
         </div>
     </div>
 </template>
@@ -1136,6 +1148,21 @@ export default defineComponent({
 		const selectValue1 = ref(null);
 		const page = ref(1);
 		const Export: ExportData = new ExportData();
+		const newItemTitle = ref("");
+        const newItemStartDate = ref();
+		const newItemEndDate = ref();
+		const items = ref([]);
+		const onClick = (date: Date) => {
+            newItemStartDate.value = date;
+		};
+		const submitNewItem = () => {
+			items.value.push({
+				startDate: newItemStartDate.value,
+                endDate: newItemEndDate.value,
+				title: newItemTitle.value,
+				id: "e" + Math.random().toString(36).substring(2, 11)
+			});
+		};
 
 		const notificationComponent = ref(null);
 		const validEmail = computed(function () {
@@ -1467,6 +1494,12 @@ export default defineComponent({
 			users,
 			exportTable,
 			exportTableToPDF,
+			newItemTitle,
+			newItemStartDate,
+			newItemEndDate,
+			submitNewItem,
+			items,
+			onClick
 		};
 	}
 });
@@ -1478,7 +1511,9 @@ export default defineComponent({
     margin-left: 30px;
     margin-top: 30px;
 }
-
+.dialog-header {
+    text-align: center;
+}
 .tu-select-content {
     margin: 20px;
 }
