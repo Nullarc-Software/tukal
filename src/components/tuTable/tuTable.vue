@@ -34,8 +34,9 @@
 		>
 			<table class="tu-table__element" ref="tableElement">
 				<thead ref="thead" class="tu-table__thead">
+					<slot v-if="$slots.thead" name="thead" />
 					<tu-th
-						v-if="rowExpand"
+						v-if="rowExpand && !$slots.thead"
 						fixed
 						@click="expandedAll = !expandedAll"
 						style="width: 50px"
@@ -46,7 +47,11 @@
 							>keyboard_arrow_right</tu-icon
 						>
 					</tu-th>
-					<tu-th v-if="multiSelect" fixed style="width: 50px">
+					<tu-th
+						v-if="multiSelect && !$slots.thead"
+						fixed
+						style="width: 50px"
+					>
 						<tu-checkbox
 							v-model="selectedAll"
 							:indeterminate="table.isPartiallyChecked.value"
@@ -61,16 +66,20 @@
 							minWidth: header.minWidth,
 							maxWidth: header.maxWidth
 						}"
-                        :draggable="`${isDraggable}`"
-						@dragstart="startDrag($event,header)"
+						:draggable="isDraggable"
+						@dragstart="startDrag($event, header)"
 						@drop="onDrop(header)"
 						@dragover.prevent
 						@dragenter.prevent
-						:class="{ 'animation-table': isDrag && header.index === dragIndex || header.index === dropIndex }"
+						:class="{
+							'animation-table':
+								(isDrag && header.index === dragIndex) ||
+								header.index === dropIndex
+						}"
 						:sort="header.props ? header.props.sort : false"
 						:search="header.props ? header.props.search : false"
 					>
-							{{ header.caption }}
+						{{ header.caption }}
 					</tu-th>
 				</thead>
 				<tbody class="tu-table__tbody">
@@ -102,7 +111,11 @@
 						<tu-td
 							v-for="(th, j) in table.getTableHeaders.value"
 							:key="j"
-							:class="{ 'animation-table' : isDrag && th.index === dragIndex || th.index === dropIndex }"
+							:class="{
+								'animation-table':
+									(isDrag && th.index === dragIndex) ||
+									th.index === dropIndex
+							}"
 						>
 							<span
 								:title="tr.rowData[th.field]"
@@ -397,7 +410,10 @@ export default defineComponent({
 		const updateColumns = () => {
 			for (let i = 0; i < props.columns.length; i++)
 				persistentColumns.columns[i].visibility = colsControl.value[i];
-			localStorage.setItem(`table-${props.persistentId}`, JSON.stringify(persistentColumns));
+			localStorage.setItem(
+				`table-${props.persistentId}`,
+				JSON.stringify(persistentColumns)
+			);
 			for (let i = 0; i < colsControl.value.length; i++)
 				table.setColumnVisibility(i, !colsControl.value[i]);
 		};
@@ -407,14 +423,24 @@ export default defineComponent({
 					colsControl.value[i] = true;
 					persistentColumns.columns[i].visibility = true;
 				}
-				localStorage.setItem(`table-${props.persistentId}`, JSON.stringify(persistentColumns));
+				localStorage.setItem(
+					`table-${props.persistentId}`,
+					JSON.stringify(persistentColumns)
+				);
 			}
 			else {
-				persistentColumns = JSON.parse(localStorage.getItem(`table-${props.persistentId}`));
-				for (let i = 0; i < props.columns.length; i++)
-					colsControl.value[i] = persistentColumns.columns[i].visibility;
+				persistentColumns = JSON.parse(
+					localStorage.getItem(`table-${props.persistentId}`)
+				);
+				for (let i = 0; i < props.columns.length; i++) {
+					colsControl.value[i] =
+						persistentColumns.columns[i].visibility;
+				}
 				updateColumns();
-				localStorage.setItem(`table-${props.persistentId}`, JSON.stringify(persistentColumns));
+				localStorage.setItem(
+					`table-${props.persistentId}`,
+					JSON.stringify(persistentColumns)
+				);
 			}
 		}
 		watch(
@@ -495,7 +521,7 @@ export default defineComponent({
 		const dropIndex = ref(null);
 		const isDrag = ref(false);
 
-		const startDrag = (evt : DragEvent, header : TuHeaderDefn) => {
+		const startDrag = (evt: DragEvent, header: TuHeaderDefn) => {
 			isDrag.value = false;
 			evt.dataTransfer.effectAllowed = "copyMove";
 			dragIndex.value = header.index;
@@ -503,11 +529,14 @@ export default defineComponent({
 		const onDrop = (header: TuHeaderDefn) => {
 			isDrag.value = true;
 			dropIndex.value = header.index;
-			if (props.persistentId)
-				table.reOrderTableColumns(dragIndex.value, dropIndex.value, props.persistentId);
-
-			else
-				table.reOrderTableColumns(dragIndex.value, header.index);
+			if (props.persistentId) {
+				table.reOrderTableColumns(
+					dragIndex.value,
+					dropIndex.value,
+					props.persistentId
+				);
+			}
+			else table.reOrderTableColumns(dragIndex.value, header.index);
 		};
 
 		return {
@@ -556,15 +585,15 @@ export default defineComponent({
 }
 @keyframes fadeIn {
 	0% {
-    transform: scale(0);
-  }
-  100% {
-    transform: scale(1);
-  }
+		transform: scale(0);
+	}
+	100% {
+		transform: scale(1);
+	}
 }
 .animation-table {
 	animation-name: fadeIn;
-    animation-duration: 100ms;
+	animation-duration: 100ms;
 }
 
 .display-inline {

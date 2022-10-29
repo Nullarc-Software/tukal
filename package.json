@@ -31,7 +31,6 @@
 		"vue": "^3.2.13",
 		"vue-router": "^4.0.3",
 		"vue-sfc-rollup": "^4.0.5",
-		"vue-simple-calendar": "^6.2.1",
 		"vue3-popper": "^0.1.0",
 		"webpack": "^5.0.0"
 	},

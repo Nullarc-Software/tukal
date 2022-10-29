@@ -6,6 +6,7 @@
 			selected: computeSelected,
 			isExpand: !!instanceExpand,
 			expand: $slots.expand,
+			invisible: isInvisible
 		}"
 	>
 		<slot />
@@ -63,6 +64,10 @@ export default defineComponent({
 		expanded: {
 			type: Boolean,
 			default: false
+		},
+		invisible: {
+			default: false,
+			type: Boolean
 		}
 	},
 	emits: ["rowClick", "selected", "rowExpanded"],
@@ -73,6 +78,7 @@ export default defineComponent({
 		const tableInstance = inject<TuTableStore>("tableInstance");
 		const instanceExpand = ref<any>(null);
 		const isSelected = ref(false);
+		const isInvisible = ref(props.invisible);
 		const colSpan = ref(0);
 		colSpan.value = tableInstance.headerCount.value;
 
@@ -130,7 +136,8 @@ export default defineComponent({
 			colSpan,
 			expand,
 			instanceExpand,
-			computeSelected
+			computeSelected,
+			isInvisible
 		};
 	}
 });
@@ -273,6 +280,7 @@ export default defineComponent({
 		}
 	}
 }
-
-
+.invisible {
+	border-bottom: none !important;
+}
 </style>
