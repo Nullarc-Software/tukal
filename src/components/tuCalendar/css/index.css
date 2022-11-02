@@ -43,7 +43,7 @@ having to override as much.
 	transform: translate(-50%, -50%);
 }
 
-.theme-default .cv-day.past {
+.theme-default .cv-day {
 	cursor: pointer;
 	background-color: #fafafa;
 }

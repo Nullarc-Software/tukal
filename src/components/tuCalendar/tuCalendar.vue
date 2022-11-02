@@ -25,68 +25,84 @@
 			<div v-if="$slots.dialogContent" class="con-content">
 				<slot name="dialogContent" />
 			</div>
-			<div v-else>
-				<tu-table v-model="selected">
-					<template #tbody>
-						<tu-tr invisible>
-							<tu-td>
-								<span title="Label">Title</span>
-							</tu-td>
-							<tu-td>
-								<tu-input
-									primary
-									v-model="newItemTitle"
-									state="primary"
-									placeholder="Title"
-								/>
-							</tu-td>
-						</tu-tr>
-						<tu-tr invisible>
-							<tu-td>
-								<span title="Label">Start Date</span>
-							</tu-td>
-							<tu-td>
-								<tu-input
-									type="date"
-									v-model="newItemStartDate"
-								/>
-							</tu-td>
-						</tu-tr>
-						<tu-tr invisible>
-							<tu-td>
-								<span title="Label">Start Time</span>
-							</tu-td>
-							<tu-td>
-								<tu-input
-									type="time"
-									v-model="newItemStartTime"
-								/>
-							</tu-td>
-						</tu-tr>
-						<tu-tr invisible>
-							<tu-td>
-								<span title="Label">End Date</span>
-							</tu-td>
-							<tu-td>
-								<tu-input
-									type="date"
-									v-model="newItemEndDate"
-								/>
-							</tu-td>
-						</tu-tr>
-						<tu-tr invisible>
-							<tu-td>
-								<span title="Label">End Time</span>
-							</tu-td>
-							<tu-td>
-								<tu-input
-									type="time"
-									v-model="newItemEndTime"
-								/>
-							</tu-td>
-						</tu-tr>
-					</template>
-				</tu-table>
+			<div v-else class="center">
+				<div>
+					<tu-table>
+						<template #tbody>
+							<tu-tr invisible>
+								<tu-td>
+									<span title="Label">Title</span>
+								</tu-td>
+								<tu-td>
+									<tu-input
+										primary
+										v-model="newItemTitle"
+										state="primary"
+										placeholder="Title"
+									/>
+								</tu-td>
+							</tu-tr>
+							<tu-tr invisible>
+								<tu-td>
+									<span title="Label">Start Date</span>
+								</tu-td>
+								<tu-td>
+									<tu-input
+										type="date"
+										v-model="newItemStartDate"
+									/>
+								</tu-td>
+							</tu-tr>
+							<tu-tr invisible>
+								<tu-td>
+									<span title="Label">Start Time</span>
+								</tu-td>
+								<tu-td>
+									<tu-input
+										type="time"
+										v-model="newItemStartTime"
+									/>
+								</tu-td>
+							</tu-tr>
+							<tu-tr invisible>
+								<tu-td>
+									<span title="Label">End Date</span>
+								</tu-td>
+								<tu-td>
+									<tu-input
+										type="date"
+										v-model="newItemEndDate"
+									/>
+								</tu-td>
+							</tu-tr>
+							<tu-tr invisible>
+								<tu-td>
+									<span title="Label">End Time</span>
+								</tu-td>
+								<tu-td>
+									<tu-input
+										type="time"
+										v-model="newItemEndTime"
+									/>
+								</tu-td>
+							</tu-tr>
+							<tu-tr invisible>
+								<tu-td>
+									<span title="Label">description</span>
+								</tu-td>
+								<tu-td>
+									<div class="tu-ckeditor">
+										<ckeditor
+											:editor="editor"
+											v-model="editorData"
+											:config="editorConfig"
+										></ckeditor>
+									</div>
+								</tu-td>
+							</tu-tr>
+						</template>
+					</tu-table>
+				</div>
 			</div>
 			<template v-slot:footer>
 				<tu-button success @click="submitNewItem"> Submit </tu-button>
@@ -99,6 +115,8 @@
 import { defineComponent, ref, Ref, PropType, watch } from "vue";
 import CalendarView from "../tuCalendar/CalendarView.vue";
 import CalendarViewHeader from "../tuCalendar/CalendarViewHeader.vue";
+import CKEditor from "@ckeditor/ckeditor5-vue";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import "./css/style.css";
 import "./css/index.css";
 interface Items {
@@ -111,7 +129,8 @@ export default defineComponent({
 	name: "TuCalendar",
 	components: {
 		CalendarView,
-		CalendarViewHeader
+		CalendarViewHeader,
+		ckeditor: CKEditor.component
 	},
 	props: {
 		items: {
@@ -120,6 +139,14 @@ export default defineComponent({
 		}
 	},
 	emits: ["onClickDay"],
+	data () {
+		return {
+			editor: ClassicEditor,
+			editorConfig: {
+
+			}
+		};
+	},
 	setup (props, context) {
 		const showDate = ref(new Date());
 		const activateDialog = ref(false);
@@ -129,6 +156,7 @@ export default defineComponent({
 		const newItemEndDate = ref();
 		const newItemEndTime = ref();
 		const events: Ref<Items[]> = ref(props.items);
+		const editorData = ref("");
 		const onClickDay = (d: String) => {
 			const convertstring = d.toString();
 			const parts = convertstring.split(" ");
@@ -152,6 +180,7 @@ export default defineComponent({
 			activateDialog.value = true;
 		};
 		const submitNewItem = () => {
+			console.log(editorData.value);
 			if (newItemEndDate.value === undefined)
 				newItemEndDate.value = newItemStartDate.value;
 			events.value.push({
@@ -182,8 +211,20 @@ export default defineComponent({
 			newItemStartTime,
 			newItemEndDate,
 			newItemEndTime,
-			submitNewItem
+			submitNewItem,
+			editorData
 		};
 	}
 });
 </script>
+
+<style>
+.center {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.tu-ckeditor {
+	width: 350px !important;
+}
+</style>

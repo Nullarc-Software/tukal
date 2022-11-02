@@ -148,17 +148,20 @@
 .cv-item.offset2 {
 	left: calc((200% / 7));
 }
-.cv-item.offset3 {
-	left: calc((300% / 7));
-}
 .cv-item.offset4 {
 	left: calc((400% / 7));
+}
+.cv-item.offset4-5 {
+	left: calc((450% / 7));
 }
 .cv-item.offset5 {
 	left: calc((500% / 7));
 }
 .cv-item.offset6 {
 	left: calc((600% / 7));
+}
+.cv-item.offset7 {
+	left: calc((700% / 7));
 }
 .cv-item.span1 {
 	width: calc((100% / 7) - 0.05em);

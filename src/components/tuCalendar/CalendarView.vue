@@ -148,7 +148,7 @@
 								@mouseenter="onMouseEnterItem(i, $event)"
 								@mouseleave="onMouseLeaveItem(i, $event)"
 								@click.stop="onClickItem(i, $event)"
-								v-html="getItemTitle(i)"
+								v-html="getItemTitle(i, weekStart)"
 							/>
 						</slot>
 					</template>
@@ -160,7 +160,7 @@
 <script setup lang="ts">
 import CalendarMath from "./CalendarMath";
 import CalendarViewState from "./CalendarViewState";
-import { computed, reactive, watch, withDefaults } from "vue";
+import { computed, reactive, watch, withDefaults, ref } from "vue";
 import {
 	ICalendarItem,
 	INormalizedCalendarItem,
@@ -277,6 +277,7 @@ const emit = defineEmits<{
 	): void;
 }>();
 const state = reactive(new CalendarViewState());
+const isMoreItems = ref(false);
 // Props cannot default to computed/method returns, so create defaulted version of this
 // property and use it rather than the bare prop (Vue Issue #6013).
 const displayLocale = computed(
@@ -666,8 +667,7 @@ const getWeekItems = (weekStart: Date): INormalizedCalendarItem[] => {
 				ep.itemRow = s;
 				itemRows[d][s] = true;
 			}
-			else if (d < startOffset + span)
-				itemRows[d][ep.itemRow] = true;
+			else if (d < startOffset + span) itemRows[d][ep.itemRow] = true;
 		}
 		ep.classes.push(`offset${startOffset}`);
 		ep.classes.push(`span${span}`);
@@ -699,9 +699,105 @@ const getFormattedTimeRange = (item: INormalizedCalendarItem): string => {
 	}
 	return startTime + endTime;
 };
-const getItemTitle = (item: INormalizedCalendarItem): string => {
+
+const weekOfDate = (startDate: Date, endDate: Date) => {
+	const weekOfDates = [];
+	let isStartWeekFound = false;
+	let isEndWeekFound = false;
+	for (let i = 1; i < weeksOfPeriod.value.length; i++) {
+		if (
+			!isStartWeekFound &&
+			weeksOfPeriod.value[i].getDate() <= startDate.getDate() &&
+			weeksOfPeriod.value[i].getDate() + 6 >= startDate.getDate()
+		) {
+			weekOfDates.push(weeksOfPeriod.value[i]);
+			isStartWeekFound = true;
+		}
+		if (
+			!isEndWeekFound &&
+			weeksOfPeriod.value[i].getDate() <= endDate.getDate() &&
+			weeksOfPeriod.value[i].getDate() + 6 >= endDate.getDate()
+		) {
+			weekOfDates.push(weeksOfPeriod.value[i]);
+			isEndWeekFound = true;
+		}
+		if (isEndWeekFound === true && isStartWeekFound === true)
+			return weekOfDates;
+	}
+	if (!isEndWeekFound) weekOfDates.push(weeksOfPeriod.value[0]);
+	if (!isStartWeekFound) weekOfDates.push(weeksOfPeriod.value[0]);
+	return weekOfDates;
+};
+
+const compareWeekDates = (weekDates: Array<Date>, date: Date) => {
+	if (weekDates === undefined) return false;
+	for (let i = 0; i < weekDates.length; i++)
+		if (weekDates[i] === date) return true;
+	return false;
+};
+
+const dateRange = (startDate: Date, endDate: Date, steps = 1) => {
+	const dateArray = [];
+	const currentDate = new Date(startDate);
+
+	while (currentDate <= new Date(endDate)) {
+		dateArray.push(new Date(currentDate));
+		currentDate.setUTCDate(currentDate.getUTCDate() + steps);
+	}
+	dateArray.push(endDate);
+	return dateArray;
+};
+
+const getItemTitle = (
+	item: INormalizedCalendarItem,
+	weekStart: Date
+): string => {
+	let count: number = 0;
+	for (let i = 0; i < props.items.length; i++) {
+		if (
+			props.items[i].id !== item.id &&
+			Number(getItemTop(item)[13]) === 0
+		) {
+			const arr1 = dateRange(item.startDate, item.endDate);
+			const arr2 = dateRange(
+				props.items[i].startDate,
+				props.items[i].endDate
+			);
+			let contains: boolean;
+			for (let i = 0; i < arr1.length; i++) {
+				for (let j = 0; j < arr2.length; j++) {
+					if (
+						arr1[i].getDate() === arr2[j].getDate() &&
+						arr1[i].getMonth() === arr2[j].getMonth()
+					)
+						contains = true;
+				}
+			}
+			if (
+				compareWeekDates(
+					weekOfDate(
+						props.items[i].startDate,
+						props.items[i].endDate
+					),
+					weekStart
+				) === true &&
+				contains === true
+			)
+				count++;
+		}
+	}
+	let printCount;
+	if (count > 0) {
+		printCount =
+			"<span class=\"tu-count\">" + "+" + count + " more" + "</span>";
+	}
+	else printCount = "";
 	if (!props.showTimes) return item.title;
-	return getFormattedTimeRange(item) + " " + item.title;
+	else {
+		return (
+			getFormattedTimeRange(item) + " " + item.title + "  " + printCount
+		);
+	}
 };
 // Compute the top position of the item based on its assigned row within the given week.
 const getItemTop = (item: INormalizedCalendarItem): string => {
@@ -946,5 +1042,8 @@ _:-ms-lang(x),
 .cv-weekdays::-webkit-scrollbar {
 	width: 0; /* remove scrollbar space */
 	background: transparent; /* optional: just make scrollbar invisible */
+}
+.tu-count {
+	font-size: 14px;
 }
 </style>

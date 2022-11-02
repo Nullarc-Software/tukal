@@ -185,7 +185,7 @@ const getDefaultBrowserLocale = (): string => {
 // ******************************
 // Calendar Items
 // ******************************
-const normalizeItem = (item: ICalendarItem, isHovered: boolean): INormalizedCalendarItem => {
+const normalizeItem = (item: ICalendarItem, isHovered?: boolean): INormalizedCalendarItem => {
 	// Starting in version 6, classes must be an array of string
 	// Classes may be a string, an array, or null. Normalize to an array
 	const itemClasses = item.classes ? [...item.classes] : []

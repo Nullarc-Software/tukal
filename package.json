@@ -16,6 +16,8 @@
 	"jsdelivr": "dist/tukal-vue.umd.min.js",
 	"dependencies": {
 		"@babel/runtime": "^7.14.8",
+		"@ckeditor/ckeditor5-build-classic": "^35.2.1",
+		"@ckeditor/ckeditor5-vue": "^4.0.1",
 		"babel-loader": "^8.2.2",
 		"copy-webpack-plugin": "^8.1.1",
 		"core-js": "^3.8.3",
@@ -38,6 +40,7 @@
 		"@babel/core": "^7.17.5",
 		"@babel/plugin-transform-runtime": "^7.17.0",
 		"@babel/preset-typescript": "^7.16.7",
+		"@ckeditor/ckeditor5-alignment": "^35.2.1",
 		"@types/events": "^3.0.0",
 		"@types/lodash": "^4.14.178",
 		"@types/node": "^17.0.19",
