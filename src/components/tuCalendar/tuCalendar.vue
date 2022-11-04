@@ -88,16 +88,19 @@
 							</tu-tr>
 							<tu-tr invisible>
 								<tu-td>
-									<span title="Label">description</span>
+									<span title="Label">Category</span>
 								</tu-td>
 								<tu-td>
-									<div class="tu-ckeditor">
-										<ckeditor
-											:editor="editor"
-											v-model="editorData"
-											:config="editorConfig"
-										></ckeditor>
-									</div>
+									<tu-select inline v-model="selectedCategory">
+										<tu-select-option
+											v-for="category in categories"
+											:key="category"
+											:label="category"
+											:value="category"
+										>
+											{{ category }}
+										</tu-select-option>
+									</tu-select>
 								</tu-td>
 							</tu-tr>
 						</template>
@@ -115,38 +118,32 @@
 import { defineComponent, ref, Ref, PropType, watch } from "vue";
 import CalendarView from "../tuCalendar/CalendarView.vue";
 import CalendarViewHeader from "../tuCalendar/CalendarViewHeader.vue";
-import CKEditor from "@ckeditor/ckeditor5-vue";
-import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import "./css/style.css";
 import "./css/index.css";
 interface Items {
 	title?: string;
 	startDate: Date;
 	endDate?: Date;
+	category?: String;
 	id: String;
 }
 export default defineComponent({
 	name: "TuCalendar",
 	components: {
 		CalendarView,
-		CalendarViewHeader,
-		ckeditor: CKEditor.component
+		CalendarViewHeader
 	},
 	props: {
 		items: {
 			type: Object as PropType<Array<Items>>,
 			default: []
+		},
+		categories: {
+			type: Object as PropType<Array<String>>,
+			default: []
 		}
 	},
 	emits: ["onClickDay"],
-	data () {
-		return {
-			editor: ClassicEditor,
-			editorConfig: {
-
-			}
-		};
-	},
 	setup (props, context) {
 		const showDate = ref(new Date());
 		const activateDialog = ref(false);
@@ -157,6 +154,9 @@ export default defineComponent({
 		const newItemEndTime = ref();
 		const events: Ref<Items[]> = ref(props.items);
 		const editorData = ref("");
+		const categories = ref(props.categories);
+		const selectedCategory = ref("");
+		console.log(categories);
 		const onClickDay = (d: String) => {
 			const convertstring = d.toString();
 			const parts = convertstring.split(" ");
@@ -180,7 +180,6 @@ export default defineComponent({
 			activateDialog.value = true;
 		};
 		const submitNewItem = () => {
-			console.log(editorData.value);
 			if (newItemEndDate.value === undefined)
 				newItemEndDate.value = newItemStartDate.value;
 			events.value.push({
@@ -190,6 +189,7 @@ export default defineComponent({
 				endDate: new Date(
 					newItemEndDate.value + " " + newItemEndTime.value
 				),
+				category: selectedCategory.value,
 				title: newItemTitle.value,
 				id: "e" + Math.random().toString(36).substring(2, 11)
 			});
@@ -212,7 +212,7 @@ export default defineComponent({
 			newItemEndDate,
 			newItemEndTime,
 			submitNewItem,
-			editorData
+			selectedCategory
 		};
 	}
 });

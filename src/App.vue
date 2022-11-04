@@ -1052,38 +1052,7 @@
 			<!-- <tu-upload singleUpload :limit="1" /> -->
 		</div>
 		<div class="showcase-component">
-			<tu-calendar :items="items" @onClickDay="onClick">
-				<!-- <template #dialogContent>
-					<tu-input
-						primary
-						v-model="newItemTitle"
-						state="primary"
-						placeholder="Title"
-					/>
-					<tu-input
-						type="date"
-						v-model="newItemStartDate"
-						label="Date"
-					/>
-					<tu-input
-						type="time"
-						v-model="newItemStartTime"
-						label="Start time"
-					/>
-					<tu-input
-						type="date"
-						v-model="newItemEndDate"
-						label="Date"
-					/>
-					<tu-input
-						type="time"
-						v-model="newItemEndTime"
-						label="End time"
-					/>
-					<tu-button success @click="submitNewItem">
-						Submit
-					</tu-button>
-				</template> -->
+			<tu-calendar :items="items" :categories="Categories" @onClickDay="onClick">
 			</tu-calendar>
 		</div>
 	</div>
@@ -1169,6 +1138,7 @@ export default defineComponent({
 		const newItemStartTime = ref();
 		const newItemEndDate = ref();
 		const newItemEndTime = ref();
+		const Categories = ['Birthday', 'Meeting', 'Appointments', 'Entertainment']
 		const items = ref([]);
 		const onClick = (date: Date) => {
 			newItemStartDate.value = date;
@@ -1533,7 +1503,8 @@ export default defineComponent({
 			newItemEndTime,
 			submitNewItem,
 			items,
-			onClick
+			onClick,
+			Categories
 		};
 	}
 });

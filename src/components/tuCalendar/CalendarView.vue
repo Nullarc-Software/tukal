@@ -127,11 +127,38 @@
 						<slot
 							:value="i"
 							:weekStartDate="weekStart"
-							:top="getItemTop(i)"
+							:top="`calc(${props.itemTop} + 0*${props.itemContentHeight} + 0*${props.itemBorderHeight})`"
 							name="item"
 						>
 							<div
+								v-if="isMultipleEvents(i, weekStart)"
 								:key="i.id"
+								:draggable="enableDragDrop"
+								:aria-grabbed="
+									enableDragDrop
+										? i == state.currentDragItem
+										: undefined
+								"
+								:class="getCategoryTitleOffSetAndSpan(i,isMultipleEvents(i, weekStart),weekStart)"
+								:style="`top:calc(${props.itemTop} + 0*${props.itemContentHeight} + 0*${props.itemBorderHeight});${i.originalItem.style}`"
+								class="cv-item"
+							>
+								<span
+									v-for="obj in getItemCategoryTitle(
+										i,
+										weekStart
+									)"
+									:key="obj"
+								>
+									<span>
+										&nbsp; {{ obj.category }}
+										{{ obj.frequency }} &nbsp;
+									</span>
+								</span>
+							</div>
+							<div
+								:key="i.id"
+								v-else
 								:draggable="enableDragDrop"
 								:aria-grabbed="
 									enableDragDrop
@@ -140,9 +167,7 @@
 								"
 								:class="i.classes"
 								:title="i.tooltip || i.title"
-								:style="`top:${getItemTop(i)};${
-									i.originalItem.style
-								}`"
+								:style="`top:calc(${props.itemTop} + 0*${props.itemContentHeight} + 0*${props.itemBorderHeight});${i.originalItem.style}`"
 								class="cv-item"
 								@dragstart="onDragItemStart(i, $event)"
 								@mouseenter="onMouseEnterItem(i, $event)"
@@ -277,7 +302,7 @@ const emit = defineEmits<{
 	): void;
 }>();
 const state = reactive(new CalendarViewState());
-const isMoreItems = ref(false);
+const categoryItems = ref([]);
 // Props cannot default to computed/method returns, so create defaulted version of this
 // property and use it rather than the bare prop (Vue Issue #6013).
 const displayLocale = computed(
@@ -637,12 +662,10 @@ const dayIsSelected = (day: Date): boolean => {
 const getWeekItems = (weekStart: Date): INormalizedCalendarItem[] => {
 	const items = findAndSortItemsInWeek(weekStart);
 	const results = [] as INormalizedCalendarItem[];
-	const itemRows: boolean[][] = [[], [], [], [], [], [], []];
 	if (!items) return results;
 	for (let i = 0; i < items.length; i++) {
 		const ep = Object.assign({}, items[i], {
-			classes: [...items[i].classes],
-			itemRow: 0
+			classes: [...items[i].classes]
 		});
 		const continued = ep.startDate < weekStart;
 		const startOffset = continued
@@ -660,15 +683,6 @@ const getWeekItems = (weekStart: Date): INormalizedCalendarItem[] => {
 			ep.classes.push("toBeContinued");
 		if (CalendarMath.isInPast(ep.endDate)) ep.classes.push("past");
 		if (ep.originalItem.url) ep.classes.push("hasUrl");
-		for (let d = 0; d < 7; d++) {
-			if (d === startOffset) {
-				let s = 0;
-				while (itemRows[d][s]) s++;
-				ep.itemRow = s;
-				itemRows[d][s] = true;
-			}
-			else if (d < startOffset + span) itemRows[d][ep.itemRow] = true;
-		}
 		ep.classes.push(`offset${startOffset}`);
 		ep.classes.push(`span${span}`);
 		results.push(ep);
@@ -748,63 +762,136 @@ const dateRange = (startDate: Date, endDate: Date, steps = 1) => {
 	return dateArray;
 };
 
-const getItemTitle = (
+const isMultipleEvents = (
 	item: INormalizedCalendarItem,
 	weekStart: Date
-): string => {
-	let count: number = 0;
-	for (let i = 0; i < props.items.length; i++) {
-		if (
-			props.items[i].id !== item.id &&
-			Number(getItemTop(item)[13]) === 0
-		) {
+): boolean => {
+	const items = findAndSortItemsInWeek(weekStart);
+	for (let i = 0; i < items.length; i++) {
+		if (items[i].id !== item.id) {
 			const arr1 = dateRange(item.startDate, item.endDate);
-			const arr2 = dateRange(
-				props.items[i].startDate,
-				props.items[i].endDate
-			);
+			const arr2 = dateRange(items[i].startDate, items[i].endDate);
 			let contains: boolean;
 			for (let i = 0; i < arr1.length; i++) {
 				for (let j = 0; j < arr2.length; j++) {
-					if (
-						arr1[i].getDate() === arr2[j].getDate() &&
-						arr1[i].getMonth() === arr2[j].getMonth()
-					)
+					if (arr1[i].getDate() === arr2[j].getDate())
 						contains = true;
 				}
 			}
 			if (
 				compareWeekDates(
-					weekOfDate(
-						props.items[i].startDate,
-						props.items[i].endDate
-					),
+					weekOfDate(items[i].startDate, items[i].endDate),
 					weekStart
 				) === true &&
 				contains === true
 			)
-				count++;
+				return true;
 		}
 	}
-	let printCount;
-	if (count > 0) {
-		printCount =
-			"<span class=\"tu-count\">" + "+" + count + " more" + "</span>";
+};
+const countFreq = (arr: any[], n: number) => {
+	const freq: Array<Object> = [];
+	let categoryItems: any = [];
+	const visited = Array.from({ length: n }, (_, i) => false);
+	for (let i = 0; i < n; i++) {
+		if (visited[i] === true) continue;
+		let count = 1;
+		categoryItems.push(arr[i]);
+		for (let j = i + 1; j < n; j++) {
+			if (arr[i].category === arr[j].category) {
+				visited[j] = true;
+				categoryItems.push(arr[j]);
+				count++;
+			}
+		}
+		console.log(arr[i]);
+		freq.push({
+			category: arr[i].category,
+			items: categoryItems,
+			frequency: count
+		});
+		categoryItems = [];
 	}
-	else printCount = "";
-	if (!props.showTimes) return item.title;
-	else {
-		return (
-			getFormattedTimeRange(item) + " " + item.title + "  " + printCount
-		);
+	return freq;
+};
+
+const getSameDayEvents = (item: INormalizedCalendarItem, weekStart: Date, items: any) => {
+	const categories = [];
+	if (items.length > 1) {
+		for (let i = 0; i < items.length; i++) {
+			if (items[i].id !== item.id) {
+				const arr1 = dateRange(item.startDate, item.endDate);
+				const arr2 = dateRange(items[i].startDate, items[i].endDate);
+				let contains: boolean;
+				for (let i = 0; i < arr1.length; i++) {
+					for (let j = 0; j < arr2.length; j++) {
+						if (arr1[i].getDate() === arr2[j].getDate())
+							contains = true;
+					}
+				}
+				if (
+					compareWeekDates(
+						weekOfDate(items[i].startDate, items[i].endDate),
+						weekStart
+					) === true &&
+					contains === true
+				)
+					categories.push(items[i]);
+			}
+		}
+		return categories;
 	}
 };
-// Compute the top position of the item based on its assigned row within the given week.
-const getItemTop = (item: INormalizedCalendarItem): string => {
-	const r = item.itemRow;
-	const h = props.itemContentHeight;
-	const b = props.itemBorderHeight;
-	return `calc(${props.itemTop} + ${r}*${h} + ${r}*${b})`;
+
+const getItemCategoryTitle = (
+	item: INormalizedCalendarItem,
+	weekStart: Date
+) => {
+	const categories = getSameDayEvents(item, weekStart, props.items);
+	getCategoryTitleOffSetAndSpan(item, true, weekStart);
+	categories.push(item.originalItem);
+	const obj: any = countFreq(categories, categories.length);
+	return obj;
+};
+
+const getCategoryTitleOffSetAndSpan = (
+	item: INormalizedCalendarItem,
+	isMultipleEvents: boolean,
+	weekStart: Date
+) => {
+	if (isMultipleEvents) {
+		const items = getSameDayEvents(item, weekStart, findAndSortItemsInWeek(weekStart));
+		items.push(item);
+		let highest = 1;
+		let lowest = 6;
+		for (let i = 0; i < items.length; i++) {
+			const continued = items[i].startDate < weekStart;
+			const startOffset: number = continued
+				? 0
+				: CalendarMath.dayDiff(weekStart, items[i].startDate);
+			const span = Math.min(
+				7 - startOffset,
+				CalendarMath.dayDiff(
+					CalendarMath.addDays(weekStart, startOffset),
+					items[i].endDate
+				) + 1
+			);
+			if (span > highest)
+				highest = span;
+
+			if (lowest > startOffset)
+				lowest = startOffset;
+		}
+		return [`span${highest}` , `offset${lowest}`];
+	}
+};
+
+const openCategoryItems = (obj: Object) => {
+	console.log(obj);
+};
+
+const getItemTitle = (item: INormalizedCalendarItem): string => {
+	return item.title;
 };
 </script>
 <!--

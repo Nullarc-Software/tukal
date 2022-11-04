@@ -43,9 +43,9 @@ having to override as much.
 	transform: translate(-50%, -50%);
 }
 
-.theme-default .cv-day {
+.theme-default .cv-day:hover {
 	cursor: pointer;
-	background-color: #fafafa;
+	background-color: rgb(217, 232, 245);
 }
 
 .theme-default .cv-day.past:hover {

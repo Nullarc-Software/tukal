@@ -5,6 +5,7 @@ interface ICalendarItem {
 	title: string
 
 	// Optional
+	category?: string
 	tooltip?: string
 	endDate?: Date
 	url?: string

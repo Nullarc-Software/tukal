@@ -60,7 +60,7 @@ defineProps({
 
 const emit = defineEmits<{
 	(e: "input", day: Date): void
-}>()
+}>();
 
 const onInput = (d: Date): void => emit("input", d)
 </script>
