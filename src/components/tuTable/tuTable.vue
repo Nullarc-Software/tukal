@@ -61,10 +61,16 @@
 							minWidth: header.minWidth,
 							maxWidth: header.maxWidth
 						}"
+                        :draggable="`${isDraggable}`"
+						@dragstart="startDrag($event,header)"
+						@drop="onDrop(header)"
+						@dragover.prevent
+						@dragenter.prevent
+						:class="{ 'animation-table': isDrag && header.index === dragIndex || header.index === dropIndex }"
 						:sort="header.props ? header.props.sort : false"
 						:search="header.props ? header.props.search : false"
 					>
-						{{ header.caption }}
+							{{ header.caption }}
 					</tu-th>
 				</thead>
 				<tbody class="tu-table__tbody">
@@ -96,6 +102,7 @@
 						<tu-td
 							v-for="(th, j) in table.getTableHeaders.value"
 							:key="j"
+							:class="{ 'animation-table' : isDrag && th.index === dragIndex || th.index === dropIndex }"
 						>
 							<span
 								:title="tr.rowData[th.field]"
@@ -176,7 +183,10 @@ import {
 	TuTableStore,
 	TuTableServerModel,
 	TuTableRow,
-	TuTableInitialComponentValues
+	TuTableInitialComponentValues,
+	TuHeaderDefn,
+	TuTableLocal,
+	TuTableLocalColumn
 } from "./tuTableStore";
 
 import tuTh from "./tuTh.vue";
@@ -265,7 +275,15 @@ export default defineComponent({
 			type: String,
 			default: () => `tu-table-${TableIdentifierAuto.id++}`
 		},
+		persistentId: {
+			type: String,
+			default: ""
+		},
 		multiSelect: {
+			type: Boolean,
+			default: false
+		},
+		draggable: {
 			type: Boolean,
 			default: false
 		},
@@ -323,6 +341,7 @@ export default defineComponent({
 		const expandedAll = ref(false);
 		const noOfTableValues = ref(0);
 		const totalColumns = ref(props.columns);
+		const isDraggable = ref(props.draggable);
 		let table: TuTableStore;
 
 		if (props.multiSelect && props.rowExpand)
@@ -331,12 +350,25 @@ export default defineComponent({
 			table = new TuTableStore(props.id, 1);
 		else table = new TuTableStore(props.id, 0);
 
-		table.constructHeaders(props.columns);
+		table.constructHeaders(props.columns, props.persistentId);
 
 		if (props.model === "local") table.setTableData(props.data);
 		else {
 			table.serverSideModel = true;
 			table.serverModelProps = reactive(props.serverSideConfig);
+		}
+		let persistentColumns: TuTableLocal = {
+			columns: []
+		};
+
+		if (props.persistentId !== null) {
+			for (let i = 0; i < table.getTableHeaders.value.length; i++) {
+				const column: TuTableLocalColumn = {
+					header: table.getTableHeaders.value[i].field,
+					visibility: false
+				};
+				persistentColumns.columns.push(column);
+			}
 		}
 
 		const isMultipleSelected = computed(() => {
@@ -358,18 +390,33 @@ export default defineComponent({
 
 		const rowListeners = {
 			click: function (event, tr) {
-				console.log("Row clicked");
+				// console.log("Row clicked");
 			}
 		};
 		const colsControl = ref([]);
-		for (let i = 0; i < props.columns.length; i++)
-			colsControl.value[i] = true;
-
 		const updateColumns = () => {
+			for (let i = 0; i < props.columns.length; i++)
+				persistentColumns.columns[i].visibility = colsControl.value[i];
+			localStorage.setItem(`table-${props.persistentId}`, JSON.stringify(persistentColumns));
 			for (let i = 0; i < colsControl.value.length; i++)
 				table.setColumnVisibility(i, !colsControl.value[i]);
 		};
-
+		if (props.persistentId !== null) {
+			if (localStorage.getItem(`table-${props.persistentId}`) === null) {
+				for (let i = 0; i < props.columns.length; i++) {
+					colsControl.value[i] = true;
+					persistentColumns.columns[i].visibility = true;
+				}
+				localStorage.setItem(`table-${props.persistentId}`, JSON.stringify(persistentColumns));
+			}
+			else {
+				persistentColumns = JSON.parse(localStorage.getItem(`table-${props.persistentId}`));
+				for (let i = 0; i < props.columns.length; i++)
+					colsControl.value[i] = persistentColumns.columns[i].visibility;
+				updateColumns();
+				localStorage.setItem(`table-${props.persistentId}`, JSON.stringify(persistentColumns));
+			}
+		}
 		watch(
 			colsControl,
 			() => {
@@ -443,10 +490,24 @@ export default defineComponent({
 
 			return obj;
 		};
-		const func = (index) => {
-			const ind = index - 1;
-			if (colsControl.value[ind] === 1) return true;
-			else return false;
+
+		const dragIndex = ref(null);
+		const dropIndex = ref(null);
+		const isDrag = ref(false);
+
+		const startDrag = (evt : DragEvent, header : TuHeaderDefn) => {
+			isDrag.value = false;
+			evt.dataTransfer.effectAllowed = "copyMove";
+			dragIndex.value = header.index;
+		};
+		const onDrop = (header: TuHeaderDefn) => {
+			isDrag.value = true;
+			dropIndex.value = header.index;
+			if (props.persistentId)
+				table.reOrderTableColumns(dragIndex.value, dropIndex.value, props.persistentId);
+
+			else
+				table.reOrderTableColumns(dragIndex.value, header.index);
 		};
 
 		return {
@@ -462,11 +523,14 @@ export default defineComponent({
 			rowListeners,
 			colsControl,
 			getNestedField,
-			// columnsSelected,
-			// colsSelected,
 			totalColumns,
 			updateColumns,
-			func
+			startDrag,
+			onDrop,
+			isDrag,
+			dragIndex,
+			dropIndex,
+			isDraggable
 		};
 	}
 });
@@ -477,6 +541,7 @@ export default defineComponent({
 
 .tu-table-content {
 	width: 100%;
+	animation-duration: 24s;
 
 	// box-shadow: 0px 5px 22px 0px rgba(0,0,0, -var(shadow-opacity))
 	border-radius: 16px;
@@ -488,6 +553,18 @@ export default defineComponent({
 .tu-table__element {
 	table-layout: fixed;
 	width: 100%;
+}
+@keyframes fadeIn {
+	0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.animation-table {
+	animation-name: fadeIn;
+    animation-duration: 100ms;
 }
 
 .display-inline {
