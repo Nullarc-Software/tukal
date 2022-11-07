@@ -503,7 +503,6 @@ export default defineComponent({
 			}
 			context.emit("update:tableInstance", table);
 			context.emit("onTableBeginLoad");
-			console.log(table.getTableData.value);
 			if (table.getTableData.value.length === 0)
 				showLoading();
 		});
