@@ -5,6 +5,7 @@
 			:items="events"
 			:show-times="true"
 			:displayWeekNumbers="true"
+			:categories="categories"
 			@click-date="onClickDay"
 			class="theme-default holiday-us-traditional holiday-us-official"
 		>
@@ -27,84 +28,86 @@
 			</div>
 			<div v-else class="center">
 				<div>
-					<tu-table>
-						<template #tbody>
-							<tu-tr invisible>
-								<tu-td>
-									<span title="Label">Title</span>
-								</tu-td>
-								<tu-td>
-									<tu-input
-										primary
-										v-model="newItemTitle"
-										state="primary"
-										placeholder="Title"
-									/>
-								</tu-td>
-							</tu-tr>
-							<tu-tr invisible>
-								<tu-td>
-									<span title="Label">Start Date</span>
-								</tu-td>
-								<tu-td>
-									<tu-input
-										type="date"
-										v-model="newItemStartDate"
-									/>
-								</tu-td>
-							</tu-tr>
-							<tu-tr invisible>
-								<tu-td>
-									<span title="Label">Start Time</span>
-								</tu-td>
-								<tu-td>
-									<tu-input
-										type="time"
-										v-model="newItemStartTime"
-									/>
-								</tu-td>
-							</tu-tr>
-							<tu-tr invisible>
-								<tu-td>
-									<span title="Label">End Date</span>
-								</tu-td>
-								<tu-td>
-									<tu-input
-										type="date"
-										v-model="newItemEndDate"
-									/>
-								</tu-td>
-							</tu-tr>
-							<tu-tr invisible>
-								<tu-td>
-									<span title="Label">End Time</span>
-								</tu-td>
-								<tu-td>
-									<tu-input
-										type="time"
-										v-model="newItemEndTime"
-									/>
-								</tu-td>
-							</tu-tr>
-							<tu-tr invisible>
-								<tu-td>
-									<span title="Label">Category</span>
-								</tu-td>
-								<tu-td>
-									<tu-select inline v-model="selectedCategory">
-										<tu-select-option
-											v-for="category in categories"
-											:key="category"
-											:label="category"
-											:value="category"
-										>
-											{{ category }}
-										</tu-select-option>
-									</tu-select>
-								</tu-td>
-							</tu-tr>
-						</template>
-					</tu-table>
+					<table>
+						<tr>
+							<td>
+								<span title="Label">Title</span>
+							</td>
+							<td>
+								<tu-input
+									primary
+									v-model="newItemTitle"
+									state="primary"
+									placeholder="Title"
+								/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<span title="Label">Start Date</span>
+							</td>
+							<td>
+								<tu-input
+									type="date"
+									v-model="newItemStartDate"
+								/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<span title="Label">Start Time</span>
+							</td>
+							<td>
+								<tu-input
+									type="time"
+									v-model="newItemStartTime"
+								/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<span title="Label">End Date</span>
+							</td>
+							<td>
+								<tu-input
+									type="date"
+									v-model="newItemEndDate"
+								/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<span title="Label">End Time</span>
+							</td>
+							<td>
+								<tu-input
+									type="time"
+									v-model="newItemEndTime"
+								/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<span title="Label">Category</span>
+							</td>
+							<td>
+								<tu-select inline v-model="selectedCategory">
+									<tu-select-option
+										v-for="category in categories"
+										:key="category"
+										:label="category.name"
+										:value="category.name"
+									>
+										<span
+											class="dot"
+											:style="styleChip(category.color)"
+										></span>
+										{{ category.name }}
+									</tu-select-option>
+								</tu-select>
+							</td>
+						</tr>
+					</table>
 				</div>
 			</div>
 			<template v-slot:footer>
@@ -118,6 +121,7 @@
 import { defineComponent, ref, Ref, PropType, watch } from "vue";
 import CalendarView from "../tuCalendar/CalendarView.vue";
 import CalendarViewHeader from "../tuCalendar/CalendarViewHeader.vue";
+import * as _color from "../../utils";
 import "./css/style.css";
 import "./css/index.css";
 interface Items {
@@ -126,6 +130,10 @@ interface Items {
 	endDate?: Date;
 	category?: String;
 	id: String;
+}
+interface category {
+	name: String;
+	color: String;
 }
 export default defineComponent({
 	name: "TuCalendar",
@@ -139,7 +147,7 @@ export default defineComponent({
 			default: []
 		},
 		categories: {
-			type: Object as PropType<Array<String>>,
+			type: Object as PropType<Array<category>>,
 			default: []
 		}
 	},
@@ -153,9 +161,9 @@ export default defineComponent({
 		const newItemEndDate = ref();
 		const newItemEndTime = ref();
 		const events: Ref<Items[]> = ref(props.items);
-		const editorData = ref("");
 		const categories = ref(props.categories);
 		const selectedCategory = ref("");
+		const content = ref();
 		console.log(categories);
 		const onClickDay = (d: String) => {
 			const convertstring = d.toString();
@@ -200,6 +208,12 @@ export default defineComponent({
 		watch(events.value, () => {
 			activateDialog.value = false;
 		});
+		const styleChip = (categoryColor: string) => {
+			const background = _color.getApplyColor(categoryColor, 0.6);
+			return {
+				background: background
+			};
+		};
 		return {
 			showDate,
 			setShowDate,
@@ -212,7 +226,9 @@ export default defineComponent({
 			newItemEndDate,
 			newItemEndTime,
 			submitNewItem,
-			selectedCategory
+			selectedCategory,
+			content,
+			styleChip
 		};
 	}
 });
@@ -226,5 +242,12 @@ export default defineComponent({
 }
 .tu-ckeditor {
 	width: 350px !important;
+}
+.dot {
+	height: 20px;
+	width: 20px;
+	margin-right: 5px;
+	border-radius: 50%;
+	display: inline-block;
 }
 </style>

@@ -1138,7 +1138,20 @@ export default defineComponent({
 		const newItemStartTime = ref();
 		const newItemEndDate = ref();
 		const newItemEndTime = ref();
-		const Categories = ['Birthday', 'Meeting', 'Appointments', 'Entertainment']
+		const Categories = [
+			{
+				name: "Birthday",
+				color: "primary"
+			},
+			{
+				name: "Appointment",
+				color: "success"
+			},
+			{
+				name: "Meeting",
+				color: "danger"
+			}
+		];
 		const items = ref([]);
 		const onClick = (date: Date) => {
 			newItemStartDate.value = date;

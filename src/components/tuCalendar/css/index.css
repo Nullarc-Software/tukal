@@ -69,9 +69,6 @@ having to override as much.
 /* Events */
 
 .theme-default .cv-item {
-	border-color: #e0e0f0;
-	border-radius: 0.5em;
-	background-color: #e7e7ff;
 	text-overflow: ellipsis;
 }
 
@@ -112,7 +109,7 @@ having to override as much.
 .cv-item.span5,
 .cv-item.span6,
 .cv-item.span7 {
-	text-align: center;
+	text-align: left;
 }
 
 /* Event Times */

@@ -122,43 +122,23 @@
 					>
 						<div class="cv-day-number">{{ day.getDate() }}</div>
 						<slot :day="day" name="dayContent" />
+						<span
+							:key="i"
+							class="tu-count"
+							v-if="getEventsCount(day, weekStart) > 0"
+						>
+							+ {{ getEventsCount(day, weekStart) }} more event
+						</span>
 					</div>
 					<template v-for="i in getWeekItems(weekStart)">
 						<slot
 							:value="i"
 							:weekStartDate="weekStart"
-							:top="`calc(${props.itemTop} + 0*${props.itemContentHeight} + 0*${props.itemBorderHeight})`"
+							:top="getItemTop(i)"
 							name="item"
 						>
 							<div
-								v-if="isMultipleEvents(i, weekStart)"
 								:key="i.id"
-								:draggable="enableDragDrop"
-								:aria-grabbed="
-									enableDragDrop
-										? i == state.currentDragItem
-										: undefined
-								"
-								:class="getCategoryTitleOffSetAndSpan(i,isMultipleEvents(i, weekStart),weekStart)"
-								:style="`top:calc(${props.itemTop} + 0*${props.itemContentHeight} + 0*${props.itemBorderHeight});${i.originalItem.style}`"
-								class="cv-item"
-							>
-								<span
-									v-for="obj in getItemCategoryTitle(
-										i,
-										weekStart
-									)"
-									:key="obj"
-								>
-									<span>
-										&nbsp; {{ obj.category }}
-										{{ obj.frequency }} &nbsp;
-									</span>
-								</span>
-							</div>
-							<div
-								:key="i.id"
-								v-else
 								:draggable="enableDragDrop"
 								:aria-grabbed="
 									enableDragDrop
@@ -167,12 +147,13 @@
 								"
 								:class="i.classes"
 								:title="i.tooltip || i.title"
-								:style="`top:calc(${props.itemTop} + 0*${props.itemContentHeight} + 0*${props.itemBorderHeight});${i.originalItem.style}`"
+								:style="styleChip(getItemCategoryColor(i), i)"
 								class="cv-item"
 								@dragstart="onDragItemStart(i, $event)"
 								@mouseenter="onMouseEnterItem(i, $event)"
 								@mouseleave="onMouseLeaveItem(i, $event)"
 								@click.stop="onClickItem(i, $event)"
+								v-if="i.itemRow < 3"
 								v-html="getItemTitle(i, weekStart)"
 							/>
 						</slot>
@@ -192,6 +173,11 @@ import {
 	DateTimeFormatOption
 } from "./ICalendarItem";
 import { IHeaderProps } from "./IHeaderProps";
+import * as _color from "../../utils";
+interface category {
+	name: String;
+	color: String;
+}
 const props = withDefaults(
 	defineProps<{
 		showDate?: Date;
@@ -219,6 +205,7 @@ const props = withDefaults(
 		currentPeriodLabel?: string;
 		currentPeriodLabelIcons?: string;
 		doEmitItemMouseEvents?: boolean;
+		categories?: Array<category>;
 	}>(),
 	{
 		showDate: undefined,
@@ -244,6 +231,7 @@ const props = withDefaults(
 		itemBorderHeight: "2px",
 		periodChangedCallback: undefined,
 		currentPeriodLabel: "",
+		categories: null,
 		currentPeriodLabelIcons: "⇤-⇥",
 		doEmitItemMouseEvents: false
 	}
@@ -302,7 +290,7 @@ const emit = defineEmits<{
 	): void;
 }>();
 const state = reactive(new CalendarViewState());
-const categoryItems = ref([]);
+const isMoreItems = ref(false);
 // Props cannot default to computed/method returns, so create defaulted version of this
 // property and use it rather than the bare prop (Vue Issue #6013).
 const displayLocale = computed(
@@ -662,10 +650,12 @@ const dayIsSelected = (day: Date): boolean => {
 const getWeekItems = (weekStart: Date): INormalizedCalendarItem[] => {
 	const items = findAndSortItemsInWeek(weekStart);
 	const results = [] as INormalizedCalendarItem[];
+	const itemRows: boolean[][] = [[], [], [], [], [], [], []];
 	if (!items) return results;
 	for (let i = 0; i < items.length; i++) {
 		const ep = Object.assign({}, items[i], {
-			classes: [...items[i].classes]
+			classes: [...items[i].classes],
+			itemRow: 0
 		});
 		const continued = ep.startDate < weekStart;
 		const startOffset = continued
@@ -683,6 +673,15 @@ const getWeekItems = (weekStart: Date): INormalizedCalendarItem[] => {
 			ep.classes.push("toBeContinued");
 		if (CalendarMath.isInPast(ep.endDate)) ep.classes.push("past");
 		if (ep.originalItem.url) ep.classes.push("hasUrl");
+		for (let d = 0; d < 7; d++) {
+			if (d === startOffset) {
+				let s = 0;
+				while (itemRows[d][s]) s++;
+				ep.itemRow = s;
+				itemRows[d][s] = true;
+			}
+			else if (d < startOffset + span) itemRows[d][ep.itemRow] = true;
+		}
 		ep.classes.push(`offset${startOffset}`);
 		ep.classes.push(`span${span}`);
 		results.push(ep);
@@ -743,13 +742,6 @@ const weekOfDate = (startDate: Date, endDate: Date) => {
 	return weekOfDates;
 };
 
-const compareWeekDates = (weekDates: Array<Date>, date: Date) => {
-	if (weekDates === undefined) return false;
-	for (let i = 0; i < weekDates.length; i++)
-		if (weekDates[i] === date) return true;
-	return false;
-};
-
 const dateRange = (startDate: Date, endDate: Date, steps = 1) => {
 	const dateArray = [];
 	const currentDate = new Date(startDate);
@@ -762,136 +754,53 @@ const dateRange = (startDate: Date, endDate: Date, steps = 1) => {
 	return dateArray;
 };
 
-const isMultipleEvents = (
-	item: INormalizedCalendarItem,
-	weekStart: Date
-): boolean => {
+const getEventsCount = (day: Date, weekStart: Date): number => {
+	let count: number = 0;
 	const items = findAndSortItemsInWeek(weekStart);
 	for (let i = 0; i < items.length; i++) {
-		if (items[i].id !== item.id) {
-			const arr1 = dateRange(item.startDate, item.endDate);
-			const arr2 = dateRange(items[i].startDate, items[i].endDate);
-			let contains: boolean;
-			for (let i = 0; i < arr1.length; i++) {
-				for (let j = 0; j < arr2.length; j++) {
-					if (arr1[i].getDate() === arr2[j].getDate())
-						contains = true;
-				}
-			}
+		const arr2 = dateRange(items[i].startDate, items[i].endDate);
+		for (let i = 0; i < arr2.length; i++) {
 			if (
-				compareWeekDates(
-					weekOfDate(items[i].startDate, items[i].endDate),
-					weekStart
-				) === true &&
-				contains === true
-			)
-				return true;
-		}
-	}
-};
-const countFreq = (arr: any[], n: number) => {
-	const freq: Array<Object> = [];
-	let categoryItems: any = [];
-	const visited = Array.from({ length: n }, (_, i) => false);
-	for (let i = 0; i < n; i++) {
-		if (visited[i] === true) continue;
-		let count = 1;
-		categoryItems.push(arr[i]);
-		for (let j = i + 1; j < n; j++) {
-			if (arr[i].category === arr[j].category) {
-				visited[j] = true;
-				categoryItems.push(arr[j]);
+				arr2[i].getDate() === day.getDate() &&
+				arr2[i].getMonth() === day.getMonth()
+			) {
 				count++;
+				break;
 			}
 		}
-		console.log(arr[i]);
-		freq.push({
-			category: arr[i].category,
-			items: categoryItems,
-			frequency: count
-		});
-		categoryItems = [];
 	}
-	return freq;
-};
-
-const getSameDayEvents = (item: INormalizedCalendarItem, weekStart: Date, items: any) => {
-	const categories = [];
-	if (items.length > 1) {
-		for (let i = 0; i < items.length; i++) {
-			if (items[i].id !== item.id) {
-				const arr1 = dateRange(item.startDate, item.endDate);
-				const arr2 = dateRange(items[i].startDate, items[i].endDate);
-				let contains: boolean;
-				for (let i = 0; i < arr1.length; i++) {
-					for (let j = 0; j < arr2.length; j++) {
-						if (arr1[i].getDate() === arr2[j].getDate())
-							contains = true;
-					}
-				}
-				if (
-					compareWeekDates(
-						weekOfDate(items[i].startDate, items[i].endDate),
-						weekStart
-					) === true &&
-					contains === true
-				)
-					categories.push(items[i]);
-			}
-		}
-		return categories;
-	}
-};
-
-const getItemCategoryTitle = (
-	item: INormalizedCalendarItem,
-	weekStart: Date
-) => {
-	const categories = getSameDayEvents(item, weekStart, props.items);
-	getCategoryTitleOffSetAndSpan(item, true, weekStart);
-	categories.push(item.originalItem);
-	const obj: any = countFreq(categories, categories.length);
-	return obj;
-};
-
-const getCategoryTitleOffSetAndSpan = (
-	item: INormalizedCalendarItem,
-	isMultipleEvents: boolean,
-	weekStart: Date
-) => {
-	if (isMultipleEvents) {
-		const items = getSameDayEvents(item, weekStart, findAndSortItemsInWeek(weekStart));
-		items.push(item);
-		let highest = 1;
-		let lowest = 6;
-		for (let i = 0; i < items.length; i++) {
-			const continued = items[i].startDate < weekStart;
-			const startOffset: number = continued
-				? 0
-				: CalendarMath.dayDiff(weekStart, items[i].startDate);
-			const span = Math.min(
-				7 - startOffset,
-				CalendarMath.dayDiff(
-					CalendarMath.addDays(weekStart, startOffset),
-					items[i].endDate
-				) + 1
-			);
-			if (span > highest)
-				highest = span;
-
-			if (lowest > startOffset)
-				lowest = startOffset;
-		}
-		return [`span${highest}` , `offset${lowest}`];
-	}
-};
-
-const openCategoryItems = (obj: Object) => {
-	console.log(obj);
+	console.log(props.categories, "hi");
+	if (count > 3) return count - 3;
 };
 
 const getItemTitle = (item: INormalizedCalendarItem): string => {
-	return item.title;
+	return (item.itemRow + 1) + "." + item.title;
+};
+// Compute the top position of the item based on its assigned row within the given week.
+const getItemTop = (item: INormalizedCalendarItem): string => {
+	const r = item.itemRow;
+	const top = 20 + Number(r) * 25;
+	return `${top}px`;
+};
+const styleChip = (categoryColor, i: INormalizedCalendarItem) => {
+	const background = _color.getApplyColor(categoryColor, 0.6);
+	getItemCategoryColor(i);
+	return {
+		background: background,
+		top: getItemTop(i)
+	};
+};
+
+const getItemCategoryColor = (item: INormalizedCalendarItem) => {
+	const category = item.originalItem.category;
+	let categoryColor: String;
+	for (let i = 0; i < props.categories.length; i++) {
+		if (props.categories[i].name === category) {
+			categoryColor = props.categories[i].color;
+			break;
+		}
+	}
+	return categoryColor;
 };
 </script>
 <!--
@@ -901,236 +810,11 @@ and decorations like border-radius should be part of a theme. Styles related to 
 header are in the CalendarViewHeader component.
 -->
 <style>
-/* Position/Flex */
-/* Make the calendar flex vertically */
-.cv-wrapper {
-	display: flex;
-	flex-direction: column;
-	flex-grow: 1;
-	height: 100%;
-	min-height: 100%;
-	max-height: 100%;
-	overflow-x: hidden;
-	overflow-y: hidden;
-}
-.cv-wrapper,
-.cv-wrapper div {
-	box-sizing: border-box;
-	line-height: 1em;
-	font-size: 1em;
-}
-.cv-header-days {
-	display: flex;
-	flex-grow: 0;
-	flex-shrink: 0;
-	flex-basis: auto;
-	flex-flow: row nowrap;
-	border-width: 0 0 0 1px;
-}
-.cv-header-day {
-	display: flex;
-	flex-grow: 1;
-	flex-shrink: 0;
-	flex-basis: 0;
-	flex-flow: row nowrap;
-	align-items: center;
-	justify-content: center;
-	text-align: center;
-	border-width: 1px 1px 0 0;
-}
-/* The calendar grid should take up the remaining vertical space */
-.cv-weeks {
-	display: flex;
-	flex-grow: 1;
-	flex-shrink: 1;
-	flex-basis: auto;
-	flex-flow: column nowrap;
-	border-width: 0 0 1px 1px;
-	/* Allow grid to scroll if there are too may weeks to fit in the view */
-	overflow-y: auto;
-	-ms-overflow-style: none;
-	scrollbar-width: none;
-}
-.cv-weeknumber {
-	width: 2rem;
-	position: relative;
-	text-align: center;
-	border-width: 1px 1px 0 0;
-	border-style: solid;
-	line-height: 1;
-}
-/* Use flex basis of 0 on week row so all weeks will be same height regardless of content */
-.cv-week {
-	display: flex;
-	/* Shorthand flex: 1 1 0 not supported by IE11 */
-	flex-grow: 1;
-	flex-shrink: 1;
-	flex-basis: 0;
-	flex-flow: row nowrap;
-	min-height: 3em;
-	border-width: 0;
-	/* Allow week items to scroll if they are too tall */
-	position: relative;
-	width: 100%;
-	overflow-y: auto;
-	-ms-overflow-style: none;
-}
-.cv-weekdays {
-	display: flex;
-	/* Shorthand flex: 1 1 0 not supported by IE11 */
-	flex-grow: 1;
-	flex-shrink: 0;
-	flex-basis: 0;
-	flex-flow: row nowrap;
-	/* Days of the week go left to right even if user's language is RTL (#138) */
-	direction: ltr;
-	position: relative;
-	overflow-y: auto;
-	scrollbar-width: none;
-}
-.cv-day {
-	display: flex;
-	/* Shorthand flex: 1 1 0 not supported by IE11 */
-	flex-grow: 1;
-	flex-shrink: 0;
-	flex-basis: 0;
-	position: relative; /* Fallback for IE11, which doesn't support sticky */
-	position: sticky; /* When week's items are scrolled, keep the day content fixed */
-	top: 0;
-	border-width: 1px 1px 0 0;
-	/* Restore user's direction setting (overridden for week) */
-	direction: initial;
-}
-.cv-day-number {
-	height: auto;
-	align-self: flex-start;
-}
-/* Default styling for holiday hover descriptions */
-.cv-day-number:hover::after {
-	position: absolute;
-	top: 1rem;
-	background-color: var(--cal-holiday-bg, #f7f7f7);
-	border: var(--cal-holiday-border, 1px solid #f0f0f0);
-	box-shadow: 0.1rem 0.1rem 0.2rem
-		var(--cal-holiday-shadow, rgba(0, 0, 0, 0.25));
-	padding: 0.2rem;
-	margin: 0.5rem;
-	line-height: 1.2;
-}
-/*
-A bug in Microsoft Edge 41 (EdgeHTML 16) has been reported (#109) where days "disappear" because they are
-wrapping under the next week (despite the "nowrap" on cv-week). This appears to be an issue specifically
-with our metrics and the sticky positioning. I was not able to reproduce this issue in Edge 38, 42, or 44.
-I'm reticent to turn off the sticky functionality for all Edge users because of one version (or perhaps an
-interaction of that version with a specific graphics adapter or other setting). So instead, I'm leaving this
-as an example for anyone forced to support Edge 41 who may see the same issue. If that's the case, just
-add this selector to your own CSS.
-@supports (-ms-ime-align: auto) {
-	.cv-day {
-		position: relative;
-	}
-}
-_:-ms-lang(x),
-.cv-day {
-	position: relative;
-}
-.cv-day-number {
-	position: absolute;
-	right: 0;
-}
-*/
-.cv-day[draggable],
-.cv-item[draggable] {
-	user-select: none;
-}
-.cv-item {
-	position: absolute;
-	white-space: nowrap;
-	overflow: hidden;
-	background-color: #f7f7f7;
-	border-width: 1px;
-	/* Restore user's direction setting (overridden for week) */
-	direction: initial;
-}
-/* Wrap to show entire item title on hover */
-.cv-wrapper.wrap-item-title-on-hover .cv-item:hover {
-	white-space: normal;
-	z-index: 1;
-}
-/* Colors */
-.cv-header-days,
-.cv-header-day,
-.cv-weeks,
-.cv-week,
-.cv-day,
-.cv-item {
-	border-style: solid;
-	border-color: #ddd;
-}
-/* Item Times */
-.cv-item .endTime::before {
-	content: "-";
-}
-/* Internal Metrics */
-.cv-header-day,
-.cv-day-number,
-.cv-item {
-	padding: 0.2em;
-}
-/* Allows emoji icons or labels (such as holidays) to be added more easily to specific dates by having the margin set already. */
-.cv-day-number::before {
-	margin-right: 0.5em;
-}
-.cv-item.offset0 {
-	left: 0;
-}
-.cv-item.offset1 {
-	left: calc((100% / 7));
-}
-.cv-item.offset2 {
-	left: calc((200% / 7));
-}
-.cv-item.offset3 {
-	left: calc((300% / 7));
-}
-.cv-item.offset4 {
-	left: calc((400% / 7));
-}
-.cv-item.offset5 {
-	left: calc((500% / 7));
-}
-.cv-item.offset6 {
-	left: calc((600% / 7));
-}
-/* Metrics for items spanning dates */
-.cv-item.span1 {
-	width: calc((100% / 7) - 0.05em);
-}
-.cv-item.span2 {
-	width: calc((200% / 7) - 0.05em);
-}
-.cv-item.span3 {
-	width: calc((300% / 7) - 0.05em);
-}
-.cv-item.span4 {
-	width: calc((400% / 7) - 0.05em);
-}
-.cv-item.span5 {
-	width: calc((500% / 7) - 0.05em);
-}
-.cv-item.span6 {
-	width: calc((600% / 7) - 0.05em);
-}
-.cv-item.span7 {
-	width: calc((700% / 7) - 0.05em);
-}
-/* Hide scrollbars for the grid and the week */
-.cv-weeks::-webkit-scrollbar,
-.cv-weekdays::-webkit-scrollbar {
-	width: 0; /* remove scrollbar space */
-	background: transparent; /* optional: just make scrollbar invisible */
-}
 .tu-count {
+	position: absolute;
 	font-size: 14px;
+	top: 7em;
+	background: none;
+	border-color: none;
 }
 </style>

@@ -58,7 +58,7 @@
 	flex-shrink: 1;
 	flex-basis: 0;
 	flex-flow: row nowrap;
-	min-height: 3em;
+	min-height: 7.5em;
 	border-width: 0;
 	position: relative;
 	width: 100%;
@@ -109,10 +109,7 @@
 }
 .cv-item {
 	position: absolute;
-	white-space: nowrap;
 	overflow: hidden;
-	background-color: #f7f7f7;
-	border-width: 1px;
 	direction: initial;
 }
 .cv-wrapper.wrap-item-title-on-hover .cv-item:hover {
@@ -134,7 +131,7 @@
 .cv-header-day,
 .cv-day-number,
 .cv-item {
-	padding: 0.2em;
+	padding: 0.15em;
 }
 .cv-day-number:before {
 	margin-right: 0.5em;
