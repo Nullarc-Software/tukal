@@ -291,6 +291,10 @@ export default defineComponent({
 			type: Boolean,
 			default: false
 		},
+		draggable: {
+			type: Boolean,
+			default: false
+		},
 		serverSideConfig: {
 			type: Object as PropType<TuTableServerModel>,
 			default: () => {

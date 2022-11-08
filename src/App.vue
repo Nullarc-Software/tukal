@@ -1018,7 +1018,7 @@
                 multi-select
                 striped
                 size=""
-                :persistentId="two"
+                persistentId="one"
                 :draggable="true"
                 v-model="selected"
                 v-model:numPages="numPages"

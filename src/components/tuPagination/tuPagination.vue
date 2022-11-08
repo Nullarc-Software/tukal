@@ -100,7 +100,7 @@ export default defineComponent({
 		loadingItems: { default: () => [], type: Array },
 		length: { default: 1, type: Number },
 		max: { default: 9, type: Number },
-		dottedNumber: { default: 5, type: Number },
+		dottedNumber: { default: 5, type: Number }
 	},
 	setup (props, context) {
 		const val = ref(1);

@@ -11,7 +11,7 @@
 				v-if="!notArrow"
 				class="icon-header tu-collapse-item--icon-header"
 			>
-				<tu-icon :icon-pack="iconPack" :icon="iconArrow" />
+				<tu-icon :icon-pack="iconPack" :icon="arrow" />
 			</span>
 		</header>
 		
@@ -28,154 +28,68 @@
 		</div>
 	</div>
 </template>
-<script lang="ts">
-import { computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, Ref, watch } from 'vue';
-import tuicon from "../tuIcon";
-
-export default defineComponent({
-	name: "TuCollapseItem",
+<script>
+import { tuIcon } from "../tuIcon/tuIcon";
+export default {
+	name: "tuCollapseItem",
 	components: {
-		tuicon,
+		tuIcon
 	},
 	props: {
-		open: {
-			default: false,
-			type: Boolean,
-		},
-		disabled: {
-			default: false,
-			type: Boolean,
-		},
-		notArrow: {
-			default: false,
-			type: Boolean,
+		iconPack: {
+			type: String,
+			default: "material-icons"
 		},
 		iconArrow: {
-			default: "keyboard_arrow_down",
 			type: String,
+			default: "keyboard_arrow_down"
 		},
-		iconPack: {
-			default: "material-icons",
-			type: String,
-		},
-		sst: {
-			default: false,
+		notArrow: {
 			type: Boolean,
+			default: false
 		},
-	},
-	inject: [
-		"accordion",
-		"openHover",
-		"closeAllItems",
-		"emitChange"
-	],
-	setup(props, context) {
-		let maxHeight = ref("0px");
-		let dataReady = ref(false);
-		let content = ref<HTMLDivElement>();
-
-		//Inject components from parent to use in child
-		const accordion = inject<boolean>("accordion");
-		const openHover = inject<boolean>("openHover");
-		const closeAllItems = inject<Function>("closeAllItems");
-		const emitChange = inject<Function>("emitChange");
-
-		const styleContent = computed(() => {
-			return {
-				maxHeight: maxHeight.value
-			}
-		});
-
-		const changeHeight = function() {
-			const maxHeightx = content.value?.scrollHeight;
-			if (maxHeight.value != "0px") {
-				maxHeight.value = `${maxHeightx}px`;
-			}
-		};
-
-		const toggleContent = function() {
-			if (openHover || props.disabled) return;
-
-			if (accordion) {
-				closeAllItems?.call(null, content, maxHeight);
-			}
-
-			if (props.sst && !dataReady.value) {
-				context.emit("fetch", {
-					done: () => {
-						initMaxHeight();
-						dataReady.value = true;
-					},
-				});
-			} else {
-				initMaxHeight();
-			}
-		};
-
-		const initMaxHeight = function() {
-			const maxHeightx = content.value?.scrollHeight;
-			if (maxHeight.value == "0px") {
-				maxHeight.value = `${maxHeightx}px`;
-			} else {
-				maxHeight.value = `0px`;
-			}
-		};
-
-		const mouseover = function() {
-			if (props.disabled) return;
-			let maxHeightx = content.value?.scrollHeight;
-			if (openHover) {
-				maxHeight.value = `${maxHeightx}px`;
-			}
-		};
-
-		const mouseout = function() {
-			if (openHover) {
-				maxHeight.value = `0px`;
-			}
+		disabled: {
+			type: Boolean,
+			default: false
 		}
-
-		onMounted(() => {
-
-			window.addEventListener("resize", changeHeight);
-			const maxHeightx = content.value?.scrollHeight;
-			if (props.open) {
-				maxHeight.value = `${maxHeightx}px`;
-			}
-
-		});
-
-		onBeforeUnmount(() => {
-			window.removeEventListener("resize", changeHeight);
-		});
-
-		watch(maxHeight, () => {
-			emitChange?.call(null, null);
-		});
-
+	},
+	data () {
 		return {
-			mouseover,
-			mouseout,
-			initMaxHeight,
-			maxHeight,
-			accordion,
-			openHover,
-			styleContent,
-			dataReady,
-			changeHeight,
-			toggleContent,
-			content
-		}
-
-	},
-	watch: {
-		ready(newVal, oldVal) {
-			if (oldVal != newVal && newVal) {
-				this.initMaxHeight();
+			maxHeight: "0px",
+			arrow: "keyboard_arrow_down",
+			isOpen: false,
+			styleContent: {
+				maxHeight: "0px"
 			}
+		};
+	},
+	methods: {
+		toggleContent () {
+			if (this.disabled) return;
+			if (this.isOpen) {
+				this.maxHeight = "0px";
+				this.arrow = "keyboard_arrow_down";
+				this.isOpen = false;
+			}
+			else {
+				this.maxHeight = this.$refs.content.scrollHeight + "px";
+				this.arrow = "keyboard_arrow_up";
+				this.isOpen = true;
+			}
+			this.styleContent = {
+				maxHeight: this.maxHeight
+			};
 		},
+		mouseover () {
+			if (this.disabled) return;
+			this.$el.style.backgroundColor = "#ffffff22";
+		},
+		mouseout () {
+			if (this.disabled) return;
+			this.$el.style.backgroundColor = "#ffffff00";
+		}
 	}
-});
+};
 </script>
 
 <style lang="scss" scoped>
