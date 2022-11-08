@@ -73,7 +73,7 @@
 							{{ header.caption }}
 					</tu-th>
 				</thead>
-				<tbody class="tu-table__tbody">
+				<tbody id="tbody" :class="{ 'loading-body' : !isLoaded  }" class="tu-table__tbody">
 					<slot v-if="$slots.tbody" name="tbody" />
 					<tu-tr
 						v-else
@@ -84,7 +84,7 @@
 						:expanded="expandedAll"
 						:expandHandle="rowExpand"
 						@rowExpanded="tr.expanded = $event"
-						@rowClick="rowListeners.click($event, this)"
+						@rowClick="rowListeners.click($event, this, tr.rowData)"
 					>
 						<tu-td expand v-if="rowExpand">
 							<tu-icon
@@ -196,6 +196,10 @@ import tuIcon from "../tuIcon";
 import tuCheckbox from "../tuCheckBox";
 import { tuPopper, tuPopupMenu } from "../tuPopper";
 import contextMenuComponent from "./tuTableContextMenu.vue";
+import {
+	Loading,
+	LoadingAttributes
+} from "../tuLoading";
 
 if (typeof window !== "undefined" && (window as any).VueInstance)
 	contextMenuComponent.install((window as any).VueInstance);
@@ -279,6 +283,10 @@ export default defineComponent({
 			type: String,
 			default: ""
 		},
+		draggable: {
+			type: Boolean,
+			default: false
+		},
 		multiSelect: {
 			type: Boolean,
 			default: false
@@ -321,7 +329,12 @@ export default defineComponent({
 		"update:modelValue",
 		"update:numPages",
 		"update:data",
-		"update:tableInstance"
+		"update:tableInstance",
+		"onRowClicked",
+		"onTableBeginLoad",
+		"onTableEndLoad",
+		"onCellClicked",
+		"onTableConfigUpdated"
 	],
 	provide () {
 		return {
@@ -340,9 +353,20 @@ export default defineComponent({
 		const selectedAll = ref(false);
 		const expandedAll = ref(false);
 		const noOfTableValues = ref(0);
+		const isLoaded = ref(false);
+		let load;
 		const totalColumns = ref(props.columns);
 		const isDraggable = ref(props.draggable);
 		let table: TuTableStore;
+		const showLoading = function () {
+			const attrs: LoadingAttributes = {
+				target: "#tbody",
+				color: "dark",
+				type: "circles",
+				scale: "1.0"
+			};
+			load = new Loading(attrs);
+		};
 
 		if (props.multiSelect && props.rowExpand)
 			table = new TuTableStore(props.id, 2);
@@ -389,8 +413,8 @@ export default defineComponent({
 		}
 
 		const rowListeners = {
-			click: function (event, tr) {
-				// console.log("Row clicked");
+			click: function (event, tr, row) {
+				context.emit("onRowClicked", row);
 			}
 		};
 		const colsControl = ref([]);
@@ -398,6 +422,7 @@ export default defineComponent({
 			for (let i = 0; i < props.columns.length; i++)
 				persistentColumns.columns[i].visibility = colsControl.value[i];
 			localStorage.setItem(`table-${props.persistentId}`, JSON.stringify(persistentColumns));
+			context.emit("onTableConfigUpdated", JSON.parse(localStorage.getItem(`table-${props.persistentId}`)));
 			for (let i = 0; i < colsControl.value.length; i++)
 				table.setColumnVisibility(i, !colsControl.value[i]);
 		};
@@ -408,6 +433,7 @@ export default defineComponent({
 					persistentColumns.columns[i].visibility = true;
 				}
 				localStorage.setItem(`table-${props.persistentId}`, JSON.stringify(persistentColumns));
+				context.emit("onTableConfigUpdated", JSON.parse(localStorage.getItem(`table-${props.persistentId}`)));
 			}
 			else {
 				persistentColumns = JSON.parse(localStorage.getItem(`table-${props.persistentId}`));
@@ -415,6 +441,7 @@ export default defineComponent({
 					colsControl.value[i] = persistentColumns.columns[i].visibility;
 				updateColumns();
 				localStorage.setItem(`table-${props.persistentId}`, JSON.stringify(persistentColumns));
+				context.emit("onTableConfigUpdated", JSON.parse(localStorage.getItem(`table-${props.persistentId}`)));
 			}
 		}
 		watch(
@@ -452,6 +479,9 @@ export default defineComponent({
 			const newVal = table.getTableData.value as Array<TuTableRow>;
 			context.emit("update:data", newVal);
 			noOfTableValues.value = newVal.length;
+			isLoaded.value = true;
+			load.close();
+			context.emit("onTableEndLoad");
 		});
 
 		watch(table.getSelectedRows, () => {
@@ -475,8 +505,10 @@ export default defineComponent({
 					(tableContainer.value.offsetWidth -
 						lastHeader.element.offsetLeft ?? 0) + "px";
 			}
-
 			context.emit("update:tableInstance", table);
+			context.emit("onTableBeginLoad");
+			if (table.getTableData.value.length === 0)
+				showLoading();
 		});
 
 		onBeforeUnmount(() => {
@@ -503,9 +535,10 @@ export default defineComponent({
 		const onDrop = (header: TuHeaderDefn) => {
 			isDrag.value = true;
 			dropIndex.value = header.index;
-			if (props.persistentId)
+			if (props.persistentId) {
 				table.reOrderTableColumns(dragIndex.value, dropIndex.value, props.persistentId);
-
+				context.emit("onTableConfigUpdated", JSON.parse(localStorage.getItem(`table-${props.persistentId}`)));
+			}
 			else
 				table.reOrderTableColumns(dragIndex.value, header.index);
 		};
@@ -530,7 +563,8 @@ export default defineComponent({
 			isDrag,
 			dragIndex,
 			dropIndex,
-			isDraggable
+			isDraggable,
+			isLoaded
 		};
 	}
 });
@@ -569,6 +603,12 @@ export default defineComponent({
 
 .display-inline {
 	display: inline-block !important;
+}
+
+.loading-body {
+	position: relative;
+	height: 50vh;
+	width: 50vw;
 }
 .tu-table {
 	font-size: 0.9rem;
