@@ -881,6 +881,11 @@
 		</div>
 
 		<div class="showcase-component">
+			<h4>Switch:</h4>
+			<hr />
+		</div>
+
+		<div class="showcase-component">
 			<h4>Navbar:</h4>
 			<hr />
 			<tu-navbar
@@ -1052,7 +1057,7 @@
 			<!-- <tu-upload singleUpload :limit="1" /> -->
 		</div>
 		<div class="showcase-component">
-			<tu-calendar :items="items" :categories="Categories" @onClickDay="onClick">
+			<tu-calendar :items="items" v-model="events" :components="component" :categories="Categories" @onClickDay="onClick">
 			</tu-calendar>
 		</div>
 	</div>
@@ -1079,6 +1084,7 @@ import {
 } from "./components/tuLoading";
 import { ExportData } from "./components/tuTable";
 import testComponent from "./components/TestComponent.vue";
+import testComponent2 from "./components/TestComponent2.vue";
 import "material-icons/iconfont/material-icons.css";
 import axios from "axios";
 import { TuHeaderDefn, TuTableContextMenuEntry } from "./components";
@@ -1428,6 +1434,9 @@ export default defineComponent({
 				console.log(universities.value);
 			});
 
+		const component = {
+			eventDetail: testComponent2
+		};
 		/*
 		const treeSelectedItems = ref<TuTreeViewItemDefn[]>([]);
 		const treeItems = ref<TuTreeViewItemDefn[]>([
@@ -1517,7 +1526,8 @@ export default defineComponent({
 			submitNewItem,
 			items,
 			onClick,
-			Categories
+			Categories,
+			component
 		};
 	}
 });

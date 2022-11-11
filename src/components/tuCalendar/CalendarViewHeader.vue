@@ -43,9 +43,20 @@
 		<div class="periodLabel">
 			<slot name="label">{{ headerProps.periodLabel }}</slot>
 		</div>
+		<div class="cv-toolbar">
+		<tu-switch class="margin-left" val="week" notValue="month" v-model="period">
+			<template #off> month </template>
+			<template #on> week </template>
+		</tu-switch>
+		<tu-switch val="dark" notValue="theme-default" v-model="theme">
+			<template #off> light </template>
+			<template #on> dark </template>
+		</tu-switch>
+		</div>
 	</div>
 </template>
 <script setup lang="ts">
+import { ref, watch } from "vue";
 import { IHeaderProps } from "./IHeaderProps"
 defineProps({
 	headerProps: {
@@ -59,10 +70,21 @@ defineProps({
 })
 
 const emit = defineEmits<{
-	(e: "input", day: Date): void
+	(e: "input", day: Date): void;
+	(e: "updatePeriod", period: string): void;
+	(e: "updateTheme", theme: string): void;
 }>();
-
-const onInput = (d: Date): void => emit("input", d)
+const period = ref("month");
+const theme = ref("theme-default");
+watch(period, () => {
+	emit("updatePeriod", period.value);
+});
+watch(theme, () => {
+	emit("updateTheme", theme.value);
+});
+const onInput = (d: Date): void => {
+	emit("input", d);
+};
 </script>
 <style>
 .cv-header {
@@ -104,5 +126,11 @@ const onInput = (d: Date): void => emit("input", d)
 	line-height: 1em;
 	font-size: 1em;
 	border-width: 1px;
+}
+
+.cv-toolbar {
+	display: flex;
+	width: 200px;
+	justify-content: space-around;
 }
 </style>

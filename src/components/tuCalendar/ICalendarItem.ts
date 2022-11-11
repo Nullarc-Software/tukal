@@ -5,6 +5,7 @@ interface ICalendarItem {
 	title: string
 
 	// Optional
+	data?: any
 	category?: string
 	tooltip?: string
 	endDate?: Date
@@ -18,6 +19,13 @@ interface INormalizedCalendarItem extends ICalendarItem {
 	originalItem: ICalendarItem
 	classes: string[]
 	itemRow?: number
+}
+
+export interface TuCalendarServerModel {
+	ajaxUrl: string;
+	method?: string;
+	ajaxLoadedFn?: Function;
+	ajaxErrorFn?: Function;
 }
 
 type DateTimeFormatOption = "long" | "short" | "narrow" | undefined

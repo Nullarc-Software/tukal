@@ -7,16 +7,22 @@
 			:displayWeekNumbers="true"
 			:categories="categories"
 			@click-date="onClickDay"
-			class="theme-default holiday-us-traditional holiday-us-official"
+			:displayPeriodUom="periodUOM"
+			@updateItems="updateItems"
+			@deleteItem="deleteItem"
+			:components="components"
+			:class="colorTheme"
 		>
 			<template #header="{ headerProps }">
 				<calendar-view-header
 					:header-props="headerProps"
 					@input="setShowDate"
+					@updatePeriod="updatePeriod"
+					@updateTheme="updateTheme"
 				/>
 			</template>
 		</calendar-view>
-		<tu-dialog width="550px" v-model="activateDialog">
+		<tu-dialog width="550px" v-model="activateDialog" @close="closeDialog">
 			<header v-if="$slots.dialogHeader">
 				<slot name="dialogHeader" />
 			</header>
@@ -36,10 +42,20 @@
 							<td>
 								<tu-input
 									primary
-									v-model="newItemTitle"
+									v-model="newItem.Title"
 									state="primary"
 									placeholder="Title"
 								/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<span title="Label"></span>
+							</td>
+							<td>
+								<tu-checkbox v-model="allDay">
+									All Day
+								</tu-checkbox>
 							</td>
 						</tr>
 						<tr>
@@ -49,7 +65,7 @@
 							<td>
 								<tu-input
 									type="date"
-									v-model="newItemStartDate"
+									v-model="newItem.StartDate"
 								/>
 							</td>
 						</tr>
@@ -60,7 +76,7 @@
 							<td>
 								<tu-input
 									type="time"
-									v-model="newItemStartTime"
+									v-model="newItem.StartTime"
 								/>
 							</td>
 						</tr>
@@ -71,7 +87,7 @@
 							<td>
 								<tu-input
 									type="date"
-									v-model="newItemEndDate"
+									v-model="newItem.EndDate"
 								/>
 							</td>
 						</tr>
@@ -82,7 +98,7 @@
 							<td>
 								<tu-input
 									type="time"
-									v-model="newItemEndTime"
+									v-model="newItem.EndTime"
 								/>
 							</td>
 						</tr>
@@ -91,7 +107,7 @@
 								<span title="Label">Category</span>
 							</td>
 							<td>
-								<tu-select inline v-model="selectedCategory">
+								<tu-select inline v-model="newItem.Category">
 									<tu-select-option
 										v-for="category in categories"
 										:key="category"
@@ -118,53 +134,102 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, Ref, PropType, watch } from "vue";
+import { defineComponent, ref, Ref, PropType, watch, reactive } from "vue";
 import CalendarView from "../tuCalendar/CalendarView.vue";
 import CalendarViewHeader from "../tuCalendar/CalendarViewHeader.vue";
+import { isUndefined } from "lodash";
+import { ICalendarItem, TuCalendarServerModel } from "./ICalendarItem";
 import * as _color from "../../utils";
-import "./css/style.css";
+import "./css/light.css";
+import "./css/dark.css";
 import "./css/index.css";
-interface Items {
-	title?: string;
-	startDate: Date;
-	endDate?: Date;
-	category?: String;
-	id: String;
-}
+import tuComponent from "../tuComponent";
 interface category {
 	name: String;
-	color: String;
+	color: string;
 }
 export default defineComponent({
 	name: "TuCalendar",
+	extends: tuComponent,
 	components: {
 		CalendarView,
 		CalendarViewHeader
 	},
 	props: {
+		modelValue: {},
 		items: {
-			type: Object as PropType<Array<Items>>,
+			type: Object as PropType<Array<ICalendarItem>>,
 			default: []
 		},
 		categories: {
 			type: Object as PropType<Array<category>>,
 			default: []
+		},
+		model: {
+			type: String,
+			default: "local"
+		},
+		serverSideConfig: {
+			type: Object as PropType<TuCalendarServerModel>,
+			default: () => {
+				return {};
+			}
+		},
+		components: {
+			default: null
+		},
+		theme: {
+			type: String,
+			default: "theme-default"
 		}
 	},
-	emits: ["onClickDay"],
+	emits: ["onClickDay", "update:modelValue"],
 	setup (props, context) {
 		const showDate = ref(new Date());
 		const activateDialog = ref(false);
-		const newItemTitle = ref("");
-		const newItemStartDate = ref();
-		const newItemStartTime = ref();
-		const newItemEndDate = ref();
-		const newItemEndTime = ref();
-		const events: Ref<Items[]> = ref(props.items);
-		const categories = ref(props.categories);
-		const selectedCategory = ref("");
+		const newItem = reactive({
+			Title: null,
+			StartDate: null,
+			EndDate: null,
+			StartTime: null,
+			EndTime: null,
+			Category: null
+		});
+		const periodUOM = ref("month");
+		const allDay = ref(false);
+		const colorTheme: Ref<string> = ref("theme-default");
+		let events: Ref<ICalendarItem[]>;
+		if (props.model === "local") events = ref(props.items);
+		else {
+			const request: XMLHttpRequest = new XMLHttpRequest();
+			const serverSideModel: Ref<TuCalendarServerModel> = ref(
+				props.serverSideConfig
+			);
+			request.onreadystatechange = function () {
+				if (
+					request.readyState === XMLHttpRequest.DONE &&
+					request.status === 200
+				) {
+					if (request.responseType === "json")
+						events.value = request.response.data;
+					else if (request.responseType === "text")
+						events.value = JSON.parse(request.responseText);
+					else events.value = JSON.parse(request.responseText);
+				}
+			};
+
+			if (isUndefined(serverSideModel.value.method))
+				serverSideModel.value.method = "GET";
+
+			request.open(
+				serverSideModel.value.method,
+				serverSideModel.value.ajaxUrl,
+				true
+			);
+			request.setRequestHeader("Content-Type", "application/json");
+			request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+		}
 		const content = ref();
-		console.log(categories);
 		const onClickDay = (d: String) => {
 			const convertstring = d.toString();
 			const parts = convertstring.split(" ");
@@ -184,30 +249,59 @@ export default defineComponent({
 			};
 			const date = parts[3] + "-" + months[parts[1]] + "-" + parts[2];
 			context.emit("onClickDay", date);
-			newItemStartDate.value = date;
+			newItem.StartDate = date;
 			activateDialog.value = true;
 		};
 		const submitNewItem = () => {
-			if (newItemEndDate.value === undefined)
-				newItemEndDate.value = newItemStartDate.value;
+			if (newItem.EndDate === undefined)
+				newItem.EndDate = newItem.StartDate;
 			events.value.push({
 				startDate: new Date(
-					newItemStartDate.value + " " + newItemStartTime.value
+					newItem.StartDate + " " + newItem.StartTime
 				),
-				endDate: new Date(
-					newItemEndDate.value + " " + newItemEndTime.value
-				),
-				category: selectedCategory.value,
-				title: newItemTitle.value,
+				endDate: new Date(newItem.EndDate + " " + newItem.EndTime),
+				category: newItem.Category,
+				title: newItem.Title,
 				id: "e" + Math.random().toString(36).substring(2, 11)
 			});
+			activateDialog.value = false;
 		};
 		const setShowDate = (d) => {
 			showDate.value = d;
 		};
-		watch(events.value, () => {
-			activateDialog.value = false;
+		watch(allDay, () => {
+			if (allDay.value === true) {
+				newItem.StartTime = "00:00";
+				newItem.EndTime = "23:59";
+				newItem.EndDate = newItem.StartDate;
+			}
 		});
+		const updateItems = (item: ICalendarItem) => {
+			const itemIndex = events.value.findIndex(
+				(obj) => obj.id === item.id
+			);
+			events.value[itemIndex] = item;
+			context.emit("update:modelValue", events.value);
+		};
+		const deleteItem = (id: string) => {
+			const itemIndex = events.value.findIndex((obj) => obj.id === id);
+			events.value.splice(itemIndex, 1);
+			context.emit("update:modelValue", events.value);
+		};
+		const updatePeriod = (period: string) => {
+			periodUOM.value = period;
+		};
+		const updateTheme = (theme: string) => {
+			console.log(theme);
+			colorTheme.value = theme;
+		};
+		// const closeDialog = () => {
+		// 	allDay.value = false;
+		// 	newItemStartTime.value = "";
+		// 	newItemEndTime.value = "";
+		// 	newItemEndDate.value = null;
+		// 	newItemTitle.value = null;
+		// };
 		const styleChip = (categoryColor: string) => {
 			const background = _color.getApplyColor(categoryColor, 0.6);
 			return {
@@ -220,15 +314,18 @@ export default defineComponent({
 			activateDialog,
 			onClickDay,
 			events,
-			newItemTitle,
-			newItemStartDate,
-			newItemStartTime,
-			newItemEndDate,
-			newItemEndTime,
+			newItem,
 			submitNewItem,
-			selectedCategory,
 			content,
-			styleChip
+			styleChip,
+			periodUOM,
+			allDay,
+			updateItems,
+			deleteItem,
+			updatePeriod,
+			colorTheme,
+			updateTheme
+			// closeDialog
 		};
 	}
 });

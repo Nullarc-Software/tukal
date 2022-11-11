@@ -125,7 +125,11 @@
 						<span
 							:key="i"
 							class="tu-count"
-							v-if="getEventsCount(day, weekStart) > 0"
+							v-if="
+								getEventsCount(day, weekStart) > 0 &&
+								props.displayPeriodUom === 'month'
+							"
+							@click.stop="getSelectedDayEvents(day, weekStart)"
 						>
 							+ {{ getEventsCount(day, weekStart) }} more event
 						</span>
@@ -147,26 +151,264 @@
 								"
 								:class="i.classes"
 								:title="i.tooltip || i.title"
-								:style="styleChip(getItemCategoryColor(i), i)"
+								:style="`background:${_color.getApplyColor(
+									getItemCategoryColor(i),
+									0.2
+								)};top:${getItemTop(
+									i
+								)};border: 2px solid ${getItemBorderColor(i)};`"
 								class="cv-item"
 								@dragstart="onDragItemStart(i, $event)"
 								@mouseenter="onMouseEnterItem(i, $event)"
-								@mouseleave="onMouseLeaveItem(i, $event)"
-								@click.stop="onClickItem(i, $event)"
-								v-if="i.itemRow < 3"
-								v-html="getItemTitle(i, weekStart)"
-							/>
+								@mouseleave="
+									onMouseLeaveItem(i, $event);
+									onEventLeave(i);
+								"
+								@mouseover="onEventHover(i)"
+								@click.stop="
+									onClickItem(i, $event);
+									openEventDialog(i);
+								"
+								v-if="
+									i.itemRow < 3 ||
+									props.displayPeriodUom === 'week'
+								"
+							>
+								<span
+									class="event-dot"
+									:style="`background: ${_color.getApplyColor(
+										getItemCategoryColor(i),
+										0.9
+									)}`"
+								></span>
+								{{ getItemTitle(i, weekStart) }}
+							</div>
 						</slot>
 					</template>
 				</div>
 			</div>
 		</div>
+		<tu-dialog width="550px" v-model="activateDialog" @close="closeDialog">
+			<header>
+				<div class="dialog-date">
+					{{
+						selectedDay.getDate() +
+						" " +
+						monthNames[selectedDay.getMonth()] +
+						" " +
+						selectedDay.getFullYear()
+					}}
+				</div>
+			</header>
+			<div class="header">Events</div>
+			<div class="dialog-content overflow-auto">
+				<div
+					type="1"
+					v-for="event in selectedDayEvents"
+					:key="event.originalItem"
+				>
+					<div
+						class="text-wrapper"
+						@click="openEventDialog(event)"
+						:style="`background:${_color.getApplyColor(
+							getItemCategoryColor(event),
+							0.2
+						)}`"
+					>
+						<div class="event-title">
+							{{ event.originalItem.title }}
+						</div>
+						<div class="event-date">
+							Date:
+							{{
+								event.originalItem.startDate.getDate() +
+								" " +
+								monthNames[
+									event.originalItem.startDate.getMonth()
+								].slice(0, 3) +
+								" " +
+								event.originalItem.startDate.getFullYear() +
+								" - "
+							}}
+							{{
+								event.originalItem.endDate.getDate() +
+								" " +
+								monthNames[
+									event.originalItem.endDate.getMonth()
+								].slice(0, 3) +
+								" " +
+								event.originalItem.endDate.getFullYear()
+							}}
+						</div>
+						<div class="event-category">
+							Category: {{ event.originalItem.category }}
+						</div>
+					</div>
+				</div>
+			</div>
+		</tu-dialog>
+		<tu-dialog width="550px" v-model="confirmationDialog">
+			<header>
+				<div>Are you sure you want to delete the event ?</div>
+			</header>
+			<template v-slot:footer>
+				<tu-button success @click.stop="deleteItem()"> Yes </tu-button>
+				<tu-button danger @click="confirmationDialog = false">
+					cancel
+				</tu-button>
+			</template>
+		</tu-dialog>
+		<tu-dialog
+			width="550px"
+			v-model="selectedEventDIalog"
+			@close="selectedEventClose"
+			v-if="props.components === null"
+		>
+			<header>
+				<h2 class="dialog-header" v-if="!isEditEvent">
+					{{ selectedEvent.Title }}
+				</h2>
+				<h2 v-else class="dialog-header">Edit</h2>
+			</header>
+			<div class="center">
+				<div>
+					<table>
+						<tr>
+							<td>
+								<span title="Label">Title</span>
+							</td>
+							<td>
+								<tu-input
+									primary
+									v-model="selectedEvent.Title"
+									state="primary"
+									placeholder="Title"
+									:disable="!isEditEvent"
+								/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<span title="Label">Start Date</span>
+							</td>
+							<td>
+								<tu-input
+									type="date"
+									v-model="selectedEvent.StartDate"
+									:disable="!isEditEvent"
+								/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<span title="Label">Start Time</span>
+							</td>
+							<td>
+								<tu-input
+									type="time"
+									v-model="selectedEvent.StartTime"
+									:disable="!isEditEvent"
+								/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<span title="Label">End Date</span>
+							</td>
+							<td>
+								<tu-input
+									type="date"
+									v-model="selectedEvent.EndDate"
+									:disable="!isEditEvent"
+								/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<span title="Label">End Time</span>
+							</td>
+							<td>
+								<tu-input
+									type="time"
+									v-model="selectedEvent.EndTime"
+									:disable="!isEditEvent"
+								/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<span title="Label">Category</span>
+							</td>
+							<td>
+								<tu-select
+									inline
+									:disabled="!isEditEvent"
+									v-model="selectedEvent.Category"
+								>
+									<tu-select-option
+										v-for="category in categories"
+										:key="category"
+										:label="category.name"
+										:value="category.name"
+									>
+										<span
+											class="dot"
+											:style="`background: ${_color.getApplyColor(
+												category.color,
+												0.6
+											)}`"
+										></span>
+										{{ category.name }}
+									</tu-select-option>
+								</tu-select>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+			<template v-slot:footer>
+				<div v-if="!isEditEvent">
+					<tu-button success @click.stop="isEditEvent = true">
+						Edit
+					</tu-button>
+					<tu-button
+						danger
+						@click="
+							selectedEventDIalog = false;
+							confirmationDialog = true;
+						"
+					>
+						delete
+					</tu-button>
+				</div>
+				<div v-else>
+					<tu-button success @click.stop="editItem()">
+						Save
+					</tu-button>
+				</div>
+			</template>
+		</tu-dialog>
+		<tu-dialog
+			width="550px"
+			v-model="selectedEventDIalog"
+			@close="selectedEventClose"
+			v-else
+		>
+			<component
+				:is="components.eventDetail"
+				:selectedEvent="selectedEvent"
+				:categories="categories"
+				@editItem="editItem()"
+				@deleteItem="deleteItem()"
+			/>
+		</tu-dialog>
 	</div>
 </template>
 <script setup lang="ts">
 import CalendarMath from "./CalendarMath";
 import CalendarViewState from "./CalendarViewState";
-import { computed, reactive, watch, withDefaults, ref } from "vue";
+import CalendarViewHeader from "./CalendarViewHeader.vue"
+import { computed, reactive, watch, withDefaults, ref, Ref } from "vue";
 import {
 	ICalendarItem,
 	INormalizedCalendarItem,
@@ -206,6 +448,8 @@ const props = withDefaults(
 		currentPeriodLabelIcons?: string;
 		doEmitItemMouseEvents?: boolean;
 		categories?: Array<category>;
+		components?: any;
+		theme?: String;
 	}>(),
 	{
 		showDate: undefined,
@@ -233,7 +477,9 @@ const props = withDefaults(
 		currentPeriodLabel: "",
 		categories: null,
 		currentPeriodLabelIcons: "⇤-⇥",
-		doEmitItemMouseEvents: false
+		doEmitItemMouseEvents: false,
+		components: null,
+		theme: null
 	}
 );
 const emit = defineEmits<{
@@ -288,9 +534,34 @@ const emit = defineEmits<{
 		selectedDateRange: [Date, Date],
 		windowEvent: Event
 	): void;
+	(e: "updateItems", selectedEvent: ICalendarItem): void;
+	(e: "deleteItem", id: String): void;
 }>();
+interface ISelectedEvent {
+	Title: string;
+	StartDate: string;
+	EndDate: string;
+	StartTime: string;
+	EndTime: string;
+	Category: string;
+	id: string;
+}
 const state = reactive(new CalendarViewState());
-const isMoreItems = ref(false);
+const selectedDayEvents: Ref<INormalizedCalendarItem[]> = ref([]);
+let selectedEvent: ISelectedEvent = reactive({
+	Title: "",
+	StartDate: null,
+	EndDate: null,
+	StartTime: null,
+	EndTime: null,
+	Category: null,
+	id: null
+});
+const selectedDay: Ref<Date> = ref(new Date());
+const selectedEventDIalog = ref(false);
+const activateDialog = ref(false);
+const isEditEvent = ref(false);
+const confirmationDialog = ref(false);
 // Props cannot default to computed/method returns, so create defaulted version of this
 // property and use it rather than the bare prop (Vue Issue #6013).
 const displayLocale = computed(
@@ -688,61 +959,8 @@ const getWeekItems = (weekStart: Date): INormalizedCalendarItem[] => {
 	}
 	return results;
 };
-// Creates the HTML to prefix the item title showing the items start and/or end time.
-// Midnight is not displayed.
-const getFormattedTimeRange = (item: INormalizedCalendarItem): string => {
-	const startTime =
-		"<span class=\"startTime\">" +
-		CalendarMath.formattedTime(
-			item.startDate,
-			displayLocale.value,
-			props.timeFormatOptions
-		) +
-		"</span>";
-	let endTime = "";
-	if (!CalendarMath.isSameDateTime(item.startDate, item.endDate)) {
-		endTime =
-			"<span class=\"endTime\">" +
-			CalendarMath.formattedTime(
-				item.endDate,
-				displayLocale.value,
-				props.timeFormatOptions
-			) +
-			"</span>";
-	}
-	return startTime + endTime;
-};
 
-const weekOfDate = (startDate: Date, endDate: Date) => {
-	const weekOfDates = [];
-	let isStartWeekFound = false;
-	let isEndWeekFound = false;
-	for (let i = 1; i < weeksOfPeriod.value.length; i++) {
-		if (
-			!isStartWeekFound &&
-			weeksOfPeriod.value[i].getDate() <= startDate.getDate() &&
-			weeksOfPeriod.value[i].getDate() + 6 >= startDate.getDate()
-		) {
-			weekOfDates.push(weeksOfPeriod.value[i]);
-			isStartWeekFound = true;
-		}
-		if (
-			!isEndWeekFound &&
-			weeksOfPeriod.value[i].getDate() <= endDate.getDate() &&
-			weeksOfPeriod.value[i].getDate() + 6 >= endDate.getDate()
-		) {
-			weekOfDates.push(weeksOfPeriod.value[i]);
-			isEndWeekFound = true;
-		}
-		if (isEndWeekFound === true && isStartWeekFound === true)
-			return weekOfDates;
-	}
-	if (!isEndWeekFound) weekOfDates.push(weeksOfPeriod.value[0]);
-	if (!isStartWeekFound) weekOfDates.push(weeksOfPeriod.value[0]);
-	return weekOfDates;
-};
-
-const dateRange = (startDate: Date, endDate: Date, steps = 1) => {
+const dateRange = (startDate: Date, endDate: Date, steps = 1): Date[] => {
 	const dateArray = [];
 	const currentDate = new Date(startDate);
 
@@ -769,31 +987,45 @@ const getEventsCount = (day: Date, weekStart: Date): number => {
 			}
 		}
 	}
-	console.log(props.categories, "hi");
 	if (count > 3) return count - 3;
 };
 
 const getItemTitle = (item: INormalizedCalendarItem): string => {
-	return (item.itemRow + 1) + "." + item.title;
+	return item.title;
 };
 // Compute the top position of the item based on its assigned row within the given week.
 const getItemTop = (item: INormalizedCalendarItem): string => {
 	const r = item.itemRow;
-	const top = 20 + Number(r) * 25;
+	const top = 20 + Number(r) * 28;
 	return `${top}px`;
 };
-const styleChip = (categoryColor, i: INormalizedCalendarItem) => {
-	const background = _color.getApplyColor(categoryColor, 0.6);
-	getItemCategoryColor(i);
-	return {
-		background: background,
-		top: getItemTop(i)
-	};
+
+const getSelectedDayEvents = (day: Date, weekStart: Date) => {
+	const items = findAndSortItemsInWeek(weekStart);
+	for (let i = 0; i < items.length; i++) {
+		const arr2 = dateRange(items[i].startDate, items[i].endDate);
+		for (let j = 0; j < arr2.length; j++) {
+			if (
+				arr2[j].getDate() === day.getDate() &&
+				arr2[j].getMonth() === day.getMonth()
+			) {
+				selectedDayEvents.value.push(items[i]);
+				break;
+			}
+		}
+	}
+	selectedDay.value = day;
+	activateDialog.value = true;
+};
+
+const closeDialog = () => {
+	selectedDay.value = null;
+	selectedDayEvents.value = [];
 };
 
 const getItemCategoryColor = (item: INormalizedCalendarItem) => {
 	const category = item.originalItem.category;
-	let categoryColor: String;
+	let categoryColor;
 	for (let i = 0; i < props.categories.length; i++) {
 		if (props.categories[i].name === category) {
 			categoryColor = props.categories[i].color;
@@ -801,6 +1033,84 @@ const getItemCategoryColor = (item: INormalizedCalendarItem) => {
 		}
 	}
 	return categoryColor;
+};
+
+const openEventDialog = (item: INormalizedCalendarItem) => {
+	selectedEvent.Title = item.originalItem.title;
+	selectedEvent.StartDate = convertDateToString(item.originalItem.startDate);
+	selectedEvent.StartTime = convertDateToTime(item.originalItem.startDate);
+	selectedEvent.EndDate = convertDateToString(item.originalItem.endDate);
+	selectedEvent.EndTime = convertDateToTime(item.originalItem.endDate);
+	selectedEvent.Category = item.originalItem.category;
+	selectedEvent.id = item.originalItem.id;
+	selectedEventDIalog.value = true;
+};
+
+const convertDateToString = (date: Date) => {
+	const months = {
+		Jan: "01",
+		Feb: "02",
+		Mar: "03",
+		Apr: "04",
+		May: "05",
+		Jun: "06",
+		Jul: "07",
+		Aug: "08",
+		Sep: "09",
+		Oct: "10",
+		Nov: "11",
+		Dec: "12"
+	};
+	return (
+		date.toString().split(" ")[3] +
+		"-" +
+		months[date.toString().split(" ")[1]] +
+		"-" +
+		date.toString().split(" ")[2]
+	);
+};
+
+const convertDateToTime = (date: Date) => {
+	let minutes = date.getMinutes().toString();
+	let hours = date.getHours().toString();
+	if (minutes[0] === "0") minutes = minutes + "0";
+	if (hours[0] === "0") hours = hours + "0";
+	if (hours.length === 1) hours = "0" + hours;
+	if (minutes.length === 1) minutes = "0" + minutes;
+
+	return hours + ":" + minutes;
+};
+
+const editItem = (item?: ISelectedEvent) => {
+	if (item !== undefined) selectedEvent = item;
+
+	const event = {
+		startDate: new Date(
+			selectedEvent.StartDate + " " + selectedEvent.StartTime
+		),
+		endDate: new Date(selectedEvent.EndDate + " " + selectedEvent.EndTime),
+		category: selectedEvent.Category,
+		title: selectedEvent.Title,
+		id: selectedEvent.id
+	};
+	emit("updateItems", event);
+	isEditEvent.value = false;
+};
+
+const deleteItem = (item?: ISelectedEvent) => {
+	if (item !== undefined) selectedEvent = item;
+	emit("deleteItem", selectedEvent.id);
+	selectedEventDIalog.value = false;
+	confirmationDialog.value = false;
+};
+
+const getItemBorderColor = (item: INormalizedCalendarItem) => {
+	if (item.classes.includes("isHovered"))
+		return _color.getApplyColor(getItemCategoryColor(item), 1);
+};
+
+const selectedEventClose = () => {
+	isEditEvent.value = false;
 };
 </script>
 <!--
@@ -813,7 +1123,7 @@ header are in the CalendarViewHeader component.
 .tu-count {
 	position: absolute;
 	font-size: 14px;
-	top: 7em;
+	top: 7.4em;
 	background: none;
 	border-color: none;
 }
