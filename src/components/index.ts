@@ -24,10 +24,10 @@ export { Notification, NotificationAttributes } from "./tuNotifications";
 export { tuSidebar, tuSidebarGroup, tuSidebarItem } from "./tuSideBar";
 export { tuPopper, tuPopupMenu, tuPopupItem } from "./tuPopper";
 export { default as tuDialog } from "./tuDialog";
-
 export { tuCollapse, tuCollapseItem } from "./tuCollapse";
 export { tuTreeView, tuTreeItem } from "./tuTreeView";
 export { tuCalendar } from "./tuCalendar";
+export { tuColorPicker } from "./tuColorPicker";
 export { tuWysiwyg } from "./tuWysiwyg/index";
 export { tuUpload } from "./tuUpload";
 export * from "./tuTreeView/types";

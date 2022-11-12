@@ -14,17 +14,12 @@ having to override as much.
 	background-color: #f0f0f0;
 }
 
-.theme-default .cv-header .periodLabel {
-	font-size: 1.5em;
-}
-
 .theme-default .cv-header button {
 	color: #7f7f7f;
 }
 
-.theme-default .cv-header button:disabled {
-	color: #ccc;
-	background-color: #f7f7f7;
+.theme-default .cv-header .category-button {
+	color: #060000;
 }
 
 /* Grid */
@@ -74,16 +69,6 @@ having to override as much.
 	border-width: 1px 1px 0 1px;
 }
 
-.theme-default .cv-header,
-.theme-default .cv-header button {
-	border-style: solid;
-	border-color: #ddd;
-}
-
-.theme-default .cv-header button {
-	border-width: 1px;
-}
-
 .theme-default .cv-header-days {
 	border-width: 0 0 0 1px;
 }
@@ -128,15 +113,6 @@ having to override as much.
 	border-top-left-radius: 0;
 	border-bottom-left-radius: 0;
 }
-
-.cv-item.span3,
-.cv-item.span4,
-.cv-item.span5,
-.cv-item.span6,
-.cv-item.span7 {
-	text-align: left;
-}
-
 /* Event Times */
 
 .theme-default .cv-item .startTime,

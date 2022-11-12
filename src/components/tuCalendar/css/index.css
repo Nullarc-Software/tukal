@@ -23,6 +23,14 @@
 	border-width: 0 0 0 1px;
 }
 
+.cv-item.span3,
+.cv-item.span4,
+.cv-item.span5,
+.cv-item.span6,
+.cv-item.span7 {
+	text-align: left;
+}
+
 .cv-header-day {
 	display: flex;
 	flex-grow: 1;
@@ -200,14 +208,12 @@
 .cv-header .periodLabel {
 	margin: 0.1em 0.6em;
 }
-.cv-header-nav button,
 .cv-header .periodLabel {
 	padding: 0.4em 0.6em;
 }
 .cv-header button {
 	box-sizing: border-box;
 	line-height: 1em;
-	font-size: 1em;
 }
 
 
@@ -268,4 +274,25 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
+}
+
+.cv-toolbar {
+	display: flex;
+	width: 200px;
+	justify-content: space-around;
+}
+
+.cv-header .cv-header-nav button {
+	border-style: none;
+}
+
+.cv-header-nav button,
+.cv-header .periodLabel {
+	padding: 0.4em 0.6em;
+}
+.cv-header .cv-header-nav button {
+	box-sizing: border-box;
+	line-height: 1em;
+	font-size: 1em;
+	border-width: 1px;
 }

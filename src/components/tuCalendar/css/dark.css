@@ -6,13 +6,20 @@
 }
 
 .dark .cv-header .periodLabel {
-	font-size: 1.5em;
     color: white;
+}
+
+.dark .cv-header .category-button {
+	color: #f8f7f7;
 }
 
 .dark .cv-header button:disabled {
 	color: #ccc;
 	background-color: #f7f7f7;
+}
+
+.dark .cv-header .button {
+	color: white !important;
 }
 
 .dark .cv-item {
@@ -95,14 +102,6 @@
 	border-bottom-left-radius: 0;
 }
 
-.cv-item.span3,
-.cv-item.span4,
-.cv-item.span5,
-.cv-item.span6,
-.cv-item.span7 {
-	text-align: left;
-}
-
 /* Event Times */
 
 .dark .cv-item .startTime,
@@ -125,7 +124,8 @@
 .dark .cv-header-day,
 .dark .cv-weeks,
 .dark .cv-week,
-.dark .cv-day,
-.dark .cv-item {
-	border-color: none;
+.dark .cv-day {
+	border-color: #121212;
+	border-style: solid;
 }
+

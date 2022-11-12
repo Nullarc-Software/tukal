@@ -86,13 +86,6 @@
 								:label="category.name"
 								:value="category.name"
 							>
-								<span
-									class="dot"
-									:style="`background: ${_color.getApplyColor(
-										category.color,
-										0.6
-									)}`"
-								></span>
 								{{ category.name }}
 							</tu-select-option>
 						</tu-select>

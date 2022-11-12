@@ -44,20 +44,62 @@
 			<slot name="label">{{ headerProps.periodLabel }}</slot>
 		</div>
 		<div class="cv-toolbar">
-		<tu-switch class="margin-left" val="week" notValue="month" v-model="period">
+		<tu-switch val="month" notValue="week" v-model="period">
 			<template #off> month </template>
 			<template #on> week </template>
 		</tu-switch>
-		<tu-switch val="dark" notValue="theme-default" v-model="theme">
+		<tu-switch color="dark" val="dark" notValue="theme-default" v-model="theme">
 			<template #off> light </template>
 			<template #on> dark </template>
 		</tu-switch>
 		</div>
+		<tu-button @click="openAddCategoryDialog" class="category-button" transparent>Add Category</tu-button>
 	</div>
+		<tu-dialog
+			width="350px"
+			v-model="addCategoryDialog"
+			@close="addCategoryClose"
+		>
+			<header>
+				<h2 class="dialog-header"> Add Category </h2>
+			</header>
+			<div class="center">
+				<div>
+					<table>
+						<tr>
+							<td>
+								<span title="Label">Name</span>
+							</td>
+							<td>
+								<tu-input
+									primary
+									v-model="categoryName"
+									state="primary"
+									placeholder="Title"
+								/>
+							</td>
+						</tr>
+						<tr>
+							<td></td>
+							<td>
+								<tu-color-picker v-model="categoryColor" />
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+			<template v-slot:footer>
+				<div>
+					<tu-button success @click="addCategory">
+						Add
+					</tu-button>
+				</div>
+			</template>
+		</tu-dialog>
 </template>
 <script setup lang="ts">
 import { ref, watch } from "vue";
-import { IHeaderProps } from "./IHeaderProps"
+import { IHeaderProps } from "./IHeaderProps";
 defineProps({
 	headerProps: {
 		type: Object as () => IHeaderProps,
@@ -67,15 +109,21 @@ defineProps({
 	previousPeriodLabel: { type: String, default: "<" },
 	nextPeriodLabel: { type: String, default: ">" },
 	nextYearLabel: { type: String, default: ">>" },
-})
-
+});
 const emit = defineEmits<{
 	(e: "input", day: Date): void;
 	(e: "updatePeriod", period: string): void;
 	(e: "updateTheme", theme: string): void;
+	(e: "updateCategory", category: Array<String>)
 }>();
 const period = ref("month");
 const theme = ref("theme-default");
+const addCategoryDialog = ref(false);
+const categoryName = ref();
+const categoryColor = ref();
+const openAddCategoryDialog = () => {
+	addCategoryDialog.value = true;
+};
 watch(period, () => {
 	emit("updatePeriod", period.value);
 });
@@ -85,52 +133,13 @@ watch(theme, () => {
 const onInput = (d: Date): void => {
 	emit("input", d);
 };
+const addCategory = () => {
+	emit("updateCategory", [categoryColor.value, categoryName.value]);
+	addCategoryDialog.value = false;
+};
 </script>
 <style>
-.cv-header {
-	display: flex;
-	flex: 0 1 auto;
-	flex-flow: row nowrap;
-	align-items: center;
-	min-height: 2.5em;
-	border-width: 1px 1px 0 1px;
-}
-
-.cv-header .periodLabel {
-	display: flex;
-	flex: 1 1 auto;
-	flex-flow: row nowrap;
-	min-height: 1.5em;
-	line-height: 1;
-	font-size: 1.5em;
-}
-
-.cv-header,
-.cv-header button {
-	border-style: solid;
-	border-color: #ddd;
-}
-
-.cv-header-nav,
-.cv-header .periodLabel {
-	margin: 0.1em 0.6em;
-}
-
-.cv-header-nav button,
-.cv-header .periodLabel {
-	padding: 0.4em 0.6em;
-}
-
-.cv-header button {
-	box-sizing: border-box;
-	line-height: 1em;
-	font-size: 1em;
-	border-width: 1px;
-}
-
-.cv-toolbar {
-	display: flex;
-	width: 200px;
-	justify-content: space-around;
+.Lable {
+	padding: 10px;
 }
 </style>

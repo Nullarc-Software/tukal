@@ -63,9 +63,9 @@ const formattedTime = (d: Date, locale: string, options?: Intl.DateTimeFormatOpt
 	// hours and minutes, expressed as local time.
 	if (!supportsIntl()) {
 		var ms = new Date().getTimezoneOffset() * 60000 // TZ offset in milliseconds
-		return new Date(d.getTime() - ms).toISOString().slice(11, 16)
+		return new Date(d.getTime() - ms).toISOString().slice(11, 16);
 	}
-	return d.toLocaleTimeString(locale, options)
+	return d.toLocaleTimeString(locale, options);
 }
 
 // Formats a date period in long English style. Examples supported:

@@ -5,7 +5,7 @@
 			:items="events"
 			:show-times="true"
 			:displayWeekNumbers="true"
-			:categories="categories"
+			:categories="eventCategories"
 			@click-date="onClickDay"
 			:displayPeriodUom="periodUOM"
 			@updateItems="updateItems"
@@ -19,6 +19,7 @@
 					@input="setShowDate"
 					@updatePeriod="updatePeriod"
 					@updateTheme="updateTheme"
+					@updateCategory="updateCategory"
 				/>
 			</template>
 		</calendar-view>
@@ -183,7 +184,7 @@ export default defineComponent({
 			default: "theme-default"
 		}
 	},
-	emits: ["onClickDay", "update:modelValue"],
+	emits: ["onClickDay", "update:modelValue", "categoriesUpdated"],
 	setup (props, context) {
 		const showDate = ref(new Date());
 		const activateDialog = ref(false);
@@ -199,6 +200,7 @@ export default defineComponent({
 		const allDay = ref(false);
 		const colorTheme: Ref<string> = ref("theme-default");
 		let events: Ref<ICalendarItem[]>;
+		const eventCategories = ref(props.categories);
 		if (props.model === "local") events = ref(props.items);
 		else {
 			const request: XMLHttpRequest = new XMLHttpRequest();
@@ -292,8 +294,15 @@ export default defineComponent({
 			periodUOM.value = period;
 		};
 		const updateTheme = (theme: string) => {
-			console.log(theme);
 			colorTheme.value = theme;
+		};
+		const updateCategory = ([color, name]: [string, string]) => {
+			const newCategory = {
+				name: name,
+				color: color
+			};
+			eventCategories.value.push(newCategory);
+			context.emit("categoriesUpdated", newCategory);
 		};
 		// const closeDialog = () => {
 		// 	allDay.value = false;
@@ -324,7 +333,9 @@ export default defineComponent({
 			deleteItem,
 			updatePeriod,
 			colorTheme,
-			updateTheme
+			updateTheme,
+			updateCategory,
+			eventCategories
 			// closeDialog
 		};
 	}
@@ -336,9 +347,6 @@ export default defineComponent({
 	display: flex;
 	align-items: center;
 	justify-content: center;
-}
-.tu-ckeditor {
-	width: 350px !important;
 }
 .dot {
 	height: 20px;

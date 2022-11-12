@@ -1009,6 +1009,14 @@
 			/>
 		</div>
 		<div class="showcase-component">
+			<h2>Color-picker</h2>
+			<tu-color-picker> </tu-color-picker>
+		</div>
+		<div class="showcase-component">
+			<h2>Wysiwyg editor</h2>
+			<tu-wysiwyg />
+		</div>
+		<div class="showcase-component">
 			<h4>Table:</h4>
 			<hr />
 			<button @click="exportTable">Export</button>

@@ -160,11 +160,7 @@
 								class="cv-item"
 								@dragstart="onDragItemStart(i, $event)"
 								@mouseenter="onMouseEnterItem(i, $event)"
-								@mouseleave="
-									onMouseLeaveItem(i, $event);
-									onEventLeave(i);
-								"
-								@mouseover="onEventHover(i)"
+								@mouseleave="onMouseLeaveItem(i, $event)"
 								@click.stop="
 									onClickItem(i, $event);
 									openEventDialog(i);
@@ -228,6 +224,8 @@
 								].slice(0, 3) +
 								" " +
 								event.originalItem.startDate.getFullYear() +
+								" " +
+								getFormattedTimeRange(event)[0] +
 								" - "
 							}}
 							{{
@@ -237,7 +235,9 @@
 									event.originalItem.endDate.getMonth()
 								].slice(0, 3) +
 								" " +
-								event.originalItem.endDate.getFullYear()
+								event.originalItem.endDate.getFullYear() +
+								" " +
+								getFormattedTimeRange(event)[1]
 							}}
 						</div>
 						<div class="event-category">
@@ -407,7 +407,6 @@
 <script setup lang="ts">
 import CalendarMath from "./CalendarMath";
 import CalendarViewState from "./CalendarViewState";
-import CalendarViewHeader from "./CalendarViewHeader.vue"
 import { computed, reactive, watch, withDefaults, ref, Ref } from "vue";
 import {
 	ICalendarItem,
@@ -1111,6 +1110,29 @@ const getItemBorderColor = (item: INormalizedCalendarItem) => {
 
 const selectedEventClose = () => {
 	isEditEvent.value = false;
+};
+
+const getFormattedTimeRange = (
+	item: INormalizedCalendarItem
+): Array<string> => {
+	let startTime = CalendarMath.formattedTime(
+		item.startDate,
+		displayLocale.value,
+		props.timeFormatOptions
+	);
+	if (startTime === "")
+		startTime = "12:00:00 AM";
+	let endTime = "";
+	if (!CalendarMath.isSameDateTime(item.startDate, item.endDate)) {
+		endTime = CalendarMath.formattedTime(
+			item.endDate,
+			displayLocale.value,
+			props.timeFormatOptions
+		);
+		if (endTime === "")
+			endTime = "12:00:00 AM";
+	}
+	return [startTime, endTime];
 };
 </script>
 <!--
