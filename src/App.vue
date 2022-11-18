@@ -1065,8 +1065,7 @@
 			<!-- <tu-upload singleUpload :limit="1" /> -->
 		</div>
 		<div class="showcase-component">
-			<tu-calendar :items="items" v-model="events" :components="component" :categories="Categories" @onClickDay="onClick">
-			</tu-calendar>
+			<tu-calendar model="server" :ServerSideConfig="serverSideConfig" v-model="events" :components="component" :categories="Categories" @onClickDay="onClick" />
 		</div>
 	</div>
 </template>
@@ -1442,6 +1441,11 @@ export default defineComponent({
 				console.log(universities.value);
 			});
 
+		const serverSideConfig = {
+			ajaxUrl: "http://localhost:5000/get",
+			method: "GET"
+		};
+
 		const component = {
 			eventDetail: testComponent2
 		};
@@ -1535,7 +1539,8 @@ export default defineComponent({
 			items,
 			onClick,
 			Categories,
-			component
+			component,
+			serverSideConfig
 		};
 	}
 });

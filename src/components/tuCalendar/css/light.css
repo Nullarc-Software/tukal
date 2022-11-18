@@ -11,11 +11,11 @@ having to override as much.
 
 .theme-default .cv-header,
 .theme-default .cv-header-day {
-	background-color: #f0f0f0;
+	background-color: rgb(244, 247, 248);
 }
 
 .theme-default .cv-header button {
-	color: #7f7f7f;
+	color: black;
 }
 
 .theme-default .cv-header .category-button {
@@ -25,13 +25,13 @@ having to override as much.
 /* Grid */
 
 .theme-default .cv-weeknumber {
-	background-color: #e0e0e0;
+	background-color: rgb(244, 247, 248);
 	border-color: #ccc;
 	color: #808080;
 }
 
 .theme-default .cv-day {
-	border-width: 1px 1px 0 0;
+	background-color: rgb(224, 232, 245, 0.1);
 }
 
 .theme-default .cv-weeknumber span {
@@ -54,11 +54,10 @@ having to override as much.
 
 .theme-default .cv-day.outsideOfMonth {
 	cursor: pointer;
-	background-color: #f7f7f7;
 }
 
 .theme-default .cv-day.today {
-	background-color: #ffe;
+	background-color: rgb(233, 237, 246);
 }
 
 .theme-default .cv-day[aria-selected="true"] {
@@ -75,16 +74,17 @@ having to override as much.
 
 .theme-default .cv-header-day {
 	border-width: 1px 1px 0 0;
+	padding-bottom: 12px;
 }
 
 .theme-default .cv-weeks {
 	border-width: 0 0 1px 1px;
 }
 
-.theme-default .cv-weeknumber {
+/* .theme-default .cv-weeknumber {
 	border-width: 1px 1px 0 0;
 	border-style: solid;
-}
+} */
 
 .theme-default .cv-day {
 	border-width: 1px 1px 0 0;
@@ -121,7 +121,7 @@ having to override as much.
 	color: #666;
 }
 
-.theme-default .cv-header-days,
+/* .theme-default .cv-header-days,
 .theme-default .cv-header-day,
 .theme-default .cv-weeks,
 .theme-default .cv-week,
@@ -129,7 +129,7 @@ having to override as much.
 .theme-default .cv-item {
 	border-style: solid;
 	border-color: #ddd;
-}
+} */
 
 /* Drag and drop */
 

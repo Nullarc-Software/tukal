@@ -1,44 +1,50 @@
 <template>
 	<div class="cv-header">
 		<div class="cv-header-nav">
-			<button
+			<tu-button
+			transparent
 				:disabled="!headerProps.previousYear"
 				class="previousYear"
 				aria-label="Previous Year"
 				@click.prevent="onInput(headerProps.previousYear!)"
 			>
-				{{ previousYearLabel }}
-			</button>
-			<button
+				<tu-icon style="transform: scale(-1, 1);">double_arrow</tu-icon>
+			</tu-button>
+			<tu-button
+			transparent
 				:disabled="!headerProps.previousPeriod"
 				class="previousPeriod"
 				aria-label="Previous Period"
 				@click.prevent="onInput(headerProps.previousPeriod!)"
-				v-html="previousPeriodLabel"
-			/>
-			<button
+			>
+				<tu-icon>navigate_before</tu-icon>
+			</tu-button>
+			<tu-button
+			transparent
 				class="currentPeriod"
 				aria-label="Current Period"
 				@click.prevent="onInput(headerProps.currentPeriod)"
 			>
-				{{ headerProps.currentPeriodLabel }}
-			</button>
-			<button
+				<span class="label-span">{{ headerProps.currentPeriodLabel }}</span>
+			</tu-button>
+			<tu-button
+			transparent
 				:disabled="!headerProps.nextPeriod"
 				class="nextPeriod"
 				aria-label="Next Period"
 				@click.prevent="onInput(headerProps.nextPeriod!)"
 			>
-				{{ nextPeriodLabel }}
-			</button>
-			<button
+				<tu-icon>navigate_next</tu-icon>
+			</tu-button>
+			<tu-button
+			transparent
 				:disabled="!headerProps.nextYear"
 				class="nextYear"
 				aria-label="Next Year"
 				@click.prevent="onInput(headerProps.nextYear!)"
 			>
-				{{ nextYearLabel }}
-			</button>
+				<tu-icon>double_arrow</tu-icon>
+			</tu-button>
 		</div>
 		<div class="periodLabel">
 			<slot name="label">{{ headerProps.periodLabel }}</slot>
@@ -138,8 +144,4 @@ const addCategory = () => {
 	addCategoryDialog.value = false;
 };
 </script>
-<style>
-.Lable {
-	padding: 10px;
-}
-</style>
+

@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="tu-calendar">
 		<calendar-view
 			:show-date="showDate"
 			:items="events"
@@ -199,14 +199,19 @@ export default defineComponent({
 		const periodUOM = ref("month");
 		const allDay = ref(false);
 		const colorTheme: Ref<string> = ref("theme-default");
-		let events: Ref<ICalendarItem[]>;
+		let events;
 		const eventCategories = ref(props.categories);
 		if (props.model === "local") events = ref(props.items);
 		else {
+			events = ref([]);
 			const request: XMLHttpRequest = new XMLHttpRequest();
 			const serverSideModel: Ref<TuCalendarServerModel> = ref(
 				props.serverSideConfig
 			);
+
+			if (isUndefined(serverSideModel.value.method))
+				serverSideModel.value.method = "GET";
+
 			request.onreadystatechange = function () {
 				if (
 					request.readyState === XMLHttpRequest.DONE &&
@@ -216,13 +221,12 @@ export default defineComponent({
 						events.value = request.response.data;
 					else if (request.responseType === "text")
 						events.value = JSON.parse(request.responseText);
-					else events.value = JSON.parse(request.responseText);
+					else {
+						events.value = JSON.parse(request.responseText);
+						console.log(events.value);
+					}
 				}
 			};
-
-			if (isUndefined(serverSideModel.value.method))
-				serverSideModel.value.method = "GET";
-
 			request.open(
 				serverSideModel.value.method,
 				serverSideModel.value.ajaxUrl,
@@ -230,6 +234,7 @@ export default defineComponent({
 			);
 			request.setRequestHeader("Content-Type", "application/json");
 			request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+			request.send();
 		}
 		const content = ref();
 		const onClickDay = (d: String) => {
@@ -354,5 +359,8 @@ export default defineComponent({
 	margin-right: 5px;
 	border-radius: 50%;
 	display: inline-block;
+}
+.tu-calendar {
+	border-radius: 25px;
 }
 </style>

@@ -5,6 +5,10 @@
 	background-color: #121212;
 }
 
+.dark .cv-header-day {
+	padding-bottom: 12px;
+}
+
 .dark .cv-header .periodLabel {
     color: white;
 }
