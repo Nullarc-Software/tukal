@@ -118,6 +118,8 @@ export class TuTableStore {
 	private refreshTable: Ref<boolean>;
 	private firstDataSet: boolean;
 
+	public loading: Ref<boolean>;
+
 	public serverSideModel: boolean = false;
 	public serverModelProps: TuTableServerModel;
 
@@ -150,6 +152,7 @@ export class TuTableStore {
 			pageSize: 25,
 			currentPage: 1
 		});
+		this.loading = ref(true);
 
 		this.headerCount = ref(columnsInitial);
 		this.pageLength = ref(1);
@@ -158,6 +161,7 @@ export class TuTableStore {
 		this.refreshTable = ref(false);
 		this.getTableData = computed(() => {
 			this.refreshTable.value = !this.refreshTable.value;
+			this.loading.value = true;
 			let data: any[] = [];
 			if (this.serverSideModel === false) {
 				this.rowCount.value = this.table.data.length;
@@ -201,11 +205,12 @@ export class TuTableStore {
                             this.table.pageSize
 					);
 				}
+				this.loading.value = false;
 			}
 			else {
 				const inst = this;
 				const request: XMLHttpRequest = new XMLHttpRequest();
-				request.onreadystatechange = function () {
+				request.onreadystatechange = () => {
 					if (
 						request.readyState === XMLHttpRequest.DONE &&
                         request.status === 200
@@ -228,6 +233,7 @@ export class TuTableStore {
 							data.length / inst.table.pageSize
 						);
 						data = inst.table.data;
+						this.loading.value = false;
 					}
 				};
 				const props: any = {
@@ -250,6 +256,7 @@ export class TuTableStore {
 				request.send(JSON.stringify(props));
 				data = this.table.data;
 			}
+
 			return data;
 		});
 

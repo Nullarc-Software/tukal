@@ -61,19 +61,27 @@
 							minWidth: header.minWidth,
 							maxWidth: header.maxWidth
 						}"
-                        :draggable="`${isDraggable}`"
-						@dragstart="startDrag($event,header)"
+						:draggable="`${isDraggable}`"
+						@dragstart="startDrag($event, header)"
 						@drop="onDrop(header)"
 						@dragover.prevent
 						@dragenter.prevent
-						:class="{ 'animation-table': isDrag && header.index === dragIndex || header.index === dropIndex }"
+						:class="{
+							'animation-table':
+								(isDrag && header.index === dragIndex) ||
+								header.index === dropIndex
+						}"
 						:sort="header.props ? header.props.sort : false"
 						:search="header.props ? header.props.search : false"
 					>
-							{{ header.caption }}
+						{{ header.caption }}
 					</tu-th>
 				</thead>
-				<tbody id="tbody" :class="{ 'loading-body' : !isLoaded  }" class="tu-table__tbody">
+				<tbody
+					:id="`${id}-tbody`"
+					:class="{ 'loading-body': !isLoaded }"
+					class="tu-table__tbody"
+				>
 					<slot v-if="$slots.tbody" name="tbody" />
 					<tu-tr
 						v-else
@@ -102,7 +110,11 @@
 						<tu-td
 							v-for="(th, j) in table.getTableHeaders.value"
 							:key="j"
-							:class="{ 'animation-table' : isDrag && th.index === dragIndex || th.index === dropIndex }"
+							:class="{
+								'animation-table':
+									(isDrag && th.index === dragIndex) ||
+									th.index === dropIndex
+							}"
 						>
 							<span
 								:title="tr.rowData[th.field]"
@@ -194,12 +206,9 @@ import tuTr from "./tuTr.vue";
 import tuTd from "./tuTd.vue";
 import tuIcon from "../tuIcon";
 import tuCheckbox from "../tuCheckBox";
-import { tuPopper, tuPopupMenu } from "../tuPopper";
+import { tuPopper, tuPopupMenu, tuPopupItem } from "../tuPopper";
 import contextMenuComponent from "./tuTableContextMenu.vue";
-import {
-	Loading,
-	LoadingAttributes
-} from "../tuLoading";
+import { Loading, LoadingAttributes } from "../tuLoading";
 
 if (typeof window !== "undefined" && (window as any).VueInstance)
 	contextMenuComponent.install((window as any).VueInstance);
@@ -214,7 +223,8 @@ export default defineComponent({
 		tuIcon,
 		tuCheckbox,
 		tuPopper,
-		tuPopupMenu
+		tuPopupMenu,
+		tuPopupItem
 	},
 	props: {
 		modelValue: {},
@@ -291,10 +301,6 @@ export default defineComponent({
 			type: Boolean,
 			default: false
 		},
-		draggable: {
-			type: Boolean,
-			default: false
-		},
 		serverSideConfig: {
 			type: Object as PropType<TuTableServerModel>,
 			default: () => {
@@ -354,19 +360,24 @@ export default defineComponent({
 		const expandedAll = ref(false);
 		const noOfTableValues = ref(0);
 		const isLoaded = ref(false);
-		let load;
 		const totalColumns = ref(props.columns);
 		const isDraggable = ref(props.draggable);
 		let table: TuTableStore;
-		const showLoading = function () {
-			const attrs: LoadingAttributes = {
-				target: "#tbody",
-				color: "dark",
-				type: "circles",
-				scale: "1.0"
-			};
-			load = new Loading(attrs);
-		};
+
+		let load: Loading = null;
+
+		function setLoading () {
+			const id = `${props.id}-tbody`;
+			if (_.isNil(document.getElementById(id)) === false) {
+				const attrs: LoadingAttributes = {
+					target: `#${id}`,
+					color: "dark",
+					type: "circles",
+					scale: "1.0"
+				};
+				load = new Loading(attrs);
+			}
+		}
 
 		if (props.multiSelect && props.rowExpand)
 			table = new TuTableStore(props.id, 2);
@@ -421,8 +432,14 @@ export default defineComponent({
 		const updateColumns = () => {
 			for (let i = 0; i < props.columns.length; i++)
 				persistentColumns.columns[i].visibility = colsControl.value[i];
-			localStorage.setItem(`table-${props.persistentId}`, JSON.stringify(persistentColumns));
-			context.emit("onTableConfigUpdated", JSON.parse(localStorage.getItem(`table-${props.persistentId}`)));
+			localStorage.setItem(
+				`table-${props.persistentId}`,
+				JSON.stringify(persistentColumns)
+			);
+			context.emit(
+				"onTableConfigUpdated",
+				JSON.parse(localStorage.getItem(`table-${props.persistentId}`))
+			);
 			for (let i = 0; i < colsControl.value.length; i++)
 				table.setColumnVisibility(i, !colsControl.value[i]);
 		};
@@ -432,16 +449,36 @@ export default defineComponent({
 					colsControl.value[i] = true;
 					persistentColumns.columns[i].visibility = true;
 				}
-				localStorage.setItem(`table-${props.persistentId}`, JSON.stringify(persistentColumns));
-				context.emit("onTableConfigUpdated", JSON.parse(localStorage.getItem(`table-${props.persistentId}`)));
+				localStorage.setItem(
+					`table-${props.persistentId}`,
+					JSON.stringify(persistentColumns)
+				);
+				context.emit(
+					"onTableConfigUpdated",
+					JSON.parse(
+						localStorage.getItem(`table-${props.persistentId}`)
+					)
+				);
 			}
 			else {
-				persistentColumns = JSON.parse(localStorage.getItem(`table-${props.persistentId}`));
-				for (let i = 0; i < props.columns.length; i++)
-					colsControl.value[i] = persistentColumns.columns[i].visibility;
+				persistentColumns = JSON.parse(
+					localStorage.getItem(`table-${props.persistentId}`)
+				);
+				for (let i = 0; i < props.columns.length; i++) {
+					colsControl.value[i] =
+						persistentColumns.columns[i].visibility;
+				}
 				updateColumns();
-				localStorage.setItem(`table-${props.persistentId}`, JSON.stringify(persistentColumns));
-				context.emit("onTableConfigUpdated", JSON.parse(localStorage.getItem(`table-${props.persistentId}`)));
+				localStorage.setItem(
+					`table-${props.persistentId}`,
+					JSON.stringify(persistentColumns)
+				);
+				context.emit(
+					"onTableConfigUpdated",
+					JSON.parse(
+						localStorage.getItem(`table-${props.persistentId}`)
+					)
+				);
 			}
 		}
 		watch(
@@ -475,13 +512,27 @@ export default defineComponent({
 			}
 		);
 
+		watch(table.loading, (value) => {
+			if (value) {
+				if (_.isNil(load) === true) {
+					context.emit("onTableBeginLoad");
+					setLoading();
+				}
+			}
+			else {
+				if (_.isNil(load) === false) {
+					load.close();
+					load = null;
+				}
+				context.emit("onTableEndLoad");
+			}
+		});
+
 		watch(table.getTableData, () => {
 			const newVal = table.getTableData.value as Array<TuTableRow>;
 			context.emit("update:data", newVal);
 			noOfTableValues.value = newVal.length;
 			isLoaded.value = true;
-			load.close();
-			context.emit("onTableEndLoad");
 		});
 
 		watch(table.getSelectedRows, () => {
@@ -493,6 +544,8 @@ export default defineComponent({
 		});
 
 		onMounted(() => {
+			if (table.loading.value) setLoading();
+
 			if (thead.value)
 				colspan.value = thead.value.querySelectorAll("th").length;
 
@@ -506,9 +559,6 @@ export default defineComponent({
 						lastHeader.element.offsetLeft ?? 0) + "px";
 			}
 			context.emit("update:tableInstance", table);
-			context.emit("onTableBeginLoad");
-			if (table.getTableData.value.length === 0)
-				showLoading();
 		});
 
 		onBeforeUnmount(() => {
@@ -527,7 +577,7 @@ export default defineComponent({
 		const dropIndex = ref(null);
 		const isDrag = ref(false);
 
-		const startDrag = (evt : DragEvent, header : TuHeaderDefn) => {
+		const startDrag = (evt: DragEvent, header: TuHeaderDefn) => {
 			isDrag.value = false;
 			evt.dataTransfer.effectAllowed = "copyMove";
 			dragIndex.value = header.index;
@@ -536,11 +586,19 @@ export default defineComponent({
 			isDrag.value = true;
 			dropIndex.value = header.index;
 			if (props.persistentId) {
-				table.reOrderTableColumns(dragIndex.value, dropIndex.value, props.persistentId);
-				context.emit("onTableConfigUpdated", JSON.parse(localStorage.getItem(`table-${props.persistentId}`)));
+				table.reOrderTableColumns(
+					dragIndex.value,
+					dropIndex.value,
+					props.persistentId
+				);
+				context.emit(
+					"onTableConfigUpdated",
+					JSON.parse(
+						localStorage.getItem(`table-${props.persistentId}`)
+					)
+				);
 			}
-			else
-				table.reOrderTableColumns(dragIndex.value, header.index);
+			else table.reOrderTableColumns(dragIndex.value, header.index);
 		};
 
 		return {
@@ -590,15 +648,15 @@ export default defineComponent({
 }
 @keyframes fadeIn {
 	0% {
-    transform: scale(0);
-  }
-  100% {
-    transform: scale(1);
-  }
+		transform: scale(0);
+	}
+	100% {
+		transform: scale(1);
+	}
 }
 .animation-table {
 	animation-name: fadeIn;
-    animation-duration: 100ms;
+	animation-duration: 100ms;
 }
 
 .display-inline {
@@ -607,8 +665,6 @@ export default defineComponent({
 
 .loading-body {
 	position: relative;
-	height: 50vh;
-	width: 50vw;
 }
 .tu-table {
 	font-size: 0.9rem;
