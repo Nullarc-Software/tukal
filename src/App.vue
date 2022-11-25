@@ -1022,22 +1022,26 @@
 			<button @click="exportTable">Export</button>
 			<button @click="exportTableToPDF">Export to pdf</button>
 			{{ selected }}
-			<tu-table
-				row-expand
-				multi-select
-				striped
-				size=""
-				:persistentId="one"
-				:draggable="true"
-				v-model="selected"
-				v-model:numPages="numPages"
-				:page="page"
-				:pageSize="5"
-				:data="universities"
-				:columns="columns"
-				:columnSelecter="true"
-			>
-				<!-- <template #thead>
+            <tu-table
+                row-expand
+                multi-select
+                striped
+                size=""
+                persistentId="one"
+                :draggable="true"
+                v-model="selected"
+                v-model:numPages="numPages"
+                :page="page"
+                :pageSize="5"
+                :data="universities"
+                :columns="columns"
+                :columnSelecter="true"
+                @onRowClicked = "rowClicked"
+                @onTableBeginLoad = "beginLoad"
+                @onTableEndLoad = "afterLoad"
+                @onTableConfigUpdated = "configUpdate"
+            >
+                <!-- <template #thead>
 					<tu-th field="country" sort search> Country </tu-th>
 					<tu-th field="name" sort search :index="1" width="500px"> Name </tu-th>
 					<tu-th field="name" sort search :index="2" width="500px"> Name </tu-th>
@@ -1047,15 +1051,15 @@
 					<tu-th field="web_pages" sort search> Web site </tu-th>
 					<tu-th field="something" sort search> No value </tu-th>
 				</template> -->
-				<template #footer>
-					<tu-pagination
-						not-margin
-						flat
-						v-model="page"
-						:length="numPages"
-					/>
-				</template>
-			</tu-table>
+                <template #footer>
+                    <tu-pagination
+                        not-margin
+                        flat
+                        v-model="page"
+                        :length="numPages"
+                    />
+                </template>
+            </tu-table>
 		</div>
 		<div class="showcase-component"></div>
 
@@ -1146,6 +1150,18 @@ export default defineComponent({
 		const selectValue1 = ref(null);
 		const page = ref(1);
 		const Export: ExportData = new ExportData();
+		const rowClicked = (tr) => {
+			console.log(tr);
+		};
+		const beginLoad = () => {
+			console.log("begin load");
+		};
+		const afterLoad = () => {
+			console.log("after load");
+		};
+		const configUpdate = (config) => {
+			console.log(config);
+		};
 		const newItemTitle = ref("");
 		const newItemStartDate = ref();
 		const newItemStartTime = ref();
@@ -1540,7 +1556,11 @@ export default defineComponent({
 			onClick,
 			Categories,
 			component,
-			serverSideConfig
+			serverSideConfig,
+			rowClicked,
+			beginLoad,
+			afterLoad,
+			configUpdate
 		};
 	}
 });
