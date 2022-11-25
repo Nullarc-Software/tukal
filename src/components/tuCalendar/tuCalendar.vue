@@ -363,4 +363,7 @@ export default defineComponent({
 .tu-calendar {
 	border-radius: 25px;
 }
+.dialog-header {
+	text-align: center;
+}
 </style>
