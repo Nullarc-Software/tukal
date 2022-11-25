@@ -37,7 +37,7 @@
     "src/**/*.vue",
     "tests/**/*.ts",
     "tests/**/*.tsx"
-, "src/components/tuCalendar/main.js"  ],
+  ],
   "exclude": [
     "node_modules"
   ]

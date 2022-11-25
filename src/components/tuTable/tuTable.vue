@@ -34,9 +34,8 @@
 		>
 			<table class="tu-table__element" ref="tableElement">
 				<thead ref="thead" class="tu-table__thead">
-					<slot v-if="$slots.thead" name="thead" />
 					<tu-th
-						v-if="rowExpand && !$slots.thead"
+						v-if="rowExpand"
 						fixed
 						@click="expandedAll = !expandedAll"
 						style="width: 50px"
@@ -47,11 +46,7 @@
 							>keyboard_arrow_right</tu-icon
 						>
 					</tu-th>
-					<tu-th
-						v-if="multiSelect && !$slots.thead"
-						fixed
-						style="width: 50px"
-					>
+					<tu-th v-if="multiSelect" fixed style="width: 50px">
 						<tu-checkbox
 							v-model="selectedAll"
 							:indeterminate="table.isPartiallyChecked.value"
@@ -66,7 +61,7 @@
 							minWidth: header.minWidth,
 							maxWidth: header.maxWidth
 						}"
-						:draggable="isDraggable"
+						:draggable="`${isDraggable}`"
 						@dragstart="startDrag($event, header)"
 						@drop="onDrop(header)"
 						@dragover.prevent
@@ -82,7 +77,11 @@
 						{{ header.caption }}
 					</tu-th>
 				</thead>
-				<tbody class="tu-table__tbody">
+				<tbody
+					:id="`${id}-tbody`"
+					:class="{ 'loading-body': !isLoaded }"
+					class="tu-table__tbody"
+				>
 					<slot v-if="$slots.tbody" name="tbody" />
 					<tu-tr
 						v-else
@@ -93,7 +92,7 @@
 						:expanded="expandedAll"
 						:expandHandle="rowExpand"
 						@rowExpanded="tr.expanded = $event"
-						@rowClick="rowListeners.click($event, this)"
+						@rowClick="rowListeners.click($event, this, tr.rowData)"
 					>
 						<tu-td expand v-if="rowExpand">
 							<tu-icon
@@ -207,8 +206,9 @@ import tuTr from "./tuTr.vue";
 import tuTd from "./tuTd.vue";
 import tuIcon from "../tuIcon";
 import tuCheckbox from "../tuCheckBox";
-import { tuPopper, tuPopupMenu } from "../tuPopper";
+import { tuPopper, tuPopupMenu, tuPopupItem } from "../tuPopper";
 import contextMenuComponent from "./tuTableContextMenu.vue";
+import { Loading, LoadingAttributes } from "../tuLoading";
 
 if (typeof window !== "undefined" && (window as any).VueInstance)
 	contextMenuComponent.install((window as any).VueInstance);
@@ -223,7 +223,8 @@ export default defineComponent({
 		tuIcon,
 		tuCheckbox,
 		tuPopper,
-		tuPopupMenu
+		tuPopupMenu,
+		tuPopupItem
 	},
 	props: {
 		modelValue: {},
@@ -292,11 +293,11 @@ export default defineComponent({
 			type: String,
 			default: ""
 		},
-		multiSelect: {
+		draggable: {
 			type: Boolean,
 			default: false
 		},
-		draggable: {
+		multiSelect: {
 			type: Boolean,
 			default: false
 		},
@@ -334,7 +335,12 @@ export default defineComponent({
 		"update:modelValue",
 		"update:numPages",
 		"update:data",
-		"update:tableInstance"
+		"update:tableInstance",
+		"onRowClicked",
+		"onTableBeginLoad",
+		"onTableEndLoad",
+		"onCellClicked",
+		"onTableConfigUpdated"
 	],
 	provide () {
 		return {
@@ -353,9 +359,25 @@ export default defineComponent({
 		const selectedAll = ref(false);
 		const expandedAll = ref(false);
 		const noOfTableValues = ref(0);
+		const isLoaded = ref(false);
 		const totalColumns = ref(props.columns);
 		const isDraggable = ref(props.draggable);
 		let table: TuTableStore;
+
+		let load: Loading = null;
+
+		function setLoading () {
+			const id = `${props.id}-tbody`;
+			if (_.isNil(document.getElementById(id)) === false) {
+				const attrs: LoadingAttributes = {
+					target: `#${id}`,
+					color: "dark",
+					type: "circles",
+					scale: "1.0"
+				};
+				load = new Loading(attrs);
+			}
+		}
 
 		if (props.multiSelect && props.rowExpand)
 			table = new TuTableStore(props.id, 2);
@@ -402,8 +424,8 @@ export default defineComponent({
 		}
 
 		const rowListeners = {
-			click: function (event, tr) {
-				// console.log("Row clicked");
+			click: function (event, tr, row) {
+				context.emit("onRowClicked", row);
 			}
 		};
 		const colsControl = ref([]);
@@ -413,6 +435,10 @@ export default defineComponent({
 			localStorage.setItem(
 				`table-${props.persistentId}`,
 				JSON.stringify(persistentColumns)
+			);
+			context.emit(
+				"onTableConfigUpdated",
+				JSON.parse(localStorage.getItem(`table-${props.persistentId}`))
 			);
 			for (let i = 0; i < colsControl.value.length; i++)
 				table.setColumnVisibility(i, !colsControl.value[i]);
@@ -427,6 +453,12 @@ export default defineComponent({
 					`table-${props.persistentId}`,
 					JSON.stringify(persistentColumns)
 				);
+				context.emit(
+					"onTableConfigUpdated",
+					JSON.parse(
+						localStorage.getItem(`table-${props.persistentId}`)
+					)
+				);
 			}
 			else {
 				persistentColumns = JSON.parse(
@@ -440,6 +472,12 @@ export default defineComponent({
 				localStorage.setItem(
 					`table-${props.persistentId}`,
 					JSON.stringify(persistentColumns)
+				);
+				context.emit(
+					"onTableConfigUpdated",
+					JSON.parse(
+						localStorage.getItem(`table-${props.persistentId}`)
+					)
 				);
 			}
 		}
@@ -474,10 +512,27 @@ export default defineComponent({
 			}
 		);
 
+		watch(table.loading, (value) => {
+			if (value) {
+				if (_.isNil(load) === true) {
+					context.emit("onTableBeginLoad");
+					setLoading();
+				}
+			}
+			else {
+				if (_.isNil(load) === false) {
+					load.close();
+					load = null;
+				}
+				context.emit("onTableEndLoad");
+			}
+		});
+
 		watch(table.getTableData, () => {
 			const newVal = table.getTableData.value as Array<TuTableRow>;
 			context.emit("update:data", newVal);
 			noOfTableValues.value = newVal.length;
+			isLoaded.value = true;
 		});
 
 		watch(table.getSelectedRows, () => {
@@ -489,6 +544,8 @@ export default defineComponent({
 		});
 
 		onMounted(() => {
+			if (table.loading.value) setLoading();
+
 			if (thead.value)
 				colspan.value = thead.value.querySelectorAll("th").length;
 
@@ -501,7 +558,6 @@ export default defineComponent({
 					(tableContainer.value.offsetWidth -
 						lastHeader.element.offsetLeft ?? 0) + "px";
 			}
-
 			context.emit("update:tableInstance", table);
 		});
 
@@ -535,6 +591,12 @@ export default defineComponent({
 					dropIndex.value,
 					props.persistentId
 				);
+				context.emit(
+					"onTableConfigUpdated",
+					JSON.parse(
+						localStorage.getItem(`table-${props.persistentId}`)
+					)
+				);
 			}
 			else table.reOrderTableColumns(dragIndex.value, header.index);
 		};
@@ -559,7 +621,8 @@ export default defineComponent({
 			isDrag,
 			dragIndex,
 			dropIndex,
-			isDraggable
+			isDraggable,
+			isLoaded
 		};
 	}
 });
@@ -598,6 +661,10 @@ export default defineComponent({
 
 .display-inline {
 	display: inline-block !important;
+}
+
+.loading-body {
+	position: relative;
 }
 .tu-table {
 	font-size: 0.9rem;
