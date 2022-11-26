@@ -55,6 +55,8 @@ export * from "./components/tuTable";
 export { tuTreeView, tuTreeItem } from "./components/tuTreeView";
 export { tuUpload } from "./components/tuUpload";
 export * from "./components/tuTreeView/types";
+export { tuRichTextEditor } from "./components/tuRichTextEditor";
+export { tuCalendar } from "./components/tuCalendar";
 // New Component import
 
 // layout

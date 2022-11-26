@@ -28,7 +28,7 @@ export { tuCollapse, tuCollapseItem } from "./tuCollapse";
 export { tuTreeView, tuTreeItem } from "./tuTreeView";
 export { tuCalendar } from "./tuCalendar";
 export { tuColorPicker } from "./tuColorPicker";
-export { tuWysiwyg } from "./tuWysiwyg";
+export { tuRichTextEditor } from "./tuRichTextEditor";
 export { tuUpload } from "./tuUpload";
 export * from "./tuTreeView/types";
 

@@ -1,4 +1,4 @@
-import tuComponent from "./tuWysiwyg.vue";
+import tuComponent from "./tuRichTextEditor.vue";
 
 tuComponent.install = (vue: any) => {
 	vue.component(tuComponent.name, tuComponent);
@@ -7,4 +7,4 @@ tuComponent.install = (vue: any) => {
 if (typeof window !== "undefined" && (<any>window).Vue)
 	tuComponent.install((<any>window).Vue);
 
-export { tuComponent as tuWysiwyg };
+export { tuComponent as tuRichTextEditor };

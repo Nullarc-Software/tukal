@@ -313,19 +313,21 @@
 </template>
 
 <script lang="ts">
-import { ref, onMounted, watch, Ref } from "vue";
+import { ref, onMounted, watch, Ref, defineComponent } from "vue";
 import StarterKit from "@tiptap/starter-kit";
 import Underline from "@tiptap/extension-underline";
 import TextAlign from "@tiptap/extension-text-align";
 import { Editor, EditorContent } from "@tiptap/vue-3";
 import { tuButtonGroup } from "../tuButton";
+import tuComponent from "../tuComponent";
 
-export default {
+export default defineComponent({
 	components: {
 		EditorContent,
 		tuButtonGroup
 	},
-
+	name: "TuRichTextEditor",
+	extends: tuComponent,
 	props: {
 		standard: {
 			type: Boolean,
@@ -469,7 +471,7 @@ export default {
 
 		return { editor, content, editorComponent };
 	}
-};
+});
 </script>
 
 <style lang="scss">

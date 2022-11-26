@@ -1008,8 +1008,8 @@
 			<tu-color-picker> </tu-color-picker>
 		</div>
 		<div class="showcase-component">
-			<h2>Wysiwyg editor</h2>
-			<tu-wysiwyg standard width="500px" height="200px" />
+			<h2>Rich Text editor</h2>
+			<tu-rich-text-editor standard width="500px" height="200px" />
 		</div>
 		<div class="showcase-component">
 			<h4>Table:</h4>
