@@ -1,6 +1,6 @@
 {
 	"name": "tukal-vue",
-	"version": "0.1.45",
+	"version": "0.1.49",
 	"types": "dist/index.d.ts",
 	"scripts": {
 		"serve": "vue-cli-service serve src/main.ts",
@@ -18,6 +18,8 @@
 		"@babel/runtime": "^7.14.8",
 		"@caohenghu/vue-colorpicker": "^1.2.4",
 		"@tiptap/extension-character-count": "^2.0.0-beta.202",
+		"@tiptap/extension-text-align": "^2.0.0-beta.204",
+		"@tiptap/extension-underline": "^2.0.0-beta.204",
 		"@tiptap/starter-kit": "^2.0.0-beta.202",
 		"@tiptap/vue-3": "^2.0.0-beta.202",
 		"babel-loader": "^8.2.2",
