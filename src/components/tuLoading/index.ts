@@ -70,4 +70,4 @@ class Loading {
 	}
 }
 
-export { Loading, LoadingAttributes };
+export { Loading, LoadingAttributes, tuComponent as tuLoading };

@@ -142,18 +142,12 @@ export default defineComponent({
 
 		const getMinWidth = computed(() => {
 			if (labelElem.value) return `${labelElem.value.clientWidth}px`;
-			else if (props.minSizeToParent) {
-				console.log("Returning something");
-				return `${parentWidth.value}px`;
-			}
+			else if (props.minSizeToParent) return `${parentWidth.value}px`;
 			else return props.minWidth;
 		});
 
 		const getMinHeight = computed(() => {
-			if (props.minSizeToParent) {
-				console.log("Returning something");
-				return `${parentHeight.value}px`;
-			}
+			if (props.minSizeToParent) return `${parentHeight.value}px`;
 			else return props.minHeight;
 		});
 

@@ -15,70 +15,70 @@ export class TableIdentifierAuto {
 }
 
 export interface TuTableRow {
-    index: number;
-    selected: boolean;
-    expanded: boolean;
-    componentValues?: {
-        [fieldName: string]: any;
-    };
-    rowData?: {
-        [name: string]: any;
-    };
+	index: number;
+	selected: boolean;
+	expanded: boolean;
+	componentValues?: {
+		[fieldName: string]: any;
+	};
+	rowData?: {
+		[name: string]: any;
+	};
 }
 
 export interface TuFilterDefn {
-    field: string;
-    type: string;
-    value: any;
+	field: string;
+	type: string;
+	value: any;
 }
 
 export interface TuHeaderDefn {
-    index?: number;
-    minWidth?: number | string;
-    maxWidth?: number | string;
-    width?: number | string;
-    field?: string;
-    caption?: string;
-    isComponent?: boolean;
-    element?: HTMLElement;
-    inputComponent?: Boolean;
-    component?: HTMLElement | Component | string;
-    componentProps?: any;
-    props?: {
-        search?: boolean;
-        sort?: boolean;
-    };
-    valueFormatter?: Function;
-    hidden?: boolean;
+	index?: number;
+	minWidth?: number | string;
+	maxWidth?: number | string;
+	width?: number | string;
+	field?: string;
+	caption?: string;
+	isComponent?: boolean;
+	element?: HTMLElement;
+	inputComponent?: Boolean;
+	component?: HTMLElement | Component | string;
+	componentProps?: any;
+	props?: {
+		search?: boolean;
+		sort?: boolean;
+	};
+	valueFormatter?: Function;
+	hidden?: boolean;
 }
 
 export interface TuTableSorterDefn {
-    field: string;
-    dir: "asc" | "desc" | boolean;
+	field: string;
+	dir: "asc" | "desc" | boolean;
 }
 
 export interface TuTableDefn {
-    headers: Array<TuHeaderDefn>;
-    data: Array<TuTableRow>;
-    currentFilters: TuFilterDefn[];
-    currentSort: TuTableSorterDefn[];
-    pageSize?: number;
-    currentPage?: number;
+	headers: Array<TuHeaderDefn>;
+	data: Array<TuTableRow>;
+	currentFilters: TuFilterDefn[];
+	currentSort: TuTableSorterDefn[];
+	pageSize?: number;
+	currentPage?: number;
 }
 
 export interface TuTableServerModel {
-    ajaxUrl: string;
-    method?: string;
-    ajaxLoadedFn?: Function;
-    ajaxErrorFn?: Function;
+	ajaxUrl: string;
+	method?: string;
+	ajaxLoadedFn?: Function;
+	ajaxErrorFn?: Function;
 }
 
 export interface TuTableProps {
-    multiSelect?: boolean;
-    serverSideConfig?: TuTableServerModel;
-    columns: Array<TuHeaderDefn | null>;
-    model: "server" | "local" | string;
-    size: string;
+	multiSelect?: boolean;
+	serverSideConfig?: TuTableServerModel;
+	columns: Array<TuHeaderDefn | null>;
+	model: "server" | "local" | string;
+	size: string;
 }
 
 export interface TuTableLocalColumn {
@@ -91,22 +91,22 @@ export interface TuTableLocal {
 }
 
 export interface TuTableContextMenuEntry {
-    caption: string | HTMLElement;
-    icon?: HTMLElement;
-    hasSubMenu?: boolean;
-    onClicked?: Function;
-    data?: any;
-    closeOnClick?: boolean;
-    divider?: boolean;
-    subMenu?: TuTableContextMenuEntry[];
+	caption: string | HTMLElement;
+	icon?: HTMLElement;
+	hasSubMenu?: boolean;
+	onClicked?: Function;
+	data?: any;
+	closeOnClick?: boolean;
+	divider?: boolean;
+	subMenu?: TuTableContextMenuEntry[];
 }
 
 export class TableFunctions {}
 
 export interface TuTableInitialComponentValues {
-    selector: any;
-    key: string;
-    value: any;
+	selector: any;
+	key: string;
+	value: any;
 }
 
 export class TuTableStore {
@@ -202,7 +202,7 @@ export class TuTableStore {
 						data,
 						this.table.pageSize * (this.table.currentPage - 1),
 						this.table.pageSize * (this.table.currentPage - 1) +
-                            this.table.pageSize
+							this.table.pageSize
 					);
 				}
 				this.loading.value = false;
@@ -213,7 +213,7 @@ export class TuTableStore {
 				request.onreadystatechange = () => {
 					if (
 						request.readyState === XMLHttpRequest.DONE &&
-                        request.status === 200
+						request.status === 200
 					) {
 						if (request.responseType === "json") {
 							inst.setTableData(request.response.data);
@@ -359,7 +359,7 @@ export class TuTableStore {
 				if (header.isComponent && header.inputComponent) {
 					if (
 						_.isNil(header.componentProps) === false &&
-                        _.isNil(header.componentProps.modelValue)
+						_.isNil(header.componentProps.modelValue)
 					)
 						componentValueObject[header.field] = ref(undefined);
 					else if (_.isNil(header.componentProps))

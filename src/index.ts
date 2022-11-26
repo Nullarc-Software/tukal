@@ -13,7 +13,7 @@ export { default as tuAvatar } from "./components/tuAvatar";
 export { default as tuPagination } from "./components/tuPagination";
 export { default as tuBreadcrumb } from "./components/tuBreadcrumb";
 export { default as tuProgress } from "./components/tuProgress";
-export { Loading, LoadingAttributes } from "./components/tuLoading";
+export { Loading, LoadingAttributes, tuLoading } from "./components/tuLoading";
 
 export { default as tuDivider } from "./components/tuDivider";
 export { default as tuIcon } from "./components/tuIcon";

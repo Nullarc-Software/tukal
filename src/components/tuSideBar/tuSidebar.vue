@@ -1,7 +1,7 @@
 <template>
 	<div
 		:style="{
-			['--tu-color']: color ? getColor(color) : '',
+			['--tu-color']: color ? getColor(color) : ''
 		}"
 		:class="[
 			'tu-sidebar-content',
@@ -14,7 +14,7 @@
 				textWhite: textWhite,
 				relative: relative,
 				absolute: absolute,
-				right: right,
+				right: right
 			},
 			// colors
 			{ [`tu-component--primary`]: !!primary },
@@ -22,7 +22,7 @@
 			{ [`tu-component--warn`]: !!warn },
 			{ [`tu-component--success`]: !!success },
 			{ [`tu-component--dark`]: !!dark },
-			{ [`tu-component--is-color`]: !!isColor },
+			{ [`tu-component--is-color`]: !!isColor }
 		]"
 		v-on="listeners"
 		ref="sidebar"
@@ -120,8 +120,7 @@ export default defineComponent({
 						window.addEventListener("click", clickCloseSidebar);
 					}, 200);
 				}
-				else
-					window.removeEventListener("click", clickCloseSidebar);
+				else window.removeEventListener("click", clickCloseSidebar);
 			}
 		);
 
@@ -130,10 +129,8 @@ export default defineComponent({
 			(val: boolean) => {
 				reduceInternal.value = val;
 				const el: any = sidebar.value;
-				if (val)
-					el.style.width = "50px";
-				else
-					el.style.width = `${staticWidth.value}px`;
+				if (val) el.style.width = "50px";
+				else el.style.width = `${staticWidth.value}px`;
 
 				context.emit("update:expanded", !val);
 			}
@@ -141,10 +138,8 @@ export default defineComponent({
 
 		watch(reduceInternal, (val: boolean) => {
 			const el: any = sidebar.value;
-			if (val)
-				el.style.width = "50px";
-			else
-				el.style.width = `${staticWidth.value}px`;
+			if (val) el.style.width = "50px";
+			else el.style.width = `${staticWidth.value}px`;
 		});
 
 		watch(
@@ -155,21 +150,22 @@ export default defineComponent({
 		);
 
 		onMounted(() => {
-			if (!props.fixedExpandWidth) staticWidth.value = (sidebar.value?.offsetWidth as number) + 15; else {
+			if (!props.fixedExpandWidth)
+				staticWidth.value = (sidebar.value?.offsetWidth as number) + 15;
+			else {
 				staticWidth.value = props.fixedExpandWidth;
-				if (sidebar.value) sidebar.value.style.width = `${staticWidth.value}px`;
+				if (sidebar.value)
+					sidebar.value.style.width = `${staticWidth.value}px`;
 			}
 
 			reduceInternal.value = props.reduce;
 
-			if (reduceInternal.value)
-				context.emit("update:expanded", false);
+			if (reduceInternal.value) context.emit("update:expanded", false);
 
 			if (props.background !== "background")
 				setColor("background", props.background, sidebar.value, true);
 
-			if (props.textWhite)
-				setColor("text", "#fff", sidebar.value, true);
+			if (props.textWhite) setColor("text", "#fff", sidebar.value, true);
 		});
 
 		return {
@@ -206,7 +202,6 @@ export default defineComponent({
 	z-index: 21000;
 	background: -getColor("background");
 	transition: all 0.25s ease;
-	transform: translate(-110%);
 	padding: 5px;
 
 	&.right {
@@ -218,7 +213,6 @@ export default defineComponent({
 		&.open {
 			transform: translate(0);
 		}
-
 	}
 
 	&.absolute {
@@ -322,7 +316,6 @@ export default defineComponent({
 					width: 5px;
 					height: 5px;
 				}
-
 			}
 
 			.tu-sidebar__item.hasIcon {

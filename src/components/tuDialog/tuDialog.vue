@@ -206,7 +206,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @import "../../style/sass/_mixins";
 
 .tu-dialog-enter-active {
@@ -313,7 +313,7 @@ export default defineComponent({
 	border-radius: -var("radius");
 	transition: all 0.25s ease;
 	box-shadow: 0px 5px 30px 0px rgba(0, 0, 0, -var("shadow-opacity"));
-	max-width: 800px;
+	max-width: calc(100vw - 10%);
 	margin: auto;
 
 	&--notCenter {

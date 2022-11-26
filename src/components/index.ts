@@ -13,7 +13,7 @@ export { default as tuPagination } from "./tuPagination";
 export { default as tuBreadcrumb } from "./tuBreadcrumb";
 export { default as tuProgress } from "./tuProgress";
 export { default as tuTextArea } from "./tuTextArea";
-export { Loading, LoadingAttributes } from "./tuLoading";
+export { Loading, LoadingAttributes, tuLoading } from "./tuLoading";
 
 export { default as tuDivider } from "./tuDivider";
 export { default as tuIcon } from "./tuIcon";

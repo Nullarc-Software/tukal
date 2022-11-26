@@ -6,13 +6,13 @@
 			:class="[
 				`tu-loading--${type || 'default'}`,
 				{ 'tu-loading--target': !!target },
-				{ 'tu-loading--background': !!background },
+				{ 'tu-loading--background': !!background }
 			]"
 		>
 			<div
 				class="tu-loading__load"
 				:style="{
-					transform: `scale(${scale})`,
+					transform: `scale(${scale})`
 				}"
 			>
 				<div class="tu-loading__load__animation">
@@ -31,7 +31,7 @@
 				<div
 					class="tu-loading__progress__bar"
 					:style="{
-						width: `${progress}%`,
+						width: `${progress}%`
 					}"
 				></div>
 			</div>
@@ -42,10 +42,9 @@
 <script lang="ts">
 import { setColor, setVar } from "@/utils";
 import { defineComponent, getCurrentInstance, watch } from "vue";
-import tuComponent from "../tuComponent";
 
 export default defineComponent({
-	name: "TuLoading",	
+	name: "TuLoading",
 	props: {
 		text: { type: String, default: null },
 		type: { type: String, default: "default" },
@@ -56,10 +55,10 @@ export default defineComponent({
 		progress: { type: Number, default: null },
 		scale: { type: String, default: null },
 		target: {},
-		isVisible: { type: Boolean, default: true },
+		isVisible: { type: Boolean, default: true }
 	},
-	setup(props, context) {
-		let instance = getCurrentInstance();
+	setup (props, context) {
+		const instance = getCurrentInstance();
 
 		watch(
 			() => props.isVisible,
@@ -67,13 +66,12 @@ export default defineComponent({
 				if (instance?.vnode.el) {
 					setColor("color", props.color, instance.vnode.el);
 					setColor("background", props.background, instance.vnode.el);
-					if (props.opacity) {
+					if (props.opacity)
 						setVar("opacity", props.opacity, instance.vnode.el);
-					}
 				}
 			}
 		);
-	},
+	}
 });
 </script>
 
@@ -112,9 +110,9 @@ export default defineComponent({
 		position: absolute;
 	}
 
-    &:not(.tu-loading--target) {
-        position: fixed;
-    }
+	&:not(.tu-loading--target) {
+		position: fixed;
+	}
 
 	&__load {
 		display: flex;
