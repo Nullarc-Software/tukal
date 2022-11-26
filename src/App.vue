@@ -1003,6 +1003,14 @@
                 height="100px"
             />
         </div>
+		<div class="showcase-component">
+			<h2>Color-picker</h2>
+			<tu-color-picker> </tu-color-picker>
+		</div>
+		<div class="showcase-component">
+			<h2>Wysiwyg editor</h2>
+			<tu-wysiwyg />
+		</div>
         <div class="showcase-component">
             <h4>Table:</h4>
             <hr />
@@ -1059,6 +1067,9 @@
             <hr />
             <!-- <tu-upload singleUpload :limit="1" /> -->
         </div>
+		<div class="showcase-component">
+			<tu-calendar model="server" :items="items" v-model="events" :components="component" :categories="Categories" @onClickDay="onClick" />
+		</div>
     </div>
 </template>
 
@@ -1147,6 +1158,43 @@ export default defineComponent({
 		};
 		const configUpdate = (config) => {
 			console.log(config);
+		};
+		const newItemTitle = ref("");
+		const newItemStartDate = ref();
+		const newItemStartTime = ref();
+		const newItemEndDate = ref();
+		const newItemEndTime = ref();
+		const Categories = [
+			{
+				name: "Birthday",
+				color: "primary"
+			},
+			{
+				name: "Appointment",
+				color: "success"
+			},
+			{
+				name: "Meeting",
+				color: "danger"
+			}
+		];
+		const items = ref([]);
+		const onClick = (date: Date) => {
+			newItemStartDate.value = date;
+		};
+		const submitNewItem = () => {
+			if (newItemEndDate.value === undefined)
+				newItemEndDate.value = newItemStartDate.value;
+			items.value.push({
+				startDate: new Date(
+					newItemStartDate.value + " " + newItemStartTime.value
+				),
+				endDate: new Date(
+					newItemEndDate.value + " " + newItemEndTime.value
+				),
+				title: newItemTitle.value,
+				id: "e" + Math.random().toString(36).substring(2, 11)
+			});
 		};
 
 		const notificationComponent = ref(null);
@@ -1482,6 +1530,15 @@ export default defineComponent({
 			rowClicked,
 			beginLoad,
 			afterLoad,
+			newItemTitle,
+			newItemStartDate,
+			newItemStartTime,
+			newItemEndDate,
+			newItemEndTime,
+			submitNewItem,
+			items,
+			onClick,
+			Categories
 			configUpdate
 		};
 	}
