@@ -186,7 +186,7 @@ export default defineComponent({
 			sortType,
 			resizeListeners,
 			keyPressed,
-			toggleSort,
+			toggleSort
 		};
 	}
 });
