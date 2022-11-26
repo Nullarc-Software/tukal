@@ -1159,7 +1159,6 @@ export default defineComponent({
 		const configUpdate = (config) => {
 			console.log(config);
 		};
-
 		const newItemTitle = ref("");
 		const newItemStartDate = ref();
 		const newItemStartTime = ref();
@@ -1197,7 +1196,6 @@ export default defineComponent({
 				id: "e" + Math.random().toString(36).substring(2, 11)
 			});
 		};
-
 
 		const notificationComponent = ref(null);
 		const validEmail = computed(function () {
@@ -1532,7 +1530,6 @@ export default defineComponent({
 			rowClicked,
 			beginLoad,
 			afterLoad,
-			configUpdate,
 			newItemTitle,
 			newItemStartDate,
 			newItemStartTime,
@@ -1542,6 +1539,7 @@ export default defineComponent({
 			items,
 			onClick,
 			Categories
+			configUpdate
 		};
 	}
 });

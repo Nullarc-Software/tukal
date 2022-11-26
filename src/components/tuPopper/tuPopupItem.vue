@@ -1,6 +1,6 @@
 <template>
 	<li
-		:class="{ 'divider': divider }"
+		:class="{ divider: divider }"
 		:style="{
 			color: hoverx ? giveColor() + ' !important' : null,
 			background: hoverx ? giveColor(0.01) + ' !important' : null
@@ -37,7 +37,10 @@ export default defineComponent({
 	name: "TuPopupItem",
 	inheritAttrs: false,
 	props: {
-		to: {},
+		to: {
+			type: Object,
+			default: null
+		},
 		onClickClose: {
 			default: false,
 			type: Boolean
