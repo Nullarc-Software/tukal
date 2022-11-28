@@ -2,11 +2,11 @@ module.exports = {
 	configureWebpack: {
 		devtool: "source-map"
 	},
-	chainWebpack: config => {
+	chainWebpack: (config) => {
 		config.module
 			.rule("ts")
 			.use("ts-loader")
-			.tap(options => {
+			.tap((options) => {
 				options.transpileOnly = false;
 				options.happyPackMode = false;
 				options.compilerOptions = {

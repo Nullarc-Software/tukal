@@ -1,11 +1,11 @@
-import { INormalizedCalendarItem } from "./ICalendarItem"
-import CalendarMath from "./CalendarMath"
+import CalendarMath from "./CalendarMath";
+import { INormalizedCalendarItem } from "./ICalendarItem";
 
 class CalendarViewState {
-	currentDragItem?: INormalizedCalendarItem = undefined
-	dateSelectionOrigin?: Date = undefined
-	currentHoveredItemId: string = ""
-	CalendarMath: object = CalendarMath
+	currentDragItem?: INormalizedCalendarItem = undefined;
+	dateSelectionOrigin?: Date = undefined;
+	currentHoveredItemId: string = "";
+	CalendarMath: object = CalendarMath;
 }
 
-export default CalendarViewState
+export default CalendarViewState;

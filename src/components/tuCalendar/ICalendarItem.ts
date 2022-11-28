@@ -30,4 +30,4 @@ export interface TuCalendarServerModel {
 
 type DateTimeFormatOption = "long" | "short" | "narrow" | undefined
 
-export { ICalendarItem, INormalizedCalendarItem, DateTimeFormatOption }
+export { ICalendarItem, INormalizedCalendarItem, DateTimeFormatOption };

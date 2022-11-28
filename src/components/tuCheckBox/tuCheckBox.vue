@@ -44,7 +44,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, watch, ref } from "vue";
+import { computed, defineComponent, onMounted, watch } from "vue";
 import tuIcon from "../tuIcon";
 
 import tuComponent from "../tuComponent";
@@ -215,7 +215,6 @@ export default defineComponent({
 	position: relative;
 	z-index: 1;
 }
-
 
 .tu-checkbox-mask {
 	border-radius: 32%;

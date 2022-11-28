@@ -1,13 +1,23 @@
 <template>
-  <i
-    :style="iconStyle"
-    :class="[getIconPack, icon, iconClass, getBg, getBgSize, {'round':round}, {'outlined': outlined}]"
-    v-bind="$attrs"
-    class="tu-icon notranslate icon-scale unselectable"
-  >
-	{{ (getIconPack.includes("material-icons") && icon !== null) ? icon : '' }}
-    <slot v-if="$slots.default"></slot>
-  </i>
+	<i
+		:style="iconStyle"
+		:class="[
+			getIconPack,
+			icon,
+			iconClass,
+			getBg,
+			getBgSize,
+			{ round: round },
+			{ outlined: outlined }
+		]"
+		v-bind="$attrs"
+		class="tu-icon notranslate icon-scale unselectable"
+	>
+		{{
+			getIconPack.includes("material-icons") && icon !== null ? icon : ""
+		}}
+		<slot v-if="$slots.default"></slot>
+	</i>
 </template>
 <script lang="ts">
 import { computed, defineComponent } from "vue";
@@ -50,7 +60,6 @@ export default defineComponent({
 			default: false,
 			type: Boolean
 		}
-
 	},
 	setup (props, context) {
 		let iconPackGlobal: string | null = null;
@@ -58,14 +67,9 @@ export default defineComponent({
 			iconPackGlobal = ComponentConstants.iconPackGlobal;
 
 		const getIconPack = computed(() => {
-			if (props.iconPack)
-				return props.iconPack;
-
-			else if (iconPackGlobal)
-				return iconPackGlobal;
-
-			else
-				return "material-icons";
+			if (props.iconPack) return props.iconPack;
+			else if (iconPackGlobal) return iconPackGlobal;
+			else return "material-icons";
 		});
 
 		const iconClass = computed(() => {
@@ -79,9 +83,21 @@ export default defineComponent({
 		});
 		const iconStyle = computed(() => {
 			const style = {
-				width: /(px)/.test(props.size) ? props.size : /(em)/.test(props.size) ? props.size : null,
-				height: /(px)/.test(props.size) ? props.size : /(em)/.test(props.size) ? props.size : null,
-				"font-size": /(px)/.test(props.size) ? props.size : /(em)/.test(props.size) ? props.size : null,
+				width: /(px)/.test(props.size)
+					? props.size
+					: /(em)/.test(props.size)
+						? props.size
+						: null,
+				height: /(px)/.test(props.size)
+					? props.size
+					: /(em)/.test(props.size)
+						? props.size
+						: null,
+				"font-size": /(px)/.test(props.size)
+					? props.size
+					: /(em)/.test(props.size)
+						? props.size
+						: null,
 				color: getColor.value,
 				background: getBgColor.value,
 				cursor: "pointer"

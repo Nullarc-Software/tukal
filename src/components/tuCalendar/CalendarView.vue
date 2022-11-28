@@ -1,3 +1,4 @@
+<!-- eslint-disable func-call-spacing -->
 <template>
 	<div
 		aria-label="Calendar"
@@ -177,7 +178,7 @@
 										0.9
 									)}`"
 								></span>
-								{{ getItemTitle(i, weekStart) }}
+								{{ getItemTitle(i) }}
 							</div>
 						</slot>
 					</template>
@@ -201,7 +202,7 @@
 				<div
 					type="1"
 					v-for="event in selectedDayEvents"
-					:key="event.originalItem"
+					:key="event.originalItem.id"
 				>
 					<div
 						class="text-wrapper"
@@ -404,10 +405,19 @@
 		</tu-dialog>
 	</div>
 </template>
-<script setup lang="ts">
+<script lang="ts" setup>
 import CalendarMath from "./CalendarMath";
 import CalendarViewState from "./CalendarViewState";
-import { computed, reactive, watch, withDefaults, ref, Ref } from "vue";
+import {
+	computed,
+	reactive,
+	watch,
+	withDefaults,
+	ref,
+	Ref,
+	defineProps,
+	defineEmits
+} from "vue";
 import {
 	ICalendarItem,
 	INormalizedCalendarItem,
@@ -415,10 +425,12 @@ import {
 } from "./ICalendarItem";
 import { IHeaderProps } from "./IHeaderProps";
 import * as _color from "../../utils";
-interface category {
-	name: String;
-	color: String;
-}
+
+type TCategory = {
+	name: string;
+	color: string;
+};
+
 const props = withDefaults(
 	defineProps<{
 		showDate?: Date;
@@ -446,7 +458,7 @@ const props = withDefaults(
 		currentPeriodLabel?: string;
 		currentPeriodLabelIcons?: string;
 		doEmitItemMouseEvents?: boolean;
-		categories?: Array<category>;
+		categories?: Array<TCategory>;
 		components?: any;
 		theme?: String;
 	}>(),
@@ -482,7 +494,6 @@ const props = withDefaults(
 	}
 );
 const emit = defineEmits<{
-	// (e: "input", payload: foo, windowEvent: Event): void
 	(e: "period-changed"): void;
 	(
 		e: "click-date",
@@ -536,6 +547,7 @@ const emit = defineEmits<{
 	(e: "updateItems", selectedEvent: ICalendarItem): void;
 	(e: "deleteItem", id: String): void;
 }>();
+
 interface ISelectedEvent {
 	Title: string;
 	StartDate: string;
@@ -545,6 +557,7 @@ interface ISelectedEvent {
 	Category: string;
 	id: string;
 }
+
 const state = reactive(new CalendarViewState());
 const selectedDayEvents: Ref<INormalizedCalendarItem[]> = ref([]);
 let selectedEvent: ISelectedEvent = reactive({
@@ -1120,8 +1133,7 @@ const getFormattedTimeRange = (
 		displayLocale.value,
 		props.timeFormatOptions
 	);
-	if (startTime === "")
-		startTime = "12:00:00 AM";
+	if (startTime === "") startTime = "12:00:00 AM";
 	let endTime = "";
 	if (!CalendarMath.isSameDateTime(item.startDate, item.endDate)) {
 		endTime = CalendarMath.formattedTime(
@@ -1129,8 +1141,7 @@ const getFormattedTimeRange = (
 			displayLocale.value,
 			props.timeFormatOptions
 		);
-		if (endTime === "")
-			endTime = "12:00:00 AM";
+		if (endTime === "") endTime = "12:00:00 AM";
 	}
 	return [startTime, endTime];
 };

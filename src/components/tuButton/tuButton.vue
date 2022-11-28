@@ -78,7 +78,6 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref } from "vue";
-import tuIcon from "../tuIcon";
 import tuComponent, { ComponentConstants } from "../tuComponent";
 
 import ripple, { rippleCut, rippleReverse } from "../../utils/ripple";
@@ -160,9 +159,6 @@ export default defineComponent({
 			clickButton,
 			listeners
 		};
-	},
-	components: {
-		tuIcon
 	}
 });
 </script>

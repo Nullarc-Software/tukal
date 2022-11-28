@@ -195,7 +195,7 @@ export default defineComponent({
 		id: { type: String, default: null },
 		placeholder: { type: String, default: null },
 		inline: { type: Boolean, default: false },
-		disable: { type: Boolean, default: false},
+		disable: { type: Boolean, default: false },
 		editableStatic: {
 			type: Boolean,
 			default: false
