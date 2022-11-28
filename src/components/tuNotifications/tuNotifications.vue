@@ -1,43 +1,30 @@
 <template>
-	<transition
-		enter-from-class="notification-enter-from"
-		enter-active-class="notification-enter-active"
-		enter-to-class="notification-enter-to"
-		leave-to-class="notification-leave-to"
-		leave-active-class="notification-leave-active"
-		appear
-		out-in
-	>
-		<div
-			:id="`notification-${notifId}`"
-			ref="notif"
-			:class="[
-				{ 'tu-notification--color': color },
-				{ 'tu-notification--border': border },
-				{ 'tu-notification--icon': icon },
-				{ 'tu-notification--onClick': onClick },
-				{ 'tu-notification--onClickClose': onClickClose },
-				{ 'tu-notification--flat': flat },
-				{ 'tu-notification--sticky': sticky },
-				{ 'tu-notification--square': square },
-				{ 'tu-notification--width-all': width == '100%' },
-				{ 'tu-notification--width-auto': width == 'auto' },
-				{ 'tu-notification--loading': loading },
-				{ 'tu-notification--notPadding': notPadding },
-				`tu-notification--${isColor() ? color : null}`,
-				classNotification,
-				transitionClass
-			]"
-			:style="{
-				['--tu-color']: color ? getColor(color) : '',
-				['--tu-color-secondary']: colorSecondary
-					? getColor(colorSecondary)
-					: '',
-				['--tu-color-text']: textColor ? getColor(textColor) : ''
-			}"
-			class="tu-component tu-notification"
-			@click="clickNoti"
-		>
+	<transition enter-from-class="notification-enter-from" enter-active-class="notification-enter-active"
+		enter-to-class="notification-enter-to" leave-to-class="notification-leave-to"
+		leave-active-class="notification-leave-active" appear out-in>
+		<div :id="`notification-${notifId}`" ref="notif" :class="[
+			{ 'tu-notification--color': color },
+			{ 'tu-notification--border': border },
+			{ 'tu-notification--icon': icon },
+			{ 'tu-notification--onClick': onClick },
+			{ 'tu-notification--onClickClose': onClickClose },
+			{ 'tu-notification--flat': flat },
+			{ 'tu-notification--sticky': sticky },
+			{ 'tu-notification--square': square },
+			{ 'tu-notification--width-all': width == '100%' },
+			{ 'tu-notification--width-auto': width == 'auto' },
+			{ 'tu-notification--loading': loading },
+			{ 'tu-notification--notPadding': notPadding },
+			`tu-notification--${isColor() ? color : null}`,
+			classNotification,
+			transitionClass
+		]" :style="{
+	['--tu-color']: color ? getColor(color) : '',
+	['--tu-color-secondary']: colorSecondary
+		? getColor(colorSecondary)
+		: '',
+	['--tu-color-text']: textColor ? getColor(textColor) : ''
+}" class="tu-component tu-notification" @click="clickNoti">
 			<div v-if="!loading && icon">
 				<tu-icon>{{ icon }} </tu-icon>
 			</div>
@@ -56,18 +43,11 @@
 					</component>
 				</div>
 			</div>
-			<button
-				v-if="buttonClose"
-				class="tu-notification__close"
-				@click="handleClickClose"
-			>
+			<button v-if="buttonClose" class="tu-notification__close" @click="handleClickClose">
 				<tu-icon>close</tu-icon>
 			</button>
 			<div v-if="loading" class="tu-notification__loading"></div>
-			<div
-				class="tu-notification__progress"
-				:style="{ width: `${internalProgress}%` }"
-			></div>
+			<div class="tu-notification__progress" :style="{ width: `${internalProgress}%` }"></div>
 		</div>
 	</transition>
 </template>
@@ -193,9 +173,9 @@ export default defineComponent({
 		TransitionGroup
 	},
 	emits: ["close"],
-	setup (props, context) {
+	setup(props, context) {
 		const internalProgress = ref(props.progress);
-		const intervalProgress = ref(0);
+		const intervalProgress = ref<NodeJS.Timer>();
 		const notif = ref<HTMLDivElement>();
 
 		const transitionClass = ref<Array<String>>([]);
@@ -302,6 +282,7 @@ export default defineComponent({
 	opacity: 0 !important;
 	clip-path: circle(0% at 80% 35%) !important;
 }
+
 // transform: translate(0,10px) !important
 
 .tu-notification-parent {
@@ -428,6 +409,7 @@ export default defineComponent({
 		.notification-enter-from {
 			transform: translate(-25%);
 			clip-path: circle(145% at 80% 30%) !important;
+
 			.tu-notification__content {
 				opacity: 0;
 				transform: translate(-10%);
@@ -441,10 +423,12 @@ export default defineComponent({
 			}
 		}
 	}
+
 	&--bottom-right {
 		.notification-enter-from {
 			transform: translate(25%);
 			clip-path: circle(0% at 80% 35%) !important;
+
 			.tu-notification__content {
 				opacity: 0;
 				transform: translate(10%);
@@ -471,6 +455,7 @@ export default defineComponent({
 	transition: all 0.25s ease, transform 0.3s ease 0.1s, max-height 0.25s ease,
 		clip-path 0.5s ease 0.1s;
 	padding: 20px;
+
 	&:hover:not(&--flat) {
 		box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, -var("shadow-opacity"));
 		transform: translate(0, 3px);
@@ -713,6 +698,7 @@ export default defineComponent({
 
 .tu-notification--light {
 	color: #000 !important;
+
 	i {
 		color: #000 !important;
 	}

@@ -1,50 +1,26 @@
 <template>
 	<div class="cv-header">
 		<div class="cv-header-nav">
-			<tu-button
-				transparent
-				:disabled="!headerProps.previousYear"
-				class="previousYear"
-				aria-label="Previous Year"
-				@click.prevent="onInput(headerProps.previousYear!)"
-			>
+			<tu-button transparent :disabled="!headerProps.previousYear" class="previousYear" aria-label="Previous Year"
+				@click.prevent="onInput(headerProps.previousYear!)">
 				<tu-icon style="transform: scale(-1, 1)">double_arrow</tu-icon>
 			</tu-button>
-			<tu-button
-				transparent
-				:disabled="!headerProps.previousPeriod"
-				class="previousPeriod"
-				aria-label="Previous Period"
-				@click.prevent="onInput(headerProps.previousPeriod!)"
-			>
+			<tu-button transparent :disabled="!headerProps.previousPeriod" class="previousPeriod"
+				aria-label="Previous Period" @click.prevent="onInput(headerProps.previousPeriod!)">
 				<tu-icon>navigate_before</tu-icon>
 			</tu-button>
-			<tu-button
-				transparent
-				class="currentPeriod"
-				aria-label="Current Period"
-				@click.prevent="onInput(headerProps.currentPeriod)"
-			>
+			<tu-button transparent class="currentPeriod" aria-label="Current Period"
+				@click.prevent="onInput(headerProps.currentPeriod)">
 				<span class="label-span">{{
-					headerProps.currentPeriodLabel
+						headerProps.currentPeriodLabel
 				}}</span>
 			</tu-button>
-			<tu-button
-				transparent
-				:disabled="!headerProps.nextPeriod"
-				class="nextPeriod"
-				aria-label="Next Period"
-				@click.prevent="onInput(headerProps.nextPeriod!)"
-			>
+			<tu-button transparent :disabled="!headerProps.nextPeriod" class="nextPeriod" aria-label="Next Period"
+				@click.prevent="onInput(headerProps.nextPeriod!)">
 				<tu-icon>navigate_next</tu-icon>
 			</tu-button>
-			<tu-button
-				transparent
-				:disabled="!headerProps.nextYear"
-				class="nextYear"
-				aria-label="Next Year"
-				@click.prevent="onInput(headerProps.nextYear!)"
-			>
+			<tu-button transparent :disabled="!headerProps.nextYear" class="nextYear" aria-label="Next Year"
+				@click.prevent="onInput(headerProps.nextYear!)">
 				<tu-icon>double_arrow</tu-icon>
 			</tu-button>
 		</div>
@@ -56,28 +32,14 @@
 				<template #off> month </template>
 				<template #on> week </template>
 			</tu-switch>
-			<tu-switch
-				color="dark"
-				val="dark"
-				notValue="theme-default"
-				v-model="theme"
-			>
+			<tu-switch color="dark" val="dark" notValue="theme-default" v-model="theme">
 				<template #off> light </template>
 				<template #on> dark </template>
 			</tu-switch>
 		</div>
-		<tu-button
-			@click="openAddCategoryDialog"
-			class="category-button"
-			transparent
-			>Add Category</tu-button
-		>
+		<tu-button @click="openAddCategoryDialog" class="category-button" transparent>Add Category</tu-button>
 	</div>
-	<tu-dialog
-		width="350px"
-		v-model="addCategoryDialog"
-		@close="addCategoryClose"
-	>
+	<tu-dialog width="350px" v-model="addCategoryDialog">
 		<header>
 			<h2 class="dialog-header">Add Category</h2>
 		</header>
@@ -89,12 +51,7 @@
 							<span title="Label">Name</span>
 						</td>
 						<td>
-							<tu-input
-								primary
-								v-model="categoryName"
-								state="primary"
-								placeholder="Title"
-							/>
+							<tu-input primary v-model="categoryName" state="primary" placeholder="Title" />
 						</td>
 					</tr>
 					<tr>

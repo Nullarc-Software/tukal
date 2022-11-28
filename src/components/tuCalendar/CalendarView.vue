@@ -1,183 +1,126 @@
 <!-- eslint-disable func-call-spacing -->
 <template>
-	<div
-		aria-label="Calendar"
-		:class="[
-			'cv-wrapper',
-			`locale-${CalendarMath.languageCode(displayLocale)}`,
-			`locale-${displayLocale}`,
-			`y${periodStart.getFullYear()}`,
-			`m${CalendarMath.paddedMonth(periodStart)}`,
-			`period-${displayPeriodUom}`,
-			`periodCount-${displayPeriodCount}`,
-			{
-				past: CalendarMath.isPastMonth(periodStart),
-				future: CalendarMath.isFutureMonth(periodStart),
-				noIntl: !CalendarMath.supportsIntl
-			}
-		]"
-	>
+	<div aria-label="Calendar" :class="[
+		'cv-wrapper',
+		`locale-${CalendarMath.languageCode(displayLocale)}`,
+		`locale-${displayLocale}`,
+		`y${periodStart.getFullYear()}`,
+		`m${CalendarMath.paddedMonth(periodStart)}`,
+		`period-${displayPeriodUom}`,
+		`periodCount-${displayPeriodCount}`,
+		{
+			past: CalendarMath.isPastMonth(periodStart),
+			future: CalendarMath.isFutureMonth(periodStart),
+			noIntl: !CalendarMath.supportsIntl
+		}
+	]">
 		<slot :headerProps="headerProps" name="header" />
 		<div class="cv-header-days">
 			<div v-if="displayWeekNumbers" class="cv-weeknumber" />
 			<template v-for="(label, index) in weekdayNames">
-				<slot
-					:index="getColumnDOWClass(index)"
-					:label="label"
-					name="dayHeader"
-				>
-					<div
-						:key="getColumnDOWClass(index)"
-						:class="getColumnDOWClass(index)"
-						class="cv-header-day"
-					>
+				<slot :index="getColumnDOWClass(index)" :label="label" name="dayHeader">
+					<div :key="getColumnDOWClass(index)" :class="getColumnDOWClass(index)" class="cv-header-day">
 						{{ label }}
 					</div>
 				</slot>
 			</template>
 		</div>
 		<div :aria-multiselectable="enableDateSelection" class="cv-weeks">
-			<div
-				v-for="(weekStart, weekIndex) in weeksOfPeriod"
-				:key="`${weekIndex}-week`"
-				:class="[
-					'cv-week',
-					`week${weekIndex + 1}`,
-					`ws${CalendarMath.isoYearMonthDay(weekStart)}`
-				]"
-			>
+			<div v-for="(weekStart, weekIndex) in weeksOfPeriod" :key="`${weekIndex}-week`" :class="[
+				'cv-week',
+				`week${weekIndex + 1}`,
+				`ws${CalendarMath.isoYearMonthDay(weekStart)}`
+			]">
 				<div v-if="displayWeekNumbers" class="cv-weeknumber">
-					<slot
-						name="weekNumber"
-						:date="weekStart"
-						:numberInYear="periodStartCalendarWeek + weekIndex"
-						:numberInPeriod="weekIndex + 1"
-						><span>{{
-							periodStartCalendarWeek + weekIndex
-						}}</span></slot
-					>
+					<slot name="weekNumber" :date="weekStart" :numberInYear="periodStartCalendarWeek + weekIndex"
+						:numberInPeriod="weekIndex + 1"><span>{{
+								periodStartCalendarWeek + weekIndex
+						}}</span></slot>
 				</div>
 				<div class="cv-weekdays">
-					<div
-						v-for="(day, dayIndex) in CalendarMath.daysOfWeek(
-							weekStart
-						)"
-						:key="getColumnDOWClass(dayIndex)"
-						:draggable="enableDateSelection"
-						:class="[
-							'cv-day',
-							getColumnDOWClass(dayIndex),
-							`d${CalendarMath.isoYearMonthDay(day)}`,
-							`d${CalendarMath.isoMonthDay(day)}`,
-							`d${CalendarMath.paddedDay(day)}`,
-							`instance${CalendarMath.instanceOfMonth(day)}`,
-							{
-								today: CalendarMath.isSameDate(
-									day,
-									CalendarMath.today()
-								),
-								outsideOfMonth: !CalendarMath.isSameMonth(
-									day,
-									defaultedShowDate
-								),
-								past: CalendarMath.isInPast(day),
-								future: CalendarMath.isInFuture(day),
-								last: CalendarMath.isLastDayOfMonth(day),
-								lastInstance:
-									CalendarMath.isLastInstanceOfMonth(day),
-								hasItems: dayHasItems(day),
-								selectionStart: CalendarMath.isSameDate(
-									day,
-									selectionStart
-								),
-								selectionEnd: CalendarMath.isSameDate(
-									day,
-									selectionEnd
-								)
-							},
-							...((dateClasses &&
-								dateClasses[
-									CalendarMath.isoYearMonthDay(day)
-								]) ||
-								[])
-						]"
-						:aria-grabbed="
-							enableDateSelection ? dayIsSelected(day) : undefined
-						"
-						:aria-label="day.getDate().toString()"
-						:aria-selected="dayIsSelected(day)"
-						:aria-dropeffect="
-							enableDragDrop && state.currentDragItem
-								? 'move'
-								: enableDateSelection &&
-								  state.dateSelectionOrigin
-								? 'execute'
-								: 'none'
-						"
-						@click="onClickDay(day, $event)"
-						@dragstart="onDragDateStart(day, $event)"
-						@drop.prevent="onDrop(day, $event)"
-						@dragover.prevent="onDragOver(day, $event)"
-						@dragenter.prevent="onDragEnter(day, $event)"
-						@dragleave.prevent="onDragLeave(day, $event)"
-					>
+					<div v-for="(day, dayIndex) in CalendarMath.daysOfWeek(
+						weekStart
+					)" :key="getColumnDOWClass(dayIndex)" :draggable="enableDateSelection" :class="[
+	'cv-day',
+	getColumnDOWClass(dayIndex),
+	`d${CalendarMath.isoYearMonthDay(day)}`,
+	`d${CalendarMath.isoMonthDay(day)}`,
+	`d${CalendarMath.paddedDay(day)}`,
+	`instance${CalendarMath.instanceOfMonth(day)}`,
+	{
+		today: CalendarMath.isSameDate(
+			day,
+			CalendarMath.today()
+		),
+		outsideOfMonth: !CalendarMath.isSameMonth(
+			day,
+			defaultedShowDate
+		),
+		past: CalendarMath.isInPast(day),
+		future: CalendarMath.isInFuture(day),
+		last: CalendarMath.isLastDayOfMonth(day),
+		lastInstance:
+			CalendarMath.isLastInstanceOfMonth(day),
+		hasItems: dayHasItems(day),
+		selectionStart: CalendarMath.isSameDate(
+			day,
+			selectionStart
+		),
+		selectionEnd: CalendarMath.isSameDate(
+			day,
+			selectionEnd
+		)
+	},
+	...((dateClasses &&
+		dateClasses[
+		CalendarMath.isoYearMonthDay(day)
+		]) ||
+		[])
+]" :aria-grabbed="
+	enableDateSelection ? dayIsSelected(day) : undefined
+" :aria-label="day.getDate().toString()" :aria-selected="dayIsSelected(day)" :aria-dropeffect="
+	enableDragDrop && state.currentDragItem
+		? 'move'
+		: enableDateSelection &&
+			state.dateSelectionOrigin
+			? 'execute'
+			: 'none'
+" @click="onClickDay(day, $event)" @dragstart="onDragDateStart(day, $event)" @drop.prevent="onDrop(day, $event)"
+						@dragover.prevent="onDragOver(day, $event)" @dragenter.prevent="onDragEnter(day, $event)"
+						@dragleave.prevent="onDragLeave(day, $event)">
 						<div class="cv-day-number">{{ day.getDate() }}</div>
 						<slot :day="day" name="dayContent" />
-						<span
-							:key="i"
-							class="tu-count"
-							v-if="
-								getEventsCount(day, weekStart) > 0 &&
-								props.displayPeriodUom === 'month'
-							"
-							@click.stop="getSelectedDayEvents(day, weekStart)"
-						>
+						<span class="tu-count" v-if="
+							getEventsCount(day, weekStart) > 0 &&
+							props.displayPeriodUom === 'month'
+						" @click.stop="getSelectedDayEvents(day, weekStart)">
 							+ {{ getEventsCount(day, weekStart) }} more event
 						</span>
 					</div>
 					<template v-for="i in getWeekItems(weekStart)">
-						<slot
-							:value="i"
-							:weekStartDate="weekStart"
-							:top="getItemTop(i)"
-							name="item"
-						>
-							<div
-								:key="i.id"
-								:draggable="enableDragDrop"
-								:aria-grabbed="
-									enableDragDrop
-										? i == state.currentDragItem
-										: undefined
-								"
-								:class="i.classes"
-								:title="i.tooltip || i.title"
-								:style="`background:${_color.getApplyColor(
-									getItemCategoryColor(i),
-									0.2
-								)};top:${getItemTop(
-									i
-								)};border: 2px solid ${getItemBorderColor(i)};`"
-								class="cv-item"
-								@dragstart="onDragItemStart(i, $event)"
-								@mouseenter="onMouseEnterItem(i, $event)"
-								@mouseleave="onMouseLeaveItem(i, $event)"
+						<slot :value="i" :weekStartDate="weekStart" :top="getItemTop(i)" name="item">
+							<div :key="i.id" :draggable="enableDragDrop" :aria-grabbed="
+								enableDragDrop
+									? i == state.currentDragItem
+									: undefined
+							" :class="i.classes" :title="i.tooltip || i.title" :style="`background:${_color.getApplyColor(
+	getItemCategoryColor(i),
+	0.2
+)};top:${getItemTop(
+	i
+)};border: 2px solid ${getItemBorderColor(i)};`" class="cv-item" @dragstart="onDragItemStart(i, $event)"
+								@mouseenter="onMouseEnterItem(i, $event)" @mouseleave="onMouseLeaveItem(i, $event)"
 								@click.stop="
-									onClickItem(i, $event);
-									openEventDialog(i);
-								"
-								v-if="
+	onClickItem(i, $event);
+openEventDialog(i);
+								" v-if="
 									i.itemRow < 3 ||
 									props.displayPeriodUom === 'week'
-								"
-							>
-								<span
-									class="event-dot"
-									:style="`background: ${_color.getApplyColor(
-										getItemCategoryColor(i),
-										0.9
-									)}`"
-								></span>
+								">
+								<span class="event-dot" :style="`background: ${_color.getApplyColor(
+									getItemCategoryColor(i),
+									0.9
+								)}`"></span>
 								{{ getItemTitle(i) }}
 							</div>
 						</slot>
@@ -189,56 +132,48 @@
 			<header>
 				<div class="dialog-date">
 					{{
-						selectedDay.getDate() +
-						" " +
-						monthNames[selectedDay.getMonth()] +
-						" " +
-						selectedDay.getFullYear()
+							selectedDay.getDate() +
+							" " +
+							monthNames[selectedDay.getMonth()] +
+							" " +
+							selectedDay.getFullYear()
 					}}
 				</div>
 			</header>
 			<div class="header">Events</div>
 			<div class="dialog-content overflow-auto">
-				<div
-					type="1"
-					v-for="event in selectedDayEvents"
-					:key="event.originalItem.id"
-				>
-					<div
-						class="text-wrapper"
-						@click="openEventDialog(event)"
-						:style="`background:${_color.getApplyColor(
-							getItemCategoryColor(event),
-							0.2
-						)}`"
-					>
+				<div type="1" v-for="event in selectedDayEvents" :key="event.originalItem.id">
+					<div class="text-wrapper" @click="openEventDialog(event)" :style="`background:${_color.getApplyColor(
+						getItemCategoryColor(event),
+						0.2
+					)}`">
 						<div class="event-title">
 							{{ event.originalItem.title }}
 						</div>
 						<div class="event-date">
 							Date:
 							{{
-								event.originalItem.startDate.getDate() +
-								" " +
-								monthNames[
-									event.originalItem.startDate.getMonth()
-								].slice(0, 3) +
-								" " +
-								event.originalItem.startDate.getFullYear() +
-								" " +
-								getFormattedTimeRange(event)[0] +
-								" - "
+									event.originalItem.startDate.getDate() +
+									" " +
+									monthNames[
+										event.originalItem.startDate.getMonth()
+									].slice(0, 3) +
+									" " +
+									event.originalItem.startDate.getFullYear() +
+									" " +
+									getFormattedTimeRange(event)[0] +
+									" - "
 							}}
 							{{
-								event.originalItem.endDate.getDate() +
-								" " +
-								monthNames[
-									event.originalItem.endDate.getMonth()
-								].slice(0, 3) +
-								" " +
-								event.originalItem.endDate.getFullYear() +
-								" " +
-								getFormattedTimeRange(event)[1]
+									event.originalItem.endDate.getDate() +
+									" " +
+									monthNames[
+										event.originalItem.endDate.getMonth()
+									].slice(0, 3) +
+									" " +
+									event.originalItem.endDate.getFullYear() +
+									" " +
+									getFormattedTimeRange(event)[1]
 							}}
 						</div>
 						<div class="event-category">
@@ -259,12 +194,8 @@
 				</tu-button>
 			</template>
 		</tu-dialog>
-		<tu-dialog
-			width="550px"
-			v-model="selectedEventDIalog"
-			@close="selectedEventClose"
-			v-if="props.components === null"
-		>
+		<tu-dialog width="550px" v-model="selectedEventDIalog" @close="selectedEventClose"
+			v-if="props.components === null">
 			<header>
 				<h2 class="dialog-header" v-if="!isEditEvent">
 					{{ selectedEvent.Title }}
@@ -279,13 +210,8 @@
 								<span title="Label">Title</span>
 							</td>
 							<td>
-								<tu-input
-									primary
-									v-model="selectedEvent.Title"
-									state="primary"
-									placeholder="Title"
-									:disable="!isEditEvent"
-								/>
+								<tu-input primary v-model="selectedEvent.Title" state="primary" placeholder="Title"
+									:disable="!isEditEvent" />
 							</td>
 						</tr>
 						<tr>
@@ -293,11 +219,7 @@
 								<span title="Label">Start Date</span>
 							</td>
 							<td>
-								<tu-input
-									type="date"
-									v-model="selectedEvent.StartDate"
-									:disable="!isEditEvent"
-								/>
+								<tu-input type="date" v-model="selectedEvent.StartDate" :disable="!isEditEvent" />
 							</td>
 						</tr>
 						<tr>
@@ -305,11 +227,7 @@
 								<span title="Label">Start Time</span>
 							</td>
 							<td>
-								<tu-input
-									type="time"
-									v-model="selectedEvent.StartTime"
-									:disable="!isEditEvent"
-								/>
+								<tu-input type="time" v-model="selectedEvent.StartTime" :disable="!isEditEvent" />
 							</td>
 						</tr>
 						<tr>
@@ -317,11 +235,7 @@
 								<span title="Label">End Date</span>
 							</td>
 							<td>
-								<tu-input
-									type="date"
-									v-model="selectedEvent.EndDate"
-									:disable="!isEditEvent"
-								/>
+								<tu-input type="date" v-model="selectedEvent.EndDate" :disable="!isEditEvent" />
 							</td>
 						</tr>
 						<tr>
@@ -329,11 +243,7 @@
 								<span title="Label">End Time</span>
 							</td>
 							<td>
-								<tu-input
-									type="time"
-									v-model="selectedEvent.EndTime"
-									:disable="!isEditEvent"
-								/>
+								<tu-input type="time" v-model="selectedEvent.EndTime" :disable="!isEditEvent" />
 							</td>
 						</tr>
 						<tr>
@@ -341,24 +251,13 @@
 								<span title="Label">Category</span>
 							</td>
 							<td>
-								<tu-select
-									inline
-									:disabled="!isEditEvent"
-									v-model="selectedEvent.Category"
-								>
-									<tu-select-option
-										v-for="category in categories"
-										:key="category"
-										:label="category.name"
-										:value="category.name"
-									>
-										<span
-											class="dot"
-											:style="`background: ${_color.getApplyColor(
-												category.color,
-												0.6
-											)}`"
-										></span>
+								<tu-select inline :disabled="!isEditEvent" v-model="selectedEvent.Category">
+									<tu-select-option v-for="category in categories" :key="category"
+										:label="category.name" :value="category.name">
+										<span class="dot" :style="`background: ${_color.getApplyColor(
+											category.color,
+											0.6
+										)}`"></span>
 										{{ category.name }}
 									</tu-select-option>
 								</tu-select>
@@ -372,13 +271,10 @@
 					<tu-button success @click.stop="isEditEvent = true">
 						Edit
 					</tu-button>
-					<tu-button
-						danger
-						@click="
-							selectedEventDIalog = false;
-							confirmationDialog = true;
-						"
-					>
+					<tu-button danger @click="
+						selectedEventDIalog = false;
+					confirmationDialog = true;
+					">
 						delete
 					</tu-button>
 				</div>
@@ -389,19 +285,9 @@
 				</div>
 			</template>
 		</tu-dialog>
-		<tu-dialog
-			width="550px"
-			v-model="selectedEventDIalog"
-			@close="selectedEventClose"
-			v-else
-		>
-			<component
-				:is="components.eventDetail"
-				:selectedEvent="selectedEvent"
-				:categories="categories"
-				@editItem="editItem()"
-				@deleteItem="deleteItem()"
-			/>
+		<tu-dialog width="550px" v-model="selectedEventDIalog" @close="selectedEventClose" v-else>
+			<component :is="components.eventDetail" :selectedEvent="selectedEvent" :categories="categories"
+				@editItem="editItem()" @deleteItem="deleteItem()" />
 		</tu-dialog>
 	</div>
 </template>
@@ -640,7 +526,7 @@ const weeksOfPeriod = computed((): Date[] => {
 	const numWeeks = Math.floor(
 		(CalendarMath.dayDiff(displayFirstDate.value, displayLastDate.value) +
 			1) /
-			7
+		7
 	);
 	return [...Array(numWeeks)].map((_, i) =>
 		CalendarMath.addDays(displayFirstDate.value, i * 7)

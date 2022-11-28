@@ -5,8 +5,8 @@
 		</div>
 	</transition>
 </template>
-<script>
-import utils from "../../utils";
+<script lang="ts">
+import * as utils from "../../utils";
 export default {
 	name: "ViewUpload",
 	props: {

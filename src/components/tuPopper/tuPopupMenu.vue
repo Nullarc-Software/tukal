@@ -1,5 +1,5 @@
 <template>
-	<div ref="dropOptions" @mouseleave="mouseleavex" @mouseenter="mouseenterx">
+	<div ref="dropOptions">
 		<!-- @mouseout="toggleMenu($event)" -->
 		<!-- @mouseover="toggleMenu($event)" -->
 		<ul class="tu-component tu-dropdown--menu">
@@ -10,8 +10,6 @@
 
 <script lang="ts">
 import { insertBody } from "@/utils";
-
-import Popper from "vue3-popper";
 import {
 	defineComponent,
 	getCurrentInstance,
@@ -25,7 +23,7 @@ import {
 export default defineComponent({
 	name: "TuPopupMenu",
 	components: {
-		Popper
+		
 	},
 	emits: ["remove", "shown"],
 	setup (props, context) {

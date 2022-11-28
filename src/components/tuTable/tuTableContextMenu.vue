@@ -3,30 +3,18 @@
 		<tu-icon v-bind="customIcon"></tu-icon>
 		<template #content>
 			<tu-popup-menu>
-				<tu-popup-item
-					:to="null"
-					v-for="(item, index) of modelValue"
-					:key="index"
-					@click="onOptionClicked(item.onClicked)"
-					:onClickClose="item.closeOnClick"
-					:divider="item.divider"
-				>
+				<tu-popup-item :to="null" v-for="(item, index) of modelValue" :key="index"
+					@click="onOptionClicked(item.onClicked)" :onClickClose="item.closeOnClick" :divider="item.divider">
 					<tu-popper v-if="item.hasSubMenu" arrow placement="right">
 						{{ item.caption }}
 						<template #content>
 							<tu-popup-menu>
-								<tu-popup-item
-									:to="null"
-									v-for="(itemSub, indexSub) of item.subMenu"
-									:key="indexSub"
-									@click="onOptionClicked(itemSub.onClicked)"
-									:onClickClose="
-										item.onClicked ?? item.closeOnClick
-									"
-									:divider="item.divider"
-								>
+								<tu-popup-item :to="null" v-for="(itemSub, indexSub) of item.subMenu" :key="indexSub"
+									@click="onOptionClicked(itemSub.onClicked)" :onClickClose="
+										item.closeOnClick
+									" :divider="item.divider">
 									<tu-icon v-if="itemSub.icon">{{
-										itemSub.icon
+											itemSub.icon
 									}}</tu-icon>
 									{{ itemSub.caption }}
 								</tu-popup-item>
@@ -75,10 +63,10 @@ export default defineComponent({
 		},
 		modelValue: {
 			type: Object as PropType<Array<TuTableContextMenuEntry>>,
-			default: () => {}
+			default: () => { }
 		}
 	},
-	setup (props, context) {
+	setup(props, context) {
 		const tableInstance = inject<TuTableStore>("tableInstance");
 		const onOptionClicked = function (callback: Function) {
 			if (callback) callback(props.rowData);
@@ -90,4 +78,6 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+
+</style>

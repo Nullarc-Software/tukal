@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, PropType } from "vue";
 
 export default defineComponent({
 	name: "TuRow",
@@ -20,7 +20,7 @@ export default defineComponent({
 		w: { type: Number, default: 12 },
 		justify: { type: String, default: "flex-start" },
 		align: { type: String, default: "flex-start" },
-		direction: { type: String, default: "row" }
+		direction: { type: Object as PropType<"unset" |"column" | "column-reverse" | "row" | "row-reverse">, default: "row" }
 	}
 });
 </script>
