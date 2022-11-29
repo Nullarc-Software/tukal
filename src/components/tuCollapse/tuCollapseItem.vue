@@ -28,8 +28,8 @@
 		</div>
 	</div>
 </template>
-<script>
-import { tuIcon } from "../tuIcon/tuIcon";
+<script lang="ts">
+import tuIcon from "../tuIcon/index";
 export default {
 	name: "tuCollapseItem",
 	components: {

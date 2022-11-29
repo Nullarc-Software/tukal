@@ -1,38 +1,27 @@
 <template>
-	<div
-		:class="[
-			`tu-textarea-${color}`,
-			{
-				'textarea-danger': counter
-					? localValue && localValue.length > counter
-					: false,
-				focusx: isFocus
-			}
-		]"
-		class="tu-component tu-con-textarea"
-		:style="{
-			'--tu-color': color ? getColor(color) : '',
-			height: height,
-			width: width
-		}"
-		ref="parent"
-	>
+	<div :class="[
+		`tu-textarea-${color}`,
+		{
+			'textarea-danger': counter
+				? localValue && localValue.length > counter
+				: false,
+			focusx: isFocus
+		}
+	]" class="tu-component tu-con-textarea" :style="{
+	'--tu-color': color ? getColor(color) : '',
+	height: height,
+	width: width
+}" ref="parent">
 		<div v-if="label" ref="labelElem" class="tu-textarea-label">
 			{{ label }}
 		</div>
 
-		<textarea
-			:value="localValue"
-			v-bind="$attrs"
-			class="tu-textarea"
-			ref="textarea"
-			v-on="listeners"
+		<textarea :value="localValue as string" v-bind="$attrs" class="tu-textarea" ref="textarea" v-on="listeners"
 			:style="{
 				'min-width': getMinWidth,
 				'min-height': getMinHeight,
 				...maxSize
-			}"
-		>
+			}">
 		</textarea>
 
 		<div v-if="counter" class="count tu-textarea--count">
@@ -100,7 +89,7 @@ export default defineComponent({
 			type: String
 		}
 	},
-	setup (props, context) {
+	setup(props, context) {
 		const isFocus = ref(false);
 		const textarea = ref<HTMLTextAreaElement>();
 		const localValue = ref(props.modelValue);
@@ -109,11 +98,10 @@ export default defineComponent({
 		const styleComputed = computed(() => {
 			const style: any = {};
 
-			style.border = `1px solid ${
-				isFocus.value
-					? getApplyColor(props.color, 1)
-					: "rgba(0, 0, 0,.08)"
-			}`;
+			style.border = `1px solid ${isFocus.value
+				? getApplyColor(props.color, 1)
+				: "rgba(0, 0, 0,.08)"
+				}`;
 			style.height = props.height;
 			style.width = props.width;
 
@@ -123,12 +111,12 @@ export default defineComponent({
 		const parentWidth = ref(0);
 		const parentHeight = ref(0);
 
-		function focus () {
+		function focus() {
 			isFocus.value = true;
 			context.emit("focus");
 		}
 
-		function blur () {
+		function blur() {
 			isFocus.value = false;
 			context.emit("blur");
 		}
@@ -200,6 +188,7 @@ export default defineComponent({
 	transform: translate(0, 0px);
 	max-width: 100%;
 	background: -getColor("gray-2");
+
 	&.focusx {
 		::v-deep(.tu-textarea-label) {
 			background: #fcfcfc;
@@ -207,6 +196,7 @@ export default defineComponent({
 			padding-bottom: 4px;
 		}
 	}
+
 	::v-deep(.tu-textarea-label) {
 		font-size: 0.7rem;
 		padding: 8px;
@@ -216,6 +206,7 @@ export default defineComponent({
 		border-radius: 10px 10px 0px 0px;
 	}
 }
+
 .tu-textarea {
 	resize: none;
 	border-radius: 6px;
@@ -227,23 +218,29 @@ export default defineComponent({
 	width: 100%;
 	max-width: 100%;
 	background: transparent;
+
 	&:focus {
 		resize: auto !important;
-		& ~ .count {
+
+		&~.count {
 			opacity: 1;
 		}
 	}
 }
+
 .textarea-danger {
 	border: 1px solid -getColor("danger", 0.4);
 	box-shadow: 0px 4px 20px 0px -getColor("danger", 0.1);
+
 	.tu-textarea {
 		color: -getColor("danger", 0.8);
 	}
+
 	.count {
 		background: -getColor("danger", 1);
 	}
 }
+
 .tu-textarea--count {
 	position: absolute;
 	right: 14px;

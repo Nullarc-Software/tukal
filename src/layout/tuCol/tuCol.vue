@@ -1,32 +1,33 @@
 <template>
   <div
-    class="tu-col"
+	class="tu-col"
 
-    :style="{
+	:style="{
 			order: order,
 			display: type,
 			justifyContent: justify
 		}"
-    :class="[
-        `tu-col--w-${w}`,
-        `tu-col--offset-${offset}`,
-        `tu-col--lg-${lg}`,
-        `tu-col--sm-${sm}`,
-        `tu-col--xs-${xs}`,
-      ]">
-    <slot/>
+	:class="[
+		`tu-col--w-${w}`,
+		`tu-col--offset-${offset}`,
+		`tu-col--lg-${lg}`,
+		`tu-col--sm-${sm}`,
+		`tu-col--xs-${xs}`,
+	  ]">
+	<slot/>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue"
+import { defineComponent, PropType } from "vue";
+import {GlobalsNumber} from "node_modules/csstype"
 
 export default defineComponent({
 	name: "TuCol",
 	props: {
 		w: { type: [String, Number], default: "12" },
 		offset: { type: [String, Number], default: "0" },
-		order: { type: [String, Number], default: "0" },
+		order: { type: Object as PropType<GlobalsNumber>, default: 0 },
 		lg: { type: [String, Number], default: "0" },
 		sm: { type: [String, Number], default: "0" },
 		xs: { type: [String, Number], default: "0" },
@@ -46,38 +47,38 @@ $sizes: (1: 8.33%, 2: 16.66%, 3: 25%, 4: 33.33%, 5: 41.66%, 6: 50%, 7: 58.33%, 8
   position: relative;
 
   @each $num, $size in $sizes {
-    &--w-#{$num} {
-      width: $size;
-    }
+	&--w-#{$num} {
+	  width: $size;
+	}
   }
 
   @each $num, $size in $sizes {
-    &--offset-#{$num} {
-      margin-left: $size;
-    }
+	&--offset-#{$num} {
+	  margin-left: $size;
+	}
   }
 
   // responsive
   @each $num, $size in $sizes {
-    &--lg-#{$num} {
-      width: $size;
-    }
+	&--lg-#{$num} {
+	  width: $size;
+	}
   }
 
   @media (max-width: 900px) {
-    @each $num, $size in $sizes {
-      &--sm-#{$num} {
-        width: $size;
-      }
-    }
+	@each $num, $size in $sizes {
+	  &--sm-#{$num} {
+		width: $size;
+	  }
+	}
   }
 
   @media (max-width: 600px) {
-    @each $num, $size in $sizes {
-      &--xs-#{$num} {
-        width: $size;
-      }
-    }
+	@each $num, $size in $sizes {
+	  &--xs-#{$num} {
+		width: $size;
+	  }
+	}
   }
 }
 </style>

@@ -1,39 +1,26 @@
 <template>
-	<div
-		class="tu-radio-content"
-		:style="{
-			['--tu-color']: color ? getcolor : ''
-		}"
-		:class="[
-			{
-				disabled: disabled,
-				loading: loading,
-				active: isChecked
-			},
-			// colors
-			{
-				[`tu-component--primary`]:
-					!danger && !success && !warn && !dark && !color
-			},
-			{ [`tu-component--danger`]: !!danger },
-			{ [`tu-component--warn`]: !!warn },
-			{ [`tu-component--success`]: !!success },
-			{ [`tu-component--dark`]: !!dark }
-		]"
-	>
-		<label v-if="labelBefore" class="tu-radio__label" :for="uid">
+	<div class="tu-radio-content" :class="[
+		{
+			disabled: disabled,
+			loading: loading,
+			active: isChecked
+		},
+		// colors
+		{
+			[`tu-component--primary`]:
+				!danger && !success && !warn && !dark && !color
+		},
+		{ [`tu-component--danger`]: !!danger },
+		{ [`tu-component--warn`]: !!warn },
+		{ [`tu-component--success`]: !!success },
+		{ [`tu-component--dark`]: !!dark }
+	]">
+		<label v-if="labelBefore" class="tu-radio__label" :for="`${uid}`">
 			<slot />
 		</label>
 		<div class="tu-radio">
-			<input
-				type="radio"
-				:id="uid"
-				:value="val"
-				:name="name || modelValue"
-				:checked="isChecked"
-				@input="onInput"
-				@click="onInput"
-			/>
+			<input type="radio" :id="`${uid}`" :value="val" :name="name || modelValue as string" :checked="isChecked"
+				@input="onInput" @click="onInput" />
 			<span class="tu-radio__effect">
 				<span class="tu-radio__effect__icon">
 					<slot name="icon" />
@@ -41,7 +28,7 @@
 				<span class="tu-radio__effect__loading"> </span>
 			</span>
 		</div>
-		<label v-if="!labelBefore" class="tu-radio__label" :for="uid">
+		<label v-if="!labelBefore" class="tu-radio__label" :for="`${uid}`">
 			<slot />
 		</label>
 	</div>
@@ -71,7 +58,7 @@ export default defineComponent({
 		labelBefore: { type: Boolean, default: false }
 	},
 	emits: ["update:modelValue"],
-	setup (props, context) {
+	setup(props, context) {
 		const onInput = function () {
 			context.emit("update:modelValue", props.val);
 		};
@@ -116,7 +103,7 @@ export default defineComponent({
 		::v-deep(.tu-radio) {
 			::v-deep(input) {
 				&:hover {
-					~ .tu-radio__effect {
+					~.tu-radio__effect {
 						::v-deep(.tu-radio__effect__icon) {
 							opacity: 0.7;
 						}
@@ -264,8 +251,9 @@ export default defineComponent({
 		z-index: 100;
 		opacity: 0;
 		cursor: pointer;
+
 		&:active {
-			~ .tu-radio__effect {
+			~.tu-radio__effect {
 				&:after {
 					transform: scale(0.9);
 				}

@@ -26,7 +26,7 @@ const loadingConstructor = tuComponent;
 class Loading {
 	instance: App | null = null;
 	params: Ref<LoadingAttributes>;
-	isVisible: boolean = false;
+	isVisible = false;
 
 	public changeText (val: string) {
 		if (val)
@@ -70,4 +70,5 @@ class Loading {
 	}
 }
 
-export { Loading, LoadingAttributes, tuComponent as tuLoading };
+export { Loading, tuComponent as tuLoading };	export type { LoadingAttributes };
+

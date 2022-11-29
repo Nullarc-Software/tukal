@@ -9,62 +9,29 @@
 			<h3>Buttons:</h3>
 			<hr />
 			<tu-button success @click="justLoad"> Open Notification </tu-button>
-			<div
-				style="width: 200px; height: 200px; position: relative"
-				ref="loadingDiv"
-			/>
+			<div style="width: 200px; height: 200px; position: relative" ref="loadingDiv" />
 			<tu-button success @click="justShowLoading">
 				Open Loading
 			</tu-button>
-			<tu-button
-				type="filled"
-				color="danger"
-				textColor="#000"
-				style="margin-right: 10px"
-			>
+			<tu-button type="filled" color="danger" textColor="#000" style="margin-right: 10px">
 				Simple Button
 			</tu-button>
-			<tu-button
-				type="filled"
-				color="primary"
-				style="margin-right: 10px"
-				size="small"
-			>
+			<tu-button type="filled" color="primary" style="margin-right: 10px" size="small">
 				Small
 			</tu-button>
-			<tu-button
-				type="filled"
-				color="primary"
-				style="margin-right: 10px"
-				size="large"
-			>
+			<tu-button type="filled" color="primary" style="margin-right: 10px" size="large">
 				Large
 			</tu-button>
-			<tu-button
-				type="filled"
-				color="primary"
-				style="margin-right: 10px"
-				size="xl"
-			>
+			<tu-button type="filled" color="primary" style="margin-right: 10px" size="xl">
 				Xtra Large
 			</tu-button>
-			<tu-button
-				circle
-				type="filled"
-				color="primary"
-				style="margin-right: 10px"
-			>
+			<tu-button circle type="filled" color="primary" style="margin-right: 10px">
 				<tu-icon>home </tu-icon>
 			</tu-button>
 			<tu-button circle transparent style="margin-right: 10px">
 				<tu-icon>home </tu-icon>
 			</tu-button>
-			<tu-button
-				square
-				type="filled"
-				color="primary"
-				style="margin-right: 10px"
-			>
+			<tu-button square type="filled" color="primary" style="margin-right: 10px">
 				Square Button
 			</tu-button>
 			<tu-button border color="primary" style="margin-right: 10px">
@@ -79,37 +46,17 @@
 			<tu-button relief color="primary" style="margin-right: 10px">
 				Relief
 			</tu-button>
-			<tu-button
-				:loading="loading"
-				@click="loading = true"
-				type="filled"
-				color="primary"
-				style="margin-right: 10px"
-			>
+			<tu-button :loading="loading" @click="loading = true" type="filled" color="primary"
+				style="margin-right: 10px">
 				Loading
 			</tu-button>
-			<tu-button
-				upload
-				type="border"
-				color="danger"
-				style="margin-right: 10px"
-			>
+			<tu-button upload type="border" color="danger" style="margin-right: 10px">
 				Upload
 			</tu-button>
-			<tu-button
-				upload
-				type="border"
-				color="#00FF00"
-				style="margin-right: 10px"
-			>
+			<tu-button upload type="border" color="#00FF00" style="margin-right: 10px">
 				Upload
 			</tu-button>
-			<tu-button
-				upload
-				type="filled"
-				color="primary"
-				style="margin-right: 10px"
-			>
+			<tu-button upload type="filled" color="primary" style="margin-right: 10px">
 				Upload
 			</tu-button>
 			<tu-button type="filled" color="primary" style="margin-right: 10px">
@@ -161,23 +108,16 @@
 		<div class="showcase-component">
 			<h3>Alerts:</h3>
 			<hr />
-			<tu-alert
-				title="Lorem ipsum dolor sit amet"
-				color="rgb(231, 154, 23)"
-				active="true"
-			>
+			<tu-alert title="Lorem ipsum dolor sit amet" color="rgb(231, 154, 23)" active="true">
 				Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
 				eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
 				enim ad minim veniam, quis nostrud exercitation ullamco laboris
 				nisi ut aliquip ex ea commodo consequat
 			</tu-alert>
 			<div class="centerx">
-				<tu-button
-					@click="active1 = !active1"
-					color="primary"
-					type="filled"
-					>{{ !active1 ? "Open Alert" : "Close Alert" }}</tu-button
-				>
+				<tu-button @click="active1 = !active1" color="primary" type="filled">
+					{{ !active1 ? "Open Alert" : "Close Alert" }}
+				</tu-button>
 				<tu-alert v-model:active="active1" closable close-icon="close">
 					Lorem ip sum dolor sit amet, consectetur adipisicing elit,
 					sed do eiusmod tempor incididunt ut labore et dolore magna
@@ -191,43 +131,37 @@
 			<hr />
 			<tu-avatar text="Celebrimbor" />
 			<tu-avatar size="large">
-				<img
-					src="https://avatars.githubusercontent.com/u/13927773?v=4"
-				/>
+				<img src="https://avatars.githubusercontent.com/u/13927773?v=4" />
 			</tu-avatar>
 		</div>
 		<div class="showcase-component">
 			<h3>Breadcrumbs:</h3>
 			<hr />
-			<tu-breadcrumb
-				:items="[
-					{
-						title: 'Dashboard',
-						url: 'dashboard'
-					},
-					{
-						title: 'Link 1',
-						url: 'link-1'
-					},
-					{
-						title: 'Link 2',
-						disabled: true
-					},
-					{
-						title: 'Active',
-						active: true
-					}
-				]"
-			></tu-breadcrumb>
+			<tu-breadcrumb :items="[
+				{
+					title: 'Dashboard',
+					url: 'dashboard'
+				},
+				{
+					title: 'Link 1',
+					url: 'link-1'
+				},
+				{
+					title: 'Link 2',
+					disabled: true
+				},
+				{
+					title: 'Active',
+					active: true
+				}
+			]"></tu-breadcrumb>
 
 			<tu-breadcrumb>
 				<li>
-					<a href="#" title="Home">Home</a
-					><span class="tu-breadcrum--separator">/</span>
+					<a href="#" title="Home">Home</a><span class="tu-breadcrum--separator">/</span>
 				</li>
 				<li>
-					<a href="#" title="Profil">Profil</a
-					><span class="tu-breadcrum--separator">/</span>
+					<a href="#" title="Profil">Profil</a><span class="tu-breadcrum--separator">/</span>
 				</li>
 			</tu-breadcrumb>
 		</div>
@@ -240,10 +174,8 @@
 						<h3>Pot with a plant</h3>
 					</template>
 					<template #content>
-						<img
-							src="https://th.bing.com/th/id/R00b6dcd72e6c6c971f848b5710a22b14?rik=GUdyoJYQFeNOvw&riu=http%3a%2f%2fbluefaqs.com%2fwp-content%2fuploads%2f2010%2f06%2fRandom-Images-Thumb.jpg&ehk=gjZ1zvnepp3KjV7sLM91JMR92J6tw3FWxn23GyDBcVI%3d&risl=&pid=ImgRaw"
-							alt=""
-						/>
+						<img src="https://th.bing.com/th/id/R00b6dcd72e6c6c971f848b5710a22b14?rik=GUdyoJYQFeNOvw&riu=http%3a%2f%2fbluefaqs.com%2fwp-content%2fuploads%2f2010%2f06%2fRandom-Images-Thumb.jpg&ehk=gjZ1zvnepp3KjV7sLM91JMR92J6tw3FWxn23GyDBcVI%3d&risl=&pid=ImgRaw"
+							alt="" />
 					</template>
 					<template #text>
 						<p>
@@ -274,7 +206,7 @@
 				{{ checkBox1 }}
 			</tu-checkbox>
 			<tu-checkbox v-model:checked="checkBox9" indeterminate>{{
-				checkBox9
+					checkBox9
 			}}</tu-checkbox>
 			<div class="">
 				<button @click="resetOpts">Reset</button>
@@ -283,27 +215,16 @@
 						{{ opts }}
 					</li>
 					<li>
-						<tu-checkbox v-model="opts" val="luis"
-							>Luis</tu-checkbox
-						>
+						<tu-checkbox v-model="opts" val="luis">Luis</tu-checkbox>
 					</li>
 					<li>
-						<tu-checkbox v-model="opts" val="carols"
-							>Carols</tu-checkbox
-						>
+						<tu-checkbox v-model="opts" val="carols">Carols</tu-checkbox>
 					</li>
 					<li>
-						<tu-checkbox
-							:disabled="true"
-							v-model="opts"
-							val="summer"
-							>Summer</tu-checkbox
-						>
+						<tu-checkbox :disabled="true" v-model="opts" val="summer">Summer</tu-checkbox>
 					</li>
 					<li>
-						<tu-checkbox v-model="opts" val="lyon"
-							>Lyon</tu-checkbox
-						>
+						<tu-checkbox v-model="opts" val="lyon">Lyon</tu-checkbox>
 					</li>
 				</ul>
 			</div>
@@ -398,9 +319,7 @@
 		<div class="showcase-component">
 			<h3 :test="null">Dialog:</h3>
 			<hr />
-			<tu-button @click="activeDialog = !activeDialog"
-				>Open Dialog</tu-button
-			>
+			<tu-button @click="activeDialog = !activeDialog">Open Dialog</tu-button>
 			<tu-dialog width="550px" v-model="activeDialog">
 				<template v-slot:header>
 					<h4>Welcome to <b>Vuesax3</b></h4>
@@ -416,12 +335,7 @@
 				</div>
 
 				<template v-slot:footer>
-					<tu-button
-						width="100px"
-						style="margin: 5px"
-						@click="activeDialog = false"
-						block
-					>
+					<tu-button width="100px" style="margin: 5px" @click="activeDialog = false" block>
 						Ok
 					</tu-button>
 					<tu-button type="flat" color="secondary" width="100px">
@@ -429,16 +343,8 @@
 					</tu-button>
 				</template>
 			</tu-dialog>
-			<tu-button @click="activeDialog1 = !activeDialog1"
-				>Open Dialog</tu-button
-			>
-			<tu-dialog
-				square
-				scroll
-				prevent-close
-				width="550px"
-				v-model="activeDialog1"
-			>
+			<tu-button @click="activeDialog1 = !activeDialog1">Open Dialog</tu-button>
+			<tu-dialog square scroll prevent-close width="550px" v-model="activeDialog1">
 				<template v-slot:header>
 					<h4>Welcome to <b>Vuesax3</b></h4>
 					<tu-divider color="rgba(0,0,0,0.5)" />
@@ -456,11 +362,7 @@
 				</div>
 
 				<template v-slot:footer>
-					<tu-button
-						width="100px"
-						style="margin: 5px"
-						@click="activeDialog1 = false"
-					>
+					<tu-button width="100px" style="margin: 5px" @click="activeDialog1 = false">
 						Ok
 					</tu-button>
 					<tu-button type="flat" color="secondary" width="100px">
@@ -472,20 +374,9 @@
 		<div class="showcase-component">
 			<h3>Input:</h3>
 			<hr />
-			<tu-input
-				block
-				id="inp1"
-				v-model="inpValue"
-				placeholder="Name"
-				style="margin-top: 10px"
-				maxlength="15"
-			/>
+			<tu-input block id="inp1" v-model="inpValue" placeholder="Name" style="margin-top: 10px" maxlength="15" />
 			<br />
-			<tu-input
-				label="Full Name"
-				v-model:value="inpValue"
-				placeholder="Evan You"
-			/>
+			<tu-input label="Full Name" v-model:value="inpValue" placeholder="Evan You" />
 			<br />
 			<tu-input label-placeholder="Country" />
 			<tu-input editable-static v-model="editStatic" />
@@ -504,11 +395,7 @@
 
 			<br />
 			<br />
-			<tu-input
-				v-model:value="inpValue"
-				label="Example Regex Validation"
-				placeholder="vuesax@gmail.com"
-			>
+			<tu-input v-model:value="inpValue" label="Example Regex Validation" placeholder="vuesax@gmail.com">
 				<template v-if="validEmail" #message-success>
 					Email Valid
 				</template>
@@ -536,46 +423,25 @@
 					</template>
 				</tu-input>
 
-				<tu-input
-					state="danger"
-					danger
-					icon-after
-					placeholder="Danger icon after"
-				>
+				<tu-input state="danger" danger icon-after placeholder="Danger icon after">
 					<template #icon>
 						<tu-icon>person</tu-icon>
 					</template>
 				</tu-input>
 
-				<tu-input
-					warn
-					state="warn"
-					placeholder="Label Warn"
-					label="Warn"
-				/>
+				<tu-input warn state="warn" placeholder="Label Warn" label="Warn" />
 
 				<tu-input dark state="dark" label-placeholder="Dark" />
 
 				<tu-input border placeholder="Name" />
 
-				<tu-input
-					color="#7d33ff"
-					border
-					type="password"
-					placeholder="Password"
-				>
+				<tu-input color="#7d33ff" border type="password" placeholder="Password">
 					<template #icon>
 						<tu-icon>person</tu-icon>
 					</template>
 				</tu-input>
 
-				<tu-input
-					border
-					warn
-					type="email"
-					icon-after
-					label-placeholder="Address"
-				>
+				<tu-input border warn type="email" icon-after label-placeholder="Address">
 					<template #icon>
 						<tu-icon>person</tu-icon>
 					</template>
@@ -599,13 +465,7 @@
 		<div class="showcase-component">
 			<h4>Select:</h4>
 			<hr />
-			<tu-select
-				block
-				multiple
-				label-placeholder="Label-placeholder"
-				v-model="selectValue"
-				filter
-			>
+			<tu-select block multiple label-placeholder="Label-placeholder" v-model="selectValue" filter>
 				<tu-select-option label="Test" value="1">
 					Test
 				</tu-select-option>
@@ -629,13 +489,9 @@
 				</tu-select-option>
 			</tu-select>
 
-			<tu-select
-				inline
+			<tu-select inline
 				placeholder="Label-placeholder for something soooooo longggg Label-placeholder for something soooooo longggg"
-				v-model="selectValue1"
-				style="margin: 10px"
-				filter
-			>
+				v-model="selectValue1" style="margin: 10px" filter>
 				<tu-select-option label="Test" value="1">
 					Test
 				</tu-select-option>
@@ -659,11 +515,7 @@
 				</tu-select-option>
 			</tu-select>
 
-			<tu-select
-				inline
-				label-placeholder="Label-placeholder"
-				v-model="selectValue"
-			>
+			<tu-select inline label-placeholder="Label-placeholder" v-model="selectValue">
 				<tu-select-option label="Test" value="1">
 					Test
 				</tu-select-option>
@@ -687,13 +539,7 @@
 				</tu-select-option>
 			</tu-select>
 
-			<tu-select
-				inline
-				dropdown
-				placeholder="Dropdown"
-				v-model="selectValue2"
-				style="margin: 10px"
-			>
+			<tu-select inline dropdown placeholder="Dropdown" v-model="selectValue2" style="margin: 10px">
 				<tu-select-option label="Test" value="1">
 					Test
 				</tu-select-option>
@@ -746,15 +592,8 @@
 				</tu-select-option-group>
 			</tu-select>
 
-			<tu-select
-				inline
-				v-for="(color, i) in colors"
-				:key="i"
-				:state="color.color"
-				:label="color.color"
-				placeholder="Select"
-				v-model="color.value"
-			>
+			<tu-select inline v-for="(color, i) in colors" :key="i" :state="color.color" :label="color.color"
+				placeholder="Select" v-model="color.value">
 				<tu-select-option value="1"> Vuesax </tu-select-option>
 				<tu-select-option label="Vue" value="2"> Vue </tu-select-option>
 				<tu-select-option label="Javascript" value="3">
@@ -795,10 +634,7 @@
 			<tu-button @click="isOpen = !isOpen"> Toggle Sidebar </tu-button>
 			<tu-sidebar reduce v-model:value="sideBar" :open="isOpen">
 				<template #logo>
-					<img
-						src="https://vuesax.com/logos/logo-vuesax-logotipo-vuesax-png-3.png"
-						alt=""
-					/>
+					<img src="https://vuesax.com/logos/logo-vuesax-logotipo-vuesax-png-3.png" alt="" />
 				</template>
 				<template #header> Endpoint Nexus </template>
 				<tu-sidebar-item id="home">
@@ -850,10 +686,7 @@
 				</tu-sidebar-group>
 				<template #footer>
 					<tu-row justify="space-between">
-						<tu-avatar
-							badge-color="danger"
-							badge-position="top-right"
-						>
+						<tu-avatar badge-color="danger" badge-position="top-right">
 							<i class="bx bx-bell"></i>
 
 							<template #badge> 28 </template>
@@ -883,34 +716,20 @@
 		<div class="showcase-component">
 			<h4>Navbar:</h4>
 			<hr />
-			<tu-navbar
-				left-aligned
-				fixed
-				:open="openNav"
-				v-model:value="navValue"
-			>
+			<tu-navbar left-aligned fixed :open="openNav" v-model:value="navValue">
 				<template #left>
-					<img
-						src="https://vuesax.com/logos/logo-vuesax-logotipo-vuesax-png-3.png"
-						alt=""
-					/>
+					<img src="https://vuesax.com/logos/logo-vuesax-logotipo-vuesax-png-3.png" alt="" />
 				</template>
 				<tu-navbar-group>
 					Docs
 					<template #items>
-						<tu-navbar-item
-							:active="navValue == 'guide'"
-							id="guide"
-						>
+						<tu-navbar-item :active="navValue == 'guide'" id="guide">
 							Guide
 						</tu-navbar-item>
 						<tu-navbar-item :active="navValue == 'docs'" id="docs">
 							Documents
 						</tu-navbar-item>
-						<tu-navbar-item
-							:active="navValue == 'components'"
-							id="components"
-						>
+						<tu-navbar-item :active="navValue == 'components'" id="components">
 							Components
 						</tu-navbar-item>
 					</template>
@@ -950,24 +769,13 @@
 			<h4>Tabs:</h4>
 			<hr />
 
-			<tu-tabs
-				position="top"
-				noTransitions
-				tabStyle="card"
-				v-model="tabName"
-			>
+			<tu-tabs position="top" noTransitions tabStyle="card" v-model="tabName">
 				<tu-tab label="Home" name="ho"> Home </tu-tab>
 				<tu-tab label="Service" name="se"> Service </tu-tab>
 				<tu-tab label="login" name="lo"> Login </tu-tab>
 				<tu-tab label="Disabled" name="di"> Disabled </tu-tab>
 			</tu-tabs>
-			<tu-tabs
-				position="top"
-				noTransitions
-				tabStyle="progress"
-				progressWidth="20"
-				v-model="tabName"
-			>
+			<tu-tabs position="top" noTransitions tabStyle="progress" progressWidth="20" v-model="tabName">
 				<tu-tab label="Home" name="ho"> Home </tu-tab>
 				<tu-tab label="Service" name="se"> Service </tu-tab>
 				<tu-tab label="login" name="lo"> Login </tu-tab>
@@ -983,13 +791,9 @@
 			<tu-progress :percent="75" color="danger">danger</tu-progress>
 			<tu-progress :percent="60" color="success">success</tu-progress>
 			<tu-progress :percent="45" color="dark">dark</tu-progress>
-			<tu-progress :percent="30" color="rgb(164, 69, 15)"
-				>RGB</tu-progress
-			>
+			<tu-progress :percent="30" color="rgb(164, 69, 15)">RGB</tu-progress>
 			<tu-progress :percent="15" color="#24c1a0">HEX</tu-progress>
-			<tu-progress :height="12" indeterminate color="#24c1a0"
-				>HEX</tu-progress
-			>
+			<tu-progress :height="12" indeterminate color="#24c1a0">HEX</tu-progress>
 		</div>
 		<div class="showcase-component">
 			<h4>Text Area:</h4>
@@ -997,11 +801,7 @@
 			<tu-textarea width="400px" />
 			<tu-textarea width="300px" />
 			<tu-textarea label="Label in Textarea" height="100px" />
-			<tu-textarea
-				counter="20"
-				label="Label in Textarea"
-				height="100px"
-			/>
+			<tu-textarea counter="20" label="Label in Textarea" height="100px" />
 		</div>
 		<div class="showcase-component">
 			<h2>Color-picker</h2>
@@ -1017,25 +817,10 @@
 			<button @click="exportTable">Export</button>
 			<button @click="exportTableToPDF">Export to pdf</button>
 			{{ selected }}
-			<tu-table
-				row-expand
-				multi-select
-				striped
-				size=""
-				persistentId="one"
-				:draggable="true"
-				v-model="selected"
-				v-model:numPages="numPages"
-				:page="page"
-				:pageSize="5"
-				:data="universities"
-				:columns="columns"
-				:columnSelecter="true"
-				@onRowClicked="rowClicked"
-				@onTableBeginLoad="beginLoad"
-				@onTableEndLoad="afterLoad"
-				@onTableConfigUpdated="configUpdate"
-			>
+			<tu-table row-expand multi-select striped size="" persistentId="one" :draggable="true" v-model="selected"
+				v-model:numPages="numPages" :page="page" :pageSize="5" :data="universities" :columns="columns"
+				:columnSelecter="true" @onRowClicked="rowClicked" @onTableBeginLoad="beginLoad"
+				@onTableEndLoad="afterLoad" @onTableConfigUpdated="configUpdate">
 				<!-- <template #thead>
 					<tu-th field="country" sort search> Country </tu-th>
 					<tu-th field="name" sort search :index="1" width="500px"> Name </tu-th>
@@ -1047,12 +832,7 @@
 					<tu-th field="something" sort search> No value </tu-th>
 				</template> -->
 				<template #footer>
-					<tu-pagination
-						not-margin
-						flat
-						v-model="page"
-						:length="numPages"
-					/>
+					<tu-pagination not-margin flat v-model="page" :length="numPages" />
 				</template>
 			</tu-table>
 		</div>
@@ -1064,14 +844,7 @@
 			<!-- <tu-upload singleUpload :limit="1" /> -->
 		</div>
 		<div class="showcase-component">
-			<tu-calendar
-				model="server"
-				:items="items"
-				v-model="events"
-				:components="component"
-				:categories="Categories"
-				@onClickDay="onClick"
-			/>
+			<tu-calendar model="server" :items="items" :categories="Categories" @onClickDay="onClick" />
 		</div>
 	</div>
 </template>
@@ -1129,7 +902,7 @@ export default defineComponent({
 			}
 		]
 	}),
-	setup (props, context) {
+	setup(props, context) {
 		const active1 = ref(true);
 		const checkBox1 = ref(false);
 		const checkBox9 = ref(false);
@@ -1225,17 +998,17 @@ export default defineComponent({
 		provide("appRouter", null);
 		provide("iconPackGlobal", "material-icons-outlined");
 		/*
-        waves
-        corners
-        border
-        points
-        square
-        gradient
-        rectangle
-        circles
-        square-rotate
-        scale
-        */
+		waves
+		corners
+		border
+		points
+		square
+		gradient
+		rectangle
+		circles
+		square-rotate
+		scale
+		*/
 		const loadingDiv = ref();
 		const justShowLoading = function () {
 			const attrs: LoadingAttributes = {
@@ -1432,7 +1205,7 @@ export default defineComponent({
 		const selected = ref([]);
 		const tabName = ref("ho");
 
-		function resetOpts () {
+		function resetOpts() {
 			opts.value = ["carols"];
 			console.log(opts.value);
 		}
@@ -1566,6 +1339,7 @@ export default defineComponent({
 .tu-select-content {
 	margin: 20px;
 }
+
 body {
 	background-color: white;
 }

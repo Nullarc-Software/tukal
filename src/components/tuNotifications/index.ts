@@ -12,28 +12,28 @@ const notificationConstructor = tuComponent;
 
 interface NotificationAttributes {
 	position?: "bottom-left"| "bottom-right" | "bottom-center" | "top-left" | "top-right" | "top-center",
-	isVisible?: Boolean,
+	isVisible?: boolean,
 	content?: Object,
-	title: String,
-	text?: String,
-	color?: String,
-	border?: String,
-	icon?: String,
+	title: string,
+	text?: string,
+	color?: string,
+	border?: string,
+	icon?: string,
 	onClickClose?: Function,
 	onClick?: Function,
-	buttonClose?: Boolean,
-	flat?: Boolean,
+	buttonClose?: boolean,
+	flat?: boolean,
 	onDestroy?: Function,
-	sticky?: Boolean,
-	square?: Boolean,
-	width?: String,
-	loading?: Boolean,
-	progressAuto?: Boolean,
-	progress?: Number,
-	duration?: Number,
+	sticky?: boolean,
+	square?: boolean,
+	width?: string,
+	loading?: boolean,
+	progressAuto?: boolean,
+	progress?: number,
+	duration?: number,
 	notPadding?: Object,
-	clickClose?: Boolean,
-	classNotification?: String
+	clickClose?: boolean,
+	classNotification?: string
 }
 
 class Notification {
@@ -41,7 +41,7 @@ class Notification {
 	static instanceList: any;
 	clientClose : Function | null = null;
 	instance : App | null = null;
-	currentId : number = 0;
+	currentId  = 0;
 
 	public static closeAll (params) {
 		for (const id of Notification.instanceList.keys) {
@@ -54,7 +54,7 @@ class Notification {
 		}
 
 		this.instanceList = [];
-	};
+	}
 
 	close () {
 		Notification.instanceList[this.currentId].unmount();
@@ -96,6 +96,7 @@ class Notification {
 		if (!!Notification.instanceList === false) Notification.instanceList = Object.create(null);
 		Notification.instanceList[Notification.notifId] = this.instance;
 	}
-};
+}
 
-export { Notification, NotificationAttributes };
+export { Notification };	export type { NotificationAttributes };
+

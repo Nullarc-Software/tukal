@@ -1,105 +1,69 @@
 <template>
-	<div
-		class="tu-input-parent"
-		:style="{
-			['--tu-getColor']: color ? getColor(color) : ''
-		}"
-		:class="[
-			`tu-input-parent--state-${state}`,
-			{ 'tu-input-parent--border': !!border },
-			{ 'tu-input-parent--shadow': !!shadow },
-			{ [`tu-input-content--has-label`]: label || labelPlaceholder },
-			{ block: block },
-			{ transparent: transparent },
-			{ textWhite: textWhite },
-			{ square: square },
-			{ inline: inline },
-			// colors
+	<div class="tu-input-parent" :style="{
+		['--tu-getColor']: color ? getColor(color) : ''
+	}" :class="[
+	`tu-input-parent--state-${state}`,
+	{ 'tu-input-parent--border': !!border },
+	{ 'tu-input-parent--shadow': !!shadow },
+	{ [`tu-input-content--has-label`]: label || labelPlaceholder },
+	{ block: block },
+	{ transparent: transparent },
+	{ textWhite: textWhite },
+	{ square: square },
+	{ inline: inline },
+	// colors
+	{
+		[`tu-component--primary`]:
+			!danger && !success && !warn && !dark && !color
+	},
+	{ [`tu-component--danger`]: !!danger },
+	{ [`tu-component--warn`]: !!warn },
+	{ [`tu-component--success`]: !!success },
+	{ [`tu-component--dark`]: !!dark },
+	{ [`tu-component--is-getColor`]: !!isColor },
+	{ [`tu-component-static-editable`]: !!editableStaticInternal }
+]">
+		<div class="tu-input-content" :class="[
+			{ [`tu-input-content--has-getColor`]: hasColor },
 			{
-				[`tu-component--primary`]:
-					!danger && !success && !warn && !dark && !color
-			},
-			{ [`tu-component--danger`]: !!danger },
-			{ [`tu-component--warn`]: !!warn },
-			{ [`tu-component--success`]: !!success },
-			{ [`tu-component--dark`]: !!dark },
-			{ [`tu-component--is-getColor`]: !!isColor },
-			{ [`tu-component-static-editable`]: !!editableStaticInternal }
-		]"
-	>
-		<div
-			class="tu-input-content"
-			:class="[
-				{ [`tu-input-content--has-getColor`]: hasColor },
-				{
-					[`tu-input-content--has-label`]: label || labelPlaceholder
-				}
-			]"
-		>
-			<input
-				class="tu-input"
-				:value="modelValue"
-				:class="[
-					{ ['tu-input--has-icon']: !!$slots.icon },
-					{ ['tu-input--has-icon--after']: !!iconAfter }
-				]"
-				v-bind="$attrs"
-				@input="onInput"
-				placeholder
-				:id="getId"
-				:disabled="editableStaticInternal || disable"
-			/>
-			<label
-				v-if="label"
-				:for="getId"
-				:class="[
-					'tu-input__label',
-					{ 'tu-input__label--hidden': modelValue !== '' }
-				]"
-			>
+				[`tu-input-content--has-label`]: label || labelPlaceholder
+			}
+		]">
+			<input class="tu-input" :value="modelValue" :class="[
+				{ ['tu-input--has-icon']: !!$slots.icon },
+				{ ['tu-input--has-icon--after']: !!iconAfter }
+			]" v-bind="$attrs" @input="onInput" :id="getId" :disabled="editableStaticInternal || disable" />
+			<label v-if="label" :for="getId" :class="[
+				'tu-input__label',
+				{ 'tu-input__label--hidden': modelValue !== '' }
+			]">
 				{{ placeholder }}
 			</label>
-			<label
-				:for="getId"
-				:class="[
-					'tu-input__label',
-					{ 'tu-input__label--placeholder': labelPlaceholder },
-					{
-						'tu-input__label--hidden':
-							modelValue !== '' ||
-							$attrs.type == 'date' ||
-							$attrs.type == 'time'
-					},
-					{ 'tu-input__label--label': label }
-				]"
-			>
+			<label :for="getId" :class="[
+				'tu-input__label',
+				{ 'tu-input__label--placeholder': labelPlaceholder },
+				{
+					'tu-input__label--hidden':
+						modelValue !== '' ||
+						$attrs.type == 'date' ||
+						$attrs.type == 'time'
+				},
+				{ 'tu-input__label--label': label }
+			]">
 				{{ label || placeholder || labelPlaceholder }}
 			</label>
-			<span
-				v-if="$slots.icon"
-				class="tu-input__icon"
-				:class="[
-					{ 'tu-input__icon--after': iconAfter },
-					{ 'tu-input__icon--click': !!$attrs['click-icon'] }
-				]"
-				@click="iconClick"
-			>
+			<span v-if="$slots.icon" class="tu-input__icon" :class="[
+				{ 'tu-input__icon--after': iconAfter },
+				{ 'tu-input__icon--click': !!$attrs['click-icon'] }
+			]" @click="iconClick">
 				<slot name="icon" />
 			</span>
 
-			<span
-				v-if="editableStaticInternal"
-				class="tu-input__icon__editable"
-				:class="[
-					{ 'tu-input__icon--after': true },
-					{ 'tu-input__icon--click': !!$attrs['click-icon'] }
-				]"
-			>
-				<tu-icon
-					icon-pack="material-icons"
-					@click="editableStaticInternal = false"
-					>mode_edit</tu-icon
-				>
+			<span v-if="editableStaticInternal" class="tu-input__icon__editable" :class="[
+				{ 'tu-input__icon--after': true },
+				{ 'tu-input__icon--click': !!$attrs['click-icon'] }
+			]">
+				<tu-icon icon-pack="material-icons" @click="editableStaticInternal = false">mode_edit</tu-icon>
 			</span>
 			<div v-if="editableStaticInternal"></div>
 			<div v-if="loading" class="tu-input__loading" />
@@ -110,51 +74,32 @@
 				<div class="tu-input__affects__4" />
 			</div>
 		</div>
-		<div
-			v-if="progress > 0"
-			class="tu-input__progress"
-			:class="[
-				{ 'tu-input__progress--danger': progress < 33 },
-				{
-					'tu-input__progress--warn': progress < 66 && progress > 33
-				},
-				{ 'tu-input__progress--success': progress > 66 }
-			]"
-		>
-			<div
-				class="tu-input__progress_bar"
-				:style="{ width: `${progress}%` }"
-			/>
+		<div v-if="progress > 0" class="tu-input__progress" :class="[
+			{ 'tu-input__progress--danger': progress < 33 },
+			{
+				'tu-input__progress--warn': progress < 66 && progress > 33
+			},
+			{ 'tu-input__progress--success': progress > 66 }
+		]">
+			<div class="tu-input__progress_bar" :style="{ width: `${progress}%` }" />
 		</div>
 		<transition @before-enter="beforeEnter" @enter="enter" @leave="leave">
-			<div
-				v-if="$slots[`message-success`]"
-				class="tu-input__message tu-input__message--success"
-			>
+			<div v-if="$slots[`message-success`]" class="tu-input__message tu-input__message--success">
 				<slot name="message-success" />
 			</div>
 		</transition>
 		<transition @before-enter="beforeEnter" @enter="enter" @leave="leave">
-			<div
-				v-if="$slots['message-danger']"
-				class="tu-input__message tu-input__message--danger"
-			>
+			<div v-if="$slots['message-danger']" class="tu-input__message tu-input__message--danger">
 				<slot name="message-danger" />
 			</div>
 		</transition>
 		<transition @before-enter="beforeEnter" @enter="enter" @leave="leave">
-			<div
-				v-if="$slots[`message-warn`]"
-				class="tu-input__message tu-input__message--warn"
-			>
+			<div v-if="$slots[`message-warn`]" class="tu-input__message tu-input__message--warn">
 				<slot name="message-warn" />
 			</div>
 		</transition>
 		<transition @before-enter="beforeEnter" @enter="enter" @leave="leave">
-			<div
-				v-if="$slots[`message-primary`]"
-				class="tu-input__message tu-input__message--primary"
-			>
+			<div v-if="$slots[`message-primary`]" class="tu-input__message tu-input__message--primary">
 				<slot name="message-primary" />
 			</div>
 		</transition>
@@ -177,7 +122,7 @@ export default defineComponent({
 		tuIcon
 	},
 	props: {
-		modelValue: { default: "" },
+		modelValue: { type: Object as any,  default: "" },
 		labelPlaceholder: { default: "" },
 		label: { default: "" },
 		block: { type: Boolean, default: false },
@@ -202,7 +147,7 @@ export default defineComponent({
 		}
 	},
 	emits: ["update:modelValue", "click-icon"],
-	setup (props, context) {
+	setup(props, context) {
 		const getId = computed(() => {
 			return `tu-input--${props.id || ++InputConstants.id}`;
 		});
@@ -243,7 +188,7 @@ export default defineComponent({
 			context.emit("click-icon", evt.target.value);
 		};
 
-		function editable (event: any) {
+		function editable(event: any) {
 			if (!event.target.closest(".tu-input-parent"))
 				editableStaticInternal.value = true;
 		}
@@ -330,6 +275,7 @@ export default defineComponent({
 	&.block {
 		width: 100%;
 		max-width: unset;
+
 		.tu-input {
 			width: 100%;
 		}
@@ -368,26 +314,27 @@ export default defineComponent({
 	border-radius: 12px;
 	border: 1px solid -getColor("text", 0.09);
 
-	+ .tu-input__message {
+	+.tu-input__message {
 		padding-top: 2px;
 		display: flex;
 	}
 
 	&--has-getColor {
 		.tu-input {
+
 			// box-shadow: 0px 10px 20px -5px -getColor('color',.3)
 			&:focus {
 				border-bottom: 2px solid -getColor("color", 1);
 
-				~ .tu-input__icon {
+				~.tu-input__icon {
 					color: -getColor("color", 1);
 				}
 
-				~ .tu-input__label {
+				~.tu-input__label {
 					color: -getColor("color", 1);
 				}
 
-				~ .tu-input__label--placeholder {
+				~.tu-input__label--placeholder {
 					color: -getColor("color", 1);
 				}
 			}
@@ -412,16 +359,16 @@ export default defineComponent({
 		&.tu-input--has-icon:not(.tu-input--has-icon--after) {
 			padding-left: 40px;
 
-			~ .tu-input__icon {
+			~.tu-input__icon {
 				box-shadow: 15px 10px 10px -10px rgba(0, 0, 0, -var(shadow-opacity));
 			}
 
-			~ .tu-input__label:not(.tu-input__label--placeholder):not(.tu-input__label--label) {
+			~.tu-input__label:not(.tu-input__label--placeholder):not(.tu-input__label--label) {
 				left: 44px;
 			}
 		}
 
-		~ .tu-input__icon {
+		~.tu-input__icon {
 			box-shadow: (-15px) 10px 10px -10px rgba(0, 0, 0, -var(shadow-opacity));
 			transform: translate(-6px, -6px);
 			background: -getColor("gray-1");
@@ -431,12 +378,12 @@ export default defineComponent({
 			}
 		}
 
-		~ .tu-input__label:not(.tu-input__label--placeholder):not(.tu-input__label--label) {
+		~.tu-input__label:not(.tu-input__label--placeholder):not(.tu-input__label--label) {
 			opacity: 0;
 			left: 20px;
 		}
 
-		~ .tu-input__label--placeholder {
+		~.tu-input__label--placeholder {
 			opacity: 1;
 			visibility: visible;
 			pointer-events: auto;
@@ -485,7 +432,7 @@ export default defineComponent({
 	&--has-icon {
 		padding-left: 38px;
 
-		~ .tu-input__label {
+		~.tu-input__label {
 			left: 44px;
 		}
 
@@ -493,7 +440,7 @@ export default defineComponent({
 			padding-left: 7px;
 			padding-right: 38px;
 
-			~ .tu-input__label {
+			~.tu-input__label {
 				left: 13px;
 			}
 
@@ -505,18 +452,16 @@ export default defineComponent({
 		&:focus {
 			&--has-icon {
 				&--after {
-					~ .tu-input__label {
+					~.tu-input__label {
 						left: 44px;
 					}
 
-					~ .tu-input__label--placeholder {
-						transform: translate(
-							calc(-3px - 22px),
-							-20%
-						) !important;
+					~.tu-input__label--placeholder {
+						transform: translate(calc(-3px - 22px),
+								-20%) !important;
 					}
 
-					~ .tu-input__label {
+					~.tu-input__label {
 						left: 44px;
 					}
 				}
@@ -716,7 +661,7 @@ export default defineComponent({
 				border: none !important;
 
 				&:focus {
-					~ .tu-input__affects {
+					~.tu-input__affects {
 						.tu-input__affects__2 {
 							width: 100%;
 						}
@@ -765,17 +710,16 @@ export default defineComponent({
 				&:focus {
 					transform: translate(0, 3px);
 
-					~ .tu-input__icon {
+					~.tu-input__icon {
 						background: -getColor("background") !important;
 						opacity: 1;
 						box-shadow: 0px 10px 20px -5px rgba(0, 0, 0, -var(shadow-opacity)) !important;
 					}
 
-					~ .tu-input__affects {
+					~.tu-input__affects {
 						.tu-input__affects__1 {
 							transform: translate(0, 3px);
-							box-shadow: 0px 0px 3px 0px
-								rgba(0, 0, 0, -var(shadow-opacity));
+							box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, -var(shadow-opacity));
 						}
 					}
 				}
@@ -798,11 +742,13 @@ export default defineComponent({
 	::v-deep(.tu-input-content) {
 		border: none !important;
 	}
+
 	::v-deep(.tu-input) {
 		cursor: text;
 		//pointer-events: none;
 		background-color: transparent;
 	}
+
 	::v-deep(.tu-input__icon__editable) {
 		i {
 			font-size: 16px;

@@ -1,33 +1,21 @@
 {
-	"compilerOptions": {
-		"noImplicitAny": false,
-		"target": "es6",
-		"module": "es6",
-		"strict": false,
-		"noImplicitThis": true,
-		"jsx": "preserve",
-		"importHelpers": true,
-		"moduleResolution": "node",
-		"skipLibCheck": true,
-		"esModuleInterop": true,
-		"allowSyntheticDefaultImports": true,
-		"sourceMap": true,
-		"declaration": true,
-		"declarationDir": "dist",
-		"noEmit": false,
-		"baseUrl": ".",
-		"types": ["webpack-env"],
-		"paths": {
-			"@/*": ["src/*"]
-		},
-		"lib": ["esnext", "dom", "dom.iterable", "scripthost"]
-	},
-	"include": [
-		"src/**/*.ts",
-		"src/**/*.tsx",
-		"src/**/*.vue",
-		"tests/**/*.ts",
-		"tests/**/*.tsx"
-	],
-	"exclude": ["node_modules"]
+  "compilerOptions": {
+	"target": "es6",
+	"module": "es6",
+	"moduleResolution": "node",
+	"strict": false,
+	"jsx": "preserve",
+	"sourceMap": true,
+	"skipLibCheck": true,
+	"resolveJsonModule": true,
+	"isolatedModules": true,
+	"esModuleInterop": true,
+	"baseUrl": ".",
+	"lib": ["esnext", "dom","dom.iterable", "scripthost"],
+	"paths": {
+		"@/*": ["src/*"]
+	}
+  },
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
+  "exclude": ["node_modules"]
 }

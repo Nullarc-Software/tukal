@@ -1,35 +1,18 @@
 <template>
 	<div class="tu-component tu-divider">
-		<span
-			:class="borderClass"
-			:style="afterStyle"
-			class="tu-divider-border after"
-		/>
-		<span
-			v-if="icon || $slots.default"
-			:style="{
-				color: textColor,
-				background: backgroundColor,
-			}"
-			:class="textAndBackgroundClass"
-			class="tu-divider--text"
-		>
+		<span :class="borderClass" :style="afterStyle" class="tu-divider-border after" />
+		<span v-if="icon || $slots.default" :style="{
+			color: textColor,
+			background: backgroundColor,
+		}" :class="textAndBackgroundClass" class="tu-divider--text">
 			<template v-if="!icon">
 				<slot />
 			</template>
 
-			<tu-icon
-				v-else
-				:icon-pack="iconPack"
-				:icon="icon"
-				class="icon-divider notranslate tu-divider--icon"
-			></tu-icon>
+			<tu-icon v-else :icon-pack="iconPack" :icon="icon" class="icon-divider notranslate tu-divider--icon">
+			</tu-icon>
 		</span>
-		<span
-			:style="beforeStyle"
-			:class="borderClass"
-			class="tu-divider-border before"
-		/>
+		<span :style="beforeStyle" :class="borderClass" class="tu-divider-border before" />
 	</div>
 </template>
 
@@ -107,9 +90,9 @@ export default defineComponent({
 
 		const afterStyle = computed(() => {
 			const classes = {
-				width: getWidthAfter,
+				width: getWidthAfter.value,
 				"border-top-width": props.borderHeight,
-				"border-top-style": props.borderStyle,
+				["border-top-style" as any]: props.borderStyle,
 			};
 			if (!_color.isColor(props.color)) {
 				classes["border-top-color"] = borderColor;
@@ -119,9 +102,9 @@ export default defineComponent({
 
 		const beforeStyle = computed(() => {
 			const classes = {
-				width: getWidthBefore,
+				width: getWidthBefore.value,
 				"border-top-width": props.borderHeight,
-				"border-top-style": props.borderStyle,
+				["border-top-style" as any]: props.borderStyle,
 			};
 			if (!_color.isColor(props.color)) {
 				classes["border-top-color"] = borderColor;

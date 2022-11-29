@@ -53,7 +53,7 @@ export default defineComponent({
 	inheritAttrs: false,
 	extends: tuComponent,
 	props: {
-		modelValue: { default: "" },
+		modelValue: { type: [Boolean, String], default: "" },
 		val: { default: "" },
 		notValue: { default: "" },
 		loading: { type: Boolean, default: false },

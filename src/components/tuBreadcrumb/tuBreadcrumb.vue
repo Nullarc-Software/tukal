@@ -1,45 +1,19 @@
 <template>
-	<nav
-		v-bind="$attrs"
-		:class="`tu-align-${align}`"
-		class="tu-breadcrumb"
-		aria-label="breadcrumb"
-	>
+	<nav v-bind="$attrs" :class="`tu-align-${align}`" class="tu-breadcrumb" aria-label="breadcrumb">
 		<ol class="tu-breadcrumb--ol">
 			<slot />
-			<li
-				v-for="item in mutableItems"
-				v-show="!hasSlot"
-				:key="item.title"
-				:class="{
-					'tu-active': item.active,
-					'disabled-link': item.disabled
-				}"
-				:aria-current="item.active ? 'page' : null"
-			>
-				<a
-					v-if="!item.active"
-					:href="item.url ? item.url : '#'"
-					:title="item.title"
-					class="tu-breadcrumb--link"
-					v-text="item.title"
-				></a>
+			<li v-for="item in mutableItems" v-show="!hasSlot" :key="item.title" :class="{
+				'tu-active': item.active,
+				'disabled-link': item.disabled
+			}" :aria-current="item.active ? 'page' : null">
+				<a v-if="!item.active" :href="item.url ? item.url : '#'" :title="item.title" class="tu-breadcrumb--link"
+					v-text="item.title"></a>
 				<template v-else>
-					<span
-						:class="textClass"
-						:style="textStyle"
-						class="tu-breadcrumb--text"
-						v-text="item.title"
-					></span>
+					<span :class="textClass" :style="textStyle" class="tu-breadcrumb--text" v-text="item.title"></span>
 				</template>
-				<span
-					v-if="!item.active"
-					:class="separator.length > 1 ? 'material-icons' : null"
-					class="separator notranslate tu-breadcrum--separator"
-					translate="no"
-					aria-hidden="true"
-					v-text="separator"
-				></span>
+				<span v-if="!item.active" :class="separator.length > 1 ? 'material-icons' : null"
+					class="separator notranslate tu-breadcrum--separator" translate="no" aria-hidden="true"
+					v-text="separator"></span>
 			</li>
 		</ol>
 	</nav>
@@ -70,7 +44,7 @@ export default defineComponent({
 			default: "left"
 		}
 	},
-	setup (props, context) {
+	setup(props, context) {
 		const textClass = computed(() => {
 			const classes = {};
 			if (_color.isColor(props.color))
@@ -106,7 +80,7 @@ export default defineComponent({
 				});
 			}
 
-			return newItems;
+			return newItems as any[];
 		});
 
 		return {
@@ -124,50 +98,61 @@ export default defineComponent({
 
 .tu-breadcrumb {
 	display: flex;
+
 	&.tu-align-left {
 		justify-content: flex-start;
 	}
+
 	&.tu-align-center {
 		justify-content: center;
 	}
+
 	&.tu-align-right {
 		justify-content: flex-end;
 	}
+
 	.disabled-link {
 		opacity: 0.5;
 		pointer-events: none;
 	}
 }
+
 .tu-breadcrumb--ol {
 	display: flex;
 	flex-wrap: wrap;
 	padding: 0.75rem 1rem;
 	list-style-type: none;
+
 	li {
 		&.tu-active {
 			cursor: default;
 		}
 	}
+
 	a {
 		transition: all 0.2s ease;
 		color: rgba(0, 0, 0, 0.4);
 	}
 }
+
 .tu-breadcrumb--ol a:hover,
 .tu-breadcrumb--ol a:focus {
 	color: rgba(0, 0, 0, 0.7);
 	text-decoration: none;
 }
+
 .tu-breadcrum--separator {
 	color: rgba(0, 0, 0, 0.4);
 	padding: 0 0.5rem 0 0.5rem;
+
 	&.material-icons {
 		vertical-align: middle;
 		font-size: inherit;
 	}
 }
 
-@each $color, $index in --tu-colors {
+@each $color,
+$index in --tu-colors {
 	.tu-breadcrumb-text-#{$color} {
 		color: -getColor(colorx, 1);
 	}

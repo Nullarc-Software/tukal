@@ -9,7 +9,7 @@
 	</div>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent, ref } from "vue";
 import colorPicker from "@caohenghu/vue-colorpicker";
 import tuComponent from "../tuComponent"

@@ -1,29 +1,14 @@
 <template>
 	<div class="tu-calendar">
-		<calendar-view
-			:show-date="showDate"
-			:items="events"
-			:show-times="true"
-			:displayWeekNumbers="true"
-			:categories="eventCategories"
-			@click-date="onClickDay"
-			:displayPeriodUom="periodUOM"
-			@updateItems="updateItems"
-			@deleteItem="deleteItem"
-			:components="components"
-			:class="colorTheme"
-		>
+		<calendar-view :show-date="showDate" :items="events" :show-times="true" :displayWeekNumbers="true"
+			:categories="eventCategories" @click-date="onClickDay" :displayPeriodUom="periodUOM"
+			@updateItems="updateItems" @deleteItem="deleteItem" :components="components" :class="colorTheme">
 			<template #header="{ headerProps }">
-				<calendar-view-header
-					:header-props="headerProps"
-					@input="setShowDate"
-					@updatePeriod="updatePeriod"
-					@updateTheme="updateTheme"
-					@updateCategory="updateCategory"
-				/>
+				<calendar-view-header :header-props="headerProps" @input="setShowDate" @updatePeriod="updatePeriod"
+					@updateTheme="updateTheme" @updateCategory="updateCategory" />
 			</template>
 		</calendar-view>
-		<tu-dialog width="550px" v-model="activateDialog" @close="closeDialog">
+		<tu-dialog width="550px" v-model="activateDialog">
 			<header v-if="$slots.dialogHeader">
 				<slot name="dialogHeader" />
 			</header>
@@ -41,12 +26,7 @@
 								<span title="Label">Title</span>
 							</td>
 							<td>
-								<tu-input
-									primary
-									v-model="newItem.Title"
-									state="primary"
-									placeholder="Title"
-								/>
+								<tu-input primary v-model="newItem.Title" state="primary" placeholder="Title" />
 							</td>
 						</tr>
 						<tr>
@@ -64,10 +44,7 @@
 								<span title="Label">Start Date</span>
 							</td>
 							<td>
-								<tu-input
-									type="date"
-									v-model="newItem.StartDate"
-								/>
+								<tu-input type="date" v-model="newItem.StartDate" />
 							</td>
 						</tr>
 						<tr>
@@ -75,10 +52,7 @@
 								<span title="Label">Start Time</span>
 							</td>
 							<td>
-								<tu-input
-									type="time"
-									v-model="newItem.StartTime"
-								/>
+								<tu-input type="time" v-model="newItem.StartTime" />
 							</td>
 						</tr>
 						<tr>
@@ -86,10 +60,7 @@
 								<span title="Label">End Date</span>
 							</td>
 							<td>
-								<tu-input
-									type="date"
-									v-model="newItem.EndDate"
-								/>
+								<tu-input type="date" v-model="newItem.EndDate" />
 							</td>
 						</tr>
 						<tr>
@@ -97,10 +68,7 @@
 								<span title="Label">End Time</span>
 							</td>
 							<td>
-								<tu-input
-									type="time"
-									v-model="newItem.EndTime"
-								/>
+								<tu-input type="time" v-model="newItem.EndTime" />
 							</td>
 						</tr>
 						<tr>
@@ -109,16 +77,9 @@
 							</td>
 							<td>
 								<tu-select inline v-model="newItem.Category">
-									<tu-select-option
-										v-for="category in categories"
-										:key="category"
-										:label="category.name"
-										:value="category.name"
-									>
-										<span
-											class="dot"
-											:style="styleChip(category.color)"
-										></span>
+									<tu-select-option v-for="category in categories" :key="category"
+										:label="category.name" :value="category.name">
+										<span class="dot" :style="styleChip(category.color)"></span>
 										{{ category.name }}
 									</tu-select-option>
 								</tu-select>
@@ -145,8 +106,8 @@ import "./css/light.css";
 import "./css/dark.css";
 import "./css/index.css";
 import tuComponent from "../tuComponent";
-interface category {
-	name: String;
+type Category = {
+	name: string;
 	color: string;
 }
 export default defineComponent({
@@ -163,7 +124,7 @@ export default defineComponent({
 			default: []
 		},
 		categories: {
-			type: Object as PropType<Array<category>>,
+			type: Object as PropType<Array<Category>>,
 			default: []
 		},
 		model: {
@@ -185,7 +146,7 @@ export default defineComponent({
 		}
 	},
 	emits: ["onClickDay", "update:modelValue", "categoriesUpdated"],
-	setup (props, context) {
+	setup(props, context) {
 		const showDate = ref(new Date());
 		const activateDialog = ref(false);
 		const newItem = reactive({
@@ -353,6 +314,7 @@ export default defineComponent({
 	align-items: center;
 	justify-content: center;
 }
+
 .dot {
 	height: 20px;
 	width: 20px;
@@ -360,9 +322,11 @@ export default defineComponent({
 	border-radius: 50%;
 	display: inline-block;
 }
+
 .tu-calendar {
 	border-radius: 25px;
 }
+
 .dialog-header {
 	text-align: center;
 }
