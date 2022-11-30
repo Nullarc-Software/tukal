@@ -106,6 +106,8 @@ import "./css/light.css";
 import "./css/dark.css";
 import "./css/index.css";
 import tuComponent from "../tuComponent";
+import { TukalGlobals } from "../tukalGlobals";
+import { XHRRequestWrapper } from "@/utils/apiWrapper";
 type Category = {
 	name: string;
 	color: string;
@@ -165,7 +167,7 @@ export default defineComponent({
 		if (props.model === "local") events = ref(props.items);
 		else {
 			events = ref([]);
-			const request: XMLHttpRequest = new XMLHttpRequest();
+			const xhrRequest = new XHRRequestWrapper();
 			const serverSideModel: Ref<TuCalendarServerModel> = ref(
 				props.serverSideConfig
 			);
@@ -173,29 +175,28 @@ export default defineComponent({
 			if (isUndefined(serverSideModel.value.method))
 				serverSideModel.value.method = "GET";
 
-			request.onreadystatechange = function () {
+			xhrRequest.request.onreadystatechange = function () {
 				if (
-					request.readyState === XMLHttpRequest.DONE &&
-					request.status === 200
+					xhrRequest.request.readyState === XMLHttpRequest.DONE &&
+					xhrRequest.request.status === 200
 				) {
-					if (request.responseType === "json")
-						events.value = request.response.data;
-					else if (request.responseType === "text")
-						events.value = JSON.parse(request.responseText);
+					if (xhrRequest.request.responseType === "json")
+						events.value = xhrRequest.request.response.data;
+					else if (xhrRequest.request.responseType === "text")
+						events.value = JSON.parse(xhrRequest.request.responseText);
 					else {
-						events.value = JSON.parse(request.responseText);
+						events.value = JSON.parse(xhrRequest.request.responseText);
 						console.log(events.value);
 					}
 				}
 			};
-			request.open(
+			xhrRequest.open(
 				serverSideModel.value.method,
-				serverSideModel.value.ajaxUrl,
-				true
+				TukalGlobals.ApiRequestTarget + serverSideModel.value.ajaxUrl,
 			);
-			request.setRequestHeader("Content-Type", "application/json");
-			request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-			request.send();
+			xhrRequest.request.setRequestHeader("Content-Type", "application/json");
+			xhrRequest.request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+			xhrRequest.request.send();
 		}
 		const content = ref();
 		const onClickDay = (d: String) => {

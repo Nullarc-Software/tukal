@@ -1,14 +1,8 @@
-
+import { XHRRequestWrapper } from "@/utils/apiWrapper";
 import _ from "lodash";
-import {
-	Component,
-	computed,
-	ComputedRef,
-	reactive,
-	ref,
-	Ref,
-	shallowReactive
-} from "vue";
+import { Component, computed, ComputedRef, reactive, ref, Ref, shallowReactive } from "vue";
+
+import { TukalGlobals } from "../tukalGlobals";
 
 export class TableIdentifierAuto {
 	public static id = 0;
@@ -41,7 +35,7 @@ export interface TuHeaderDefn {
 	caption?: string;
 	isComponent?: boolean;
 	element?: HTMLElement;
-	inputComponent?: Boolean;
+	inputComponent?: boolean;
 	component?: HTMLElement | Component | string;
 	componentProps?: any;
 	props?: {
@@ -112,15 +106,15 @@ export interface TuTableInitialComponentValues {
 export class TuTableStore {
 	private id: string;
 	private table: TuTableDefn;
-	private headerIndexCtr: number = 0;
-	private rowIndexCtr: number = 0;
+	private headerIndexCtr = 0;
+	private rowIndexCtr = 0;
 	private activeSort: Ref<number>;
 	private refreshTable: Ref<boolean>;
 	private firstDataSet: boolean;
 
 	public loading: Ref<boolean>;
 
-	public serverSideModel: boolean = false;
+	public serverSideModel = false;
 	public serverModelProps: TuTableServerModel;
 
 	public headerCount: Ref<number>;
@@ -142,7 +136,7 @@ export class TuTableStore {
 		return temp;
 	}
 
-	constructor (tableId: string, columnsInitial: number = 0) {
+	constructor (tableId: string, columnsInitial = 0) {
 		this.id = tableId;
 		this.table = reactive({
 			headers: [],
@@ -209,23 +203,23 @@ export class TuTableStore {
 			}
 			else {
 				const inst = this;
-				const request: XMLHttpRequest = new XMLHttpRequest();
-				request.onreadystatechange = () => {
+				const xhrRequest = new  XHRRequestWrapper();
+				xhrRequest.request.onreadystatechange = () => {
 					if (
-						request.readyState === XMLHttpRequest.DONE &&
-						request.status === 200
+						xhrRequest.request.readyState === XMLHttpRequest.DONE &&
+						xhrRequest.request.status === 200
 					) {
-						if (request.responseType === "json") {
-							inst.setTableData(request.response.data);
-							inst.rowCount.value = request.response.total_rows;
+						if (xhrRequest.request.responseType === "json") {
+							inst.setTableData(xhrRequest.request.response.data);
+							inst.rowCount.value = xhrRequest.request.response.total_rows;
 						}
-						else if (request.responseType === "text") {
-							const obj = JSON.parse(request.responseText);
+						else if (xhrRequest.request.responseType === "text") {
+							const obj = JSON.parse(xhrRequest.request.responseText);
 							inst.rowCount.value = obj.total_rows;
 							inst.setTableData(obj.data);
 						}
 						else {
-							const obj = JSON.parse(request.responseText);
+							const obj = JSON.parse(xhrRequest.request.responseText);
 							inst.rowCount.value = obj.total_rows;
 							inst.setTableData(obj.data);
 						}
@@ -246,14 +240,13 @@ export class TuTableStore {
 				if (_.isUndefined(this.serverModelProps.method))
 					this.serverModelProps.method = "GET";
 
-				request.open(
+				xhrRequest.open(
 					this.serverModelProps.method,
-					this.serverModelProps.ajaxUrl,
-					true
+					TukalGlobals.ApiRequestTarget + this.serverModelProps.ajaxUrl					
 				);
-				request.setRequestHeader("Content-Type", "application/json");
-				request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-				request.send(JSON.stringify(props));
+				xhrRequest.request.setRequestHeader("Content-Type", "application/json");
+				xhrRequest.request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+				xhrRequest.request.send(JSON.stringify(props));
 				data = this.table.data;
 			}
 

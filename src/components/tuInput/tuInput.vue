@@ -122,7 +122,7 @@ export default defineComponent({
 		tuIcon
 	},
 	props: {
-		modelValue: { type: Object as any,  default: "" },
+		modelValue: { type: [Object, String, Object as any],  default: "" },
 		labelPlaceholder: { default: "" },
 		label: { default: "" },
 		block: { type: Boolean, default: false },

@@ -88,11 +88,7 @@ export default defineComponent({
 			return {
 				// ...$listeners,
 				input: (evt: Event) => {
-					if (props.eventBubble) context.emit("click", evt);
-					else {
-						evt.stopPropagation();
-						evt.preventDefault();
-					}
+					
 
 					if (typeof props.modelValue === "boolean")
 						context.emit("update:modelValue", !props.modelValue);
@@ -133,6 +129,11 @@ export default defineComponent({
 					}
 
 					context.emit("update:checked", !props.checked);
+					if (props.eventBubble) context.emit("click", evt);
+					else {
+						evt.stopPropagation();
+						evt.preventDefault();
+					}
 				},
 				blur: (evt: EventTarget) => {
 					context.emit("blur", evt);

@@ -1,6 +1,6 @@
 {
 	"name": "tukal-vue",
-	"version": "0.1.54",
+	"version": "0.1.59",
 	"type": "module",
 	"scripts": {
 		"dev": "vite",
@@ -18,7 +18,8 @@
 		".": {
 			"import": "./dist/tukal-vue.js",
 			"require": "./dist/tukal-vue.umd.cjs"
-		}
+		},
+		"./css": "./dist/style.css"
 	},
 	"dependencies": {
 		"@caohenghu/vue-colorpicker": "^1.2.4",

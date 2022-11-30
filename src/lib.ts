@@ -41,3 +41,4 @@ export { default as tuRow } from "./layout/tuRow";
 export { default as tuCol } from "./layout/tuCol";
 
 export { getColor } from "./utils/index";
+export { TukalGlobals } from "./components/tukalGlobals";
