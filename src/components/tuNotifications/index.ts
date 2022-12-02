@@ -10,7 +10,7 @@ if (typeof window !== "undefined" && (<any>window).Vue)
 
 const notificationConstructor = tuComponent;
 
-interface NotificationAttributes {
+interface TuNotificationAttributes {
 	position?: "bottom-left"| "bottom-right" | "bottom-center" | "top-left" | "top-right" | "top-center",
 	isVisible?: boolean,
 	content?: Object,
@@ -36,7 +36,7 @@ interface NotificationAttributes {
 	classNotification?: string
 }
 
-class Notification {
+class TuNotification {
 	static notifId = 0;
 	static instanceList: any;
 	clientClose : Function | null = null;
@@ -44,9 +44,9 @@ class Notification {
 	currentId  = 0;
 
 	public static closeAll (params) {
-		for (const id of Notification.instanceList.keys) {
+		for (const id of TuNotification.instanceList.keys) {
 			try {
-				Notification.instanceList[id].unmount();
+				TuNotification.instanceList[id].unmount();
 			}
 			catch (error) {
 
@@ -57,19 +57,19 @@ class Notification {
 	}
 
 	close () {
-		Notification.instanceList[this.currentId].unmount();
+		TuNotification.instanceList[this.currentId].unmount();
 	}
 
 	private closeNotification () {
-		Notification.instanceList[this.currentId].unmount();
+		TuNotification.instanceList[this.currentId].unmount();
 		if (this.clientClose) this.clientClose();
 	}
 
-	constructor (paramsAttr: NotificationAttributes) {
+	constructor (paramsAttr: TuNotificationAttributes) {
 		let params = Object.create({});
 		params = Object.assign(params, paramsAttr);
-		params.notifId = ++Notification.notifId;
-		this.currentId = Notification.notifId;
+		params.notifId = ++TuNotification.notifId;
+		this.currentId = TuNotification.notifId;
 		params.clickClose = true;
 		if (params.onClickClose) this.clientClose = params.onClickClose;
 		params.onClickClose = this.closeNotification.bind(this);
@@ -93,10 +93,10 @@ class Notification {
 		parent.appendChild(html);
 		document.body.appendChild(parent);
 
-		if (!!Notification.instanceList === false) Notification.instanceList = Object.create(null);
-		Notification.instanceList[Notification.notifId] = this.instance;
+		if (!!TuNotification.instanceList === false) TuNotification.instanceList = Object.create(null);
+		TuNotification.instanceList[TuNotification.notifId] = this.instance;
 	}
 }
 
-export { Notification };	export type { NotificationAttributes };
+export { TuNotification };	export type { TuNotificationAttributes };
 

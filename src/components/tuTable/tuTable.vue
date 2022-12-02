@@ -32,13 +32,14 @@
 				compact: compact
 			}"
 		>
-			<table class="tu-table__element" ref="tableElement">
+			<table class="tu-table__element" ref="tableElement" >
 				<thead ref="thead" class="tu-table__thead">
 					<tu-th
 						v-if="rowExpand"
 						fixed
 						@click="expandedAll = !expandedAll"
 						style="width: 50px"
+						
 					>
 						<tu-icon
 							class="tu-table__tr_expand_handle"
@@ -61,6 +62,8 @@
 							minWidth: header.minWidth,
 							maxWidth: header.maxWidth
 						}"
+						@enable-drag-listener="isDraggable = true"
+						@disable-drag-listener="isDraggable = false"
 						:draggable="`${isDraggable}`"
 						@dragstart="startDrag($event, header)"
 						@drop="onDrop(header)"
@@ -208,7 +211,7 @@ import tuIcon from "../tuIcon";
 import tuCheckbox from "../tuCheckBox";
 import { tuPopper, tuPopupMenu, tuPopupItem } from "../tuPopper";
 import contextMenuComponent from "./tuTableContextMenu.vue";
-import { Loading, LoadingAttributes } from "../tuLoading";
+import { TuLoading, TuLoadingAttributes } from "../tuLoading";
 
 if (typeof window !== "undefined" && (window as any).VueInstance)
 	contextMenuComponent.install((window as any).VueInstance);
@@ -364,18 +367,18 @@ export default defineComponent({
 		const isDraggable = ref(props.draggable);
 		let table: TuTableStore;
 
-		let load: Loading = null;
+		let load: TuLoading = null;
 
 		function setLoading () {
 			const id = `${props.id}-tbody`;
 			if (_.isNil(document.getElementById(id)) === false) {
-				const attrs: LoadingAttributes = {
+				const attrs: TuLoadingAttributes = {
 					target: `#${id}`,
 					color: "dark",
 					type: "circles",
 					scale: "1.0"
 				};
-				load = new Loading(attrs);
+				load = new TuLoading(attrs);
 			}
 		}
 
@@ -578,27 +581,35 @@ export default defineComponent({
 		const isDrag = ref(false);
 
 		const startDrag = (evt: DragEvent, header: TuHeaderDefn) => {
-			isDrag.value = false;
-			evt.dataTransfer.effectAllowed = "copyMove";
-			dragIndex.value = header.index;
+			if(isDraggable.value) {
+				isDrag.value = false;
+				evt.dataTransfer.effectAllowed = "copyMove";
+				dragIndex.value = header.index;
+			}
+			else {
+				evt.preventDefault();
+				evt.stopPropagation();
+			}
 		};
 		const onDrop = (header: TuHeaderDefn) => {
-			isDrag.value = true;
-			dropIndex.value = header.index;
-			if (props.persistentId) {
-				table.reOrderTableColumns(
-					dragIndex.value,
-					dropIndex.value,
-					props.persistentId
-				);
-				context.emit(
-					"onTableConfigUpdated",
-					JSON.parse(
-						localStorage.getItem(`table-${props.persistentId}`)
-					)
-				);
+			if(isDraggable.value) {
+				isDrag.value = true;
+				dropIndex.value = header.index;
+				if (props.persistentId) {
+					table.reOrderTableColumns(
+						dragIndex.value,
+						dropIndex.value,
+						props.persistentId
+					);
+					context.emit(
+						"onTableConfigUpdated",
+						JSON.parse(
+							localStorage.getItem(`table-${props.persistentId}`)
+						)
+					);
+				}
+				else table.reOrderTableColumns(dragIndex.value, header.index);
 			}
-			else table.reOrderTableColumns(dragIndex.value, header.index);
 		};
 
 		return {
@@ -630,6 +641,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import "../../style/sass/_mixins";
+
 
 .tu-table-content {
 	width: 100%;
@@ -669,7 +681,6 @@ export default defineComponent({
 .tu-table {
 	font-size: 0.9rem;
 	margin: 0px;
-	overflow: auto;
 
 	::v-deep(table) {
 		margin: 0px;
@@ -733,6 +744,7 @@ export default defineComponent({
 
 	&__tbody {
 		background-color: -getColor("background");
+		overflow: auto;
 		&:empty {
 			display: none;
 			background: #000;

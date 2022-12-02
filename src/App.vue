@@ -621,7 +621,7 @@
 				<button>click me</button>
 				<template #content>
 					<tu-popup-menu>
-						<tu-popup-item> Test </tu-popup-item>
+						<tu-popup-item :loading="true" loadingType="scale" >  Test </tu-popup-item>
 						<tu-popup-item> Test 1 </tu-popup-item>
 						<tu-popup-item divider> Test 2 </tu-popup-item>
 					</tu-popup-menu>
@@ -862,10 +862,10 @@ import {
 	markRaw
 } from "vue";
 import * as components from "./components";
-import { NotificationAttributes } from "./components/tuNotifications";
+import { TuNotificationAttributes } from "./components/tuNotifications";
 import {
-	Loading as LoadingConstructor,
-	LoadingAttributes
+	TuLoading as LoadingConstructor,
+	TuLoadingAttributes
 } from "./components/tuLoading";
 import { ExportData } from "./components/tuTable";
 import testComponent from "./components/TestComponent.vue";
@@ -1011,7 +1011,7 @@ export default defineComponent({
 		*/
 		const loadingDiv = ref();
 		const justShowLoading = function () {
-			const attrs: LoadingAttributes = {
+			const attrs: TuLoadingAttributes = {
 				target: null,
 				color: "dark",
 				type: "circles",
@@ -1022,7 +1022,7 @@ export default defineComponent({
 		};
 
 		const justLoad = function () {
-			const notificationAttrs: NotificationAttributes = {
+			const notificationAttrs: TuNotificationAttributes = {
 				title: "Documentation Vuesax 4.0+",
 				text: `These documents refer to the latest version of vuesax (4.0+),
 					to see the documents of the previous versions you can do it here 👉 Vuesax3.x`,

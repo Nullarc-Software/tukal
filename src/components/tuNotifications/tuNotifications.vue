@@ -67,7 +67,7 @@ import {
 import tuComponent from "../tuComponent";
 
 export default defineComponent({
-	name: "TuNotification",
+	name: "TuNotifications",
 	extends: tuComponent,
 	props: {
 		notifId: {

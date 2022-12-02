@@ -14,14 +14,14 @@ export { default as tuAvatar } from "./components/tuAvatar";
 export { default as tuPagination } from "./components/tuPagination";
 export { default as tuBreadcrumb } from "./components/tuBreadcrumb";
 export { default as tuProgress } from "./components/tuProgress";
-export { Loading, tuLoading } from "./components/tuLoading";
-export type { LoadingAttributes } from "./components/tuLoading";
+export { TuLoading, tuLoading } from "./components/tuLoading";
+export type { TuLoadingAttributes, TuLoadingTypes } from "./components/tuLoading";
 
 export { default as tuDivider } from "./components/tuDivider";
 export { default as tuIcon } from "./components/tuIcon";
 export { tuNavbar, tuNavbarGroup, tuNavbarItem } from "./components/tuNavbar";
-export { Notification } from "./components/tuNotifications";
-export type { NotificationAttributes } from "./components/tuNotifications";
+export { TuNotification } from "./components/tuNotifications";
+export type { TuNotificationAttributes } from "./components/tuNotifications";
 export { tuSidebar, tuSidebarGroup, tuSidebarItem } from "./components/tuSideBar";
 export { tuPopper, tuPopupMenu, tuPopupItem } from "./components/tuPopper";
 export { default as tuDialog } from "./components/tuDialog";

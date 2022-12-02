@@ -8,8 +8,10 @@ tuComponent.install = (vue: any) => {
 if (typeof window !== "undefined" && (<any>window).Vue)
 	tuComponent.install((<any>window).Vue);
 
-interface LoadingAttributes {
-	type?: string;
+
+type TuLoadingTypes = "default" | "waves" | "corners" | "border" | "points" | "square" | "gradient" | "rectangle" | "circles" | "square-rotate" | "scale";
+interface TuLoadingAttributes {
+	type?: TuLoadingTypes;
 	text?: string;
 	hidden?: boolean;
 	color?: string;
@@ -23,9 +25,9 @@ interface LoadingAttributes {
 
 const loadingConstructor = tuComponent;
 
-class Loading {
+class TuLoading {
 	instance: App | null = null;
-	params: Ref<LoadingAttributes>;
+	params: Ref<TuLoadingAttributes>;
 	isVisible = false;
 
 	public changeText (val: string) {
@@ -50,7 +52,7 @@ class Loading {
 		}, 50);
 	}
 
-	constructor (paramsAttr: LoadingAttributes) {
+	constructor (paramsAttr: TuLoadingAttributes) {
 		this.params = ref(paramsAttr);
 		let target: any = null;
 		if (typeof paramsAttr.target === "string")
@@ -70,5 +72,5 @@ class Loading {
 	}
 }
 
-export { Loading, tuComponent as tuLoading };	export type { LoadingAttributes };
+export { TuLoading, tuComponent as tuLoading };	export type { TuLoadingAttributes, TuLoadingTypes };
 

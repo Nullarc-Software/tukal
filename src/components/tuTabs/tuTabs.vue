@@ -649,8 +649,7 @@ export default defineComponent({
 	}
 }
 
-::v-deep(.tu-tabs--content) {
-	overflow: auto;
+::v-deep(.tu-tabs--content) {	
 	padding: 10px;
 }
 

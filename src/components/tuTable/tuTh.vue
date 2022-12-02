@@ -91,6 +91,7 @@ export default defineComponent({
 			default: null
 		}
 	},
+	emits: ["enableDragListener", "disableDragListener"],
 	setup (props, context) {
 		const instance = getCurrentInstance();
 		const tableInstance = inject<TuTableStore>("tableInstance");
@@ -164,6 +165,7 @@ export default defineComponent({
 
 		function trackMouseUp (event) {
 			headerElement.value = undefined;
+			context.emit("enableDragListener");
 		}
 
 		const resizeListeners = {
@@ -172,6 +174,7 @@ export default defineComponent({
 				startOffset = headerElement.value.offsetWidth - event.pageX;
 				document.addEventListener("mousemove", trackMouseMove);
 				document.addEventListener("mouseup", trackMouseUp);
+				context.emit("disableDragListener");
 			}
 		};
 

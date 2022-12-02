@@ -26,6 +26,9 @@ export default defineConfig({
 			}
 		}
 	},
+	server: {
+		port: 5174
+	},
 	resolve: {
 		alias: [
 			{ find: "@", replacement: resolve(__dirname, "src") },

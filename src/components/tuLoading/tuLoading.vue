@@ -15,7 +15,7 @@
 					transform: `scale(${scale})`
 				}"
 			>
-				<div class="tu-loading__load__animation">
+				<div class="tu-loading__load__animation" :class="{'__fit': fitAnimation}">
 					<div class="tu-loading__load__percent">
 						{{ percent }}
 					</div>
@@ -41,18 +41,20 @@
 
 <script lang="ts">
 import { setColor, setVar } from "@/utils";
-import { defineComponent, getCurrentInstance, watch } from "vue";
+import { defineComponent, getCurrentInstance, watch, PropType } from "vue";
 
+type LoadingType = "default" | "waves" | "corners" | "border" | "points" | "square" | "gradient" | "rectangle" | "circles" | "square-rotate" | "scale"
 export default defineComponent({
 	name: "TuLoading",
 	props: {
 		text: { type: String, default: null },
-		type: { type: String, default: "default" },
+		type: { type: Object as PropType<LoadingType>, default: "default" },
 		color: { type: String, default: null },
 		background: { type: String, default: null },
 		opacity: { type: String, default: null },
 		percent: { type: String, default: null },
 		progress: { type: Number, default: null },
+		fitAnimation: {type: Boolean, default: false},
 		scale: { type: String, default: null },
 		target: {},
 		isVisible: { type: Boolean, default: true }
@@ -143,6 +145,7 @@ export default defineComponent({
 			display: flex;
 			align-items: center;
 			justify-content: center;
+			
 		}
 	}
 }
@@ -660,10 +663,11 @@ export default defineComponent({
 
 	.tu-loading__load__animation {
 		display: flex;
-		align-items: cneter;
+		align-items: center;
 		justify-content: center;
 		width: 40px;
 		height: 40px;
+
 
 		&__1 {
 			position: relative;

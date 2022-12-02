@@ -1,15 +1,18 @@
 <template>
 	<li
-		:class="{ divider: divider }"
+		:class="{ divider: divider, 'tu-popup-item-disabled': disabled }"
 		:style="{
 			color: hoverx ? giveColor() + ' !important' : null,
 			background: hoverx ? giveColor(0.01) + ' !important' : null
 		}"
 		class="tu-component tu-dropdown--item"
+		:disabled="disabled"
 		@click="clickClose"
 		@mouseover="hoverx = true"
 		@mouseout="hoverx = false"
 	>
+		
+
 		<router-link
 			v-if="to"
 			:to="to"
@@ -17,6 +20,7 @@
 			class="tu-dropdown--item-link"
 		>
 			{{ $attrs.disabled }}
+			
 			<slot />
 		</router-link>
 		<a
@@ -31,8 +35,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, inject, ref } from "vue";
+import { defineComponent, inject, ref, watch, PropType} from "vue";
 import _color from "../../utils/color";
+import { TuLoadingTypes } from "../tuLoading";
 export default defineComponent({
 	name: "TuPopupItem",
 	inheritAttrs: false,
@@ -52,7 +57,7 @@ export default defineComponent({
 		divider: {
 			default: false,
 			type: Boolean
-		}
+		}		
 	},
 	setup (props, context) {
 		const hoverx = ref(false);
@@ -114,5 +119,9 @@ export default defineComponent({
 		border-top: 1px solid rgba(0, 0, 0, 0.08);
 		margin-top: 5px;
 	}
+}
+
+.tu-popup-item-disabled {
+	pointer-events: none;
 }
 </style>

@@ -88,6 +88,7 @@ export interface TuTableContextMenuEntry {
 	caption: string | HTMLElement;
 	icon?: HTMLElement;
 	hasSubMenu?: boolean;
+	disabled?: boolean;
 	onClicked?: Function;
 	data?: any;
 	closeOnClick?: boolean;
@@ -132,7 +133,7 @@ export class TuTableStore {
 		let temp = Object.assign({}, obj);
 		for (const key of field.split("."))
 			if (temp[key]) temp = temp[key];
-
+		
 		return temp;
 	}
 

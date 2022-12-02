@@ -82,7 +82,7 @@ export default defineComponent({
 		 */
 		placement: {
 			type: String,
-			default: "bottom"
+			default: "auto"
 		},
 		/**
 		 * Customize the [offset](https://popper.js.org/docs/v2/modifiers/offset/) of the popper
