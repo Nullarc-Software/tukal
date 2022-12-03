@@ -265,7 +265,6 @@ export default defineComponent({
 
 .notification-leave-active {
 	transition: all 0.25s ease !important;
-	clip-path: circle(0% at 50% 50%) !important;
 }
 
 .notification-enter-to {
@@ -369,9 +368,22 @@ export default defineComponent({
 			}
 		}
 
+
+
+		.tu-notification {
+			clip-path: circle(120% at 50% 100%) !important;
+			transition: all 0.25s ease, transform 0.3s ease,
+				max-height 0.25s ease, clip-path 0.5s ease 0.1s;
+
+			&.tu-notification--border {
+				border: 3px solid transparent;
+				border-bottom: 3px solid -getColor("border");
+			}
+		}
+
 		.notification-enter-from {
 			transform: translate(0, 25%);
-			clip-path: circle(100% at 50% 100%) !important;
+			clip-path: circle(0% at 50% 100%) !important;
 
 			.tu-notification__content {
 				opacity: 0;
@@ -386,17 +398,6 @@ export default defineComponent({
 			.tu-notification__content {
 				opacity: 0;
 				transform: translate(0, 10%);
-			}
-		}
-
-		.tu-notification {
-			clip-path: circle(120% at 50% 100%) !important;
-			transition: all 0.25s ease, transform 0.3s ease,
-				max-height 0.25s ease, clip-path 0.5s ease 0.1s;
-
-			&.tu-notification--border {
-				border: 3px solid transparent;
-				border-bottom: 3px solid -getColor("border");
 			}
 		}
 	}

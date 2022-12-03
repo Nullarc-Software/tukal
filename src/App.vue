@@ -862,7 +862,7 @@ import {
 	markRaw
 } from "vue";
 import * as components from "./components";
-import { TuNotificationAttributes } from "./components/tuNotifications";
+import { TuNotificationAttributes, TuNotification } from "./components/tuNotifications";
 import {
 	TuLoading as LoadingConstructor,
 	TuLoadingAttributes
@@ -1038,12 +1038,19 @@ export default defineComponent({
 				progressAuto: true
 			};
 
-			/* new Notification(notificationAttrs);
+			new TuNotification(notificationAttrs);
 			notificationAttrs.position = "top-center";
-			notificationAttrs.color = "primary";
-			notificationAttrs.sticky = true;
+			notificationAttrs.color = "primary";			
 			notificationAttrs.flat = false;
-			new Notification(notificationAttrs); */
+			new TuNotification(notificationAttrs);
+			notificationAttrs.position = "top-left";
+			new TuNotification(notificationAttrs);
+			notificationAttrs.position = "top-right";
+			new TuNotification(notificationAttrs);
+			notificationAttrs.position = "bottom-left";
+			new TuNotification(notificationAttrs);
+			notificationAttrs.position = "bottom-center";
+			new TuNotification(notificationAttrs);
 		};
 
 		watch(selectValue, () => {
