@@ -1,6 +1,6 @@
 <template>
 	<transition enter-from-class="notification-enter-from" enter-active-class="notification-enter-active"
-		enter-to-class="notification-enter-to" leave-to-class="notification-leave-to"
+		enter-to-class="notification-enter-to" leave-to-class="notification-leave-to" leave-from-class="notification-leave-from"
 		leave-active-class="notification-leave-active" appear out-in>
 		<div :id="`notification-${notifId}`" ref="notif" :class="[
 			{ 'tu-notification--color': color },
@@ -265,22 +265,20 @@ export default defineComponent({
 
 .notification-leave-active {
 	transition: all 0.25s ease !important;
+	clip-path: circle(0% at 50% 50%) !important;
 }
 
 .notification-enter-to {
 	transform: none;
 }
 
+.notification-leave-from {
+	clip-path: circle(100% at 50% 50%) !important;
+}
+
 .notification-leave-to {
-	max-height: 0px !important;
-	// height: 0px !important
-	padding-top: 0px !important;
-	padding-bottom: 0px !important;
-	margin-top: 0px !important;
-	margin-bottom: 0px !important;
-	box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0);
-	opacity: 0 !important;
-	clip-path: circle(0% at 80% 35%) !important;
+	
+	clip-path: circle(0% at 50% 50%) !important;
 }
 
 // transform: translate(0,10px) !important
@@ -343,6 +341,17 @@ export default defineComponent({
 				transform: translate(0, -10%);
 			}
 		}
+		.notification-leave-to {
+			transform: translate(0, -25%);
+			clip-path: circle(0% at 50% 0%) !important;
+
+			.tu-notification__content {
+				opacity: 0;
+				transform: translate(0, -10%);
+			}
+		}
+
+
 	}
 
 	&--bottom-center {
@@ -357,6 +366,26 @@ export default defineComponent({
 			&:last-child {
 				border-radius: 20px 20px 0px 0px;
 				margin-bottom: -10px;
+			}
+		}
+
+		.notification-enter-from {
+			transform: translate(0, 25%);
+			clip-path: circle(100% at 50% 100%) !important;
+
+			.tu-notification__content {
+				opacity: 0;
+				transform: translate(0, 10%);
+			}
+		}
+
+		.notification-leave-to {
+			transform: translate(0, 25%);
+			clip-path: circle(0% at 50% 100%) !important;
+
+			.tu-notification__content {
+				opacity: 0;
+				transform: translate(0, 10%);
 			}
 		}
 
@@ -395,6 +424,26 @@ export default defineComponent({
 				border-left: 3px solid -getColor("border");
 			}
 		}
+
+		.notification-enter-from {
+			transform: translate(-25%);
+      		clip-path: circle(0% at 20% 35%) !important;
+
+			.tu-notification__content {
+				opacity: 0;
+				transform: translate(0, -10%);
+			}
+		}
+
+		.notification-leave-to {
+			transform: translate(-25%);
+      		clip-path: circle(0% at 20% 35%) !important;
+
+			.tu-notification__content {
+				opacity: 0;
+				transform: translate(0, -10%);
+			}
+		}
 	}
 
 	&--bottom-left {
@@ -416,6 +465,16 @@ export default defineComponent({
 			}
 		}
 
+		.notification-leave-to {
+			transform: translate(-25%);
+			clip-path: circle(145% at 80% 30%) !important;
+
+			.tu-notification__content {
+				opacity: 0;
+				transform: translate(-10%);
+			}
+		}
+
 		.tu-notification {
 			&.tu-notification--border {
 				border: 3px solid transparent;
@@ -426,6 +485,16 @@ export default defineComponent({
 
 	&--bottom-right {
 		.notification-enter-from {
+			transform: translate(25%);
+			clip-path: circle(0% at 80% 35%) !important;
+
+			.tu-notification__content {
+				opacity: 0;
+				transform: translate(10%);
+			}
+		}
+
+		.notification-leave-to {
 			transform: translate(25%);
 			clip-path: circle(0% at 80% 35%) !important;
 
