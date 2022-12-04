@@ -1,6 +1,6 @@
 import { XHRRequestWrapper } from "@/utils/apiWrapper";
-import _ from "lodash";
-import { Component, computed, ComputedRef, reactive, ref, Ref, shallowReactive } from "vue";
+import * as _ from "lodash";
+import { Component, computed, ComputedRef, reactive, ReactiveEffect, ref, Ref, shallowReactive, watch } from "vue";
 
 import { TukalGlobals } from "../tukalGlobals";
 
@@ -76,7 +76,7 @@ export interface TuTableProps {
 }
 
 export interface TuTableLocalColumn {
-	header?: string;
+	field?: string;
 	visibility?: boolean;
 }
 
@@ -106,6 +106,7 @@ export interface TuTableInitialComponentValues {
 
 export class TuTableStore {
 	private id: string;
+	private persistenceId: string;
 	private table: TuTableDefn;
 	private headerIndexCtr = 0;
 	private rowIndexCtr = 0;
@@ -129,6 +130,20 @@ export class TuTableStore {
 	public getFilters: ComputedRef<TuFilterDefn[]>;
 	public getSelectedRows: ComputedRef<TuTableRow[]>;
 
+	public persistentSettings: TuTableLocal;	
+
+	public getCaptionForField (field: string) {
+
+		const header = _.find(this.table.headers, {
+			field: field
+		});
+
+		if (header)
+			return header.caption;
+		else 
+			return "<error>";
+	}
+
 	private getField (obj: any, field: string) {
 		let temp = Object.assign({}, obj);
 		for (const key of field.split("."))
@@ -137,8 +152,9 @@ export class TuTableStore {
 		return temp;
 	}
 
-	constructor (tableId: string, columnsInitial = 0) {
+	constructor (tableId: string, columnsInitial = 0, persistenceId?: string) {
 		this.id = tableId;
+		this.persistenceId = persistenceId;
 		this.table = reactive({
 			headers: [],
 			data: [],
@@ -146,6 +162,9 @@ export class TuTableStore {
 			currentSort: [],
 			pageSize: 25,
 			currentPage: 1
+		});
+		this.persistentSettings = reactive({
+			columns: []
 		});
 		this.loading = ref(true);
 
@@ -289,6 +308,14 @@ export class TuTableStore {
 			}
 			else return false;
 		});
+
+		if (_.isEmpty(this.persistenceId) === false) {
+			watch(this.persistentSettings, () => {				
+				for(const column of this.persistentSettings.columns) 
+					this.setColumnVisibility(column.field, !column.visibility);				
+			});
+		}
+		
 	}
 
 	public getRowsMatching (filter: any): TuTableRow[] {
@@ -390,29 +417,62 @@ export class TuTableStore {
 				this.headerCount.value++;
 			}
 		});
-		if (localStorage.getItem(`table-${persistentId}`) !== null) {
-			const persistentColumns = JSON.parse(localStorage.getItem(`table-${persistentId}`));
-			const getNextHeader = (i: number) => {
-				const header = persistentColumns.columns[i].header;
-				for (let j = 0; j < this.table.headers.length; j++) {
-					if (this.table.headers[j].field === header)
-						return this.table.headers[j];
+		if (_.isEmpty(this.persistenceId) === false) {
+			if (localStorage.getItem(`table-${persistentId}`) !== null) {
+				const localSettings = JSON.parse(localStorage.getItem(`table-${persistentId}`)) as TuTableLocal;
+				for(let i = 0; i < localSettings.columns.length; i++) {
+					this.persistentSettings.columns.push({
+						field: localSettings.columns[i].field,
+						visibility: localSettings.columns[i].visibility
+					});
 				}
-			};
-			const prevHeaders: TuHeaderDefn[] = [];
-			for (let i = 0; i < this.table.headers.length; i++)
-				prevHeaders.push(getNextHeader(i));
-			this.table.headers = prevHeaders;
+				const getNextHeader = (i: number) => {
+					const header = this.persistentSettings.columns[i].field;
+					for (let j = 0; j < this.table.headers.length; j++) {
+						if (this.table.headers[j].field === header)
+							return this.table.headers[j];
+					}
+				};
+				const prevHeaders: TuHeaderDefn[] = [];
+				for (let i = 0; i < this.table.headers.length; i++)
+					prevHeaders.push(getNextHeader(i));
+				this.table.headers = prevHeaders;
+			}
+			else {
+				for (let i = 0; i < headers.length; i++) {
+					const column: TuTableLocalColumn = {
+						field: headers[i].field,
+						visibility: headers[i].hidden ? !headers[i].hidden : true
+					};
+					this.persistentSettings.columns.push(column);
+				}
+				localStorage.setItem(
+					`table-${this.persistenceId}`,
+					JSON.stringify(this.persistentSettings)
+				);
+			}
 		}
 	}
 
-	public setColumnVisibility (columnIndex: number, value: boolean) {
-		for (let i = 0; i < this.table.headers.length; i++) {
-			if (this.table.headers[i].index === columnIndex) {
-				this.table.headers[i].hidden = value;
-				break;
+	public setColumnVisibility (fieldName: string, value: boolean) {
+		const header = _.find(this.table.headers, {
+			field: fieldName
+		});
+
+		if(header) {
+			if(header.hidden != value) { // update only if value is changed  
+				header.hidden = value;
+				if (this.persistenceId) {
+					localStorage.setItem(
+						`table-${this.persistenceId}`,
+						JSON.stringify(this.persistentSettings)
+					);
+				}	
 			}
+			
 		}
+
+		
 	}
 
 	public reOrderTableColumns (indexOne: number, indexTwo: number, persistentId?: string) {
@@ -434,11 +494,10 @@ export class TuTableStore {
 			if (indexOneFound && indexTwoFound) break;
 		}
 		this.table.headers.splice(indexTwo, 0, this.table.headers.splice(indexOne, 1)[0]);
-		if (persistentId) {
-			const persistentColumns = JSON.parse(localStorage.getItem(`table-${persistentId}`));
+		if (persistentId) {			
 			for (let i = 0; i < this.table.headers.length; i++)
-				persistentColumns.columns[i].header = this.table.headers[i].field;
-			localStorage.setItem(`table-${persistentId}`, JSON.stringify(persistentColumns));
+				this.persistentSettings.columns[i].field = this.table.headers[i].field;
+			localStorage.setItem(`table-${persistentId}`, JSON.stringify(this.persistentSettings));
 		}
 	}
 

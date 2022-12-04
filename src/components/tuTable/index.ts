@@ -17,4 +17,5 @@ if (typeof window !== "undefined" && (<any>window).Vue)
 
 export * from "./tuTableStore";
 export { ExportData } from "./export";
+export type {VirtualElement } from "@popperjs/core";
 export { tuComponent as tuTable, tuComponent2 as tuTh, tuComponent3 as tuTr, tuComponent4 as tuTd, tuComponent5 as tuTableContextMenu };

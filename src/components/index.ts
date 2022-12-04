@@ -19,6 +19,7 @@ export type { TuLoadingAttributes, TuLoadingTypes } from "./tuLoading";
 export { default as tuDivider } from "./tuDivider";
 export { default as tuIcon } from "./tuIcon";
 export { tuTable, tuTd, tuTh, tuTr, tuTableContextMenu } from "./tuTable";
+export type {VirtualElement} from "./tuTable";
 export * from "./tuTable";
 export { tuNavbar, tuNavbarGroup, tuNavbarItem } from "./tuNavbar";
 export { TuNotification } from "./tuNotifications";

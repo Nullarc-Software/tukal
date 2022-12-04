@@ -9,7 +9,7 @@
 		<div
 			ref="triggerNode"
 			v-on="listeners"
-			class="inline-block"
+			
 			:style="{
 				width: fitPopperContainer ? '100%' : 'unset'
 			}"

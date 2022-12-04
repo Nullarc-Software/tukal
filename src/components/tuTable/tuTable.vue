@@ -3,25 +3,31 @@
 		<header v-if="$slots.header" class="tu-table__header">
 			<slot name="header" />
 		</header>
-		<div v-if="columnSelecter">
-			<tu-popper arrow border-radius="20px">
-				<i class="material-icons">view_column</i>
+		<tu-popper v-if="columnSelector" arrow border-radius="20px" fitPopperContainer>
+				<div class ="column-chooser-table-bar">
+					<tu-icon style="transform: translateY(-7px);">more_horiz</tu-icon>
+				</div>				
 				<template #content>
 					<tu-popup-menu
-						v-for="column in totalColumns"
-						:key="column.index"
 					>
-						<tu-popup-item>
+						<tu-popup-item style="pointer-events: none;" divider-bottom>
+							Column chooser 
+						</tu-popup-item>
+						<tu-popup-item
+							v-for="(column, index) in table.persistentSettings.columns"
+							:key="index"
+
+						>
 							<tu-checkbox
-								v-model="colsControl[column.index - 1]"
+								v-model="column.visibility"
+
 							>
-								{{ column.caption }}
+								{{ table.getCaptionForField(column.field) }}
 							</tu-checkbox>
 						</tu-popup-item>
 					</tu-popup-menu>
 				</template>
 			</tu-popper>
-		</div>
 		<div
 			class="tu-table"
 			:class="{
@@ -212,6 +218,8 @@ import tuCheckbox from "../tuCheckBox";
 import { tuPopper, tuPopupMenu, tuPopupItem } from "../tuPopper";
 import contextMenuComponent from "./tuTableContextMenu.vue";
 import { TuLoading, TuLoadingAttributes } from "../tuLoading";
+import { VirtualElement } from "@popperjs/core";
+import { threadId } from "worker_threads";
 
 if (typeof window !== "undefined" && (window as any).VueInstance)
 	contextMenuComponent.install((window as any).VueInstance);
@@ -284,7 +292,7 @@ export default defineComponent({
 			type: Array,
 			default: () => []
 		},
-		columnSelecter: {
+		columnSelector: {
 			type: Boolean,
 			default: false
 		},
@@ -315,7 +323,7 @@ export default defineComponent({
 			default: false
 		},
 		columns: {
-			type: Object as () => any[],
+			type: Object as () => TuHeaderDefn[],
 			default: () => []
 		},
 		tableInstance: {
@@ -332,7 +340,8 @@ export default defineComponent({
 		initialComponentValues: {
 			type: Object as PropType<Array<TuTableInitialComponentValues>>,
 			default: () => []
-		}
+		},
+		
 	},
 	emits: [
 		"update:modelValue",
@@ -363,9 +372,14 @@ export default defineComponent({
 		const expandedAll = ref(false);
 		const noOfTableValues = ref(0);
 		const isLoaded = ref(false);
+		const isMounted = ref(false);
+
 		const totalColumns = ref(props.columns);
 		const isDraggable = ref(props.draggable);
+		const openColumnChooser = ref(false);
 		let table: TuTableStore;
+
+		let virtualElement: VirtualElement = null;
 
 		let load: TuLoading = null;
 
@@ -383,10 +397,10 @@ export default defineComponent({
 		}
 
 		if (props.multiSelect && props.rowExpand)
-			table = new TuTableStore(props.id, 2);
+			table = new TuTableStore(props.id, 2, props.persistentId);
 		else if (props.multiSelect || props.rowExpand)
-			table = new TuTableStore(props.id, 1);
-		else table = new TuTableStore(props.id, 0);
+			table = new TuTableStore(props.id, 1, props.persistentId);
+		else table = new TuTableStore(props.id, 0, props.persistentId);
 
 		table.constructHeaders(props.columns, props.persistentId);
 
@@ -394,20 +408,7 @@ export default defineComponent({
 		else {
 			table.serverSideModel = true;
 			table.serverModelProps = reactive(props.serverSideConfig);
-		}
-		let persistentColumns: TuTableLocal = {
-			columns: []
-		};
-
-		if (props.persistentId !== null) {
-			for (let i = 0; i < table.getTableHeaders.value.length; i++) {
-				const column: TuTableLocalColumn = {
-					header: table.getTableHeaders.value[i].field,
-					visibility: false
-				};
-				persistentColumns.columns.push(column);
-			}
-		}
+		}			
 
 		const isMultipleSelected = computed(() => {
 			return _.isArray(props.modelValue);
@@ -426,13 +427,30 @@ export default defineComponent({
 			context.emit("update:modelValue", newVal);
 		}
 
+		/* function showColumnChooser (event: MouseEvent) {
+			if(props.columnSelector) {
+				event.preventDefault();
+				event.stopPropagation();
+				// Check if mouse was within the bounding rectangle of the headers
+				const rect = thead.value.getBoundingClientRect();
+				if (event.clientX > rect.x && event.clientX < rect.right 
+					&& event.clientY > rect.y && event.clientY < rect.bottom) {
+					virtualElement.getBoundingClientRect =  generateGetBoundingClientRect(event.clientX, event.clientY);					
+				}	
+			
+				
+				if (openColumnChooser.value === false)
+					openColumnChooser.value = true;
+			}
+		} */
+
 		const rowListeners = {
 			click: function (event, tr, row) {
 				context.emit("onRowClicked", row);
 			}
 		};
 		const colsControl = ref([]);
-		const updateColumns = () => {
+		/* const updateColumns = () => {
 			for (let i = 0; i < props.columns.length; i++)
 				persistentColumns.columns[i].visibility = colsControl.value[i];
 			localStorage.setItem(
@@ -445,8 +463,8 @@ export default defineComponent({
 			);
 			for (let i = 0; i < colsControl.value.length; i++)
 				table.setColumnVisibility(i, !colsControl.value[i]);
-		};
-		if (props.persistentId !== null) {
+		}; */
+		/* if (props.persistentId !== null) {
 			if (localStorage.getItem(`table-${props.persistentId}`) === null) {
 				for (let i = 0; i < props.columns.length; i++) {
 					colsControl.value[i] = true;
@@ -483,8 +501,8 @@ export default defineComponent({
 					)
 				);
 			}
-		}
-		watch(
+		} */
+		/* watch(
 			colsControl,
 			() => {
 				updateColumns();
@@ -492,7 +510,9 @@ export default defineComponent({
 			{
 				deep: true
 			}
-		);
+		); */
+
+		
 
 		watch(
 			[() => props.pageSize, () => props.page],
@@ -549,8 +569,10 @@ export default defineComponent({
 		onMounted(() => {
 			if (table.loading.value) setLoading();
 
-			if (thead.value)
-				colspan.value = thead.value.querySelectorAll("th").length;
+			if (thead.value) {
+				colspan.value = thead.value.querySelectorAll("th").length;							
+				
+			}
 
 			const lastHeader = table.getHeaderObject(-1);
 			if (lastHeader) {
@@ -562,6 +584,7 @@ export default defineComponent({
 						lastHeader.element.offsetLeft ?? 0) + "px";
 			}
 			context.emit("update:tableInstance", table);
+			isMounted.value = true;
 		});
 
 		onBeforeUnmount(() => {
@@ -571,7 +594,8 @@ export default defineComponent({
 		const getNestedField = function (rowData: any, key: string) {
 			const keys = key.split(".");
 			let obj: any = rowData;
-			for (const key of keys) if (obj[key]) obj = obj[key];
+			for (const key of keys) 
+				if (obj[key]) obj = obj[key];
 
 			return obj;
 		};
@@ -619,6 +643,7 @@ export default defineComponent({
 			expandedAll,
 			ldash: _,
 			thead,
+			isMounted,
 			isMultipleSelected,
 			selected,
 			table,
@@ -626,14 +651,15 @@ export default defineComponent({
 			colsControl,
 			getNestedField,
 			totalColumns,
-			updateColumns,
+			openColumnChooser,			
 			startDrag,
 			onDrop,
 			isDrag,
 			dragIndex,
 			dropIndex,
 			isDraggable,
-			isLoaded
+			isLoaded,
+			virtualElement
 		};
 	}
 });
@@ -804,5 +830,15 @@ export default defineComponent({
 			}
 		}
 	}
+}
+
+.column-chooser-table-bar {
+	display: flex;
+	height: 25px;
+	transform: translateY(15px);
+	background-color: -getColor("gray-4");
+	border-top-left-radius: 14px;
+	border-top-right-radius: 14px;
+	justify-content: center;
 }
 </style>

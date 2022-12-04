@@ -4,10 +4,23 @@ import preventOverflow from "@popperjs/core/lib/modifiers/preventOverflow.js";
 import flip from "@popperjs/core/lib/modifiers/flip.js";
 import offset from "@popperjs/core/lib/modifiers/offset";
 import arrow from "@popperjs/core/lib/modifiers/arrow";
+import { PlacementType } from "../tuPopper.vue";
+import { VirtualElement } from "@popperjs/core";
+import {Ref} from "vue";
 
 const toInt = x => parseInt(x, 10);
 
-export default function usePopper (options) {
+
+
+export type UsePopperOptions = {
+	placement: Ref<PlacementType>;
+	arrowPadding: Ref<string>;
+	offsetX: Ref<string>;
+	offsetY: Ref<string>;
+	virtualElement?: VirtualElement;
+}
+
+export default function usePopper (options: UsePopperOptions) {
 	const isOpen = ref(false);
 	const popperInstance = ref(null);
 	const popperNode = ref(null);
@@ -18,9 +31,9 @@ export default function usePopper (options) {
 	};
 
 	const show = () => {
-		if (isOpen.value) {
+		if (isOpen.value) 
 			return;
-		}
+		
 
 		isOpen.value = true;
 	};

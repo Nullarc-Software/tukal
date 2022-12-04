@@ -817,9 +817,9 @@
 			<button @click="exportTable">Export</button>
 			<button @click="exportTableToPDF">Export to pdf</button>
 			{{ selected }}
-			<tu-table row-expand multi-select striped size="" persistentId="one" :draggable="true" v-model="selected"
+			<tu-table row-expand multi-select striped size="" persistent-id="one" :draggable="true" v-model="selected"
 				v-model:numPages="numPages" :page="page" :pageSize="5" :data="universities" :columns="columns"
-				:columnSelecter="true" @onRowClicked="rowClicked" @onTableBeginLoad="beginLoad"
+				:columnSelector="true" @onRowClicked="rowClicked" @onTableBeginLoad="beginLoad"
 				@onTableEndLoad="afterLoad" @onTableConfigUpdated="configUpdate">
 				<!-- <template #thead>
 					<tu-th field="country" sort search> Country </tu-th>
@@ -1083,7 +1083,7 @@ export default defineComponent({
 			{
 				index: 1,
 				caption: "Action",
-				field: "test",
+				field: "action",
 				isComponent: true,
 				component: markRaw(tuTableContextMenuVue),
 				componentProps: {

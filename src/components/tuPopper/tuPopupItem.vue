@@ -1,12 +1,11 @@
 <template>
 	<li
-		:class="{ divider: divider, 'tu-popup-item-disabled': disabled }"
+		:class="{ divider: divider, 'divider-bottom': dividerBottom, 'tu-popup-item-disabled': disabled }"
 		:style="{
 			color: hoverx ? giveColor() + ' !important' : null,
 			background: hoverx ? giveColor(0.01) + ' !important' : null
 		}"
-		class="tu-component tu-dropdown--item"
-		:disabled="disabled"
+		class="tu-component tu-dropdown--item"		
 		@click="clickClose"
 		@mouseover="hoverx = true"
 		@mouseout="hoverx = false"
@@ -55,6 +54,10 @@ export default defineComponent({
 			type: Boolean
 		},
 		divider: {
+			default: false,
+			type: Boolean
+		},
+		dividerBottom: {
 			default: false,
 			type: Boolean
 		}		
@@ -118,6 +121,10 @@ export default defineComponent({
 	&.divider {
 		border-top: 1px solid rgba(0, 0, 0, 0.08);
 		margin-top: 5px;
+	}
+	&.divider-bottom {
+		border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+		margin-bottom: 5px;
 	}
 }
 
