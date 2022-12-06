@@ -5,7 +5,7 @@
 			<tu-popup-menu>
 				<tu-popup-item :to="null" v-for="(item, index) of modelValue" :key="index"
 					@click="onOptionClicked(item.onClicked)" :onClickClose="item.closeOnClick" :divider="item.divider">
-					<tu-popper v-if="item.hasSubMenu" arrow placement="right">
+					<tu-popper v-if="item.hasSubMenu" arrow :placement="<PlacementType>placement">
 						{{ item.caption }}
 						<template #content>
 							<tu-popup-menu>
@@ -36,6 +36,7 @@ import tuComponent from "../tuComponent";
 import { TuTableContextMenuEntry, TuTableStore } from "./tuTableStore";
 import { tuPopper, tuPopupMenu, tuPopupItem } from "../tuPopper";
 import tuIcon from "../tuIcon";
+import { PlacementType } from "../tuPopper/tuPopper.vue";
 export default defineComponent({
 	extends: tuComponent,
 	components: {
@@ -64,6 +65,10 @@ export default defineComponent({
 		modelValue: {
 			type: Object as PropType<Array<TuTableContextMenuEntry>>,
 			default: () => { }
+		},
+		placement: {
+			type: String,
+			default: () => "right" as PlacementType
 		}
 	},
 	setup(props, context) {

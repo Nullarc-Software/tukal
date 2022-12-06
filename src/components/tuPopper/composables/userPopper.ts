@@ -13,7 +13,7 @@ const toInt = x => parseInt(x, 10);
 
 
 export type UsePopperOptions = {
-	placement: Ref<PlacementType>;
+	placement: Ref<PlacementType|any>;
 	arrowPadding: Ref<string>;
 	offsetX: Ref<string>;
 	offsetY: Ref<string>;

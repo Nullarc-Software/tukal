@@ -318,6 +318,27 @@ export class TuTableStore {
 		
 	}
 
+	private verifyTableSchema () {
+		const persistentSettings = JSON.parse(localStorage.getItem(`table-${this.persistenceId}`)) as TuTableLocal;
+		if (_.isNil(persistentSettings) === false && _.isNil(persistentSettings.columns) === false) {
+			if (persistentSettings.columns.length != this.table.headers.length) {
+				console.log("wiping persistence for table");
+				localStorage.removeItem(`table-${this.persistenceId}`);
+				return;
+			}
+
+			for (const header of this.table.headers) {
+				if (_.isNil(_.find(persistentSettings.columns, {field: header.field}))) {
+					// Table schema changed, reset persistence
+					console.log("wiping persistence for table");
+					localStorage.removeItem(`table-${this.persistenceId}`);
+					return;
+				}
+			}
+		}
+		
+	}
+
 	public getRowsMatching (filter: any): TuTableRow[] {
 		const filteredRows = _.filter(
 			this.table.data,
@@ -393,6 +414,12 @@ export class TuTableStore {
 		});
 	}
 
+	private swap (i: number, j: number, array: any[]) {
+		const temp = array[i];
+		array[i] = array[j];
+		array[j] = temp;
+	}
+
 	public constructHeaders (headers: any[], persistentId: string) {
 		if (headers.length === 1 && typeof headers[0].type === "symbol")
 			headers = headers[0].children;
@@ -418,6 +445,7 @@ export class TuTableStore {
 			}
 		});
 		if (_.isEmpty(this.persistenceId) === false) {
+			this.verifyTableSchema();
 			if (localStorage.getItem(`table-${persistentId}`) !== null) {
 				const localSettings = JSON.parse(localStorage.getItem(`table-${persistentId}`)) as TuTableLocal;
 				for(let i = 0; i < localSettings.columns.length; i++) {
@@ -426,7 +454,16 @@ export class TuTableStore {
 						visibility: localSettings.columns[i].visibility
 					});
 				}
-				const getNextHeader = (i: number) => {
+				// Restore saved column order
+				let currSwapIndex = 0;
+				for (let i = 0; i < this.persistentSettings.columns.length; i++ ) {
+					const index = _.findIndex(this.table.headers, {field: this.persistentSettings.columns[i].field});
+					if (index > -1) {
+						this.swap(currSwapIndex, index, this.table.headers);
+						currSwapIndex++;
+					}
+				}
+				/* const getNextHeader = (i: number) => {
 					const header = this.persistentSettings.columns[i].field;
 					for (let j = 0; j < this.table.headers.length; j++) {
 						if (this.table.headers[j].field === header)
@@ -436,7 +473,7 @@ export class TuTableStore {
 				const prevHeaders: TuHeaderDefn[] = [];
 				for (let i = 0; i < this.table.headers.length; i++)
 					prevHeaders.push(getNextHeader(i));
-				this.table.headers = prevHeaders;
+				this.table.headers = prevHeaders; */
 			}
 			else {
 				for (let i = 0; i < headers.length; i++) {

@@ -37,7 +37,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, onBeforeUnmount, watch, toRefs } from "vue";
+import { defineComponent, computed, onBeforeUnmount, watch, toRefs, PropType } from "vue";
 import usePopper from "./composables/userPopper";
 import clickAway from "./directives/click-away";
 /**
@@ -62,7 +62,6 @@ const Placement = [
 	"left-end"
 ] as const;
 export type PlacementType = typeof Placement[number];
-
 export default defineComponent({
 	name: "TuPopper",
 	emits: ["show:popper", "hide:popper"],

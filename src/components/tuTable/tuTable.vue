@@ -3,7 +3,7 @@
 		<header v-if="$slots.header" class="tu-table__header">
 			<slot name="header" />
 		</header>
-		<tu-popper v-if="columnSelector" arrow border-radius="20px" fitPopperContainer>
+		<tu-popper v-if="columnSelector" arrow border-radius="20px" fitPopperContainer :placement="popperPlacement">
 				<div class ="column-chooser-table-bar">
 					<tu-icon style="transform: translateY(-7px);">more_horiz</tu-icon>
 				</div>				
@@ -220,6 +220,7 @@ import contextMenuComponent from "./tuTableContextMenu.vue";
 import { TuLoading, TuLoadingAttributes } from "../tuLoading";
 import { VirtualElement } from "@popperjs/core";
 import { threadId } from "worker_threads";
+import { PlacementType } from "../tuPopper/tuPopper.vue";
 
 if (typeof window !== "undefined" && (window as any).VueInstance)
 	contextMenuComponent.install((window as any).VueInstance);
@@ -341,7 +342,10 @@ export default defineComponent({
 			type: Object as PropType<Array<TuTableInitialComponentValues>>,
 			default: () => []
 		},
-		
+		popperPlacement: {
+			type: String,
+			default: () => "bottom" as PlacementType
+		}
 	},
 	emits: [
 		"update:modelValue",

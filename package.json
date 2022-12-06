@@ -1,6 +1,6 @@
 {
 	"name": "tukal-vue",
-	"version": "0.1.64",
+	"version": "0.1.71",
 	"type": "module",
 	"scripts": {
 		"dev": "vite",
@@ -38,6 +38,7 @@
 		"vue3-popper": "^0.1.0"
 	},
 	"devDependencies": {
+		"@types/lodash": "^4.14.191",
 		"@types/node": "^17.0.19",
 		"@typescript-eslint/eslint-plugin": "^5.44.0",
 		"@typescript-eslint/parser": "^5.44.0",

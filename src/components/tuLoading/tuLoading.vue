@@ -48,7 +48,7 @@ export default defineComponent({
 	name: "TuLoading",
 	props: {
 		text: { type: String, default: null },
-		type: { type: Object as PropType<LoadingType>, default: "default" },
+		type: { type: String, default: "default" },
 		color: { type: String, default: null },
 		background: { type: String, default: null },
 		opacity: { type: String, default: null },
