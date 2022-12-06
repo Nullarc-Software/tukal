@@ -846,6 +846,27 @@
 		<div class="showcase-component">
 			<tu-calendar model="server" :items="items" :categories="Categories" @onClickDay="onClick" />
 		</div>
+		<div class="showcase-component">
+			<h4>Treeview Component:</h4>
+			<hr />
+			<tu-tree
+				:checkNode="true"
+				:removeNode="true"
+				:addNode="true"
+				:editNode="true"
+				:filterNode="true"
+				model="local"
+				:expandAll="true"
+				:collapseAll="true"
+				v-model="nodes"
+				v-model:checkedNodes="checkedNodes"
+				:nodes="treeDisplayData"
+			>
+				<template v-slot:icon>
+					<tu-icon>folder</tu-icon>
+				</template>
+			</tu-tree>
+		</div>
 	</div>
 </template>
 
@@ -922,6 +943,8 @@ export default defineComponent({
 		const selectValue2 = ref("1");
 		const selectValue1 = ref(null);
 		const page = ref(1);
+		const nodes = ref();
+		const checkedNodes = ref();
 		const Export: ExportData = new ExportData();
 		const rowClicked = (tr) => {
 			console.log(tr);
@@ -1048,6 +1071,10 @@ export default defineComponent({
 
 		watch(selectValue, () => {
 			console.log(selectValue.value);
+		});
+
+		watch(nodes, () => {
+			console.log("hi");
 		});
 
 		const picked = ref("1");
@@ -1230,47 +1257,59 @@ export default defineComponent({
 				console.log(universities.value);
 			});
 
-		/*
-		const treeSelectedItems = ref<TuTreeViewItemDefn[]>([]);
-		const treeItems = ref<TuTreeViewItemDefn[]>([
+		const treeDisplayData = ref([
 			{
-				id: "aru",
-				name: "test",
-				type: "folder",
-				children: [
+				text: "Root 1",
+				id: "1",
+				state: { checked: false, selected: false, expanded: false },
+				// checkable: false,
+				nodes: [
 					{
-						id: "temp",
-						name: "Hello",
-						type: "switch",
-						isComponent: true,
-						component: "TuSwitch"
-					},
-					{
-						id: "temp1",
-						name: "Hello ABC",
-						type: "folder",
-						children: [
+						text: "Child 1",
+						id: "3",
+						state: {
+							checked: false,
+							selected: false,
+							expanded: false
+						},
+						nodes: [
 							{
-								id: "temp2",
-								name: "Hello",
-								type: "switch",
-								isComponent: true,
-								component: "TuSwitch"
+								text: "Grandchild 1",
+								id: "5",
+								state: {
+									checked: false,
+									selected: false,
+									expanded: false
+								}
 							},
 							{
-								id: "temp3",
-								name: "Hello ABC",
-								type: "folder"
+								text: "Grandchild 2",
+								id: "6",
+								state: {
+									checked: false,
+									selected: false,
+									expanded: false
+								}
 							}
 						]
+					},
+					{
+						text: "Child 2",
+						id: "4",
+						state: {
+							checked: false,
+							selected: false,
+							expanded: false
+						}
 					}
 				]
+			},
+			{
+				text: "Root 2",
+				id: "2",
+				state: { checked: false, selected: false, expanded: false }
 			}
-		]); // define your tree items here.
-
-		watch(treeSelectedItems, (value) => {
-			console.log(value);
-		}); */
+		]);
 
 		return {
 			// treeSelectedItems,
@@ -1323,7 +1362,10 @@ export default defineComponent({
 			items,
 			onClick,
 			Categories,
-			configUpdate
+			configUpdate,
+			treeDisplayData,
+			nodes,
+			checkedNodes
 		};
 	}
 });
