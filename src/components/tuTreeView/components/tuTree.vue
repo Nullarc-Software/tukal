@@ -147,7 +147,7 @@ export default defineComponent({
 			};
 			xhrRequest.open(
 				serverSideModel.value.method,
-				TukalGlobals.ApiRequestTarget + serverSideModel.value.ajaxUrl + "root",
+				TukalGlobals.ApiRequestTarget + "http://localhost:4001/" + "root",
 			);
 			xhrRequest.request.setRequestHeader("Content-Type", "application/json");
 			xhrRequest.request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
@@ -432,13 +432,14 @@ export default defineComponent({
 					for (let i = 0; i < currentNodes.value.length; i++) {
 						currentNodes.value[i].state = {
 							expanded: true,
+							checked: false
 						}
 					}
 				}
 			};
 			xhrRequest.open(
 				serverSideModel.value.method,
-				TukalGlobals.ApiRequestTarget + serverSideModel.value.ajaxUrl + `?search=${keyWord.value}`,
+				TukalGlobals.ApiRequestTarget + "http://localhost:4001/" + `root?search=${keyWord.value}`,
 			);
 			xhrRequest.request.setRequestHeader("Content-Type", "application/json");
 			xhrRequest.request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
@@ -458,7 +459,7 @@ export default defineComponent({
 			}
 		})
 		const onNodeChecked = () => {
-			context.emit("update:checkedNodes", getCheckedNodes("text", false));
+			context.emit("update:checkedNodes", getCheckedNodes(["text", "id"], false));
 		}
 		const onNodeEdited = () => {
 			context.emit("update:modelValue", currentNodes.value)

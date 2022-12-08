@@ -1,5 +1,5 @@
 <template>
-	<li class="node" :class="[{ 'tree-node-hidden' : currentNode.state?.hidden === true }, 'tree-row']" :data-id="currentNode.id">
+	<li class="node" :class="[{ 'tree-node-hidden' : currentNode.state?.hidden === true || currentNode?.hidden === true }, 'tree-row']" :data-id="currentNode.id">
 		<div
 			:class="['row_data', editSelected && isCheckNode  ? 'position-bottom' : null, editSelected && !isCheckNode ? 'position-bottom-l' : null]"
 			:style="
@@ -29,7 +29,7 @@
 			<div class="inline-block">
 				<tu-checkbox
 				:eventBubble="true"
-				v-if="isCheckNode && model === 'local'"
+				v-if="isCheckNode"
 					type="checkbox"
 					:data-id="currentNode.id"
 					:indeterminate="currentNodeIsPartiallyChecked"
@@ -40,6 +40,7 @@
 					"
 					@click="toggleCheckState(currentNode)"
 				>
+				<div v-if="loading" class="loading-icon" />
 				<div v-if="!editSelected">
 					<span
 						data-toggle="tooltip"
@@ -102,7 +103,7 @@
 					<span v-else-if="editSelected"><tu-input @focusOut="focusOut" @onEnter="focusOut" v-model="currentNode.text" /></span>
 				</tu-checkbox>
 				<div class="node-alignment">
-				<div v-if="!isCheckNode && !editSelected || model === 'server'">
+				<div v-if="!isCheckNode && !editSelected">
 					<span
 						data-toggle="tooltip"
 						data-placement="top"
@@ -277,6 +278,7 @@ export default defineComponent({
 		const parentNodeIsPartialState: Ref<boolean> = ref(false);
 		const itemRefs = ref(null);
 		const editSelected = ref(false);
+		const loading = ref(false);
 		const styles: TreeRowCustomStyles = reactive({
 			row: {
 				style: {
@@ -373,6 +375,9 @@ export default defineComponent({
 				!currentNode.value.state.expanded;
 			}
 			if (props.model === "server" && currentNode.value.state?.expanded === true) {
+			if (currentNode.value.children === true) {
+				loading.value = true;
+			}
 			const xhrRequest = new XHRRequestWrapper();
 			const serverSideModel: Ref<TuTreeServerModel> = ref(
 				props.serverSideConfig
@@ -386,17 +391,21 @@ export default defineComponent({
 				) {
 					if (xhrRequest.request.responseType === "json") {
 						currentNode.value.nodes = xhrRequest.request.response.data;
+						loading.value = false;
 					}
 					else if (xhrRequest.request.responseType === "text") {
 						currentNode.value.nodes = JSON.parse(xhrRequest.request.responseText);
+						loading.value = false;
 					}
 					else {
 						currentNode.value.nodes = JSON.parse(xhrRequest.request.responseText);
+						loading.value = false;
 					}
 					if (server === undefined) {
 						for ( let i = 0; i < currentNode.value.nodes.length; i++) {
 							currentNode.value.nodes[i].state = {
-								expanded: false
+								expanded: false,
+								checked: currentNode.value.state.checked
 							}
 						}
 					}
@@ -411,7 +420,7 @@ export default defineComponent({
 			};
 			xhrRequest.open(
 				serverSideModel.value.method,
-				TukalGlobals.ApiRequestTarget + serverSideModel.value.ajaxUrl + `&expand=${currentNode.value.id}`,
+				TukalGlobals.ApiRequestTarget + "http://localhost:4001/" + `root?expand=${currentNode.value.id}`,
 			);
 			xhrRequest.request.setRequestHeader("Content-Type", "application/json");
 			xhrRequest.request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
@@ -569,7 +578,8 @@ export default defineComponent({
 			editSelected,
 			focusOut,
 			onNodeChecked,
-			onNodeEdited
+			onNodeEdited,
+			loading
 		};
 	}
 });
@@ -695,5 +705,53 @@ ul {
 .tree-row {
 	width: 500px;
 	cursor: pointer;
+}
+.loading-icon {
+		position: absolute;
+		width: 22px;
+		height: 22px;
+		left: 100px;
+		pointer-events: none;
+		border-radius: 50%;
+		box-sizing: border-box;
+		background: inherit;
+		cursor: default;
+		&:after {
+			box-sizing: border-box;
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			border: 2px solid -getColor("primary", 1);
+			border-radius: inherit;
+			border-top: 2px solid transparent;
+			border-left: 2px solid transparent;
+			border-right: 2px solid transparent;
+			animation: rotateInputLoading 0.8s ease infinite;
+			top: 0px;
+			content: "";
+		}
+		&:before {
+			box-sizing: border-box;
+			top: 0px;
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			border: 2px dashed blue;
+			border-radius: inherit;
+			border-top: 2px solid transparent;
+			border-left: 2px solid transparent;
+			border-right: 2px solid transparent;
+			animation: rotateInputLoading 0.8s linear infinite;
+			opacity: 0.2;
+			content: "";
+		}
+}
+@keyframes rotateInputLoading {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
 }
 </style>

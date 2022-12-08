@@ -855,7 +855,7 @@
 				:addNode="true"
 				:editNode="true"
 				:filterNode="true"
-				model="local"
+				model="server"
 				:expandAll="true"
 				:collapseAll="true"
 				v-model="nodes"
@@ -863,7 +863,7 @@
 				:nodes="treeDisplayData"
 			>
 				<template v-slot:icon>
-					<tu-icon>folder</tu-icon>
+					<tu-icon>file_copy</tu-icon>
 				</template>
 			</tu-tree>
 		</div>
@@ -1310,6 +1310,10 @@ export default defineComponent({
 				state: { checked: false, selected: false, expanded: false }
 			}
 		]);
+
+		watch (checkedNodes, () => {
+			console.log(checkedNodes.value)
+		})
 
 		return {
 			// treeSelectedItems,
