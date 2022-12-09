@@ -147,7 +147,7 @@ export default defineComponent({
 			};
 			xhrRequest.open(
 				serverSideModel.value.method,
-				TukalGlobals.ApiRequestTarget + "http://localhost:4001/" + "root",
+				TukalGlobals.ApiRequestTarget + serverSideModel.value.ajaxUrl + "root",
 			);
 			xhrRequest.request.setRequestHeader("Content-Type", "application/json");
 			xhrRequest.request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
@@ -439,7 +439,7 @@ export default defineComponent({
 			};
 			xhrRequest.open(
 				serverSideModel.value.method,
-				TukalGlobals.ApiRequestTarget + "http://localhost:4001/" + `root?search=${keyWord.value}`,
+				TukalGlobals.ApiRequestTarget + serverSideModel.value.ajaxUrl + `root?search=${keyWord.value}`,
 			);
 			xhrRequest.request.setRequestHeader("Content-Type", "application/json");
 			xhrRequest.request.setRequestHeader("X-Requested-With", "XMLHttpRequest");

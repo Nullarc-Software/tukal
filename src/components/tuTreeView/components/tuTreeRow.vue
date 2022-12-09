@@ -23,10 +23,11 @@
 				</tu-icon>
 			</span>
 			<span>
-			<slot v-if="$slots.customIcon" name="customIcon" />
-			<tu-icon v-if="model === 'server' && currentNode.icon" :icon-pack="currentNode.iconPack" :icon="currentNode.icon" />
+			<slot v-if="$slots.customIcon && !loading" name="customIcon" />
+			<tu-icon v-else-if="model === 'server' && currentNode.icon && !loading" :icon-pack="currentNode.iconPack" :icon="currentNode.icon" />
+			<span v-else class="loading-icon" />
 			</span>
-			<div class="inline-block">
+			<div :class="[{ 'margin-left-loading' : loading },'inline-block']">
 				<tu-checkbox
 				:eventBubble="true"
 				v-if="isCheckNode"
@@ -40,7 +41,6 @@
 					"
 					@click="toggleCheckState(currentNode)"
 				>
-				<div v-if="loading" class="loading-icon" />
 				<div v-if="!editSelected">
 					<span
 						data-toggle="tooltip"
@@ -102,7 +102,7 @@
 					</div>
 					<span v-else-if="editSelected"><tu-input @focusOut="focusOut" @onEnter="focusOut" v-model="currentNode.text" /></span>
 				</tu-checkbox>
-				<div class="node-alignment">
+				<div :class="['node-alignment']">
 				<div v-if="!isCheckNode && !editSelected">
 					<span
 						data-toggle="tooltip"
@@ -420,7 +420,7 @@ export default defineComponent({
 			};
 			xhrRequest.open(
 				serverSideModel.value.method,
-				TukalGlobals.ApiRequestTarget + "http://localhost:4001/" + `root?expand=${currentNode.value.id}`,
+				TukalGlobals.ApiRequestTarget + serverSideModel.value.ajaxUrl + `root?expand=${currentNode.value.id}`,
 			);
 			xhrRequest.request.setRequestHeader("Content-Type", "application/json");
 			xhrRequest.request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
@@ -710,7 +710,8 @@ ul {
 		position: absolute;
 		width: 22px;
 		height: 22px;
-		left: 100px;
+		margin-left: 5px;
+		margin-top: 2px;
 		pointer-events: none;
 		border-radius: 50%;
 		box-sizing: border-box;
@@ -753,5 +754,8 @@ ul {
 	100% {
 		transform: rotate(360deg);
 	}
+}
+.margin-left-loading {
+	margin-left: 30px;
 }
 </style>
