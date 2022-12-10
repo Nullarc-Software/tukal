@@ -35,6 +35,7 @@ export * from "./components/tuTreeView/types";
 export { tuRichTextEditor } from "./components/tuRichTextEditor";
 export { tuCalendar } from "./components/tuCalendar";
 export type {VirtualElement} from "./components/tuTable";
+export { tuTag } from "./components/tuTag";
 // New Component import
 
 // layout

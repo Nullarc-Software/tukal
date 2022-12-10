@@ -4,140 +4,80 @@
 			<slot name="header" />
 		</header>
 		<tu-popper v-if="columnSelector" arrow border-radius="20px" fitPopperContainer :placement="popperPlacement">
-				<div class ="column-chooser-table-bar">
-					<tu-icon style="transform: translateY(-7px);">more_horiz</tu-icon>
-				</div>				
-				<template #content>
-					<tu-popup-menu
-					>
-						<tu-popup-item style="pointer-events: none;" divider-bottom>
-							Column chooser 
-						</tu-popup-item>
-						<tu-popup-item
-							v-for="(column, index) in table.persistentSettings.columns"
-							:key="index"
-
-						>
-							<tu-checkbox
-								v-model="column.visibility"
-
-							>
-								{{ table.getCaptionForField(column.field) }}
-							</tu-checkbox>
-						</tu-popup-item>
-					</tu-popup-menu>
-				</template>
-			</tu-popper>
-		<div
-			class="tu-table"
-			:class="{
-				isSelectedValue: modelValue,
-				striped: striped,
-				isMultipleSelected: isMultipleSelected,
-				[`size-${size}`]: true,
-				compact: compact
-			}"
-		>
-			<table class="tu-table__element" ref="tableElement" >
+			<div class="column-chooser-table-bar" title="Column chooser">
+				<tu-icon style="transform: translateY(-7px);">more_horiz</tu-icon>
+			</div>
+			<template #content>
+				<tu-popup-menu>
+					<tu-popup-item style="pointer-events: none;" divider-bottom>
+						Column chooser
+					</tu-popup-item>
+					<tu-popup-item v-for="(column, index) in table.persistentSettings.columns" :key="index">
+						<tu-checkbox v-model="column.visibility">
+							{{ table.getCaptionForField(column.field) }}
+						</tu-checkbox>
+					</tu-popup-item>
+				</tu-popup-menu>
+			</template>
+		</tu-popper>
+		<div class="tu-table" :class="{
+			isSelectedValue: modelValue,
+			striped: striped,
+			isMultipleSelected: isMultipleSelected,
+			[`size-${size}`]: true,
+			compact: compact
+		}">
+			<table class="tu-table__element" ref="tableElement">
 				<thead ref="thead" class="tu-table__thead">
-					<tu-th
-						v-if="rowExpand"
-						fixed
-						@click="expandedAll = !expandedAll"
-						style="width: 50px"
-						
-					>
-						<tu-icon
-							class="tu-table__tr_expand_handle"
-							:class="{ expanded: expandedAll }"
-							>keyboard_arrow_right</tu-icon
-						>
+					<tu-th v-if="rowExpand" fixed @click="expandedAll = !expandedAll" style="width: 50px">
+						<tu-icon class="tu-table__tr_expand_handle"
+							:class="{ expanded: expandedAll }">keyboard_arrow_right</tu-icon>
 					</tu-th>
 					<tu-th v-if="multiSelect" fixed style="width: 50px">
-						<tu-checkbox
-							v-model="selectedAll"
-							:indeterminate="table.isPartiallyChecked.value"
-						/>
+						<tu-checkbox v-model="selectedAll" :indeterminate="table.isPartiallyChecked.value" />
 					</tu-th>
-					<tu-th
-						v-for="header in table.getTableHeaders.value"
-						:key="header.index"
-						:field="header.field"
+					<tu-th v-for="header in table.getTableHeaders.value" :key="header.index" :field="header.field"
 						:style="{
 							width: header.width,
 							minWidth: header.minWidth,
 							maxWidth: header.maxWidth
-						}"
-						@enable-drag-listener="isDraggable = true"
-						@disable-drag-listener="isDraggable = false"
-						:draggable="`${isDraggable}`"
-						@dragstart="startDrag($event, header)"
-						@drop="onDrop(header)"
-						@dragover.prevent
-						@dragenter.prevent
-						:class="{
+						}" @enable-drag-listener="isDraggable = true" @disable-drag-listener="isDraggable = false"
+						:draggable="`${isDraggable}`" @dragstart="startDrag($event, header)" @drop="onDrop(header)"
+						@dragover.prevent @dragenter.prevent :class="{
 							'animation-table':
 								(isDrag && header.index === dragIndex) ||
 								header.index === dropIndex
-						}"
-						:sort="header.props ? header.props.sort : false"
-						:search="header.props ? header.props.search : false"
-					>
+						}" :sort="header.props ? header.props.sort : false" :search="header.props ? header.props.search : false">
 						{{ header.caption }}
 					</tu-th>
 				</thead>
-				<tbody
-					:id="`${id}-tbody`"
-					:class="{ 'loading-body': !isLoaded }"
-					class="tu-table__tbody"
-				>
+				<tbody :id="`${id}-tbody`" :class="{ 'loading-body': !isLoaded }" class="tu-table__tbody">
 					<slot v-if="$slots.tbody" name="tbody" />
-					<tu-tr
-						v-else
-						v-for="tr in table.getTableData.value"
-						:key="tr.index"
-						:data="tr.rowData"
-						:rowId="tr.index"
-						:expanded="expandedAll"
-						:expandHandle="rowExpand"
-						@rowExpanded="tr.expanded = $event"
-						@rowClick="rowListeners.click($event, this, tr.rowData)"
-					>
+					<tu-tr v-else v-for="tr in table.getTableData.value" :key="tr.index" :data="tr.rowData"
+						:rowId="tr.index" :expanded="expandedAll" :expandHandle="rowExpand"
+						@rowExpanded="tr.expanded = $event" @rowClick="rowListeners.click($event, this, tr.rowData)">
 						<tu-td expand v-if="rowExpand">
-							<tu-icon
-								class="tu-table__tr_expand_handle"
-								:class="{ expanded: tr.expanded }"
-								>keyboard_arrow_right</tu-icon
-							>
+							<tu-icon class="tu-table__tr_expand_handle"
+								:class="{ expanded: tr.expanded }">keyboard_arrow_right</tu-icon>
 						</tu-td>
 						<tu-td checkbox v-if="multiSelect">
-							<tu-checkbox
-								v-model="tr.selected"
-								:checked="selectedAll"
-							/>
+							<tu-checkbox v-model="tr.selected" :checked="selectedAll" />
 						</tu-td>
-						<tu-td
-							v-for="(th, j) in table.getTableHeaders.value"
-							:key="j"
-							:class="{
-								'animation-table':
-									(isDrag && th.index === dragIndex) ||
-									th.index === dropIndex
-							}"
-						>
-							<span
-								:title="tr.rowData[th.field]"
-								v-if="th.isComponent === false"
-							>
+						<tu-td v-for="(th, j) in table.getTableHeaders.value" :key="j" :class="{
+							'animation-table':
+								(isDrag && th.index === dragIndex) ||
+								th.index === dropIndex
+						}">
+							<span :title="tr.rowData[th.field]" v-if="th.isComponent === false">
 								{{
-									th.valueFormatter
-										? th.valueFormatter(
+										th.valueFormatter
+											? th.valueFormatter(
 												tr.rowData[th.field],
 												tr.rowData
-										  )
-										: th.field.indexOf(".") !== -1
-										? getNestedField(tr.rowData, th.field)
-										: tr.rowData[th.field] ?? "undefined"
+											)
+											: th.field.indexOf(".") !== -1
+												? getNestedField(tr.rowData, th.field)
+												: tr.rowData[th.field] ?? "undefined"
 								}}
 							</span>
 							<!--
@@ -148,33 +88,19 @@
 
 								This component will try and bind to the inbuild componentValue Ref first, if a user defined modelValue is defined in the header, that will be used instead
 							-->
-							<component
-								v-else-if="
-									th.isComponent &&
-									tr.componentValues[th.field]
-								"
-								v-model="tr.componentValues[th.field].value"
-								v-bind="th.componentProps"
-								:is="th.component"
-								:rowIndex="tr.index"
-								:rowData="tr.rowData"
-							/>
-							<component
-								v-else-if="th.isComponent"
-								v-bind="th.componentProps"
-								:is="th.component"
-								:rowIndex="tr.index"
-								:rowData="tr.rowData"
-							/>
+							<component v-else-if="
+								th.isComponent &&
+								tr.componentValues[th.field]
+							" v-model="tr.componentValues[th.field].value" v-bind="th.componentProps" :is="th.component"
+								:rowIndex="tr.index" :rowData="tr.rowData" />
+							<component v-else-if="th.isComponent" v-bind="th.componentProps" :is="th.component"
+								:rowIndex="tr.index" :rowData="tr.rowData" />
 						</tu-td>
 						<template #expand v-if="tr.rowData['expanded']">
-							<component
-								:is="
-									tr.rowData['expanded'].component ??
-									require(`${tr.rowData['expanded'].componentName}`)
-								"
-								v-bind="tr.rowData['expanded'].props"
-							/>
+							<component :is="
+								tr.rowData['expanded'].component ??
+								require(`${tr.rowData['expanded'].componentName}`)
+							" v-bind="tr.rowData['expanded'].props" />
 						</template>
 					</tu-tr>
 				</tbody>
@@ -358,7 +284,7 @@ export default defineComponent({
 		"onCellClicked",
 		"onTableConfigUpdated"
 	],
-	provide () {
+	provide() {
 		return {
 			selected: (data) => {
 				this.selected(data);
@@ -367,7 +293,7 @@ export default defineComponent({
 			tableId: this.id
 		};
 	},
-	setup (props, context) {
+	setup(props, context) {
 		const colspan = ref(0);
 		const thead = ref<HTMLHeadElement>();
 		const tableElement = ref<HTMLTableElement>();
@@ -387,7 +313,7 @@ export default defineComponent({
 
 		let load: TuLoading = null;
 
-		function setLoading () {
+		function setLoading() {
 			const id = `${props.id}-tbody`;
 			if (_.isNil(document.getElementById(id)) === false) {
 				const attrs: TuLoadingAttributes = {
@@ -412,18 +338,18 @@ export default defineComponent({
 		else {
 			table.serverSideModel = true;
 			table.serverModelProps = reactive(props.serverSideConfig);
-		}			
+		}
 
 		const isMultipleSelected = computed(() => {
 			return _.isArray(props.modelValue);
 		});
 
-		function selected (val: any) {
+		function selected(val: any) {
 			if (isMultipleSelected.value) selectedMultiple(val);
 			else context.emit("update:modelValue", val);
 		}
 
-		function selectedMultiple (val: any) {
+		function selectedMultiple(val: any) {
 			const newVal = props.modelValue as Array<any>;
 			if (newVal.includes(val)) newVal.splice(newVal.indexOf(val), 1);
 			else newVal.push(val);
@@ -516,7 +442,7 @@ export default defineComponent({
 			}
 		); */
 
-		
+
 
 		watch(
 			[() => props.pageSize, () => props.page],
@@ -574,8 +500,8 @@ export default defineComponent({
 			if (table.loading.value) setLoading();
 
 			if (thead.value) {
-				colspan.value = thead.value.querySelectorAll("th").length;							
-				
+				colspan.value = thead.value.querySelectorAll("th").length;
+
 			}
 
 			const lastHeader = table.getHeaderObject(-1);
@@ -598,7 +524,7 @@ export default defineComponent({
 		const getNestedField = function (rowData: any, key: string) {
 			const keys = key.split(".");
 			let obj: any = rowData;
-			for (const key of keys) 
+			for (const key of keys)
 				if (obj[key]) obj = obj[key];
 
 			return obj;
@@ -609,7 +535,7 @@ export default defineComponent({
 		const isDrag = ref(false);
 
 		const startDrag = (evt: DragEvent, header: TuHeaderDefn) => {
-			if(isDraggable.value) {
+			if (isDraggable.value) {
 				isDrag.value = false;
 				evt.dataTransfer.effectAllowed = "copyMove";
 				dragIndex.value = header.index;
@@ -620,7 +546,7 @@ export default defineComponent({
 			}
 		};
 		const onDrop = (header: TuHeaderDefn) => {
-			if(isDraggable.value) {
+			if (isDraggable.value) {
 				isDrag.value = true;
 				dropIndex.value = header.index;
 				if (props.persistentId) {
@@ -655,7 +581,7 @@ export default defineComponent({
 			colsControl,
 			getNestedField,
 			totalColumns,
-			openColumnChooser,			
+			openColumnChooser,
 			startDrag,
 			onDrop,
 			isDrag,
@@ -675,10 +601,13 @@ export default defineComponent({
 
 .tu-table-content {
 	width: 100%;
+	height: 100%;
 	animation-duration: 24s;
-
+	display: inline-flex;
+	flex-direction: column;
 	// box-shadow: 0px 5px 22px 0px rgba(0,0,0, -var(shadow-opacity))
 	border-radius: 16px;
+
 	footer {
 		padding-top: 10px;
 	}
@@ -688,14 +617,17 @@ export default defineComponent({
 	table-layout: fixed;
 	width: 100%;
 }
+
 @keyframes fadeIn {
 	0% {
 		transform: scale(0);
 	}
+
 	100% {
 		transform: scale(1);
 	}
 }
+
 .animation-table {
 	animation-name: fadeIn;
 	animation-duration: 100ms;
@@ -708,9 +640,12 @@ export default defineComponent({
 .loading-body {
 	position: relative;
 }
+
 .tu-table {
 	font-size: 0.9rem;
 	margin: 0px;
+	height: 100%;
+	overflow: auto;
 
 	::v-deep(table) {
 		margin: 0px;
@@ -735,6 +670,7 @@ export default defineComponent({
 
 	&__tr_expand_handle {
 		transition: all 0.25s ease;
+
 		&.expanded {
 			transform: rotate(90deg);
 		}
@@ -775,11 +711,12 @@ export default defineComponent({
 	&__tbody {
 		background-color: -getColor("background");
 		overflow: auto;
+
 		&:empty {
 			display: none;
 			background: #000;
 
-			~ .tu-table_not-found {
+			~.tu-table_not-found {
 				display: table-row-group;
 			}
 		}
@@ -803,7 +740,7 @@ export default defineComponent({
 		background: -getColor("gray-2");
 		border-radius: 14px 14px 0px 0px;
 
-		& ~ .tu-table {
+		&~.tu-table {
 			::v-deep(.tu-table__th) {
 				&:first-child {
 					border-radius: 0px;
@@ -822,6 +759,7 @@ export default defineComponent({
 		top: 0;
 		z-index: 2;
 		border-bottom: 1px solid -getColor("text", 0.2);
+
 		::v-deep(.tu-table__th) {
 			background: -getColor("gray-2");
 
@@ -841,8 +779,9 @@ export default defineComponent({
 	height: 25px;
 	transform: translateY(15px);
 	background-color: -getColor("gray-4");
-	border-top-left-radius: 14px;
-	border-top-right-radius: 14px;
+	border-top-left-radius: 15px;
+	border-top-right-radius: 15px;
 	justify-content: center;
+	width: 75px;
 }
 </style>

@@ -1,36 +1,21 @@
 <template>
-	<div
-		class="tu-card-content"
-		:class="{
-			[`type-${type}`]: true,
+	<div class="tu-card-content" :class="{
+		[`type-${type}`]: true,
+		fillParent: fillParent
+	}">
+		<div class="tu-card" :class="{
+			fitContent: fitContent,
+			content: content,
 			fillParent: fillParent
-		}"
-	>
-		<div
-			class="tu-card"
-			:class="{
-				fitContent: fitContent,
-				content: content,
-				fillParent: fillParent
-			}"
-			v-bind="$attrs"
-		>
-			<div
-				v-if="type == '6'"
-				class="tu-card__header"
-				:style="{
-					'justify-content': justifyHeader
-				}"
-			>
+		}" v-bind="$attrs">
+			<div v-if="type == '6'" class="tu-card__header" :style="{
+				'justify-content': justifyHeader
+			}">
 				<slot name="header" />
 			</div>
-			<div
-				v-if="$slots.content"
-				:class="['tu-card__content']"
-				:style="{
-					'background-color': backgroundColor
-				}"
-			>
+			<div v-if="$slots.content" :class="['tu-card__content']" :style="{
+				'background-color': backgroundColor
+			}">
 				<slot name="content" />
 				<div v-if="$slots.interactions" class="tu-card__interactions">
 					<slot name="interactions" />
@@ -67,7 +52,7 @@ export default defineComponent({
 		fillParent: { type: Boolean, default: false },
 		backgroundColor: { type: String, default: "0x00000011" }
 	},
-	setup (props, context) {}
+	setup(props, context) { }
 });
 </script>
 
@@ -99,8 +84,7 @@ export default defineComponent({
 				.tu-card__text {
 					transform: translate(0);
 					opacity: 1;
-					box-shadow: 0px 0px 30px 0px
-						rgba(0, 0, 0, -var("shadow-opacity"));
+					box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, -var("shadow-opacity"));
 				}
 
 				.tu-card__content {
@@ -124,8 +108,7 @@ export default defineComponent({
 
 			&__text {
 				background: -getColor("background", 1);
-				box-shadow: 0px 0px 0px 0px
-					rgba(0, 0, 0, -var("shadow-opacity"));
+				box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, -var("shadow-opacity"));
 				border-radius: 6px 20px 6px 20px;
 				margin-top: -50px;
 				z-index: 10;
@@ -208,6 +191,7 @@ export default defineComponent({
 			}
 
 			&__title {
+
 				h2,
 				h3,
 				h4,
@@ -271,11 +255,9 @@ export default defineComponent({
 				background: -getColor("background", 0.9);
 				padding-top: 30px;
 				border-radius: 0px 0px 20px 20px;
-				background: linear-gradient(
-					180deg,
-					transparent 0%,
-					rgba(0, 0, 0, 0.5) 100%
-				);
+				background: linear-gradient(180deg,
+						transparent 0%,
+						rgba(0, 0, 0, 0.5) 100%);
 				color: transparent;
 				font-size: 0.9rem;
 				transform: translate(0, 45%);
@@ -291,8 +273,7 @@ export default defineComponent({
 	&.type-1 {
 		.tu-card {
 			&:hover {
-				box-shadow: 0px 0px 0px 0px
-					rgba(0, 0, 0, -var("shadow-opacity"));
+				box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, -var("shadow-opacity"));
 
 				&:not(.content) {
 					transform: translate(0, 5px);

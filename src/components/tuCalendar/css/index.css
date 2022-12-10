@@ -266,7 +266,7 @@
 	font-size: 14px !important;
 }
 
-.overflow-auto {
+.tu-overflow-auto {
 	overflow: auto;
 	height: 250px;
 }

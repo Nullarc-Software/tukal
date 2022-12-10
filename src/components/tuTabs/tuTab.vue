@@ -1,23 +1,20 @@
 <template>
-    <transition
-        v-if="!noTransitions"
-        :name="
-            invert
-                ? vertical
-                    ? 'fade-tab-vertical-invert'
-                    : 'fade-tab-invert'
-                : vertical
-                ? 'fade-tab-vertical'
-                : 'fade-tab'
-        "
-    >
-        <div v-if="active" class="con-tab tu-tabs--content">
-            <slot />
-        </div>
-    </transition>
-    <div v-else-if="active" class="con-tab tu-tabs--content">
-            <slot />
-    </div>
+	<transition v-if="!noTransitions" :name="
+		invert
+			? vertical
+				? 'fade-tab-vertical-invert'
+				: 'fade-tab-invert'
+			: vertical
+				? 'fade-tab-vertical'
+				: 'fade-tab'
+	">
+		<div v-if="active" class="con-tab tu-tabs--content">
+			<slot />
+		</div>
+	</transition>
+	<div v-else-if="active" class="con-tab tu-tabs--content">
+		<slot />
+	</div>
 
 </template>
 
@@ -58,7 +55,7 @@ export default defineComponent({
 			default: false
 		}
 	},
-	setup (props, context) {
+	setup(props, context) {
 		const reactiveData = reactive({
 			vertical: false,
 			active: false,
@@ -66,15 +63,15 @@ export default defineComponent({
 			invert: false
 		});
 
-		const setActive = function (value : boolean) {
+		const setActive = function (value: boolean) {
 			reactiveData.active = value;
 		};
 
-		const setInvert = function (value : boolean) {
+		const setInvert = function (value: boolean) {
 			reactiveData.invert = value;
 		};
 
-		const setVertical = function (value : boolean) {
+		const setVertical = function (value: boolean) {
 			reactiveData.vertical = value;
 		};
 
@@ -112,12 +109,18 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
+.tabs-fixed-height {
+	.con-tab {
+		height: inherit;
+	}
+}
 
 .fade-tab-enter-active,
 .fade-tab-leave-active {
 	transition: all 0.3s;
 }
+
 .fade-tab-enter,
 .fade-tab-leave-to {
 	top: 0px;
@@ -125,16 +128,19 @@ export default defineComponent({
 	position: absolute !important;
 	transform: translate3d(-100%, 0, 0);
 }
+
 .fade-tab-leave-to {
 	top: 0px;
 	opacity: 0;
 	position: absolute !important;
 	transform: translate3d(100%, 0, 0);
 }
+
 .fade-tab-invert-enter-active,
 .fade-tab-invert-leave-active {
 	transition: all 0.3s;
 }
+
 .fade-tab-invert-enter,
 .fade-tab-invert-leave-to {
 	top: 0px;
@@ -142,38 +148,45 @@ export default defineComponent({
 	position: absolute !important;
 	transform: translate3d(100%, 0, 0);
 }
+
 .fade-tab-invert-leave-to {
 	top: 0px;
 	opacity: 0;
 	position: absolute !important;
 	transform: translate3d(-100%, 0, 0);
 }
+
 .fade-tab-vertical-enter-active,
 .fade-tab-vertical-leave-active {
 	transition: all 0.3s;
 }
+
 .fade-tab-vertical-enter {
 	top: 0px;
 	opacity: 0;
 	position: absolute !important;
 	transform: translate3d(0, 100%, 0);
 }
+
 .fade-tab-vertical-leave-to {
 	top: 0px;
 	opacity: 0;
 	position: absolute !important;
 	transform: translate3d(0, -100%, 0);
 }
+
 .fade-tab-vertical-invert-enter-active,
 .fade-tab-vertical-invert-leave-active {
 	transition: all 0.3s;
 }
+
 .fade-tab-vertical-invert-enter {
 	top: 0px;
 	opacity: 0;
 	position: absolute !important;
 	transform: translate3d(0, -100%, 0);
 }
+
 .fade-tab-vertical-invert-leave-to {
 	top: 0px;
 	opacity: 0;

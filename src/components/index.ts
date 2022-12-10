@@ -33,6 +33,7 @@ export { tuCalendar } from "./tuCalendar";
 export { tuColorPicker } from "./tuColorPicker";
 export { tuRichTextEditor } from "./tuRichTextEditor";
 export { tuUpload } from "./tuUpload";
+export { tuTag } from "./tuTag";
 export * from "./tuTreeView/types";
 
 // New Component import

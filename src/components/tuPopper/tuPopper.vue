@@ -1,33 +1,19 @@
 <template>
-	<div
-		class="popper-contatiner"
-		:class="{
-			'pointer-hand': cursorPointer
-		}"
-		v-click-away="hide"
-	>
-		<div
-			ref="triggerNode"
-			v-on="listeners"
-			
-			:style="{
-				width: fitPopperContainer ? '100%' : 'unset'
-			}"
-		>
+	<div class="popper-contatiner" :class="{
+		'pointer-hand': cursorPointer
+	}" v-bind="$attrs" v-click-away="hide">
+		<div ref="triggerNode" v-on="listeners" :style="{
+			width: fitPopperContainer ? '100%' : 'unset'
+		}">
 			<!-- The default slot to trigger the popper  -->
 			<slot />
 		</div>
 		<Transition name="fade">
-			<div
-				v-if="isOpen"
-				:class="['popper', isOpen ? 'inline-block' : null]"
-				:style="{
-					'border-radius': borderRadius
-						? `${borderRadius} !important`
-						: null
-				}"
-				ref="popperNode"
-			>
+			<div v-if="isOpen" :class="['popper', isOpen ? 'inline-block' : null]" :style="{
+				'border-radius': borderRadius
+					? `${borderRadius} !important`
+					: null
+			}" ref="popperNode">
 				<!-- A slot for the popper content -->
 				<slot name="content" />
 				<div v-if="arrow" id="arrow" data-popper-arrow></div>
@@ -68,7 +54,7 @@ export default defineComponent({
 	directives: {
 		clickAway
 	},
-	provide () {
+	provide() {
 		return {
 			closeParent: () => {
 				this.hide();
@@ -132,7 +118,7 @@ export default defineComponent({
 			default: false
 		}
 	},
-	setup (props, { slots, emit }) {
+	setup(props, { slots, emit }) {
 		const children = slots.default?.();
 
 		if (children && children.length > 1) {
@@ -244,19 +230,19 @@ export default defineComponent({
 	transform: rotate(45deg);
 }
 
-.popper[data-popper-placement^="top"] > #arrow {
+.popper[data-popper-placement^="top"]>#arrow {
 	bottom: -4px;
 }
 
-.popper[data-popper-placement^="bottom"] > #arrow {
+.popper[data-popper-placement^="bottom"]>#arrow {
 	top: -4px;
 }
 
-.popper[data-popper-placement^="left"] > #arrow {
+.popper[data-popper-placement^="left"]>#arrow {
 	right: -4px;
 }
 
-.popper[data-popper-placement^="right"] > #arrow {
+.popper[data-popper-placement^="right"]>#arrow {
 	left: -4px;
 }
 
@@ -271,7 +257,7 @@ export default defineComponent({
 }
 
 .popper:hover,
-.popper:hover > #arrow::before {
+.popper:hover>#arrow::before {
 	background: var(--popper-theme-background-color-hover);
 }
 

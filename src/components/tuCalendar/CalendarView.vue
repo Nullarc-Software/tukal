@@ -141,7 +141,7 @@ openEventDialog(i);
 				</div>
 			</header>
 			<div class="header">Events</div>
-			<div class="dialog-content overflow-auto">
+			<div class="dialog-content tu-overflow-auto">
 				<div type="1" v-for="event in selectedDayEvents" :key="event.originalItem.id">
 					<div class="text-wrapper" @click="openEventDialog(event)" :style="`background:${_color.getApplyColor(
 						getItemCategoryColor(event),
@@ -272,8 +272,8 @@ openEventDialog(i);
 						Edit
 					</tu-button>
 					<tu-button danger @click="
-						selectedEventDIalog = false;
-					confirmationDialog = true;
+	selectedEventDIalog = false;
+confirmationDialog = true;
 					">
 						delete
 					</tu-button>

@@ -1,71 +1,46 @@
 <template>
-	<div
-		class="tu-pagination-content"
-		:style="{
-			['--tu-color']: color ? getColor(color) : ''
-		}"
-		:class="[
-			{
-				buttonsDotted: buttonsDotted,
-				circle: circle,
-				square: square,
-				disabled: disabled,
-				notMargin: notMargin
-			},
-			{
-				[`tu-component--primary`]:
-					!danger && !success && !warn && !dark && !color
-			},
-			{ [`tu-component--danger`]: !!danger },
-			{ [`tu-component--warn`]: !!warn },
-			{ [`tu-component--success`]: !!success },
-			{ [`tu-component--dark`]: !!dark }
-		]"
-		v-bind="$attrs"
-	>
-		<button
-			v-if="!notArrows"
-			class="tu-pagination__arrow prev"
-			:disabled="infinite ? false : val <= 1"
-			@click="prevClicked"
-		>
+	<div class="tu-pagination-content" :style="{
+		['--tu-color']: color ? getColor(color) : ''
+	}" :class="[
+	{
+		buttonsDotted: buttonsDotted,
+		circle: circle,
+		square: square,
+		disabled: disabled,
+		notMargin: notMargin
+	},
+	{
+		[`tu-component--primary`]:
+			!danger && !success && !warn && !dark && !color
+	},
+	{ [`tu-component--danger`]: !!danger },
+	{ [`tu-component--warn`]: !!warn },
+	{ [`tu-component--success`]: !!success },
+	{ [`tu-component--dark`]: !!dark }
+]" v-bind="$attrs">
+		<button v-if="!notArrows" class="tu-pagination__arrow prev" :disabled="infinite ? false : val <= 1"
+			@click="prevClicked">
 			<slot v-if="$slots.arrowPrev" name="arrowPrev" />
-			<tu-icon
-				:style="{
-					cursor: 'pointer',
-					display: 'inline-flex',
-					'align-self': 'center',
-					'justify-content': 'center'
-				}"
-				v-else
-				>keyboard_arrow_left</tu-icon
-			>
+			<tu-icon :style="{
+				cursor: 'pointer',
+				display: 'inline-flex',
+				'align-self': 'center',
+				'justify-content': 'center'
+			}" v-else>keyboard_arrow_left</tu-icon>
 		</button>
 		<slot v-if="$slots.default" />
-		<div
-			class="tu-pagination"
-			ref="pagination"
-			v-if="!onlyArrows && !$slots.default"
-		>
+		<div class="tu-pagination" ref="pagination" v-if="!onlyArrows && !$slots.default">
 			<component :is="item" v-for="item of getPages" :key="item" />
 		</div>
-		<button
-			v-if="!notArrows"
-			class="tu-pagination__arrow next"
-			:disabled="infinite ? false : val >= length"
-			@click="nextClicked"
-		>
+		<button v-if="!notArrows" class="tu-pagination__arrow next" :disabled="infinite ? false : val >= length"
+			@click="nextClicked">
 			<slot v-if="$slots.arrowNext" name="arrowNext" />
-			<tu-icon
-				:style="{
-					cursor: 'pointer',
-					display: 'inline-flex',
-					'align-self': 'center',
-					'justify-content': 'center'
-				}"
-				v-else
-				>keyboard_arrow_right</tu-icon
-			>
+			<tu-icon :style="{
+				cursor: 'pointer',
+				display: 'inline-flex',
+				'align-self': 'center',
+				'justify-content': 'center'
+			}" v-else>keyboard_arrow_right</tu-icon>
 		</button>
 		<div v-if="progress" class="tu-pagination__progress">
 			<div class="progress" :style="{ width: `${getProgress}%` }"></div>
@@ -102,7 +77,7 @@ export default defineComponent({
 		max: { default: 9, type: Number },
 		dottedNumber: { default: 5, type: Number }
 	},
-	setup (props, context) {
+	setup(props, context) {
 		const val = ref(1);
 		const leftActive = ref(42);
 		const activeClassMove = ref(false);
@@ -146,6 +121,7 @@ export default defineComponent({
 						else if (newVal < 1) newVal = 1;
 
 						setValuePage(newVal);
+						evt.stopImmediatePropagation();
 					}
 				},
 				[
@@ -194,8 +170,9 @@ export default defineComponent({
 						disabled: isDisabledItem(NumberPage),
 						loading: isLoadingItem(NumberPage)
 					},
-					onClick: (evt: any) => {
+					onClick: (evt: MouseEvent) => {
 						setValuePage(NumberPage);
+						evt.stopImmediatePropagation();
 					}
 				},
 				props.buttonsDotted ? "" : `${NumberPage}`
@@ -273,16 +250,18 @@ export default defineComponent({
 			return [];
 		});
 
-		const prevClicked = function () {
+		const prevClicked = function (evt: MouseEvent) {
 			const newVal = (val.value -= 1);
 			if (newVal > 0) setValuePage(newVal);
 			else if (props.infinite) setValuePage(props.length);
+			evt.stopImmediatePropagation();
 		};
 
-		const nextClicked = function () {
+		const nextClicked = function (evt: MouseEvent) {
 			const newVal = (val.value += 1);
 			if (newVal <= props.length) setValuePage(newVal);
 			else if (props.infinite) setValuePage(1);
+			evt.stopImmediatePropagation();
 		};
 
 		watch(
@@ -479,6 +458,7 @@ export default defineComponent({
 	justify-content: center;
 	position: relative;
 	transition: background-color 0.2s ease;
+
 	&__progress {
 		width: calc(100% - 16px);
 		height: 3px;

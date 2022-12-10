@@ -332,7 +332,10 @@
 					javascript frameworks in the world and with a huge community
 					with which you will have all the help and documentation to
 					create and make your project
+
+
 				</div>
+				<tu-pagination not-margin flat v-model="page" :length="numPages" />
 
 				<template v-slot:footer>
 					<tu-button width="100px" style="margin: 5px" @click="activeDialog = false" block>
@@ -360,6 +363,8 @@
 						documentation to create and make your project
 					</p>
 				</div>
+				<tu-pagination not-margin flat v-model="page" :length="numPages" />
+
 
 				<template v-slot:footer>
 					<tu-button width="100px" style="margin: 5px" @click="activeDialog1 = false">
@@ -621,7 +626,7 @@
 				<button>click me</button>
 				<template #content>
 					<tu-popup-menu>
-						<tu-popup-item :loading="true" loadingType="scale" >  Test </tu-popup-item>
+						<tu-popup-item :loading="true" loadingType="scale"> Test </tu-popup-item>
 						<tu-popup-item> Test 1 </tu-popup-item>
 						<tu-popup-item divider> Test 2 </tu-popup-item>
 					</tu-popup-menu>
@@ -769,13 +774,25 @@
 			<h4>Tabs:</h4>
 			<hr />
 
-			<tu-tabs position="top" noTransitions tabStyle="card" v-model="tabName">
+			<tu-tabs position="top" noTransitions v-model="tabName" fixed-height="500px">
 				<tu-tab label="Home" name="ho"> Home </tu-tab>
 				<tu-tab label="Service" name="se"> Service </tu-tab>
 				<tu-tab label="login" name="lo"> Login </tu-tab>
 				<tu-tab label="Disabled" name="di"> Disabled </tu-tab>
 			</tu-tabs>
 			<tu-tabs position="top" noTransitions tabStyle="progress" progressWidth="20" v-model="tabName">
+				<tu-tab label="Home" name="ho"> Home </tu-tab>
+				<tu-tab label="Service" name="se"> Service </tu-tab>
+				<tu-tab label="login" name="lo"> Login </tu-tab>
+				<tu-tab label="Disabled" name="di"> Disabled </tu-tab>
+			</tu-tabs>
+			<tu-tabs position="left" noTransitions v-model="tabName">
+				<tu-tab label="Home" name="ho"> Home </tu-tab>
+				<tu-tab label="Service" name="se"> Service </tu-tab>
+				<tu-tab label="login" name="lo"> Login </tu-tab>
+				<tu-tab label="Disabled" name="di"> Disabled </tu-tab>
+			</tu-tabs>
+			<tu-tabs position="right" noTransitions v-model="tabName">
 				<tu-tab label="Home" name="ho"> Home </tu-tab>
 				<tu-tab label="Service" name="se"> Service </tu-tab>
 				<tu-tab label="login" name="lo"> Login </tu-tab>
@@ -817,11 +834,12 @@
 			<button @click="exportTable">Export</button>
 			<button @click="exportTableToPDF">Export to pdf</button>
 			{{ selected }}
-			<tu-table row-expand multi-select striped size="" persistent-id="one" :draggable="true" v-model="selected"
-				v-model:numPages="numPages" :page="page" :pageSize="5" :data="universities" :columns="columns"
-				:columnSelector="true" @onRowClicked="rowClicked" @onTableBeginLoad="beginLoad"
-				@onTableEndLoad="afterLoad" @onTableConfigUpdated="configUpdate">
-				<!-- <template #thead>
+			<div style="height: 400px">
+				<tu-table row-expand multi-select striped size="" persistent-id="one" :draggable="true"
+					v-model="selected" v-model:numPages="numPages" :page="page" :pageSize="5" :data="universities"
+					:columns="columns" :columnSelector="true" @onRowClicked="rowClicked" @onTableBeginLoad="beginLoad"
+					@onTableEndLoad="afterLoad" @onTableConfigUpdated="configUpdate">
+					<!-- <template #thead>
 					<tu-th field="country" sort search> Country </tu-th>
 					<tu-th field="name" sort search :index="1" width="500px"> Name </tu-th>
 					<tu-th field="name" sort search :index="2" width="500px"> Name </tu-th>
@@ -831,10 +849,12 @@
 					<tu-th field="web_pages" sort search> Web site </tu-th>
 					<tu-th field="something" sort search> No value </tu-th>
 				</template> -->
-				<template #footer>
-					<tu-pagination not-margin flat v-model="page" :length="numPages" />
-				</template>
-			</tu-table>
+					<template #footer>
+						<tu-pagination not-margin flat v-model="page" :length="numPages" />
+					</template>
+				</tu-table>
+			</div>
+
 		</div>
 		<div class="showcase-component"></div>
 
@@ -844,7 +864,15 @@
 			<!-- <tu-upload singleUpload :limit="1" /> -->
 		</div>
 		<div class="showcase-component">
+			<h4>Calendar:</h4>
 			<tu-calendar model="server" :items="items" :categories="Categories" @onClickDay="onClick" />
+		</div>
+		<div class="showcase-component">
+			<h4>Tags:</h4>
+			<tu-tag name="Location" value="Far East" />
+			<tu-tag name="Location" value="Far East" />
+			<tu-tag name="Location" value="Far East" />
+			<tu-tag name="Location" value="Far East" />
 		</div>
 	</div>
 </template>
@@ -1040,7 +1068,7 @@ export default defineComponent({
 
 			new TuNotification(notificationAttrs);
 			notificationAttrs.position = "top-center";
-			notificationAttrs.color = "primary";			
+			notificationAttrs.color = "primary";
 			notificationAttrs.flat = false;
 			new TuNotification(notificationAttrs);
 			notificationAttrs.position = "top-left";
@@ -1125,8 +1153,9 @@ export default defineComponent({
 					sort: true
 				}
 			},
+
 			{
-				index: 5,
+				index: 6,
 				field: "something",
 				caption: "Undefined Col",
 				isComponent: true,

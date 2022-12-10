@@ -1,139 +1,72 @@
 <template>
-	<div
-		:class="[
-			`tu-tabs-${color}`,
-			`tu-tabs-position-${position}`,
-			`tu-tabs-${tabStyle}`
-		]"
-		class="con-tu-tabs tu-tabs"
-		:style="{
-			width: fixedWidth,
-			height: fixedHeight
-		}"
-	>
+	<div :class="[
+		`tu-tabs-${color}`,
+		`tu-tabs-position-${position}`,
+		`tu-tabs-${tabStyle}`
+	]" class="con-tu-tabs tu-tabs" :style="{
+	width: fixedWidth,
+	height: fixedHeight
+}">
 		<div class="con-ul-tabs">
-			<ul
-				ref="ul"
-				:class="[`ul-tabs-${alignment}`]"
-				class="ul-tabs tu-tabs--ul"
-				v-if="tabStyle !== 'progress'"
-			>
-				<li
-					v-for="child in children"
-					:key="child.id"
-					:style="childActive == child.id ? styleTab(child.id) : {}"
-					class="tu-tabs--li"
-					:class="{
+			<ul ref="ul" :class="[`ul-tabs-${alignment}`]" class="ul-tabs tu-tabs--ul" v-if="tabStyle !== 'progress'">
+				<li v-for="child in children" :key="child.id" :style="childActive == child.id ? styleTab(child.id) : {}"
+					class="tu-tabs--li" :class="{
 						[`tu-tabs--li-${child.id}`]: true,
 						[`tu-tabs--li-${child.name}`]: child.name,
 						activeChild: childActive == child.id
-					}"
-					@mouseover="hover = true"
-					@mouseout="hover = false"
-				>
-					<button
-						v-bind="child.attrs"
-						:style="styleAlignIcon(child.icon)"
-						:disabled="child.disabled"
-						class="tu-tabs--btn"
-						type="button"
-						@click="activeChild(child.id)"
-					>
-						<tu-icon
-							v-if="child.icon"
-							:icon-pack="child.iconPack"
-							:icon="child.icon"
-							:color="color"
-							class="tu-tabs--btn-icon"
-						></tu-icon>
+					}" @mouseover="hover = true" @mouseout="hover = false">
+					<button v-bind="child.attrs" :style="styleAlignIcon(child.icon)" :disabled="child.disabled"
+						class="tu-tabs--btn" type="button" @click="activeChild(child.id)">
+						<tu-icon v-if="child.icon" :icon-pack="child.iconPack" :icon="child.icon" :color="color"
+							class="tu-tabs--btn-icon"></tu-icon>
 						<span v-if="child.label">{{ child.label }}</span>
 					</button>
 
-					<button
-						v-if="child.tag"
-						class="tu-tabs--btn-tag"
-						@click="clickTag(child)"
-					>
-						<tu-icon
-							:icon-pack="child.iconPack"
-							:icon="child.tag"
-						></tu-icon>
+					<button v-if="child.tag" class="tu-tabs--btn-tag" @click="clickTag(child)">
+						<tu-icon :icon-pack="child.iconPack" :icon="child.tag"></tu-icon>
 					</button>
 				</li>
 			</ul>
-			<div
-				v-else
-				ref="ul"
-				:class="[`ul-tabs-${alignment}`]"
-				class="ul-tabs tu-tabs--ul"
-			>
+			<div v-else ref="ul" :class="[`ul-tabs-${alignment}`]" class="ul-tabs tu-tabs--ul">
 				<div class="tu-tabs-progress-header">
 					<div class="tu-tabs--progress__info">
 						<span> </span>
 						<span style="margin-left: 5px">
-							<span
-								:style="{
-									color: `rgb(${getColor(color)})`
-								}"
-								>{{ activeIdx + 1 }}
+							<span :style="{
+								color: `rgb(${getColor(color)})`
+							}">{{ activeIdx + 1 }}
 							</span>
-							<span
-								:style="{
-									color: `rgba(${getColor('text')}, 0.75)`
-								}"
-							>
+							<span :style="{
+								color: `rgba(${getColor('text')}, 0.75)`
+							}">
 								of {{ children.length }}
 							</span>
 						</span>
 						<div class="tu-tabs-progress__nav">
-							<tu-icon
-								class="tu-tabs-progress__icon"
-								style="margin-right: 10px"
-								@click="activeChild(activeIdx - 1)"
-							>
-								keyboard_arrow_left</tu-icon
-							>
-							<tu-icon
-								class="tu-tabs-progress__icon"
-								@click="activeChild(activeIdx + 1)"
-							>
-								keyboard_arrow_right</tu-icon
-							>
+							<tu-icon class="tu-tabs-progress__icon" style="margin-right: 10px"
+								@click="activeChild(activeIdx - 1)">
+								keyboard_arrow_left</tu-icon>
+							<tu-icon class="tu-tabs-progress__icon" @click="activeChild(activeIdx + 1)">
+								keyboard_arrow_right</tu-icon>
 						</div>
 					</div>
-					<div
-						class="tu-tabs--progress__bar"
-						:style="{ width: progressWidth }"
-					>
-						<tu-progress
-							:height="8"
-							:percent="getPercentage"
-							:color="color"
-						></tu-progress>
+					<div class="tu-tabs--progress__bar" :style="{ width: progressWidth }">
+						<tu-progress :height="8" :percent="getPercentage" :color="color"></tu-progress>
 					</div>
 				</div>
-				<div
-					hidden
-					v-for="child in children"
-					:key="child.id"
-					class="tu-tabs--li"
-					:class="{
-						[`tu-tabs--li-${child.id}`]: true,
-						[`tu-tabs--li-${child.name}`]: child.name,
-						activeChild: childActive == child.id
-					}"
-				/>
+				<div hidden v-for="child in children" :key="child.id" class="tu-tabs--li" :class="{
+					[`tu-tabs--li-${child.id}`]: true,
+					[`tu-tabs--li-${child.name}`]: child.name,
+					activeChild: childActive == child.id
+				}" />
 			</div>
 			<span :style="stylex" class="line-tu-tabs" />
 		</div>
 
-		<div
-			class="con-slot-tabs"
-			:style="{
-				width: fixedWidth,
-				height: fixedHeight
-			}"
-		>
+		<div class="con-slot-tabs" :style="{
+			width: fixedWidth,
+			height: fixedHeight
+		}" :class="{ 'tabs-fixed-height': fixedHeight ? true : false }">
 			<slot />
 		</div>
 	</div>
@@ -226,7 +159,7 @@ export default defineComponent({
 			default: null
 		}
 	},
-	provide () {
+	provide() {
 		return {
 			addChild: (instance: ChildData) => {
 				this.children.push(instance);
@@ -245,7 +178,7 @@ export default defineComponent({
 			})
 		};
 	},
-	setup (props, context) {
+	setup(props, context) {
 		const tabIdInstance = ref(new TabId());
 
 		const ul = ref<HTMLUListElement>();
@@ -302,7 +235,7 @@ export default defineComponent({
 						0.5
 					)}`,
 					transform: `scaleX(${reactiveData.these ? 1.3 : 1})`
-				  }
+				}
 				: {};
 		});
 
@@ -317,11 +250,11 @@ export default defineComponent({
 					"align-items": "center",
 					"font-size": `${props.headerSize}px`,
 					cursor: "pointer"
-				  }
+				}
 				: {
 					"font-size": `${props.headerSize}px`,
 					cursor: "pointer"
-				  };
+				};
 		};
 
 		const parseIndex = function (index) {
@@ -457,18 +390,23 @@ export default defineComponent({
 });
 </script>
 
+
 <style lang="scss" scoped>
 @import "../../style/sass/_mixins";
 
 .con-tu-tabs {
 	width: 100%;
 	overflow: hidden;
+	display: flex;
+	flex-direction: column;
 	position: relative;
+
 	.con-slot-tabs {
 		position: relative;
 		display: block;
 		overflow: hidden;
 	}
+
 	.con-ul-tabs {
 		position: relative;
 	}
@@ -485,20 +423,25 @@ export default defineComponent({
 	padding-left: 0px;
 	position: relative;
 	margin-top: 0px;
+
 	&.ul-tabs-center {
 		justify-content: center;
 	}
+
 	&.ul-tabs-right {
 		justify-content: flex-end;
 	}
+
 	&.ul-tabs-fixed {
 		justify-content: space-between;
 		flex-wrap: nowrap !important;
+
 		li {
 			width: 100%;
 		}
 	}
 }
+
 .line-tu-tabs {
 	width: 100px;
 	height: 2px;
@@ -508,12 +451,15 @@ export default defineComponent({
 	transform: translateZ(0);
 	will-change: left, right;
 }
+
 .tu-tabs--li {
 	display: block;
 	position: relative;
+
 	button {
 		color: inherit;
 		font-family: inherit;
+
 		&.tu-tabs--btn {
 			box-sizing: border-box;
 			display: block;
@@ -526,12 +472,14 @@ export default defineComponent({
 			cursor: pointer;
 			transition: all 0.2s ease;
 			z-index: 100;
+
 			&:hover {
 				&:not(:disabled) {
 					color: inherit;
 				}
 			}
 		}
+
 		&:disabled {
 			opacity: 0.5;
 			cursor: default !important;
@@ -539,17 +487,20 @@ export default defineComponent({
 		}
 	}
 }
+
 .activeChild {
 	button {
 		&:not(:disabled) {
 			color: inherit;
 		}
+
 		&.tu-tabs--btn {
 			padding-top: 8px;
 			padding-bottom: 12px;
 		}
 	}
 }
+
 .tu-tabs--btn-tag {
 	position: absolute;
 	width: 20px;
@@ -566,44 +517,55 @@ export default defineComponent({
 	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.05);
 	cursor: pointer;
 	z-index: 200;
+
 	i {
 		padding-right: 0px !important;
 		font-size: 0.9rem;
 	}
 }
+
 .tu-tabs-position-top {
 	.tu-tabs--ul {
 		display: flex;
 		flex-wrap: wrap;
 	}
 }
+
 .tu-tabs-position-bottom {
 	.tu-tabs--ul {
 		display: flex;
 		border-top: 1px solid rgba(0, 0, 0, 0.05);
 		border-bottom: 0px !important;
 	}
+
 	.con-ul-tabs {
 		order: 2;
 	}
+
 	.line-tu-tabs {
 		top: 0px;
 	}
 }
+
 .tu-tabs-position-left {
 	display: flex;
+	flex-direction: row !important;
+
 	.con-slot-tabs {
 		margin-left: 15px;
 	}
+
 	.line-tu-tabs {
 		left: auto !important;
 		right: 0px;
 	}
+
 	.con-ul-tabs {
 		float: left;
 		height: 100%;
 		display: block;
 	}
+
 	.tu-tabs--ul {
 		display: block;
 		width: auto;
@@ -611,6 +573,7 @@ export default defineComponent({
 		border-right: 1px solid rgba(0, 0, 0, 0.05);
 		margin: 0px;
 	}
+
 	.activeChild {
 		button {
 			padding-top: 10px !important;
@@ -620,18 +583,23 @@ export default defineComponent({
 		}
 	}
 }
+
 .tu-tabs-position-right {
 	display: flex;
+	flex-direction: row !important;
+
 	.con-slot-tabs {
 		width: 100%;
 		margin-right: 15px;
 	}
+
 	.con-ul-tabs {
 		float: left;
 		height: 100%;
 		display: block;
 		order: 2;
 	}
+
 	.tu-tabs--ul {
 		display: block;
 		width: auto;
@@ -639,6 +607,7 @@ export default defineComponent({
 		border-left: 1px solid rgba(0, 0, 0, 0.05);
 		margin: 0px;
 	}
+
 	.activeChild {
 		button {
 			padding-top: 10px !important;
@@ -649,7 +618,7 @@ export default defineComponent({
 	}
 }
 
-::v-deep(.tu-tabs--content) {	
+::v-deep(.tu-tabs--content) {
 	padding: 10px;
 }
 
@@ -682,7 +651,8 @@ export default defineComponent({
 	}
 }
 
-@each $tu-color, $index in --tu-colors {
+@each $tu-color,
+$index in --tu-colors {
 	.tu-tabs-#{$tu-color} {
 		.con-ul-tabs {
 			button {
@@ -690,21 +660,18 @@ export default defineComponent({
 					color: -getColor($tu-color, 1) !important;
 				}
 			}
+
 			.activeChild {
 				button {
 					color: -getColor($tu-color, 1) !important;
 				}
 			}
+
 			.line-tu-tabs {
-				background: linear-gradient(
-					30deg,
-					-getColor($tu-color, 1) 0%,
-					-getColor($tu-color, 0.5) 100%
-				) !important;
-				box-shadow: 0px
-					0px
-					8px
-					0px -getColor($tu-color, 0.4) !important;
+				background: linear-gradient(30deg,
+						-getColor($tu-color, 1) 0%,
+						-getColor($tu-color, 0.5) 100%) !important;
+				box-shadow: 0px 0px 8px 0px -getColor($tu-color, 0.4) !important;
 			}
 		}
 	}
