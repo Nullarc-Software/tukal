@@ -1,12 +1,16 @@
+
 :root{
   @extend :root;
   --tu-primary: 25, 91, 255;
   --tu-warn: 255, 186, 0;
   --tu-danger: 255,71,87;
   --tu-success: 70,201,58;
-  --tu-dark: 30,30,30;
+  --tu-dark: 30,31,34;
+  --tu-dark-1: 44,44,44;
+  --tu-dark-2: 54,54,54;
+  --tu-dark-3: 18,18,18;
   --tu-light: 244,247,248;
-  --tu-color: 17,18,20;
+  --tu-color: 37,18,20;
 
   // social colors
 
@@ -41,6 +45,7 @@
   --tu-gray-2: 244, 247, 248;
   --tu-gray-3: 240, 243, 244;
   --tu-gray-4: 230, 233, 234;
+
   
   --tu-colors {
     primary: --tu-primary;

@@ -2,10 +2,8 @@
 @import "_vars";
 @import "_dark";
 @import "_reset";
-@import "_notification";
+@import "_mixins.sass";
 
-// body,table,td,tr
-//   backface-visibility: hidden
 
 .unselectable {
 	-webkit-touch-callout: none;
@@ -14,4 +12,8 @@
 	-moz-user-select: none;
 	-ms-user-select: none;
 	user-select: none;
+}
+
+body.dark {
+	background-color: -getColor("background") !important;
 }

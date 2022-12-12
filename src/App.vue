@@ -1,7 +1,7 @@
 <!-- eslint-disable unused-imports/no-unused-vars -->
 <template>
 	<div style="position: relative">
-		<h1 style="text-align: cente; margin-top: 50px">
+		<h1 class="text-color" style="text-align: cente; margin-top: 50px">
 			Vuesax3 (Typescript + composition API Demo) - TheCelebrimbor -
 			Github
 		</h1>
@@ -623,7 +623,7 @@
 			<hr />
 			aaa
 			<tu-popper arrow border-radius="20px">
-				<button>click me</button>
+				<tu-button>click me</tu-button>
 				<template #content>
 					<tu-popup-menu>
 						<tu-popup-item :loading="true" loadingType="scale"> Test </tu-popup-item>
@@ -1365,11 +1365,19 @@ export default defineComponent({
 });
 </script>
 
-<style>
+<style lang="scss">
+@import "./style/sass/_mixins";
+
+
 .showcase-component {
 	margin-bottom: 15px;
 	margin-left: 30px;
 	margin-top: 30px;
+	color: -getColor("text") !important;
+}
+
+.text-color {
+	color: -getColor("text");
 }
 
 .tu-select-content {

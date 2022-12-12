@@ -8,6 +8,7 @@
 		<div v-if="editor" class="flex editor-header">
 			<tu-button
 				title="Bold"
+				color="gray"
 				circle
 				border
 				v-if="bold || standard"

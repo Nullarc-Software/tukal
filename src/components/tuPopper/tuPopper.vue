@@ -190,12 +190,13 @@ export default defineComponent({
 });
 </script>
 
-<style>
+<style lang="scss">
+@import "../../style/sass/_mixins.sass";
 :root {
-	--popper-theme-background-color: #ffffff;
-	--popper-theme-background-color-hover: #ffffff;
+	--popper-theme-background-color: -getColor("gray-1");
+	--popper-theme-background-color-hover: -getColor("gray-2");
 	--popper-theme-text-color: inherit;
-	--popper-theme-border: 1px solid #efefef;
+	--popper-theme-border: 1px solid -getColor("gray-1");
 	--popper-theme-border-radius: 6px;
 	--popper-theme-padding: 16px;
 	--popper-theme-shadow: 0 6px 30px -6px rgba(0, 0, 0, 0.25);

@@ -1,6 +1,6 @@
 <template>
 	<div
-		:class="{ 'open-item': maxHeight != '0px', disabledx: disabled }"
+		:class="{ 'open-item': maxHeight != '0px', disabledx: disabled, 'hover-style': !disabled }"
 		class="tu-collapse-item"
 		@mouseover="mouseover"
 		@mouseout="mouseout"
@@ -82,17 +82,16 @@ export default {
 		},
 		mouseover () {
 			if (this.disabled) return;
-			this.$el.style.backgroundColor = "#ffffff22";
 		},
 		mouseout () {
 			if (this.disabled) return;
-			this.$el.style.backgroundColor = "#ffffff00";
 		}
 	}
 };
 </script>
 
 <style lang="scss" scoped>
+@import "../../style/sass/_mixins.sass";
 .tu-collapse-item {
 	border-bottom: 1px solid rgba(0,0,0,0.04);
 	cursor: pointer;
@@ -110,6 +109,11 @@ export default {
 	}
 	&:last-child {
 		border-bottom: 0px solid rgba(0,0,0,0) !important;
+	}
+}
+.hover-style {
+		&:hover {
+		background-color: -getColor("gray-2") !important;
 	}
 }
 .tu-collapse-item--header {

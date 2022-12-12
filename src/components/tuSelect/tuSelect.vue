@@ -1012,7 +1012,7 @@ export default defineComponent({
 		cursor: pointer;
 		transition: all 0.25s ease, height 0s;
 		background: -getColor("gray-2");
-		color: -getColor("text");
+		color: -getColor("text") !important;
 		min-height: 38px;
 		padding-right: 30px;
 		width: 100%;
@@ -1257,6 +1257,7 @@ export default defineComponent({
 		justify-content: flex-start;
 		opacity: 0.4;
 		z-index: 500;
+		color: -getColor("text", 0.8) !important;
 
 		// top: 10px
 		&--hidden {

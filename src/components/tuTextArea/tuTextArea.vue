@@ -191,7 +191,7 @@ export default defineComponent({
 
 	&.focusx {
 		::v-deep(.tu-textarea-label) {
-			background: #fcfcfc;
+			background: -getColor("gray-1");
 			padding-top: 4px;
 			padding-bottom: 4px;
 		}
@@ -213,7 +213,7 @@ export default defineComponent({
 	border: 0px solid rgba(0, 0, 0, 0);
 	display: block;
 	padding: 9px;
-	color: rgba(0, 0, 0, 0.8);
+	color: -getColor("text", 0.8);
 	font-size: 0.8rem;
 	width: 100%;
 	max-width: 100%;
@@ -253,7 +253,7 @@ export default defineComponent({
 	box-shadow: 0px 4px 20px 0px rgba(0, 0, 0, 0.05);
 	cursor: default;
 	background: -getColor("primary", 1);
-	color: #fff;
+	color: -getColor("text") !important;
 	opacity: 0.3;
 	transition: all 0.25s ease;
 }

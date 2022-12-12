@@ -131,13 +131,13 @@ export default defineComponent({
 
 	a {
 		transition: all 0.2s ease;
-		color: rgba(0, 0, 0, 0.4);
+		color: -getColor("text");
 	}
 }
 
 .tu-breadcrumb--ol a:hover,
 .tu-breadcrumb--ol a:focus {
-	color: rgba(0, 0, 0, 0.7);
+	color: -getColor("text");
 	text-decoration: none;
 }
 

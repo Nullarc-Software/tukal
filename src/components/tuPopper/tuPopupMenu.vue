@@ -1,5 +1,5 @@
 <template>
-	<div ref="dropOptions">
+	<div ref="dropOptions" class="tu-dropdown-parent">
 		<!-- @mouseout="toggleMenu($event)" -->
 		<!-- @mouseover="toggleMenu($event)" -->
 		<ul class="tu-component tu-dropdown--menu">
@@ -57,6 +57,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import "../../style/sass/_mixins.sass";
+
 .dropdownx-enter-from,
 .dropdownx-leave-to {
 	opacity: 0;
@@ -64,6 +66,7 @@ export default defineComponent({
 }
 
 .con-tu-dropdown--menu {
+	background: -getColor("dark");
 	padding-top: 10px;
 	position: absolute;
 	height: auto;
@@ -88,7 +91,6 @@ export default defineComponent({
 	}
 }
 .tu-dropdown--menu {
-	background: #fff;
 	padding-left: 0px !important;
 	border-radius: 5px;
 	box-shadow: 0px 5px 25px 0px rgba(0, 0, 0, 0.1);

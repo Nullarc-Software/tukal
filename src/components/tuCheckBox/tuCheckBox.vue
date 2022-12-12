@@ -268,7 +268,7 @@ export default defineComponent({
 		border-radius: inherit;
 		transition: all 0.25s ease;
 		z-index: -1;
-		border: 2px solid -getColor("gray-4", 1);
+		border: 2px solid -getColor("text", 1);
 		box-sizing: border-box;
 	}
 
