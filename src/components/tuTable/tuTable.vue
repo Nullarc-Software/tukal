@@ -663,7 +663,7 @@ export default defineComponent({
 	&.striped {
 		::v-deep(.tu-table__tr) {
 			&:nth-child(even) {
-				background: -getColor("gray-1") !important;
+				background: -getColor("gray-2") !important;
 			}
 		}
 	}

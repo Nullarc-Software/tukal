@@ -406,7 +406,7 @@ export default defineComponent({
 				height: 12px;
 				min-width: 15px;
 				padding: 0px;
-				background: transparent;
+				background: -getColor("text") !important;
 
 				i {
 					width: 6px;
@@ -498,9 +498,10 @@ export default defineComponent({
 		align-items: center;
 		justify-content: center;
 		margin: 0px 2px;
-		background: -getColor("gray-3");
+		background: -getColor("gray-2");
 		transition: all 0.25s ease;
 		border: 0px;
+		color: -getColor("text") !important;
 
 		&:disabled {
 			opacity: 0.4;
@@ -508,7 +509,7 @@ export default defineComponent({
 		}
 
 		&:hover {
-			background: -getColor("gray-4");
+			background: -getColor("gray-2");
 		}
 
 		i {
@@ -635,7 +636,7 @@ export default defineComponent({
 		height: 36px;
 		border-radius: 12px;
 		padding: 0px;
-		background: -getColor("gray-3");
+		background: -getColor("gray-2");
 		margin: 0px 2px;
 		display: flex;
 		align-items: center;

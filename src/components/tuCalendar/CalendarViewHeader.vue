@@ -32,10 +32,6 @@
 				<template #off> month </template>
 				<template #on> week </template>
 			</tu-switch>
-			<tu-switch color="dark" val="dark" notValue="theme-default" v-model="theme">
-				<template #off> light </template>
-				<template #on> dark </template>
-			</tu-switch>
 		</div>
 		<tu-button @click="openAddCategoryDialog" class="category-button" transparent>Add Category</tu-button>
 	</div>

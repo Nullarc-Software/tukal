@@ -20,10 +20,10 @@ $border-color_1: #ccc;
 /* Event Times */
 .theme-default {
 	.cv-header {
-		background-color: -getColor("gray-3") !important;
+		background-color: -getColor("gray-1") !important;
 		border-width: 1px 1px 0 1px;
 		button {
-			color: black;
+			color: -getColor("text") ;
 		}
 		.category-button {
 			color: #060000;
@@ -31,23 +31,14 @@ $border-color_1: #ccc;
 	}
 	.cv-header-day {
 		background-color: -getColor("gray-3") !important;
-		border-width: 1px 1px 0 0;
-		padding-bottom: 12px;
 	}
 	.cv-weeknumber {
 		background-color:  -getColor("light") !important;
 		border-color: $border-color_1;
 		color: #808080;
-		span {
-			margin: 0;
-			position: absolute;
-			top: 50%;
-			left: 50%;
-			transform: translate(-50%, -50%);
-		}
 	}
 	.cv-day {
-		background-color: rgb(224, 232, 245, 0.1);
+		background-color: -getColor("dark-3") !important;
 		border-width: 1px 1px 0 0;
 		&:hover {
 			cursor: pointer;
@@ -56,7 +47,7 @@ $border-color_1: #ccc;
 	}
 	.cv-day.past {
 		&:hover {
-			background-color: -getColor("gray-3") !important;
+			background-color: -getColor("dark-2") !important;
 		}
 	}
 	.cv-day.outsideOfMonth {
@@ -67,12 +58,6 @@ $border-color_1: #ccc;
 	}
 	.cv-day[aria-selected="true"] {
 		background-color: #ffc;
-	}
-	.cv-header-days {
-		border-width: 0 0 0 1px;
-	}
-	.cv-weeks {
-		border-width: 0 0 1px 1px;
 	}
 	.cv-item.continued {
 		&::before {

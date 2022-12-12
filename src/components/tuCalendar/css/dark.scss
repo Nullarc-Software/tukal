@@ -7,10 +7,10 @@ $border-color_2: -getColor("dark-3");
 		color: white;
 		background-color: -getColor("dark-3") !important;
 		.periodLabel {
-			color: white;
+			color: -getColor("text") !important;
 		}
 		.category-button {
-			color: #f8f7f7;
+			color: -getColor("text") !important;
 		}
 		button {
 			&:disabled {
@@ -25,7 +25,6 @@ $border-color_2: -getColor("dark-3");
 	.cv-header-day {
 		color: white;
 		background-color: -getColor("dark-3") !important;
-		padding-bottom: 12px;
 		border-color: $border-color_2 !important;
 		border-style: solid;
 	}
@@ -44,40 +43,33 @@ $border-color_2: -getColor("dark-3");
 		background-color: -getColor("dark-3") !important;
 		border-color: $border-color_1;
 		color: #808080;
-		span {
-			margin: 0;
-			position: absolute;
-			top: 50%;
-			left: 50%;
-			transform: translate(-50%, -50%);
-		}
 	}
 	.tu-count {
 		color: white;
 	}
 	.previousYear {
 		color: white;
-		background: black;
+		background: -getColor("dark-2");
 		border: none;
 	}
 	.previousPeriod {
 		color: white;
-		background: black;
+		background: -getColor("dark-2");
 		border: none;
 	}
 	.nextPeriod {
 		color: white;
-		background: black;
+		background: -getColor("dark-2");
 		border: none;
 	}
 	.nextYear {
 		color: white;
-		background: black;
+		background: -getColor("dark-2");
 		border: none;
 	}
 	.currentPeriod {
 		color: white;
-		background: black;
+		background: -getColor("dark-2");
 		border: none;
 	}
 	.cv-day {
