@@ -865,7 +865,7 @@
 		</div>
 		<div class="showcase-component">
 			<h4>Calendar:</h4>
-			<tu-calendar model="server" :items="items" :categories="Categories" @onClickDay="onClick" />
+			<tu-calendar model="local" :items="items" :categories="Categories" @onClickDay="onClick" />
 		</div>
 		<div class="showcase-component">
 			<h4>Tags:</h4>

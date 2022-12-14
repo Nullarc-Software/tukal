@@ -30,15 +30,15 @@ $border-color_1: #ccc;
 		}
 	}
 	.cv-header-day {
-		background-color: -getColor("gray-3") !important;
+		background-color: -getColor("gray-1") !important;
 	}
 	.cv-weeknumber {
-		background-color:  -getColor("light") !important;
+		background-color:  -getColor("gray-1") !important;
 		border-color: $border-color_1;
-		color: #808080;
+		color: #808080
 	}
 	.cv-day {
-		background-color: -getColor("dark-3") !important;
+		background-color: -getColor("gray-1") !important;
 		border-width: 1px 1px 0 0;
 		&:hover {
 			cursor: pointer;
@@ -47,14 +47,14 @@ $border-color_1: #ccc;
 	}
 	.cv-day.past {
 		&:hover {
-			background-color: -getColor("dark-2") !important;
+			background-color: -getColor("gray-2") !important;
 		}
 	}
 	.cv-day.outsideOfMonth {
 		cursor: pointer;
 	}
 	.cv-day.today {
-		background-color: rgb(233, 237, 246);
+		background-color: -getColor("gray-3") !important;
 	}
 	.cv-day[aria-selected="true"] {
 		background-color: #ffc;
