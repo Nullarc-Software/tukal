@@ -3,7 +3,7 @@
 		<header v-if="$slots.header" class="tu-table__header">
 			<slot name="header" />
 		</header>
-		<tu-popper v-if="columnSelector" arrow border-radius="20px" fitPopperContainer :placement="popperPlacement">
+		<tu-popper v-if="columnSelector" arrow border-radius="6px" fitPopperContainer :placement="popperPlacement">
 			<div class="column-chooser-table-bar" title="Column chooser">
 				<tu-icon style="transform: translateY(-7px);">more_horiz</tu-icon>
 			</div>
@@ -67,7 +67,7 @@
 							'animation-table':
 								(isDrag && th.index === dragIndex) ||
 								th.index === dropIndex
-						}">
+						}" :textWrap="th.textWrap">
 							<span :title="tr.rowData[th.field]" v-if="th.isComponent === false">
 								{{
 										th.valueFormatter
@@ -270,8 +270,9 @@ export default defineComponent({
 		},
 		popperPlacement: {
 			type: String,
-			default: () => "bottom" as PlacementType
+			default: () => "auto" as PlacementType
 		}
+
 	},
 	emits: [
 		"update:modelValue",
@@ -663,7 +664,7 @@ export default defineComponent({
 	&.striped {
 		::v-deep(.tu-table__tr) {
 			&:nth-child(even) {
-				background: -getColor("gray-1") !important;
+				background-color: -getColor("gray-1") !important;
 			}
 		}
 	}

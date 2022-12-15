@@ -2,7 +2,11 @@
 	<div ref="dropOptions">
 		<!-- @mouseout="toggleMenu($event)" -->
 		<!-- @mouseover="toggleMenu($event)" -->
-		<ul class="tu-component tu-dropdown--menu">
+		<ul class="tu-component tu-dropdown--menu" :style="{
+			'border-radius': borderRadius
+				? `${borderRadius} !important`
+				: null
+		}">
 			<slot />
 		</ul>
 	</div>
@@ -17,16 +21,17 @@ import {
 	onMounted,
 	reactive,
 	ref,
-	toRefs
+	toRefs,
+	inject
 } from "vue";
 
 export default defineComponent({
 	name: "TuPopupMenu",
 	components: {
-		
+
 	},
 	emits: ["remove", "shown"],
-	setup (props, context) {
+	setup(props, context) {
 		const data = reactive({
 			dropdownVisible: false,
 			leftAfter: 20,
@@ -38,6 +43,7 @@ export default defineComponent({
 
 		const dropOptions = ref<HTMLDivElement>();
 		const instance = getCurrentInstance();
+		const borderRadius = inject<string>("borderRadius");
 
 		onBeforeUnmount(() => {
 			context.emit("remove", instance);
@@ -50,7 +56,8 @@ export default defineComponent({
 		return {
 			...toRefs(data),
 			insertBody,
-			dropOptions
+			dropOptions,
+			borderRadius
 		};
 	}
 });
@@ -71,12 +78,14 @@ export default defineComponent({
 	z-index: 40000;
 	//transform: translate(-100%);
 	transition: opacity 0.25s, transform 0.25s, width 0.3s ease;
+
 	&.rightx {
 		::v-deep(.tu-dropdown--menu--after) {
 			left: 30px;
 			right: 0;
 		}
 	}
+
 	&::after {
 		content: "";
 		display: block;
@@ -87,10 +96,11 @@ export default defineComponent({
 		top: 100%;
 	}
 }
+
 .tu-dropdown--menu {
 	background: #fff;
 	padding-left: 0px !important;
-	border-radius: 5px;
+	border-radius: 6px;
 	box-shadow: 0px 5px 25px 0px rgba(0, 0, 0, 0.1);
 	border: 1px solid rgba(0, 0, 0, 0.1);
 	padding-top: 5px;
@@ -98,6 +108,7 @@ export default defineComponent({
 	position: relative;
 	margin: 0px;
 }
+
 .tu-dropdown-right--menu--after {
 	position: absolute;
 	left: 20px;
@@ -111,6 +122,7 @@ export default defineComponent({
 	z-index: 10;
 	box-sizing: border-box;
 }
+
 .tu-dropdown--menu--after {
 	position: absolute;
 	right: 10px;
@@ -138,6 +150,7 @@ export default defineComponent({
 			transform: rotate(45deg) translate(7px);
 		}
 	}
+
 	::v-deep(.tu-dropdown--menu--after) {
 		top: unset;
 		border-top: unset;

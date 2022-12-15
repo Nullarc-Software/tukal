@@ -1,40 +1,19 @@
 <template>
 	<transition @before-enter="beforeEnter" @enter="enter" @leave="leave">
-		<div
-			v-if="active"
-			ref="alert"
-			:class="[
-				`con-tu-alert-${color}`,
-				{
-					'con-icon': icon
-				}
-			]"
-			:style="styleAlert"
-			class="con-tu-alert"
-			v-bind="$attrs"
-		>
-			<div
-				v-if="closable"
-				class="con-x tu-alert--close"
-				@click="$emit('update:active', false)"
-			>
+		<div v-if="active" ref="alert" :class="[
+			`con-tu-alert-${color}`,
+			{
+				'con-icon': icon
+			}
+		]" :style="styleAlert" class="con-tu-alert" v-bind="$attrs">
+			<div v-if="closable" class="con-x tu-alert--close" @click="$emit('update:active', false)">
 				<tu-icon :icon-pack="iconPack" :icon="closeIcon"></tu-icon>
 			</div>
 
-			<h4
-				v-if="title"
-				:style="styleTitle"
-				class="titlex tu-alert--title"
-				v-text="title"
-			></h4>
+			<h4 v-if="title" :style="styleTitle" class="titlex tu-alert--title" v-text="title"></h4>
 
 			<div :class="{ 'con-icon': icon }" class="tu-alert">
-				<tu-icon
-					v-if="icon"
-					:icon-pack="iconPack"
-					:icon="icon"
-					class="icon-alert"
-				></tu-icon>
+				<tu-icon v-if="icon" :icon-pack="iconPack" :icon="icon" class="icon-alert"></tu-icon>
 				<slot />
 			</div>
 		</div>
@@ -83,7 +62,7 @@ export default defineComponent({
 			default: "material-icons"
 		}
 	},
-	setup (props, context) {
+	setup(props, context) {
 		const alert = ref<HTMLDivElement>();
 
 		const styleAlert = computed(() => {
@@ -158,6 +137,7 @@ export default defineComponent({
 	transition: all 0.25s ease;
 	overflow: hidden;
 }
+
 .icon-alert {
 	height: 100%;
 	position: absolute;
@@ -167,16 +147,19 @@ export default defineComponent({
 	display: flex;
 	align-items: center;
 }
+
 .tu-alert {
 	padding: 10px;
 	overflow: hidden;
 	position: relative;
 }
+
 .tu-alert--title {
 	font-size: 0.9rem;
 	font-weight: bold;
 	padding: 8px 10px;
 }
+
 .tu-alert--close {
 	position: relative;
 	margin-top: 4px;
@@ -186,16 +169,19 @@ export default defineComponent({
 	padding-bottom: 1px;
 	cursor: pointer;
 	transition: all 0.2s ease;
+
 	&:hover {
 		box-shadow: 0px 5px 15px 0px rgba(0, 0, 0, 0.1);
 	}
 }
 
-@each $color, $index in --tu-colors {
+@each $color,
+$index in --tu-colors {
 	.con-tu-alert-#{$color} {
 		background: -getColor($color, 0.15);
 		box-shadow: 0px 0px 25px 0px -getColor($color, 0.15);
 		color: -getColor($color, 1);
+
 		h4 {
 			box-shadow: 0px 6px 15px -7px -getColor($color, 0.4);
 		}

@@ -1,12 +1,9 @@
 <template>
-	<td
-		class="tu-table__td"
-		:class="{
-			isCheck: checkbox,
-			isEdit: edit
-		}"
-		@click="clickHandler"
-	>
+	<td class="tu-table__td" :class="{
+		isCheck: checkbox,
+		isEdit: edit,
+		textWrap: textWrap
+	}" @click="clickHandler">
 		<slot />
 	</td>
 </template>
@@ -27,12 +24,16 @@ export default defineComponent({
 			type: Boolean,
 			default: false
 		},
+		textWrap: {
+			type: Boolean,
+			default: false
+		},
 		expand: {
 			type: Boolean,
 			default: false
 		}
 	},
-	setup (props, context) {
+	setup(props, context) {
 		const clickHandler = function (event: MouseEvent) {
 			if (props.checkbox || props.edit) (event as any).isInput = true;
 			else if (props.expand) (event as any).isExpand = true;
@@ -52,13 +53,9 @@ export default defineComponent({
 	transition: all 0.25s ease;
 	font-size: 0.8rem;
 	border: 0px;
-	&:last-child {
-		border-radius: 0px 15px 15px 0px;
-	}
+	overflow-wrap: break-word;
 
-	&:first-child {
-		border-radius: 15px 0px 0px 15px;
-	}
+
 
 	&.isCheckbox {
 		width: 23px;
@@ -67,6 +64,11 @@ export default defineComponent({
 	&.isEdit {
 		text-decoration: underline;
 		cursor: pointer;
+	}
+
+	&.textWrap {
+		overflow-wrap: break-word;
+		word-wrap: break-word;
 	}
 }
 </style>

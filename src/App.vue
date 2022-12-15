@@ -622,7 +622,7 @@
 			<h4>Dropdown:</h4>
 			<hr />
 			aaa
-			<tu-popper arrow border-radius="20px">
+			<tu-popper arrow>
 				<button>click me</button>
 				<template #content>
 					<tu-popup-menu>
@@ -1365,7 +1365,9 @@ export default defineComponent({
 });
 </script>
 
-<style>
+<style lang="scss">
+@import "./style/sass/_mixins";
+
 .showcase-component {
 	margin-bottom: 15px;
 	margin-left: 30px;
@@ -1377,6 +1379,6 @@ export default defineComponent({
 }
 
 body {
-	background-color: white;
+	background-color: var(--tu-text);
 }
 </style>
