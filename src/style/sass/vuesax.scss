@@ -2,6 +2,7 @@
 @import "_vars";
 @import "_dark";
 @import "_reset";
+@import "_mixins.scss";
 
 
 .unselectable {
@@ -13,6 +14,6 @@
 	user-select: none;
 }
 
-// body.dark {
-// 	background-color: -var("background") !important;
-// }
+body.dark {
+	background-color: -var("background") !important;
+}

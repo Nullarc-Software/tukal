@@ -1,11 +1,11 @@
-@import "../../../style/sass/mixins";
+@import "../../../style/sass/_mixins";
 $border-color_1: #ccc;
 $border-color_2: -getColor("dark-3");
 
 .dark {
 	.cv-header {
 		color: white;
-		background-color: -getColor("dark-3") !important;
+		background-color: -getColor("dark-2") !important;
 		.periodLabel {
 			color: -getColor("text") !important;
 		}

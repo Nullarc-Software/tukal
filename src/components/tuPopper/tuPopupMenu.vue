@@ -57,7 +57,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import "../../style/sass/_mixins.sass";
+@import "../../style/sass/_mixins";
 
 .dropdownx-enter-from,
 .dropdownx-leave-to {

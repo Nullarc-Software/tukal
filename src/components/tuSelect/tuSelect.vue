@@ -770,6 +770,15 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import "../../style/sass/_mixins";
 
+.dark {
+	.tu-select__options {
+		background: -getColor("dark-3");
+	}
+	.tu-select__input {
+		background: -getColor("dark-2");
+	}
+}
+
 @mixin state($color) {
 	.tu-select__input {
 		// border: 2px solid -getColor($color,.5)
@@ -1045,7 +1054,7 @@ export default defineComponent({
 		}
 
 		&:hover {
-			background: -getColor("background");
+			background: -getColor("gray-3");
 			//box-shadow: 0px 5px 25px -4px rgba(0, 0, 0, -var(shadow-opacity));
 			//transform: translate(0, -4px);
 
@@ -1087,7 +1096,7 @@ export default defineComponent({
 		}
 
 		&:hover {
-			background: -getColor("background");
+			background: -getColor("gray-3");
 			//box-shadow: 0px 5px 25px -4px rgba(0, 0, 0, -var(shadow-opacity));
 			//transform: translate(0, -8px);
 			&.chips-hovered-multiple {

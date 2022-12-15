@@ -305,6 +305,12 @@ export default defineComponent({
 	}
 }
 
+.dark {
+	.tu-dialog {
+		background: -getColor("gray-1");
+	}
+}
+
 .tu-dialog {
 	background: -getColor("background");
 	color: -getColor("text");

@@ -91,7 +91,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "../../style/sass/_mixins.sass";
+@import "../../style/sass/_mixins";
 .tu-collapse-item {
 	border-bottom: 1px solid rgba(0,0,0,0.04);
 	cursor: pointer;

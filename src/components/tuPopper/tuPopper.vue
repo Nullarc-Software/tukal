@@ -191,10 +191,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import "../../style/sass/_mixins.sass";
+@import "../../style/sass/_mixins";
 :root {
-	--popper-theme-background-color: -getColor("gray-1");
-	--popper-theme-background-color-hover: -getColor("gray-2");
 	--popper-theme-text-color: inherit;
 	--popper-theme-border: 1px solid -getColor("gray-1");
 	--popper-theme-border-radius: 6px;
@@ -208,6 +206,10 @@ export default defineComponent({
 	cursor: pointer;
 }
 
+.dark .popper {
+	background: rgba(10,11,14) !important;
+}
+
 .popper-contatiner {
 	display: flex;
 	align-self: center;
@@ -218,7 +220,7 @@ export default defineComponent({
 	position: absolute;
 	width: 8px;
 	height: 8px;
-	background: var(--popper-theme-background-color);
+	background: -getColor("gray-1");
 }
 
 #arrow {
@@ -248,7 +250,7 @@ export default defineComponent({
 }
 
 .popper {
-	background: var(--popper-theme-background-color);
+	background: -getColor("gray-1");
 
 	color: var(--popper-theme-text-color);
 	border-radius: var(--popper-theme-border-radius);
@@ -259,7 +261,7 @@ export default defineComponent({
 
 .popper:hover,
 .popper:hover>#arrow::before {
-	background: var(--popper-theme-background-color-hover);
+	background: -getColor("gray-1");
 }
 
 .inline-block {
