@@ -53,7 +53,7 @@ export default defineComponent({
 }
 
 .tu-tag__key {
-	color: -getColor("tag-text-color", 0.9);
+	color: rgba(-getColor("tag-text-color"), 0.9);
 }
 
 .tu-tag__value {

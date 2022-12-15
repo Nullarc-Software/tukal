@@ -94,7 +94,7 @@ export default defineComponent({
 		::v-deep(.tu-radio__effect) {
 			&:after {
 				border: 7px solid -getColor("color", 1);
-				box-shadow: 0px 3px 12px 0px -getColor("color", 0.3);
+				box-shadow: 0px 3px 12px 0px rgba(-getColor("color"), 0.3);
 			}
 		}
 	}
@@ -109,7 +109,7 @@ export default defineComponent({
 						}
 
 						&::after {
-							border: 2px solid -getColor("text", 0.2);
+							border: 2px solid rgba(-getColor("text"), 0.2);
 						}
 					}
 				}
@@ -139,14 +139,14 @@ export default defineComponent({
 						width: 100%;
 						height: 100%;
 						border-radius: inherit;
-						border: 2px solid -getColor("text", 0.4);
-						border-top: 2px solid -getColor("text", 0);
-						border-left: 2px solid -getColor("text", 0);
-						border-bottom: 2px solid -getColor("text", 0);
+						border: 2px solid rgba(-getColor("text"), 0.4);
+						border-top: 2px solid rgba(-getColor("text"), 0);
+						border-left: 2px solid rgba(-getColor("text"), 0);
+						border-bottom: 2px solid rgba(-getColor("text"), 0);
 						box-sizing: border-box;
 						transition: all 0.25s ease;
 						display: block;
-						box-shadow: 0px 0px 0px 0px -getColor("color", 0.4);
+						box-shadow: 0px 0px 0px 0px rgba(-getColor("color"), 0.4);
 						animation: loadingRadio 0.6s ease infinite;
 					}
 
@@ -156,14 +156,14 @@ export default defineComponent({
 						width: 100%;
 						height: 100%;
 						border-radius: inherit;
-						border: 2px dashed -getColor("text", 0.4);
-						border-top: 2px solid -getColor("text", 0);
-						border-left: 2px solid -getColor("text", 0);
-						border-bottom: 2px solid -getColor("text", 0);
+						border: 2px dashed rgba(-getColor("text"), 0.4);
+						border-top: 2px solid rgba(-getColor("text"), 0);
+						border-left: 2px solid rgba(-getColor("text"), 0);
+						border-bottom: 2px solid rgba(-getColor("text"), 0);
 						box-sizing: border-box;
 						transition: all 0.25s ease;
 						display: block;
-						box-shadow: 0px 0px 0px 0px -getColor("color", 0.4);
+						box-shadow: 0px 0px 0px 0px rgba(-getColor("color"), 0.4);
 						animation: loadingRadio 0.6s linear infinite;
 					}
 				}
@@ -234,11 +234,11 @@ export default defineComponent({
 			width: 100%;
 			height: 100%;
 			border-radius: inherit;
-			border: 2px solid -getColor("text", 0.4);
+			border: 2px solid rgba(-getColor("text"), 0.4);
 			box-sizing: border-box;
 			transition: all 0.25s ease;
 			display: block;
-			box-shadow: 0px 0px 0px 0px -getColor("color", 0.4);
+			box-shadow: 0px 0px 0px 0px rgba(-getColor("color"), 0.4);
 		}
 	}
 

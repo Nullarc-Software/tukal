@@ -622,7 +622,7 @@
 			<h4>Dropdown:</h4>
 			<hr />
 			aaa
-			<tu-popper arrow border-radius="20px">
+			<tu-popper arrow>
 				<tu-button>click me</tu-button>
 				<template #content>
 					<tu-popup-menu>

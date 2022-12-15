@@ -777,22 +777,25 @@ export default defineComponent({
 	.tu-select__input {
 		background: -getColor("dark-2");
 	}
+	.tu-select__chips__chip {
+		background: -getColor("dark-4");
+	}
 }
 
 @mixin state($color) {
 	.tu-select__input {
 		// border: 2px solid -getColor($color,.5)
-		background: -getColor($color, 0.05);
+		background: rgba(-getColor($color), 0.05);
 		color: -getColor($color, 1);
 
 		&:hover {
-			// border: 2px solid -getColor($color, 0)
+			// border: 2px solid rgba(-getColor($color), 0)
 			color: -getColor("text", 1);
 		}
 	}
 
 	.tu-select__chips {
-		background: -getColor($color, 0.05);
+		background: rgba(-getColor($color), 0.05);
 		color: -getColor($color, 1);
 		&:hover {
 			&:after {
@@ -807,7 +810,7 @@ export default defineComponent({
 			position: absolute;
 			top: 0px;
 			left: 0px;
-			border: 2px solid -getColor($color, 0.5);
+			border: 2px solid rgba(-getColor($color), 0.5);
 			border-radius: inherit;
 			transition: all 0.25s ease;
 		}
@@ -819,8 +822,8 @@ export default defineComponent({
 
 	.tu-select__icon {
 		color: -getColor($color, 1);
-		background: -getColor($color, 0.1);
-		box-shadow: (-15px) 10px 10px -10px -getColor($color, 0.1);
+		background: rgba(-getColor($color), 0.1);
+		box-shadow: (-15px) 10px 10px -10px rgba(-getColor($color), 0.1);
 	}
 
 	.tu-icon-arrow {
@@ -978,7 +981,7 @@ export default defineComponent({
 
 		.tu-select__input {
 			border-radius: 12px 12px 0px 0px;
-			border: 1px solid -getColor("text", 0.09);
+			border: 1px solid rgba(-getColor("text"), 0.09);
 			background: -getColor("background");
 			//box-shadow: 0px 5px 25px -4px rgba(0, 0, 0, -var(shadow-opacity));
 			//transform: translate(0, -4px);
@@ -1016,7 +1019,7 @@ export default defineComponent({
 		opacity: 1;
 		background: transparent;
 		padding: 7px 13px;
-		border: 1px solid -getColor("text", 0.09);
+		border: 1px solid rgba(-getColor("text"), 0.09);
 		border-radius: 12px;
 		cursor: pointer;
 		transition: all 0.25s ease, height 0s;
@@ -1122,7 +1125,7 @@ export default defineComponent({
 			min-width: 30px;
 
 			&::placeholder {
-				color: -getColor("text", 0.4);
+				color: rgba(-getColor("text"), 0.4);
 			}
 		}
 
@@ -1266,7 +1269,7 @@ export default defineComponent({
 		justify-content: flex-start;
 		opacity: 0.4;
 		z-index: 500;
-		color: -getColor("text", 0.8) !important;
+		color: rgba(-getColor("text"), 0.8) !important;
 
 		// top: 10px
 		&--hidden {
@@ -1367,26 +1370,6 @@ export default defineComponent({
 
 		&--primary {
 			color: -getColor("primary", 1);
-		}
-	}
-}
-
-.tu-darken {
-	.tu-select__options {
-		&.isColorDark {
-			--tu-color: 0, 0, 0 !important;
-
-			.tu-select__option {
-				&:hover {
-					background: -getColor("color", 0.2);
-					color: -getColor("text");
-				}
-			}
-
-			.activeOption {
-				color: -getColor("text");
-				background: -getColor("color", 0.6);
-			}
 		}
 	}
 }

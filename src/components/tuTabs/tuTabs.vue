@@ -644,7 +644,7 @@ export default defineComponent({
 
 		.tu-tabs-progress__icon {
 			&:hover {
-				background: -getColor("text", 0.1);
+				background: rgba(-getColor("text"), 0.1);
 				border-radius: 20px;
 			}
 		}
@@ -670,8 +670,8 @@ $index in --tu-colors {
 			.line-tu-tabs {
 				background: linear-gradient(30deg,
 						-getColor($tu-color, 1) 0%,
-						-getColor($tu-color, 0.5) 100%) !important;
-				box-shadow: 0px 0px 8px 0px -getColor($tu-color, 0.4) !important;
+						rgba(-getColor($tu-color), 0.5) 100%) !important;
+				box-shadow: 0px 0px 8px 0px rgba(-getColor($tu-color), 0.4) !important;
 			}
 		}
 	}

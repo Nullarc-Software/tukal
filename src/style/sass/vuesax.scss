@@ -1,9 +1,9 @@
+@use "sass:color";
 @import "_colors";
 @import "_vars";
 @import "_dark";
 @import "_reset";
 @import "_mixins.scss";
-
 
 .unselectable {
 	-webkit-touch-callout: none;
@@ -15,5 +15,5 @@
 }
 
 body.dark {
-	background-color: -var("background") !important;
+	background-color: -getColor("background") !important;
 }

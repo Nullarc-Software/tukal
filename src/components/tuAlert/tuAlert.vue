@@ -193,11 +193,11 @@ export default defineComponent({
 
 @each $color, $index in --tu-colors {
 	.con-tu-alert-#{$color} {
-		background: -getColor($color, 0.15);
-		box-shadow: 0px 0px 25px 0px -getColor($color, 0.15);
+		background: rgba(-getColor($color),0.15);
+		box-shadow: 0px 0px 25px 0px rgba(-getColor($color), 0.15);
 		color: -getColor($color, 1);
 		h4 {
-			box-shadow: 0px 6px 15px -7px -getColor($color, 0.4);
+			box-shadow: 0px 6px 15px -7px rgba(-getColor($color), 0.4);
 		}
 
 		.con-x {

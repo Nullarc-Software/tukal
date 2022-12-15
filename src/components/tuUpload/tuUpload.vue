@@ -426,7 +426,7 @@ export default defineComponent({
 	flex-direction: column;
 	margin: 15px;
 	&:hover {
-		border: 1px dashed -getColor(primary, 0.5);
+		border: 1px dashed rgba(-getColor(primary), 0.5);
 	}
 	&.disabled-upload {
 		opacity: 0;
@@ -536,10 +536,10 @@ export default defineComponent({
 		position: relative;
 		cursor: pointer;
 		&.fileError {
-			border: 1px solid -getColor("danger", 0.2);
-			box-shadow: 0px 5px 20px 0px -getColor("danger", 0.2);
+			border: 1px solid rgba(-getColor("danger"), 0.2);
+			box-shadow: 0px 5px 20px 0px rgba(-getColor("danger"), 0.2);
 			.btn-upload-file {
-				background: -getColor("danger", 0.3) !important;
+				background: rgba(-getColor("danger"), 0.3) !important;
 				i {
 					background: -getColor("danger") !important;
 				}
@@ -617,7 +617,7 @@ export default defineComponent({
 					}
 				}
 				& ~ .on-progress {
-					background: -getColor(danger, 0.2);
+					background: rgba(-getColor(danger), 0.2);
 					i {
 						opacity: 0;
 					}
@@ -709,7 +709,7 @@ export default defineComponent({
 			&.on-progress {
 				width: 100%;
 				height: 20px;
-				background: -getColor(success, 0.3);
+				background: rgba(-getColor(success), 0.3);
 				border-top: 1px solid -getColor(success, 1);
 				bottom: 0px;
 				transform: translate(0);
@@ -745,7 +745,7 @@ export default defineComponent({
 			}
 			&.ready-progress {
 				border-top: 0px solid -getColor(success, 1);
-				background: -getColor(success, 0.5);
+				background: rgba(-getColor(success), 0.5);
 				span {
 					z-index: 10;
 					transform: translate(0, -50%) scale(0.5);

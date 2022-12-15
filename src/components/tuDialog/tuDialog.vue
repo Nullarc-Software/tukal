@@ -335,7 +335,7 @@ export default defineComponent({
 		left: 0px;
 		height: 100%;
 		border-radius: inherit;
-		background: -getColor("background", 0.8);
+		background: rgba(-getColor("background"), 0.8);
 		z-index: 100;
 		display: flex;
 		align-items: center;
@@ -348,9 +348,9 @@ export default defineComponent({
 			height: 30px;
 			border-radius: inherit;
 			border: 2px solid -getColor("color", 1);
-			border-top: 2px solid -getColor("color", 0);
-			border-left: 2px solid -getColor("color", 0);
-			border-bottom: 2px solid -getColor("color", 0);
+			border-top: 2px solid rgba(-getColor("color"), 0);
+			border-left: 2px solid rgba(-getColor("color"), 0);
+			border-bottom: 2px solid rgba(-getColor("color"), 0);
 			box-sizing: border-box;
 			transition: all 0.25s ease;
 			display: block;
@@ -365,9 +365,9 @@ export default defineComponent({
 			height: 30px;
 			border-radius: inherit;
 			border: 2px dashed -getColor("color", 1);
-			border-top: 2px solid -getColor("color", 0);
-			border-left: 2px solid -getColor("color", 0);
-			border-bottom: 2px solid -getColor("color", 0);
+			border-top: 2px solid rgba(-getColor("color"), 0);
+			border-left: 2px solid rgba(-getColor("color"), 0);
+			border-bottom: 2px solid rgba(-getColor("color"), 0);
 			box-sizing: border-box;
 			transition: all 0.25s ease;
 			display: block;

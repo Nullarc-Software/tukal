@@ -228,7 +228,7 @@ export default defineComponent({
 	}
 
 	&.activeOption {
-		background: -getColor("color", 0.05);
+		background: rgba(-getColor("color"), 0.05);
 		color: -getColor("color", 1);
 	}
 

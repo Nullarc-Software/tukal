@@ -240,7 +240,7 @@ export default defineComponent({
 			right: 0;
 			top: 0;
 			bottom: 0;
-			background-color: -getColor("text", 0.05);
+			background-color: rgba(-getColor("text"), 0.05);
 
 			&.active {
 				background-color: -getColor("primary");

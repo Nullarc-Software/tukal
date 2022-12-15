@@ -414,7 +414,7 @@ export default defineComponent({
 
 			~ .tu-switch__circle {
 				left: calc(100% - 24px);
-				box-shadow: (-5px) 0px 25px 0px -getColor("background", 0.6);
+				box-shadow: (-5px) 0px 25px 0px rgba(-getColor("background"), 0.6);
 				color: -getColor("color");
 			}
 		}

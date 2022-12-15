@@ -213,7 +213,7 @@ export default defineComponent({
 	border: 0px solid rgba(0, 0, 0, 0);
 	display: block;
 	padding: 9px;
-	color: -getColor("text", 0.8);
+	color: rgba(-getColor("text"), 0.8);
 	font-size: 0.8rem;
 	width: 100%;
 	max-width: 100%;
@@ -229,11 +229,11 @@ export default defineComponent({
 }
 
 .textarea-danger {
-	border: 1px solid -getColor("danger", 0.4);
-	box-shadow: 0px 4px 20px 0px -getColor("danger", 0.1);
+	border: 1px solid rgba(-getColor("danger"), 0.4);
+	box-shadow: 0px 4px 20px 0px rgba(-getColor("danger"), 0.1);
 
 	.tu-textarea {
-		color: -getColor("danger", 0.8);
+		color: rgba(-getColor("danger"), 0.8);
 	}
 
 	.count {
@@ -263,6 +263,6 @@ export default defineComponent({
 }
 
 .tu-textarea-label {
-	border-bottom: 1px solid -getColor("color", 0.2);
+	border-bottom: 1px solid rgba(-getColor("color"), 0.2);
 }
 </style>

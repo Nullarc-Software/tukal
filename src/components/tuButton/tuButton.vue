@@ -327,7 +327,7 @@ export default defineComponent({
 			position: absolute;
 			width: 100%;
 			height: 100%;
-			background: -getColor("color", 0.4);
+			background: rgba(-getColor("color"), 0.4);
 			top: 0px;
 			left: 0px;
 			z-index: 1200;
@@ -350,7 +350,7 @@ export default defineComponent({
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		background: -getColor("color", 0.8);
+		background: rgba(-getColor("color"), 0.8);
 		border-radius: inherit;
 
 		&:after {
@@ -461,7 +461,7 @@ export default defineComponent({
 }
 
 .tu-button--flat {
-	background: -getColor("color", 0.15);
+	background: rgba(-getColor("color"), 0.15);
 	color: -getColor("color", 1);
 
 	&.tu-button--dark {
@@ -469,7 +469,7 @@ export default defineComponent({
 	}
 
 	&:hover {
-		background: -getColor("color", 0.25);
+		background: rgba(-getColor("color"), 0.25);
 	}
 
 	&:focus {
@@ -507,7 +507,7 @@ export default defineComponent({
 }
 
 .tu-button--border {
-	background: -getColor("color", 0);
+	background: rgba(-getColor("color"), 0);
 	color: -getColor("color", 1);
 
 	&:before {
@@ -527,7 +527,7 @@ export default defineComponent({
 
 	&:hover {
 		&:before {
-			border: 2px solid -getColor("color", 0.5);
+			border: 2px solid rgba(-getColor("color"), 0.5);
 		}
 	}
 
@@ -559,7 +559,7 @@ export default defineComponent({
 		background: linear-gradient(
 			30deg,
 			-getColor("color", 1) 0%,
-			-getColor("color-secondary", 0.6) 100%
+			rgba(-getColor("color-secondary"), 0.6) 100%
 		);
 		position: absolute;
 		top: 0px;
@@ -576,7 +576,7 @@ export default defineComponent({
 
 	&:hover {
 		transform: translate(0, -3px);
-		box-shadow: 0px 10px 20px -10px -getColor("color", 0.7);
+		box-shadow: 0px 10px 20px -10px rgba(-getColor("color"), 0.7);
 
 		&::before {
 			opacity: 0;
@@ -655,7 +655,7 @@ export default defineComponent({
 
 	&::before {
 		content: "";
-		background: -getColor("color", 0.1);
+		background: rgba(-getColor("color"), 0.1);
 
 		// background: -getColor('color', -var('background-opacity'))
 		position: absolute;
@@ -687,7 +687,7 @@ export default defineComponent({
 
 	&.tu-button--active {
 		&::before {
-			background: -getColor("color", 0.2);
+			background: rgba(-getColor("color"), 0.2);
 			opacity: 1;
 			transform: scale(1);
 		}

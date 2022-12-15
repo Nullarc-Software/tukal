@@ -1,13 +1,13 @@
 
 :root{
   @extend :root;
-  --tu-primary: 25, 91, 255;
-  --tu-warn: 255, 186, 0;
-  --tu-danger: 255,71,87;
-  --tu-success: 70,201,58;
-  --tu-dark: 30,31,34;
-  --tu-light: 244,247,248;
-  --tu-color: 37,18,20;
+  --tu-primary: #195BFF;
+  --tu-warn: #FFBA00;
+  --tu-danger: #FF4757;
+  --tu-success: #46C93A;
+  --tu-dark: #1E1F22;
+  --tu-light: #F4F7F8;
+  --tu-color: #251214;
 
   // social colors
 
@@ -36,18 +36,30 @@
 
   // theme
 
-  --tu-background: 255, 255, 255;
-  --tu-text: 44, 62, 80;
-  --tu-gray-1: 249, 252, 253;
-  --tu-gray-2: 244, 247, 248;
-  --tu-gray-3: 240, 243, 244;
-  --tu-gray-4: 230, 233, 234;
-  --tu-dark-1: 51, 52, 55;
-  --tu-dark-2: 30,31,34;
-  --tu-dark-3: 15, 16, 19;
-  --tu-dark-4: 10, 11, 14;
+  --tu-background: #ffff;
+  --tu-text: #2C3E50;
+  --tu-gray-1: #F9FCFD;
+  --tu-gray-2: #F4F7F8;
+  --tu-gray-3: #F0F3F4;
+  --tu-gray-4: #E6E9EA;
+  --tu-dark-1: #333437;
+  --tu-dark-2: #1E1F22;
+  --tu-dark-3: #0F1013;
+  --tu-dark-4: #0A0B0E;
+  --tu-text-100: #FFFFFF;
+  --tu-text-90: 255,255,255,0.9;
+  --tu-text-80:255,255,255,0.8;
+  --tu-text-70:255,255,255,0.7;
+  --tu-text-60:255,255,255,0.6;
 
-  
+  --popper-theme-background-color: #ffffff;
+	--popper-theme-background-color-hover: #ffffff;
+	--popper-theme-text-color: inherit;
+	--popper-theme-border: 1px solid #efefef;
+	--popper-theme-border-radius: 6px;
+	--popper-theme-padding: 16px;
+	--popper-theme-shadow: 0 6px 30px -6px rgba(0, 0, 0, 0.25);
+
   --tu-colors {
     primary: --tu-primary;
     secondary: --tu-secondary;

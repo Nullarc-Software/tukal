@@ -221,7 +221,7 @@ export default defineComponent({
 
 @mixin state($color) {
 	.tu-input {
-		background: -getColor($color, 0.1) !important;
+		background: rgba(-getColor($color), 0.1) !important;
 		color: -getColor($color, 1);
 	}
 
@@ -231,8 +231,8 @@ export default defineComponent({
 
 	.tu-input__icon {
 		color: -getColor($color, 1);
-		background: -getColor($color, 0.1);
-		box-shadow: (-15px) 10px 10px -10px -getColor($color, 0.1);
+		background: rgba(-getColor($color), 0.1);
+		box-shadow: (-15px) 10px 10px -10px rgba(-getColor($color), 0.1);
 	}
 }
 
@@ -312,7 +312,7 @@ export default defineComponent({
 	justify-content: flex-start;
 	position: relative;
 	border-radius: 12px;
-	border: 1px solid -getColor("text", 0.09);
+	border: 1px solid rgba(-getColor("text"), 0.09);
 
 	+.tu-input__message {
 		padding-top: 2px;

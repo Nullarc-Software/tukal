@@ -441,7 +441,7 @@ export default defineComponent({
 			&__active {
 				width: 12px;
 				height: 12px;
-				box-shadow: 0px 2px 10px 0px -getColor("color", 0.4);
+				box-shadow: 0px 2px 10px 0px rgba(-getColor("color"), 0.4);
 				transform: scale(1);
 
 				&.move {
@@ -530,7 +530,7 @@ export default defineComponent({
 
 	&__active {
 		&.flat {
-			background: -getColor("color", 0.15) !important;
+			background: rgba(-getColor("color"), 0.15) !important;
 			color: -getColor("color", 1) !important;
 		}
 
@@ -660,9 +660,9 @@ export default defineComponent({
 				height: 100%;
 				border-radius: 50%;
 				border: 2px solid -getColor("color", 1);
-				border-top: 2px solid -getColor("background", 0);
-				border-left: 2px solid -getColor("background", 0);
-				border-bottom: 2px solid -getColor("background", 0);
+				border-top: 2px solid rgba(-getColor("background"), 0);
+				border-left: 2px solid rgba(-getColor("background"), 0);
+				border-bottom: 2px solid rgba(-getColor("background"), 0);
 				box-sizing: border-box;
 				transition: all 0.25s ease;
 				display: block;
@@ -677,9 +677,9 @@ export default defineComponent({
 				height: 100%;
 				border-radius: 50%;
 				border: 2px dashed -getColor("color", 1);
-				border-top: 2px solid -getColor("background", 0);
-				border-left: 2px solid -getColor("background", 0);
-				border-bottom: 2px solid -getColor("background", 0);
+				border-top: 2px solid rgba(-getColor("background"), 0);
+				border-left: 2px solid rgba(-getColor("background"), 0);
+				border-bottom: 2px solid rgba(-getColor("background"), 0);
 				box-sizing: border-box;
 				transition: all 0.25s ease;
 				display: block;

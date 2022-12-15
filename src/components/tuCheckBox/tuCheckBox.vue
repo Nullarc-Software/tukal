@@ -306,7 +306,7 @@ export default defineComponent({
 			background: -getColor("gray-3", 1);
 
 			&:before {
-				border: 2px solid -getColor("gray-4", 0);
+				border: 2px solid rgba(-getColor("gray-4"), 0);
 			}
 
 			// border: 2px solid -getColor('gray-3', 1)
@@ -316,13 +316,13 @@ export default defineComponent({
 	&:checked {
 		&:hover {
 			~ .tu-checkbox-mask {
-				box-shadow: 0px 3px 15px 0px -getColor("color", 0.35);
+				box-shadow: 0px 3px 15px 0px rgba(-getColor("color"), 0.35);
 			}
 		}
 
 		~ .tu-checkbox-mask {
 			// border: 2px solid -getColor('color', 1) !important
-			box-shadow: 0px 0px 0px 0px -getColor("color", 0.35);
+			box-shadow: 0px 0px 0px 0px rgba(-getColor("color"), 0.35);
 
 			::v-deep(i:not(.tu-icon-check)) {
 				opacity: 1;
@@ -378,7 +378,7 @@ export default defineComponent({
 		position: absolute;
 		width: 0px;
 		height: 2px;
-		background: -getColor("text", 0.6);
+		background: rgba(-getColor("text"), 0.6);
 		content: "";
 		transition: all 0.25s ease;
 	}

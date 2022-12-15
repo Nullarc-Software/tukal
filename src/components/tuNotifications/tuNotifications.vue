@@ -577,7 +577,7 @@ export default defineComponent({
 
 		&:hover {
 			&::after {
-				background: -getColor("color", 0.15);
+				background: rgba(-getColor("color"), 0.15);
 			}
 		}
 
@@ -600,7 +600,7 @@ export default defineComponent({
 
 		&:after {
 			content: "";
-			background: -getColor("color", 0.1);
+			background: rgba(-getColor("color"), 0.1);
 			width: 100%;
 			height: 100%;
 			border-radius: inherit;

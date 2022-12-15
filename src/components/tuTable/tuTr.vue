@@ -177,18 +177,18 @@ export default defineComponent({
 .tu-table__tr {
 	padding: 5px;
 	border: 0px;
-	border-bottom: 1px solid -getColor("text", 0.2);
+	border-bottom: 1px solid rgba(-getColor("text"), 0.2);
 	&.expand {
 		cursor: pointer;
 	}
 
 	&.tu-change-color {
 		::v-deep(.tu-table__td) {
-			background: -getColor("color", 0.1) !important;
+			background: rgba(-getColor("color"), 0.1) !important;
 			color: -getColor("color", 1) !important;
 
 			&:hover {
-				background: -getColor("color", 0.2) !important;
+				background: rgba(-getColor("color"), 0.2) !important;
 			}
 		}
 	}
@@ -234,20 +234,20 @@ export default defineComponent({
 
 	&.selected {
 		::v-deep(.tu-table__td) {
-			background: -getColor("color", 0.1) !important;
+			background: rgba(-getColor("color"), 0.1) !important;
 			color: -getColor("color", 1) !important;
 		}
 	}
 
 	::v-deep(.tu-table__td) {
-		background: -getColor("bg", 0.1);
+		background: rgba(-getColor("bg"), 0.1);
 		color: -getColor("bg", 1);
 	}
 
 	&.tu-change-color {
 		&:hover {
 			::v-deep(.tu-table__td) {
-				background: -getColor("color", 0.2) !important;
+				background: rgba(-getColor("color"), 0.2) !important;
 			}
 		}
 	}

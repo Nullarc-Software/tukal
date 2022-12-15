@@ -138,7 +138,7 @@ export default defineComponent({
 			position: absolute;
 			left: 0px;
 			top: 0px;
-			background: -getColor("color", 0.3);
+			background: rgba(-getColor("color"), 0.3);
 			width: 4px;
 			height: 100%;
 			opacity: 0;

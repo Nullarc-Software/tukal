@@ -129,7 +129,7 @@ export default defineComponent({
 
 @each $color, $index in --tu-colors {
 	.tu-progress-#{$color} {
-		background: -getColor($color, 0.1);
+		background: rgba(-getColor($color), 0.1);
 		::v-deep(.tu-progress--foreground, .tu-progress--indeterminate) {
 			background: -getColor($color, 1);
 		}

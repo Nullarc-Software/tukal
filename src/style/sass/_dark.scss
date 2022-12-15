@@ -2,15 +2,19 @@
 :root {
 	@extend :root;
 	body.dark {
-		--tu-background: #151619 !important;
-		--tu-text: 255, 255, 255 !important;
-		--tu-dark: 30, 30, 30 !important;
-		--tu-gray-1: 51, 52, 55 !important;
-		--tu-gray-2: 30,31,34 !important;
-		--tu-gray-3: 15, 16, 19 !important;
-		--tu-gray-4: 10, 11, 14 !important;
+		--tu-background: #151916 !important;
+		--tu-text: #FFFFFF !important;
+		--tu-dark: #1E1E1E !important;
+		--tu-gray-1: #333437 !important;
+		--tu-gray-2: #1E1F22 !important;
+		--tu-gray-3: #0F1013 !important;
+		--tu-gray-4: #0A0B0E !important;
 		--tu-shadow-opacity: 0.3 !important;
-    	--tu-color: 125, 125, 150 !important;
+    	--tu-color: #7D7D96 !important;
 		--tu-background-opacity: 0.6 !important;
+		--popper-theme-background-color: #333437;
+		--popper-theme-background-color-hover: #262728;
+		--popper-theme-border: 1px solid #0F1013;
+		--popper-theme-shadow: 0 6px 30px -6px rgba(255, 255, 255, 0.25);
 	}
 }

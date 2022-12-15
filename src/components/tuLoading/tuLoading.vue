@@ -156,7 +156,7 @@ export default defineComponent({
 	top: 0px;
 	left: 0px;
 	height: 4px;
-	background: -getColor("color", 0.2);
+	background: rgba(-getColor("color"), 0.2);
 
 	&__bar {
 		background: -getColor("color");
@@ -225,7 +225,7 @@ export default defineComponent({
 			height: 0px;
 			position: absolute;
 			animation: waves 0.7s ease infinite;
-			box-shadow: 0px 0px 10px 0px -getColor("color", 0.5);
+			box-shadow: 0px 0px 10px 0px rgba(-getColor("color"), 0.5);
 			border-radius: 50%;
 		}
 
@@ -235,7 +235,7 @@ export default defineComponent({
 			height: 0px;
 			position: absolute;
 			animation: waves 1.4s linear infinite;
-			box-shadow: 0px 0px 10px 0px -getColor("color", 0.5);
+			box-shadow: 0px 0px 10px 0px rgba(-getColor("color"), 0.5);
 			border-radius: 50%;
 		}
 
@@ -245,7 +245,7 @@ export default defineComponent({
 			height: 0px;
 			position: absolute;
 			animation: waves 1.75s ease infinite;
-			box-shadow: 0px 0px 10px 0px -getColor("color", 0.5);
+			box-shadow: 0px 0px 10px 0px rgba(-getColor("color"), 0.5);
 			border-radius: 50%;
 		}
 	}
@@ -482,7 +482,7 @@ export default defineComponent({
 			top: 0px;
 			background: linear-gradient(
 				0deg,
-				-getColor("background", 0) 33%,
+				rgba(-getColor("background"), 0) 33%,
 				-getColor("color", 1) 100%
 			);
 			border-radius: 50%;
@@ -533,7 +533,7 @@ export default defineComponent({
 			border: 0px;
 			border-radius: inherit;
 			animation: rectangle 1s ease-out infinite;
-			background: -getColor("color", 0.2);
+			background: rgba(-getColor("color"), 0.2);
 		}
 
 		&__3 {
