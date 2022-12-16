@@ -123,10 +123,9 @@ export default defineComponent({
 	}
 }
 
-@each $color,
-$index in --tu-colors {
+@each $color in $tu-colors {
 	.tu-progress-#{$color} {
-		background: rgba(-getColor($color), 0.1);
+		background: -getColorAlpha($color, 0.1);
 
 		::v-deep(.tu-progress--foreground, .tu-progress--indeterminate) {
 			background: -getColor($color);

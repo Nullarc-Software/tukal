@@ -1,5 +1,5 @@
 <template>
-	<div class="tu-input-parent" :style="{
+	<div class="tu-input-parent" v-bind="$attrs" :style="{
 		['--tu-getColor']: color ? getColor(color) : ''
 	}" :class="[
 	`tu-input-parent--state-${state}`,
@@ -32,7 +32,7 @@
 			<input class="tu-input" :value="modelValue" :class="[
 				{ ['tu-input--has-icon']: !!$slots.icon },
 				{ ['tu-input--has-icon--after']: !!iconAfter }
-			]" v-bind="$attrs" @input="onInput" :id="getId" :disabled="editableStaticInternal || disable" />
+			]" @input="onInput" :id="getId" :disabled="editableStaticInternal || disable" />
 			<label v-if="label" :for="getId" :class="[
 				'tu-input__label',
 				{ 'tu-input__label--hidden': modelValue !== '' }

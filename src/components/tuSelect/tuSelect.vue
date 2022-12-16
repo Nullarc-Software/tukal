@@ -1,5 +1,5 @@
 <template>
-	<div class="tu-select-content" :style="{
+	<div class="tu-select-content" v-bind="$attrs" :style="{
 		['--tu-color']: color ? getColor(color) : ''
 	}" :class="[
 	{ block: block },
@@ -29,7 +29,7 @@
 						multiple: multiple,
 						simple: !multiple && !filter
 					}
-				]" v-bind="$attrs" v-on="inputListener" />
+				]" v-on="inputListener" />
 			<label v-if="label || labelPlaceholder" class="tu-select__label" :for="uid" :class="{
 				'tu-select__label--placeholder': labelPlaceholder,
 				'tu-select__label--label': label,
@@ -66,7 +66,8 @@
 	{ [`tu-component--danger`]: !!danger },
 	{ [`tu-component--warn`]: !!warn },
 	{ [`tu-component--success`]: !!success },
-	{ [`tu-component--dark`]: !!dark }
+	{ [`tu-component--dark`]: !!dark },
+	`tu-select__options--state-${state}`
 ]" @mouseleave="
 	() => {
 		targetSelect = false;
@@ -702,37 +703,41 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @import "../../style/sass/_mixins";
 
-.dark {
-	.tu-select__options {
-		background: -getColor("dark-3");
-	}
 
-	.tu-select__input {
-		background: -getColor("dark-2");
-	}
-
-	.tu-select__chips__chip {
-		background: -getColor("dark-4");
-	}
-}
 
 @mixin state($color) {
 	.tu-select__input {
 		// border: 2px solid -getColor($color,.5)
-		background: rgba(-getColor($color), 0.05);
+		background: -getColorAlpha($color, 0.2);
 		color: -getColor($color);
 
 		&:hover {
+			background: -getColorAlpha($color, 0.3);
 			// border: 2px solid rgba(-getColor($color), 0)
 			color: -getColor("text");
 		}
 	}
 
+	&.activeOptions {
+		.tu-select__input {
+			border-radius: 12px 12px 0px 0px;
+			border: 1px solid -getColorAlpha($color, 1);
+
+			background: -getColorAlpha($color, 0.2);
+			//box-shadow: 0px 5px 25px -4px rgba(0, 0, 0, -var(shadow-opacity));
+			//transform: translate(0, -2px);
+			transition: all 0.25s ease, height 0s;
+			//border: 2px solid transparent;
+			color: -getColor("text");
+		}
+	}
+
+
 	.tu-select__chips {
-		background: rgba(-getColor($color), 0.05);
+		background-color: -getColorAlpha($color, 0.05);
 		color: -getColor($color);
 
 		&:hover {
@@ -851,25 +856,7 @@ export default defineComponent({
 	min-height: 38px;
 	width: 100%;
 
-	&--state-success {
-		@include state("success");
-	}
 
-	&--state-danger {
-		@include state("danger");
-	}
-
-	&--state-warn {
-		@include state("warn");
-	}
-
-	&--state-dark {
-		@include state("dark");
-	}
-
-	&--state-primary {
-		@include state("primary");
-	}
 
 	&.loading {
 		pointer-events: none;
@@ -922,19 +909,20 @@ export default defineComponent({
 		.tu-select__input {
 			border-radius: 12px 12px 0px 0px;
 			border: 1px solid -getColorAlpha("text", 0.09);
-			background: -getColor("background");
+			border-bottom: unset;
+			background: -getColor("component-background");
 			//box-shadow: 0px 5px 25px -4px rgba(0, 0, 0, -var(shadow-opacity));
-			//transform: translate(0, -4px);
+			//transform: translate(0, -2px);
 			transition: all 0.25s ease, height 0s;
-			border: 2px solid transparent;
+			//border: 2px solid transparent;
 			color: -getColor("text");
 		}
 
 		.tu-select__chips {
 			border-radius: 12px 12px 0px 0px;
-			background: -getColor("background");
+			background-color: -getColor("component-background");
 			box-shadow: 0px 5px 25px -4px rgba(0, 0, 0, -var(shadow-opacity));
-			transform: translate(0, -4px);
+			//transform: translate(0, -4px);
 			transition: all 0.25s ease, height 0s;
 
 			&:after {
@@ -964,7 +952,7 @@ export default defineComponent({
 		border-radius: 12px;
 		cursor: pointer;
 		transition: all 0.25s ease, height 0s;
-		background: -getColor("gray-2");
+		background: -getColor("component-background");
 		color: -getColor("text") !important;
 		min-height: 38px;
 		padding-right: 30px;
@@ -982,7 +970,7 @@ export default defineComponent({
 
 		&:focus {
 			border-radius: 12px 12px 0px 0px;
-			background: -getColor("background");
+			//background: -getColor("background");
 			//box-shadow: 0px 5px 25px -4px rgba(0, 0, 0, -var(shadow-opacity));
 			//transform: translate(0, -4px);
 			transition: all 0.25s ease;
@@ -998,7 +986,7 @@ export default defineComponent({
 		}
 
 		&:hover {
-			background: -getColor("gray-3");
+			background: -getColor("gray-4");
 			//box-shadow: 0px 5px 25px -4px rgba(0, 0, 0, -var(shadow-opacity));
 			//transform: translate(0, -4px);
 
@@ -1017,11 +1005,10 @@ export default defineComponent({
 		height: auto;
 		position: absolute;
 		left: 0px;
-		background: -getColor("gray-2");
+		background-color: -getColor("component-background");
 		z-index: 300;
+		border: 1px solid -getColorAlpha("text", 0.09);
 		border-radius: 12px;
-		display: flex;
-		border: 0px;
 		display: flex;
 		align-items: flex-start;
 		justify-content: flex-start;
@@ -1033,14 +1020,14 @@ export default defineComponent({
 
 		&:focus {
 			border-radius: 12px 12px 0px 0px;
-			background: -getColor("background");
+			background-color: -getColor("component-background");
 			//box-shadow: 0px 5px 25px -4px rgba(0, 0, 0, -var(shadow-opacity));
 			//transform: translate(0, -4px);
 			transition: all 0.25s ease;
 		}
 
 		&:hover {
-			background: -getColor("gray-3");
+			background: -getColor("gray-4");
 
 			//box-shadow: 0px 5px 25px -4px rgba(0, 0, 0, -var(shadow-opacity));
 			//transform: translate(0, -8px);
@@ -1075,7 +1062,7 @@ export default defineComponent({
 		&__chip {
 			flex: 0 1 auto;
 			position: relative;
-			background: -getColor("background");
+			background-color: -getColor("component-background");
 			border-radius: 10px;
 			display: flex;
 			align-items: center;
@@ -1084,7 +1071,7 @@ export default defineComponent({
 			margin: 2px 3px;
 			padding-right: 10px;
 			font-size: 0.84rem;
-			border: 2px solid -getColor("gray-2");
+			border: 2px solid -getColor("gray-4");
 			box-sizing: border-box;
 			color: -getColor("text");
 
@@ -1136,12 +1123,35 @@ export default defineComponent({
 	&__options {
 		--tu-color: var(--tu-primary);
 		position: absolute;
-		z-index: 99999;
-		background: -getColor("background");
+		z-index: var(--tu-zindex-1);
+		background-color: -getColor("component-background");
+		border: 1px solid -getColorAlpha("text", 0.09);
 		padding: 5px;
 		border-radius: 0px 0px 12px 12px;
 		overflow: hidden;
 		box-shadow: 0px 10px 20px -5px rgba(0, 0, 0, -var(shadow-opacity));
+		transform: translate(0, 3px);
+
+		&--state-success {
+			background: -getColorAlpha("success", 0.3);
+		}
+
+		&--state-danger {
+			background: -getColorAlpha("danger", 0.3);
+		}
+
+		&--state-warn {
+			background: -getColorAlpha("warn", 0.3);
+		}
+
+		&--state-dark {
+			background: -getColorAlpha("dark", 0.3);
+		}
+
+		&--state-primary {
+			background: -getColorAlpha("primary", 0.3);
+		}
+
 
 		&.top {
 			border-radius: 12px 12px 0px 0px;
@@ -1167,6 +1177,8 @@ export default defineComponent({
 			transition: all 0.25s ease 0.05s;
 			opacity: 1;
 		}
+
+
 
 		&__content {
 			max-height: 200px;
@@ -1315,6 +1327,27 @@ export default defineComponent({
 			color: -getColor("primary");
 		}
 	}
+
+	&--state-success {
+		@include state("success");
+	}
+
+	&--state-danger {
+		@include state("danger");
+	}
+
+	&--state-warn {
+		@include state("warn");
+	}
+
+	&--state-dark {
+		@include state("dark");
+	}
+
+	&--state-primary {
+		@include state("primary");
+	}
+
 }
 
 .tu-select-content:not(.tu-select--dropdown) .tu-select .tu-select__placeholder {

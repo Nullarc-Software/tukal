@@ -3,6 +3,7 @@
 	@extend :root;
 	body.dark {
 		--tu-background: #151916;
+		--tu-component-background: #1e1f22;
 		--tu-text: #ffffff;
 		--tu-dark: #1e1e1e;
 		--tu-gray-1: #333437;
@@ -13,6 +14,7 @@
 		--tu-color: #7d7d96;
 
 		--tu-background-rgb: 21, 25, 22;
+		--tu-component-background-rgb: 30, 31, 34;
 		--tu-text-rgb: 255, 255, 255;
 		--tu-dark-rgb: 30, 30, 30;
 		--tu-gray-1-rgb: 51, 52, 55;

@@ -5,6 +5,7 @@
 			Vuesax3 (Typescript + composition API Demo) - TheCelebrimbor -
 			Github
 		</h1>
+		<tu-switch v-model="darkModeActive" dark> Dark Mode </tu-switch>
 		<div class="showcase-component">
 			<h3>Buttons:</h3>
 			<hr />
@@ -497,9 +498,7 @@
 				</tu-select-option>
 			</tu-select>
 
-			<tu-select inline
-				placeholder="Label-placeholder for something soooooo longggg Label-placeholder for something soooooo longggg"
-				v-model="selectValue1" style="margin: 10px" filter>
+			<tu-select placeholder="" v-model="selectValue1" filter>
 				<tu-select-option label="Test" value="1">
 					Test
 				</tu-select-option>
@@ -940,6 +939,7 @@ export default defineComponent({
 		const checkBox2 = ref(["luis"]);
 		const loading = ref(false);
 		const sideBar = ref("home");
+		const darkModeActive = ref(false);
 		const activeDialog = ref(false);
 		const activeDialog1 = ref(false);
 		const activeDialog2 = ref(false);
@@ -1311,9 +1311,17 @@ export default defineComponent({
 			console.log(value);
 		}); */
 
+		watch(darkModeActive, (active) => {
+			if (!active)
+				document.body.classList.remove("dark");
+			else
+				document.body.classList.add("dark");
+		})
+
 		return {
 			// treeSelectedItems,
 			// treeItems,
+			darkModeActive,
 			columns,
 			universities,
 			numPages,

@@ -44,7 +44,9 @@
 	// theme
 
 	--tu-background: #ffffff;
-	--tu-text: #2c3e50;
+	--tu-component-background: #f4f7f8;
+
+	--tu-text: #000000;
 	--tu-gray-1: #f9fcfd;
 	--tu-gray-2: #f4f7f8;
 	--tu-gray-3: #f0f3f4;
@@ -53,9 +55,10 @@
 	--tu-dark-2: #1e1f22;
 	--tu-dark-3: #0f1013;
 	--tu-dark-4: #0a0b0e;
-	--tu-text-100: #ffffff;
+	--tu-text-100: #000000;
 
 	--tu-background-rgb: 255, 255, 255;
+	--tu-component-background-rgb: 244, 247, 248;
 	--tu-text-rgb: 44, 62, 80;
 	--tu-gray-1-rgb: 249, 252, 253;
 	--tu-gray-2-rgb: 244, 247, 248;
@@ -79,19 +82,6 @@
 	--popper-theme-border-radius: 6px;
 	--popper-theme-padding: 16px;
 	--popper-theme-shadow: 0 6px 30px -6px rgba(0, 0, 0, 0.25);
-
-	--tu-colors {
-		primary: --tu-primary;
-		secondary: --tu-secondary;
-		danger: --tu-danger;
-		success: --tu-success;
-		warning: --tu-warning;
-		dark: --tu-dark;
-		light: --tu-light;
-		background: --tu-background;
-		text: --tu-text;
-		color: --tu-color;
-	}
 }
 
 [class*="--primary"] {

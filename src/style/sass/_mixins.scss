@@ -14,3 +14,16 @@
 @function cssvar($name, $prefix: tu) {
 	@return var(--#{$prefix}-#{$name});
 }
+
+$tu-colors: (
+	"primary",
+	"secondary",
+	"danger",
+	"success",
+	"warning",
+	"dark",
+	"light",
+	"background",
+	"text",
+	"color"
+);
