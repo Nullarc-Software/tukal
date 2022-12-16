@@ -1,7 +1,7 @@
 <template>
 	<transition enter-from-class="notification-enter-from" enter-active-class="notification-enter-active"
-		enter-to-class="notification-enter-to" leave-to-class="notification-leave-to" leave-from-class="notification-leave-from"
-		leave-active-class="notification-leave-active" appear out-in>
+		enter-to-class="notification-enter-to" leave-to-class="notification-leave-to"
+		leave-from-class="notification-leave-from" leave-active-class="notification-leave-active" appear out-in>
 		<div :id="`notification-${notifId}`" ref="notif" :class="[
 			{ 'tu-notification--color': color },
 			{ 'tu-notification--border': border },
@@ -276,7 +276,7 @@ export default defineComponent({
 }
 
 .notification-leave-to {
-	
+
 	clip-path: circle(0% at 50% 50%) !important;
 }
 
@@ -340,6 +340,7 @@ export default defineComponent({
 				transform: translate(0, -10%);
 			}
 		}
+
 		.notification-leave-to {
 			transform: translate(0, -25%);
 			clip-path: circle(0% at 50% 0%) !important;
@@ -428,7 +429,7 @@ export default defineComponent({
 
 		.notification-enter-from {
 			transform: translate(-25%);
-      		clip-path: circle(0% at 20% 35%) !important;
+			clip-path: circle(0% at 20% 35%) !important;
 
 			.tu-notification__content {
 				opacity: 0;
@@ -438,7 +439,7 @@ export default defineComponent({
 
 		.notification-leave-to {
 			transform: translate(-25%);
-      		clip-path: circle(0% at 20% 35%) !important;
+			clip-path: circle(0% at 20% 35%) !important;
 
 			.tu-notification__content {
 				opacity: 0;
@@ -577,7 +578,7 @@ export default defineComponent({
 
 		&:hover {
 			&::after {
-				background: -getColor("color", 0.15);
+				background: -getColorAlpha("color", 0.15);
 			}
 		}
 
@@ -600,7 +601,7 @@ export default defineComponent({
 
 		&:after {
 			content: "";
-			background: -getColor("color", 0.1);
+			background: -getColorAlpha("color", 0.1);
 			width: 100%;
 			height: 100%;
 			border-radius: inherit;

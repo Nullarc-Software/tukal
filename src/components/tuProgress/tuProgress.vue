@@ -1,20 +1,12 @@
 <template>
-	<div
-		:class="[
-			`tu-progress-${color}`,
-			{
-				indeterminate: indeterminate
-			}
-		]"
-		:style="styleConProgress"
-		class="tu-progress--background"
-	>
+	<div :class="[
+		`tu-progress-${color}`,
+		{
+			indeterminate: indeterminate
+		}
+	]" :style="styleConProgress" class="tu-progress--background">
 		<div :style="styleProgress" class="tu-progress--foreground" />
-		<div
-			v-if="indeterminate"
-			:style="styleProgress"
-			class="tu-progress--indeterminate"
-		/>
+		<div v-if="indeterminate" :style="styleProgress" class="tu-progress--indeterminate" />
 	</div>
 </template>
 
@@ -44,7 +36,7 @@ export default defineComponent({
 			default: "primary"
 		}
 	},
-	setup (props, context) {
+	setup(props, context) {
 		const percentx = ref(0);
 
 		const styleConProgress = computed(() => {
@@ -96,6 +88,7 @@ export default defineComponent({
 	animation: indeterminate 2.2s ease infinite;
 	border-radius: 20px;
 }
+
 .tu-progress--background {
 	width: 100%;
 	border-radius: 18px;
@@ -105,6 +98,7 @@ export default defineComponent({
 	display: inline-block;
 	overflow: hidden;
 }
+
 .tu-progress--foreground {
 	z-index: 100;
 	height: 100%;
@@ -117,21 +111,24 @@ export default defineComponent({
 		width: 30%;
 		left: -40%;
 	}
+
 	60% {
 		left: 100%;
 		width: 100%;
 	}
+
 	100% {
 		left: 100%;
 		width: 0%;
 	}
 }
 
-@each $color, $index in --tu-colors {
+@each $color in $tu-colors {
 	.tu-progress-#{$color} {
-		background: -getColor($color, 0.1);
+		background: -getColorAlpha($color, 0.1);
+
 		::v-deep(.tu-progress--foreground, .tu-progress--indeterminate) {
-			background: -getColor($color, 1);
+			background: -getColor($color);
 		}
 	}
 }

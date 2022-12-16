@@ -664,7 +664,7 @@ export default defineComponent({
 	&.striped {
 		::v-deep(.tu-table__tr) {
 			&:nth-child(even) {
-				background-color: -getColor("gray-1") !important;
+				background: -getColor("gray-2") !important;
 			}
 		}
 	}
@@ -759,7 +759,7 @@ export default defineComponent({
 		position: sticky;
 		top: 0;
 		z-index: 2;
-		border-bottom: 1px solid -getColor("text", 0.2);
+		border-bottom: 1px solid -getColorAlpha("text", 0.2);
 
 		::v-deep(.tu-table__th) {
 			background: -getColor("gray-2");

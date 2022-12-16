@@ -295,7 +295,7 @@ export default defineComponent({
 @import "../../style/sass/_mixins";
 
 .tu-navbar-content {
-	--tu-color: var(--tu-background);
+	--tu-color: var(--tu-gray-2);
 	width: 100%;
 	position: relative;
 	top: 0px;

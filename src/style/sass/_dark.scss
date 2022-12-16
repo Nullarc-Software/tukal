@@ -1,0 +1,33 @@
+@import "./mixins";
+:root {
+	@extend :root;
+	body.tu-dark-theme {
+		--tu-background: #151916;
+		--tu-component-background: #1e1f22;
+		--tu-text: #ffffff;
+		--tu-dark: #1e1e1e;
+		--tu-gray-1: #333437;
+		--tu-gray-2: #1e1f22;
+		--tu-gray-3: #0f1013;
+		--tu-gray-4: #0a0b0e;
+		--tu-shadow-opacity: 0.3;
+		--tu-color: #7d7d96;
+
+		--tu-background-rgb: 21, 25, 22;
+		--tu-component-background-rgb: 30, 31, 34;
+		--tu-text-rgb: 255, 255, 255;
+		--tu-dark-rgb: 30, 30, 30;
+		--tu-gray-1-rgb: 51, 52, 55;
+		--tu-gray-2-rgb: 30, 31, 34;
+		--tu-gray-3-rgb: 15, 16, 19;
+		--tu-gray-4-rgb: 10, 11, 14;
+		--tu-shadow-opacity-rgb: 0.3;
+		--tu-color-rgb: 125, 125, 150;
+
+		--tu-background-opacity: 0.6;
+		--popper-theme-background-color: #333437;
+		--popper-theme-background-color-hover: #262728;
+		--popper-theme-border: 1px solid #0f1013;
+		--popper-theme-shadow: 0 6px 30px -6px rgba(255, 255, 255, 0.25);
+	}
+}

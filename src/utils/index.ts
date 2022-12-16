@@ -37,7 +37,18 @@ const isColor = (color: string) => {
 		"discord",
 		"telegram",
 		"google-plus",
-		"messenger"
+		"messenger",
+		"primary-rgb",
+		"secondary-rgb",
+		"success-rgb",
+		"danger-rgb",
+		"warning-rgb",
+		"dark-rgb",
+		"light-rgb",
+		"warn-rgb",
+		"text-rgb",
+		"background-rgb",
+		
 	];
 	return tuColors.includes(color);
 };
@@ -138,26 +149,45 @@ const getApplyColor = (color: string, alphax = 1) => {
 	return `rgba(${getColor(color)} , ${alphax})`;
 };
 
-const getColor = (color: string, alphax = 1) => {
-	function hexToRgb (hex: string) {
-		const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-		hex = hex.replace(
-			shorthandRegex,
-			(m: any, r: string, g: string, b: string) => {
-				return r + r + g + g + b + b;
-			}
-		);
+function isHex (color: string) {
+	return /^(#)/.test(color);
+}
 
-		const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-		return result
-			? {
-				r: parseInt(result[1], 16),
-				// tslint:disable-next-line:object-literal-sort-keys
-				g: parseInt(result[2], 16),
-				b: parseInt(result[3], 16)
-			  }
-			: null;
+function hexToRgb (hex: string) {
+	const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+	hex = hex.replace(
+		shorthandRegex,
+		(m: any, r: string, g: string, b: string) => {
+			return r + r + g + g + b + b;
+		}
+	);
+
+	const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+	return result
+		? {
+			r: parseInt(result[1], 16),
+			// tslint:disable-next-line:object-literal-sort-keys
+			g: parseInt(result[2], 16),
+			b: parseInt(result[3], 16)
+		}
+		: null;
+}
+
+function getColorAsRgb (color: string, alphax = 1) {
+	let newColor = getColor(color, alphax);
+	if (typeof newColor === "string") {
+		newColor = newColor.trim();
+		if (isHex(newColor)) {
+			const rgb = hexToRgb(newColor);
+			return `${rgb?.r},${rgb?.g},${rgb?.b}`;
+		}
+		return newColor; 
 	}
+	return newColor;
+}
+
+const getColor = (color: string, alphax = 1) => {
+	
 
 	const isRGB = /^(rgb|rgba)/.test(color);
 	const isRGBNumbers = /^(0|255|25[0-4]|2[0-4]\d|1\d\d|0?\d?\d),(0|255|25[0-4]|2[0-4]\d|1\d\d|0?\d?\d),(0|255|25[0-4]|2[0-4]\d|1\d\d|0?\d?\d)$/.test(
@@ -172,7 +202,7 @@ const getColor = (color: string, alphax = 1) => {
 	}
 	else if (isHEX) {
 		const rgb = hexToRgb(color);
-		newColor = `${rgb!.r},${rgb!.g},${rgb!.b}`;
+		newColor = `${rgb?.r},${rgb?.g},${rgb?.b}`;
 	}
 	else if (isColor(color)) {
 		const style = window.getComputedStyle(document.body);
@@ -180,7 +210,6 @@ const getColor = (color: string, alphax = 1) => {
 	}
 	else if (isRGBNumbers)
 		newColor = color;
-
 	return newColor;
 };
 
@@ -306,6 +335,7 @@ const getRouter = () => {
 };
 
 export {
+	getColorAsRgb,
 	setColor,
 	getColor,
 	setVar,

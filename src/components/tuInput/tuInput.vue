@@ -1,6 +1,6 @@
 <template>
-	<div class="tu-input-parent" :style="{
-		['--tu-getColor']: color ? getColor(color) : ''
+	<div class="tu-input-parent" v-bind="$attrs" :style="{
+		['--tu-color']: color ? getColor(color) : ''
 	}" :class="[
 	`tu-input-parent--state-${state}`,
 	{ 'tu-input-parent--border': !!border },
@@ -20,11 +20,11 @@
 	{ [`tu-component--warn`]: !!warn },
 	{ [`tu-component--success`]: !!success },
 	{ [`tu-component--dark`]: !!dark },
-	{ [`tu-component--is-getColor`]: !!isColor },
+	{ [`tu-component--is-color`]: !!isColor },
 	{ [`tu-component-static-editable`]: !!editableStaticInternal }
 ]">
 		<div class="tu-input-content" :class="[
-			{ [`tu-input-content--has-getColor`]: hasColor },
+			{ [`tu-input-content--has-color`]: hasColor },
 			{
 				[`tu-input-content--has-label`]: label || labelPlaceholder
 			}
@@ -32,7 +32,7 @@
 			<input class="tu-input" :value="modelValue" :class="[
 				{ ['tu-input--has-icon']: !!$slots.icon },
 				{ ['tu-input--has-icon--after']: !!iconAfter }
-			]" v-bind="$attrs" @input="onInput" :id="getId" :disabled="editableStaticInternal || disable" />
+			]" @input="onInput" :id="getId" :disabled="editableStaticInternal || disable" />
 			<label v-if="label" :for="getId" :class="[
 				'tu-input__label',
 				{ 'tu-input__label--hidden': modelValue !== '' }
@@ -122,7 +122,7 @@ export default defineComponent({
 		tuIcon
 	},
 	props: {
-		modelValue: { type: [Object, String, Object as any],  default: "" },
+		modelValue: { type: [Object, String, Object as any], default: "" },
 		labelPlaceholder: { default: "" },
 		label: { default: "" },
 		block: { type: Boolean, default: false },
@@ -221,18 +221,18 @@ export default defineComponent({
 
 @mixin state($color) {
 	.tu-input {
-		background: -getColor($color, 0.1) !important;
-		color: -getColor($color, 1);
+		background: rgba(-getColor($color), 0.1) !important;
+		color: -getColor($color);
 	}
 
 	.tu-input__label {
-		color: -getColor($color, 1);
+		color: -getColor($color);
 	}
 
 	.tu-input__icon {
-		color: -getColor($color, 1);
-		background: -getColor($color, 0.1);
-		box-shadow: (-15px) 10px 10px -10px -getColor($color, 0.1);
+		color: -getColor($color);
+		background: rgba(-getColor($color), 0.1);
+		box-shadow: (-15px) 10px 10px -10px rgba(-getColor($color), 0.1);
 	}
 }
 
@@ -312,7 +312,7 @@ export default defineComponent({
 	justify-content: flex-start;
 	position: relative;
 	border-radius: 12px;
-	border: 1px solid -getColor("text", 0.09);
+	border: 1px solid -getColorAlpha("text", 0.09);
 
 	+.tu-input__message {
 		padding-top: 2px;
@@ -324,18 +324,18 @@ export default defineComponent({
 
 			// box-shadow: 0px 10px 20px -5px -getColor('color',.3)
 			&:focus {
-				border-bottom: 2px solid -getColor("color", 1);
+				border-bottom: 2px solid -getColor("color");
 
 				~.tu-input__icon {
-					color: -getColor("color", 1);
+					color: -getColor("color");
 				}
 
 				~.tu-input__label {
-					color: -getColor("color", 1);
+					color: -getColor("color");
 				}
 
 				~.tu-input__label--placeholder {
-					color: -getColor("color", 1);
+					color: -getColor("color");
 				}
 			}
 		}
@@ -514,23 +514,23 @@ export default defineComponent({
 		overflow: hidden;
 
 		&--success {
-			color: -getColor("success", 1);
+			color: -getColor("success");
 		}
 
 		&--danger {
-			color: -getColor("danger", 1);
+			color: -getColor("danger");
 		}
 
 		&--warn {
-			color: -getColor("warn", 1);
+			color: -getColor("warn");
 		}
 
 		&--dark {
-			color: -getColor("dark", 1);
+			color: -getColor("dark");
 		}
 
 		&--primary {
-			color: -getColor("primary", 1);
+			color: -getColor("primary");
 		}
 	}
 
@@ -546,19 +546,19 @@ export default defineComponent({
 
 		&--danger {
 			.tu-input__progress__bar {
-				background: -getColor("danger", 1);
+				background: -getColor("danger");
 			}
 		}
 
 		&--warn {
 			.tu-input__progress__bar {
-				background: -getColor("warn", 1);
+				background: -getColor("warn");
 			}
 		}
 
 		&--success {
 			.tu-input__progress__bar {
-				background: -getColor("success", 1);
+				background: -getColor("success");
 			}
 		}
 
@@ -587,7 +587,7 @@ export default defineComponent({
 			position: absolute;
 			width: 100%;
 			height: 100%;
-			border: 2px solid -getColor("primary", 1);
+			border: 2px solid -getColor("primary");
 			border-radius: inherit;
 			border-top: 2px solid transparent;
 			border-left: 2px solid transparent;
@@ -603,7 +603,7 @@ export default defineComponent({
 			position: absolute;
 			width: 100%;
 			height: 100%;
-			border: 2px dashed -getColor("primary", 1);
+			border: 2px dashed -getColor("primary");
 			border-radius: inherit;
 			border-top: 2px solid transparent;
 			border-left: 2px solid transparent;
@@ -644,7 +644,7 @@ export default defineComponent({
 				}
 
 				&__2 {
-					border-bottom: 2px solid -getColor("color", 1);
+					border-bottom: 2px solid -getColor("color");
 					width: 0%;
 					height: 2px;
 					position: absolute;

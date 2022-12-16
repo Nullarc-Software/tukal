@@ -1,21 +1,14 @@
 <template>
 	<transition name="tu-loading">
-		<div
-			v-if="isVisible"
-			class="tu-loading"
-			:class="[
-				`tu-loading--${type || 'default'}`,
-				{ 'tu-loading--target': !!target },
-				{ 'tu-loading--background': !!background }
-			]"
-		>
-			<div
-				class="tu-loading__load"
-				:style="{
-					transform: `scale(${scale})`
-				}"
-			>
-				<div class="tu-loading__load__animation" :class="{'__fit': fitAnimation}">
+		<div v-if="isVisible" class="tu-loading" :class="[
+			`tu-loading--${type || 'default'}`,
+			{ 'tu-loading--target': !!target },
+			{ 'tu-loading--background': !!background }
+		]">
+			<div class="tu-loading__load" :style="{
+				transform: `scale(${scale})`
+			}">
+				<div class="tu-loading__load__animation" :class="{ '__fit': fitAnimation }">
 					<div class="tu-loading__load__percent">
 						{{ percent }}
 					</div>
@@ -28,12 +21,9 @@
 				</div>
 			</div>
 			<div v-if="progress" class="tu-loading__progress">
-				<div
-					class="tu-loading__progress__bar"
-					:style="{
-						width: `${progress}%`
-					}"
-				></div>
+				<div class="tu-loading__progress__bar" :style="{
+					width: `${progress}%`
+				}"></div>
 			</div>
 		</div>
 	</transition>
@@ -54,12 +44,12 @@ export default defineComponent({
 		opacity: { type: String, default: null },
 		percent: { type: String, default: null },
 		progress: { type: Number, default: null },
-		fitAnimation: {type: Boolean, default: false},
+		fitAnimation: { type: Boolean, default: false },
 		scale: { type: String, default: null },
 		target: {},
 		isVisible: { type: Boolean, default: true }
 	},
-	setup (props, context) {
+	setup(props, context) {
 		const instance = getCurrentInstance();
 
 		watch(
@@ -103,7 +93,7 @@ export default defineComponent({
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	background: -getColor("background", -var("opacity"));
+	background: -getColor("background");
 	transition: all 0.25s ease;
 	padding: 20px;
 	border-radius: inherit;
@@ -145,7 +135,7 @@ export default defineComponent({
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			
+
 		}
 	}
 }
@@ -156,7 +146,7 @@ export default defineComponent({
 	top: 0px;
 	left: 0px;
 	height: 4px;
-	background: -getColor("color", 0.2);
+	background: -getColorAlpha("color", 0.2);
 
 	&__bar {
 		background: -getColor("color");
@@ -225,7 +215,7 @@ export default defineComponent({
 			height: 0px;
 			position: absolute;
 			animation: waves 0.7s ease infinite;
-			box-shadow: 0px 0px 10px 0px -getColor("color", 0.5);
+			box-shadow: 0px 0px 10px 0px -getColorAlpha("color", 0.5);
 			border-radius: 50%;
 		}
 
@@ -235,7 +225,7 @@ export default defineComponent({
 			height: 0px;
 			position: absolute;
 			animation: waves 1.4s linear infinite;
-			box-shadow: 0px 0px 10px 0px -getColor("color", 0.5);
+			box-shadow: 0px 0px 10px 0px -getColorAlpha("color", 0.5);
 			border-radius: 50%;
 		}
 
@@ -245,7 +235,7 @@ export default defineComponent({
 			height: 0px;
 			position: absolute;
 			animation: waves 1.75s ease infinite;
-			box-shadow: 0px 0px 10px 0px -getColor("color", 0.5);
+			box-shadow: 0px 0px 10px 0px -getColorAlpha("color", 0.5);
 			border-radius: 50%;
 		}
 	}
@@ -277,7 +267,7 @@ export default defineComponent({
 			position: absolute;
 			animation: corners 1s ease infinite;
 			border-radius: 50%;
-			border: 2px solid -getColor("color", 1);
+			border: 2px solid -getColor("color");
 		}
 
 		&__2 {
@@ -441,7 +431,7 @@ export default defineComponent({
 			border: 2px solid -getColor("color");
 			border-radius: inherit;
 			animation: rotateSquare 4s ease infinite reverse;
-			background: -getColor("background", 1);
+			background: -getColor("background");
 		}
 
 		&__3 {
@@ -480,11 +470,9 @@ export default defineComponent({
 			border-radius: inherit;
 			animation: rotate 1s linear infinite;
 			top: 0px;
-			background: linear-gradient(
-				0deg,
-				-getColor("background", 0) 33%,
-				-getColor("color", 1) 100%
-			);
+			background: linear-gradient(0deg,
+					-getColorAlpha("background", 0) 33%,
+					-getColor("color") 100%);
 			border-radius: 50%;
 		}
 
@@ -495,7 +483,7 @@ export default defineComponent({
 			height: calc(100% - 4px);
 			border: 0px;
 			border-radius: inherit;
-			background: -getColor("background", 1);
+			background: -getColor("background");
 			border-radius: 50%;
 		}
 
@@ -523,7 +511,7 @@ export default defineComponent({
 			border: 0px;
 			border-radius: inherit;
 			animation: rectangle 1s ease infinite;
-			background: -getColor("color", 1);
+			background: -getColor("color");
 		}
 
 		&__2 {
@@ -533,7 +521,7 @@ export default defineComponent({
 			border: 0px;
 			border-radius: inherit;
 			animation: rectangle 1s ease-out infinite;
-			background: -getColor("color", 0.2);
+			background: -getColorAlpha("color", 0.2);
 		}
 
 		&__3 {
@@ -570,7 +558,7 @@ export default defineComponent({
 			height: 40px;
 			animation: rotate 1s ease infinite;
 			border-radius: 50%;
-			border: 2px solid -getColor("color", 1);
+			border: 2px solid -getColor("color");
 			border-top: 3px solid transparent;
 			border-left: 3px solid transparent;
 			border-right: 3px solid transparent;
@@ -582,7 +570,7 @@ export default defineComponent({
 			height: 50px;
 			animation: rotate 1s ease-in-out infinite;
 			border-radius: 50%;
-			border: 2px dashed -getColor("color", 1);
+			border: 2px dashed -getColor("color");
 			border-top: 3px solid transparent;
 			border-left: 3px solid transparent;
 			border-right: 3px solid transparent;
@@ -594,7 +582,7 @@ export default defineComponent({
 			height: 60px;
 			animation: rotate 1s linear infinite reverse;
 			border-radius: 50%;
-			border: 2px solid -getColor("color", 1);
+			border: 2px solid -getColor("color");
 			border-top: 3px solid transparent;
 			border-left: 3px solid transparent;
 			border-right: 3px solid transparent;
@@ -620,7 +608,7 @@ export default defineComponent({
 			width: 25px;
 			height: 25px;
 			animation: squareRotate 3s ease infinite;
-			background: -getColor("color", 1);
+			background: -getColor("color");
 		}
 
 		&__2 {
@@ -673,7 +661,7 @@ export default defineComponent({
 			position: relative;
 			width: 5px;
 			height: 5px;
-			background: -getColor("color", 1);
+			background: -getColor("color");
 			margin: 3px;
 			animation: scale 0.8s ease infinite;
 			border-radius: 5px;
@@ -683,7 +671,7 @@ export default defineComponent({
 			position: relative;
 			width: 5px;
 			height: 5px;
-			background: -getColor("color", 1);
+			background: -getColor("color");
 			margin: 3px;
 			animation: scale 0.8s ease infinite 0.2s;
 			border-radius: 5px;
@@ -693,7 +681,7 @@ export default defineComponent({
 			position: relative;
 			width: 5px;
 			height: 5px;
-			background: -getColor("color", 1);
+			background: -getColor("color");
 			margin: 3px;
 			animation: scale 0.8s ease infinite 0.4s;
 			border-radius: 5px;

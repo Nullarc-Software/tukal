@@ -1,0 +1,96 @@
+/*
+**************************************************************
+This theme is the default shipping theme, it includes some
+decent defaults, but is separate from the calendar component
+to make it easier for users to implement their own themes w/o
+having to override as much.
+**************************************************************
+*/
+
+/* Header */
+@import "../../../style/sass/_mixins";
+$border-color_1: #ccc;
+
+/* Grid */
+/* .theme-default .cv-weeknumber {
+	border-width: 1px 1px 0 0;
+	border-style: solid;
+} */
+/* Events */
+/* Event Times */
+.theme-default {
+	.cv-header {
+		background-color: -getColor("gray-2") !important;
+		border-width: 1px 1px 0 1px;
+		button {
+			color: -getColor("text") ;
+		}
+		.category-button {
+			color: #060000;
+		}
+	}
+	.cv-header-day {
+		background-color: -getColor("gray-1") !important;
+	}
+	.cv-weeknumber {
+		background-color:  -getColor("gray-1") !important;
+		border-color: $border-color_1;
+		color: #808080
+	}
+	.cv-day {
+		background-color: -getColor("gray-1") !important;
+		border-width: 1px 1px 0 0;
+		&:hover {
+			cursor: pointer;
+			background-color: -getColor("gray-3") !important;
+		}
+	}
+	.cv-day.past {
+		&:hover {
+			background-color: -getColor("gray-2") !important;
+		}
+	}
+	.cv-day.outsideOfMonth {
+		cursor: pointer;
+	}
+	.cv-day.today {
+		background-color: -getColor("gray-3") !important;
+	}
+	.cv-day[aria-selected="true"] {
+		background-color: #ffc;
+	}
+	.cv-item.continued {
+		&::before {
+			content: " \21e2 ";
+			color: #999;
+		}
+		border-left-style: none;
+		border-top-left-radius: 0;
+		border-bottom-left-radius: 0;
+	}
+	.cv-item.toBeContinued {
+		&::after {
+			content: " \21e2 ";
+			color: #999;
+		}
+		border-right-style: none;
+		border-top-right-radius: 0;
+		border-bottom-right-radius: 0;
+	}
+	.cv-item.isHovered.hasUrl {
+		text-decoration: underline;
+	}
+	.cv-item {
+		.startTime {
+			font-weight: bold;
+			color: #666;
+		}
+		.endTime {
+			font-weight: bold;
+			color: #666;
+		}
+	}
+	.cv-day.draghover {
+		box-shadow: inset 0 0 0.2em 0.2em yellow;
+	}
+}

@@ -175,19 +175,18 @@ export default defineComponent({
 	}
 }
 
-@each $color,
-$index in --tu-colors {
+@each $color in --tu-colors {
 	.con-tu-alert-#{$color} {
-		background: -getColor($color, 0.15);
-		box-shadow: 0px 0px 25px 0px -getColor($color, 0.15);
-		color: -getColor($color, 1);
+		background: -getColorAlpha($color, 0.15);
+		box-shadow: 0px 0px 25px 0px -getColorAlpha($color, 0.15);
+		color: -getColor($color);
 
 		h4 {
-			box-shadow: 0px 6px 15px -7px -getColor($color, 0.4);
+			box-shadow: 0px 6px 15px -7px -getColorAlpha($color, 0.4);
 		}
 
 		.con-x {
-			background: -getColor($color, 1);
+			background: -getColor($color);
 			color: rgb(255, 255, 255);
 		}
 	}

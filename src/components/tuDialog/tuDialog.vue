@@ -1,61 +1,40 @@
 <template>
 	<transition name="tu-dialog">
-		<div
-			v-if="modelValue"
-			:class="[
-				'tu-dialog-content',
-				{
-					blur: blur,
-					fullScreen: fullScreen
-				}
-			]"
-			ref="dialog-content"
-			@click="click"
-		>
-			<div
-				class="tu-dialog"
-				:style="{
-					width: width
-				}"
-				:class="{
-					'tu-dialog--fullScreen': fullScreen,
-					'tu-dialog--rebound': rebound,
-					'tu-dialog--notPadding': notPadding,
-					'tu-dialog--square': square,
-					'tu-dialog--autoWidth': autoWidth,
-					'tu-dialog--scroll': scroll,
-					'tu-dialog--loading': loading,
-					'tu-dialog--notCenter': notCenter
-				}"
-			>
+		<div v-if="modelValue" :class="[
+			'tu-dialog-content',
+			{
+				blur: blur,
+				fullScreen: fullScreen
+			}
+		]" ref="dialog-content" @click="click">
+			<div class="tu-dialog" :style="{
+				width: width
+			}" :class="{
+	'tu-dialog--fullScreen': fullScreen,
+	'tu-dialog--rebound': rebound,
+	'tu-dialog--notPadding': notPadding,
+	'tu-dialog--square': square,
+	'tu-dialog--autoWidth': autoWidth,
+	'tu-dialog--scroll': scroll,
+	'tu-dialog--loading': loading,
+	'tu-dialog--notCenter': notCenter
+}">
 				<div v-if="loading" class="tu-dialog__loading">
 					<div class="tu-dialog__loading__load"></div>
 				</div>
-				<tu-button
-					v-if="!notClose"
-					color="#1e2023"
-					class="tu-dialog__close"
-					@click="closeClick"
-				>
+				<tu-button v-if="!notClose" color="#1e2023" class="tu-dialog__close" @click="closeClick">
 					<tu-icon>close </tu-icon>
 				</tu-button>
 				<header v-if="$slots.header" class="tu-dialog__header">
 					<slot name="header" />
 				</header>
-				<div
-					v-if="$slots.default"
-					:class="[
-						'tu-dialog__content',
-						{ notFooter: !$slots.footer }
-					]"
-				>
+				<div v-if="$slots.default" :class="[
+					'tu-dialog__content',
+					{ notFooter: !$slots.footer }
+				]">
 					<slot />
 				</div>
-				<footer
-					v-if="$slots.footer"
-					class="tu-dialog__footer"
-					:class="footerClasses"
-				>
+				<footer v-if="$slots.footer" class="tu-dialog__footer" :class="footerClasses">
 					<slot name="footer" />
 				</footer>
 			</div>
@@ -136,7 +115,7 @@ export default defineComponent({
 		}
 	},
 	emits: ["update:modelValue", "close"],
-	setup (props, context) {
+	setup(props, context) {
 		const rebound = ref(false);
 
 		const esc = function (evt: any) {
@@ -305,6 +284,12 @@ export default defineComponent({
 	}
 }
 
+.tu-dark-theme {
+	.tu-dialog {
+		background: -getColor("gray-1");
+	}
+}
+
 .tu-dialog {
 	background: -getColor("background");
 	color: -getColor("text");
@@ -329,7 +314,7 @@ export default defineComponent({
 		left: 0px;
 		height: 100%;
 		border-radius: inherit;
-		background: -getColor("background", 0.8);
+		background: -getColorAlpha("background", 0.8);
 		z-index: 100;
 		display: flex;
 		align-items: center;
@@ -341,14 +326,14 @@ export default defineComponent({
 			width: 30px;
 			height: 30px;
 			border-radius: inherit;
-			border: 2px solid -getColor("color", 1);
-			border-top: 2px solid -getColor("color", 0);
-			border-left: 2px solid -getColor("color", 0);
-			border-bottom: 2px solid -getColor("color", 0);
+			border: 2px solid -getColor("color");
+			border-top: 2px solid -getColorAlpha("color", 0);
+			border-left: 2px solid -getColorAlpha("color", 0);
+			border-bottom: 2px solid -getColorAlpha("color", 0);
 			box-sizing: border-box;
 			transition: all 0.25s ease;
 			display: block;
-			box-shadow: 0px 0px 0px 0px -getColor("color", 1);
+			box-shadow: 0px 0px 0px 0px -getColor("color");
 			animation: loadingDialog 0.6s ease infinite;
 		}
 
@@ -358,14 +343,14 @@ export default defineComponent({
 			width: 30px;
 			height: 30px;
 			border-radius: inherit;
-			border: 2px dashed -getColor("color", 1);
-			border-top: 2px solid -getColor("color", 0);
-			border-left: 2px solid -getColor("color", 0);
-			border-bottom: 2px solid -getColor("color", 0);
+			border: 2px dashed -getColor("color");
+			border-top: 2px solid -getColorAlpha("color", 0);
+			border-left: 2px solid -getColorAlpha("color", 0);
+			border-bottom: 2px solid -getColorAlpha("color", 0);
 			box-sizing: border-box;
 			transition: all 0.25s ease;
 			display: block;
-			box-shadow: 0px 0px 0px 0px -getColor("color", 1);
+			box-shadow: 0px 0px 0px 0px -getColor("color");
 			animation: loadingDialog 0.6s linear infinite;
 		}
 	}

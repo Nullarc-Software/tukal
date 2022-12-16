@@ -200,7 +200,7 @@ export default defineComponent({
 	justify-content: space-between;
 	flex-direction: column;
 	z-index: 21000;
-	background: -getColor("background");
+	background: -getColor("gray-2");
 	transition: all 0.25s ease;
 	padding: 5px;
 

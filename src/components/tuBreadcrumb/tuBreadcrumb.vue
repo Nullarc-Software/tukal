@@ -131,13 +131,13 @@ export default defineComponent({
 
 	a {
 		transition: all 0.2s ease;
-		color: rgba(0, 0, 0, 0.4);
+		color: -getColor("text");
 	}
 }
 
 .tu-breadcrumb--ol a:hover,
 .tu-breadcrumb--ol a:focus {
-	color: rgba(0, 0, 0, 0.7);
+	color: -getColor("text");
 	text-decoration: none;
 }
 
@@ -151,10 +151,9 @@ export default defineComponent({
 	}
 }
 
-@each $color,
-$index in --tu-colors {
+@each $color in $tu-colors {
 	.tu-breadcrumb-text-#{$color} {
-		color: -getColor(colorx, 1);
+		color: -getColor(colorx);
 	}
 }
 </style>

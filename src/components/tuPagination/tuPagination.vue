@@ -406,7 +406,7 @@ export default defineComponent({
 				height: 12px;
 				min-width: 15px;
 				padding: 0px;
-				background: transparent;
+				background: -getColor("text") !important;
 
 				i {
 					width: 6px;
@@ -441,7 +441,7 @@ export default defineComponent({
 			&__active {
 				width: 12px;
 				height: 12px;
-				box-shadow: 0px 2px 10px 0px -getColor("color", 0.4);
+				box-shadow: 0px 2px 10px 0px -getColorAlpha("color", 0.4);
 				transform: scale(1);
 
 				&.move {
@@ -469,7 +469,7 @@ export default defineComponent({
 
 		.progress {
 			width: 0px;
-			background: -getColor("color", 1);
+			background: -getColor("color");
 			height: 100%;
 			position: relative;
 			border-radius: inherit;
@@ -498,9 +498,10 @@ export default defineComponent({
 		align-items: center;
 		justify-content: center;
 		margin: 0px 2px;
-		background: -getColor("gray-3");
+		background: -getColor("gray-2");
 		transition: all 0.25s ease;
 		border: 0px;
+		color: -getColor("text") !important;
 
 		&:disabled {
 			opacity: 0.4;
@@ -508,7 +509,7 @@ export default defineComponent({
 		}
 
 		&:hover {
-			background: -getColor("gray-4");
+			background: -getColor("gray-2");
 		}
 
 		i {
@@ -529,8 +530,8 @@ export default defineComponent({
 
 	&__active {
 		&.flat {
-			background: -getColor("color", 0.15) !important;
-			color: -getColor("color", 1) !important;
+			background: -getColorAlpha("color", 0.15) !important;
+			color: -getColor("color") !important;
 		}
 
 		background: -getColor("color") !important;
@@ -635,7 +636,7 @@ export default defineComponent({
 		height: 36px;
 		border-radius: 12px;
 		padding: 0px;
-		background: -getColor("gray-3");
+		background: -getColor("gray-2");
 		margin: 0px 2px;
 		display: flex;
 		align-items: center;
@@ -658,14 +659,14 @@ export default defineComponent({
 				width: 100%;
 				height: 100%;
 				border-radius: 50%;
-				border: 2px solid -getColor("color", 1);
-				border-top: 2px solid -getColor("background", 0);
-				border-left: 2px solid -getColor("background", 0);
-				border-bottom: 2px solid -getColor("background", 0);
+				border: 2px solid -getColor("color");
+				border-top: 2px solid -getColorAlpha("background", 0);
+				border-left: 2px solid -getColorAlpha("background", 0);
+				border-bottom: 2px solid -getColorAlpha("background", 0);
 				box-sizing: border-box;
 				transition: all 0.25s ease;
 				display: block;
-				box-shadow: 0px 0px 0px 0px -getColor("color", 1);
+				box-shadow: 0px 0px 0px 0px -getColor("color");
 				animation: loadingPagination 0.6s ease infinite;
 			}
 
@@ -675,14 +676,14 @@ export default defineComponent({
 				width: 100%;
 				height: 100%;
 				border-radius: 50%;
-				border: 2px dashed -getColor("color", 1);
-				border-top: 2px solid -getColor("background", 0);
-				border-left: 2px solid -getColor("background", 0);
-				border-bottom: 2px solid -getColor("background", 0);
+				border: 2px dashed -getColor("color");
+				border-top: 2px solid -getColorAlpha("background", 0);
+				border-left: 2px solid -getColorAlpha("background", 0);
+				border-bottom: 2px solid -getColorAlpha("background", 0);
 				box-sizing: border-box;
 				transition: all 0.25s ease;
 				display: block;
-				box-shadow: 0px 0px 0px 0px -getColor("color", 1);
+				box-shadow: 0px 0px 0px 0px -getColor("color");
 				animation: loadingPagination 0.6s linear infinite;
 			}
 		}

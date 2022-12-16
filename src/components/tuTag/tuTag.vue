@@ -53,11 +53,11 @@ export default defineComponent({
 }
 
 .tu-tag__key {
-	color: -getColor("tag-text-color", 0.9);
+	color: -getColorAlpha("tag-text-color", 0.9);
 }
 
 .tu-tag__value {
-	color: -getColor("tag-text-color", );
+	color: -getColor("tag-text-color");
 	font-weight: bold;
 }
 

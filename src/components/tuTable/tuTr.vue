@@ -174,7 +174,7 @@ export default defineComponent({
 .tu-table__tr {
 	padding: 5px;
 	border: 0px;
-	border-bottom: 1px solid -getColor("text", 0.2);
+	border-bottom: 1px solid -getColorAlpha("text", 0.2);
 
 	&.expand {
 		cursor: pointer;
@@ -182,11 +182,11 @@ export default defineComponent({
 
 	&.tu-change-color {
 		::v-deep(.tu-table__td) {
-			background: -getColor("color", 0.1) !important;
-			color: -getColor("color", 1) !important;
+			background: -getColorAlpha("color", 0.1) !important;
+			color: -getColor("color") !important;
 
 			&:hover {
-				background: -getColor("color", 0.2) !important;
+				background: -getColorAlpha("color", 0.2) !important;
 			}
 		}
 	}
@@ -244,20 +244,20 @@ export default defineComponent({
 
 	&.selected {
 		::v-deep(.tu-table__td) {
-			background: -getColor("color", 0.1) !important;
-			color: -getColor("color", 1) !important;
+			background: -getColorAlpha("color", 0.1) !important;
+			color: -getColor("color") !important;
 		}
 	}
 
 	::v-deep(.tu-table__td) {
-		background: -getColor("bg", 0.1);
-		color: -getColor("bg", 1);
+		background: -getColorAlpha("bg", 0.1);
+		color: -getColor("bg");
 	}
 
 	&.tu-change-color {
 		&:hover {
 			::v-deep(.tu-table__td) {
-				background: -getColor("color", 0.2) !important;
+				background: -getColorAlpha("color", 0.2) !important;
 			}
 		}
 	}

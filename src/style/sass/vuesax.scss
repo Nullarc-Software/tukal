@@ -1,11 +1,9 @@
+@use "sass:color";
 @import "_colors";
 @import "_vars";
 @import "_dark";
 @import "_reset";
-@import "_notification";
-
-// body,table,td,tr
-//   backface-visibility: hidden
+@import "_mixins.scss";
 
 .unselectable {
 	-webkit-touch-callout: none;

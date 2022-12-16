@@ -191,28 +191,15 @@ export default defineComponent({
 });
 </script>
 
-<style>
-:root {
-	--popper-theme-background-color: #ffffff;
-	--popper-theme-background-color-hover: #ffffff;
-	--popper-theme-text-color: inherit;
-	--popper-theme-border: 1px solid #efefef;
-	--popper-theme-border-radius: 6px;
-	--popper-theme-padding: 16px;
-	--popper-theme-shadow: 0 6px 30px -6px rgba(0, 0, 0, 0.25);
-}
-</style>
 
 <style scoped>
 .pointer-hand {
 	cursor: pointer;
 }
-
 .popper-contatiner {
 	display: flex;
 	align-self: center;
 }
-
 #arrow,
 #arrow::before {
 	position: absolute;
@@ -220,57 +207,45 @@ export default defineComponent({
 	height: 8px;
 	background: var(--popper-theme-background-color);
 }
-
 #arrow {
 	visibility: hidden;
 }
-
 #arrow::before {
 	visibility: visible;
 	content: "";
 	transform: rotate(45deg);
 }
-
 .popper[data-popper-placement^="top"]>#arrow {
 	bottom: -4px;
 }
-
 .popper[data-popper-placement^="bottom"]>#arrow {
 	top: -4px;
 }
-
 .popper[data-popper-placement^="left"]>#arrow {
 	right: -4px;
 }
-
 .popper[data-popper-placement^="right"]>#arrow {
 	left: -4px;
 }
-
 .popper {
 	background: var(--popper-theme-background-color);
-
 	color: var(--popper-theme-text-color);
 	border-radius: var(--popper-theme-border-radius);
 	border: var(--popper-theme-border);
 	box-shadow: var(--popper-theme-shadow);
 	z-index: 90000;
 }
-
 .popper:hover,
 .popper:hover>#arrow::before {
 	background: var(--popper-theme-background-color-hover);
 }
-
 .inline-block {
 	display: inline-block;
 }
-
 .fade-enter-active,
 .fade-leave-active {
 	transition: opacity 0.2s ease;
 }
-
 .fade-enter-from,
 .fade-leave-to {
 	opacity: 0;

@@ -1,7 +1,7 @@
 
 import { defineComponent, inject, ref } from "vue";
 import { Router } from "vue-router";
-import { getColor } from "../../utils";
+import { getColor, getColorAsRgb } from "../../utils";
 
 class ComponentConstants {
 	public static router : Router;
@@ -17,6 +17,10 @@ export default defineComponent({
 			return getColor(color);
 		};
 
+		const funcWrapper2 = function (color) {
+			return getColorAsRgb(color);
+		};
+
 		const approuter = inject<Router|null>("appRouter", null);
 		const iconPackGlobal = inject<string|null>("iconPackGlobal", null);
 
@@ -26,6 +30,7 @@ export default defineComponent({
 
 		return {
 			componentColor,
+			getColorAsRgb: funcWrapper2,
 			getColor: funcWrapper,
 			getColorSecondary: Function,
 			approuter

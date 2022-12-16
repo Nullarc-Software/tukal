@@ -107,7 +107,7 @@ export default defineComponent({
 			}
 
 			&__text {
-				background: -getColor("background", 1);
+				background: -getColor("background");
 				box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, -var("shadow-opacity"));
 				border-radius: 6px 20px 6px 20px;
 				margin-top: -50px;
@@ -157,7 +157,7 @@ export default defineComponent({
 			}
 
 			&__text {
-				background: -getColor("background", 0.8);
+				background: -getColorAlpha("background", 0.8);
 				position: absolute;
 				bottom: 0px;
 				backdrop-filter: saturate(180%) blur(20px);
@@ -252,7 +252,7 @@ export default defineComponent({
 			&__text {
 				position: absolute;
 				bottom: 0px;
-				background: -getColor("background", 0.9);
+				background: -getColorAlpha("background", 0.9);
 				padding-top: 30px;
 				border-radius: 0px 0px 20px 20px;
 				background: linear-gradient(180deg,

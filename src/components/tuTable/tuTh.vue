@@ -1,14 +1,8 @@
 <template>
-	<th
-		class="tu-table__th"
-		:class="{
-			sort: sort,
-			search: search
-		}"
-		v-bind="$attrs"
-		:data-sort-type="sortType"
-		ref="theader"
-	>
+	<th class="tu-table__th" :class="{
+		sort: sort,
+		search: search
+	}" v-bind="$attrs" :data-sort-type="sortType" ref="theader">
 		<div class="tu-table__th__content">
 			<div class="tu-table__th__content__text" @click="toggleSort">
 				<slot />
@@ -17,21 +11,10 @@
 					<tu-icon class="icon-sort-2">keyboard_arrow_down</tu-icon>
 				</div>
 			</div>
-			<tu-input
-				v-if="search"
-				block
-				border
-				v-model="colSearch"
-				type="search"
-				@keypress="keyPressed"
-			/>
+			<tu-input v-if="search" block v-model="colSearch" type="search" @keypress="keyPressed" />
 		</div>
-		<div
-			class="tu-table__th__resizer_right"
-			:class="{ active: headerElement ? true : false }"
-			v-on="resizeListeners"
-			v-if="!fixed"
-		></div>
+		<div class="tu-table__th__resizer_right" :class="{ active: headerElement ? true : false }"
+			v-on="resizeListeners" v-if="!fixed"></div>
 	</th>
 </template>
 
@@ -92,7 +75,7 @@ export default defineComponent({
 		}
 	},
 	emits: ["enableDragListener", "disableDragListener"],
-	setup (props, context) {
+	setup(props, context) {
 		const instance = getCurrentInstance();
 		const tableInstance = inject<TuTableStore>("tableInstance");
 		const tableId = inject<string>("tableId");
@@ -111,37 +94,37 @@ export default defineComponent({
 		const headerElement = ref<HTMLElement>();
 		let startOffset = 0;
 
-		function keyPressed (event: KeyboardEvent) {
+		function keyPressed(event: KeyboardEvent) {
 			if (event.key === "Enter") {
 				switch (props.type) {
-				case "text":
-					tableInstance.setFilter(
-						props.field,
-						"like",
-						colSearch.value
-					);
-					break;
-				case "number":
-					tableInstance.setFilter(
-						props.field,
-						"equals",
-						colSearch.value
-					);
-					break;
-				case "date":
-					tableInstance.setFilter(
-						props.field,
-						"in",
-						colSearch.value
-					);
-					break;
-				default:
-					break;
+					case "text":
+						tableInstance.setFilter(
+							props.field,
+							"like",
+							colSearch.value
+						);
+						break;
+					case "number":
+						tableInstance.setFilter(
+							props.field,
+							"equals",
+							colSearch.value
+						);
+						break;
+					case "date":
+						tableInstance.setFilter(
+							props.field,
+							"in",
+							colSearch.value
+						);
+						break;
+					default:
+						break;
 				}
 			}
 		}
 
-		function toggleSort (event) {
+		function toggleSort(event) {
 			if (props.sort) tableInstance.toggleSort(props.field);
 		}
 
@@ -149,7 +132,7 @@ export default defineComponent({
 			if (value === "") tableInstance.deleteFilter(props.field);
 		});
 
-		function trackMouseMove (event: MouseEvent) {
+		function trackMouseMove(event: MouseEvent) {
 			if (headerElement.value) {
 				const newWidth = startOffset + event.pageX;
 				if (
@@ -163,7 +146,7 @@ export default defineComponent({
 			}
 		}
 
-		function trackMouseUp (event) {
+		function trackMouseUp(event) {
 			headerElement.value = undefined;
 			context.emit("enableDragListener");
 		}
@@ -197,6 +180,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import "../../style/sass/_mixins";
+
 .tu-table__th {
 	padding: 10px 12px;
 	text-align: left;
@@ -240,7 +224,7 @@ export default defineComponent({
 			right: 0;
 			top: 0;
 			bottom: 0;
-			background-color: -getColor("text", 0.05);
+			background-color: -getColorAlpha("text", 0.05);
 
 			&.active {
 				background-color: -getColor("primary");
@@ -277,6 +261,7 @@ export default defineComponent({
 			transform: rotate(0deg) !important;
 			transition: inherit;
 		}
+
 		.icon-sort-1 {
 			transform: rotate(0deg) !important;
 			transition: inherit;

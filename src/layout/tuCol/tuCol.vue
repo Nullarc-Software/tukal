@@ -20,14 +20,14 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
-import {GlobalsNumber} from "node_modules/csstype"
+
 
 export default defineComponent({
 	name: "TuCol",
 	props: {
 		w: { type: [String, Number], default: "12" },
 		offset: { type: [String, Number], default: "0" },
-		order: { type: Object as PropType<GlobalsNumber>, default: 0 },
+		order: { type: Number, default: 0 },
 		lg: { type: [String, Number], default: "0" },
 		sm: { type: [String, Number], default: "0" },
 		xs: { type: [String, Number], default: "0" },

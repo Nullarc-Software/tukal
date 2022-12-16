@@ -1,0 +1,29 @@
+@use "sass:color";
+@function -getColor($color) {
+	@return cssvar($color);
+}
+
+@function -getColorAlpha($color, $alpha: 1) {
+	@return rgba(cssvar("#{$color}-rgb"), $alpha);
+}
+
+@function -var($var) {
+	@return unquote("var(--tu-#{$var})");
+}
+
+@function cssvar($name, $prefix: tu) {
+	@return var(--#{$prefix}-#{$name});
+}
+
+$tu-colors: (
+	"primary",
+	"secondary",
+	"danger",
+	"success",
+	"warning",
+	"dark",
+	"light",
+	"background",
+	"text",
+	"color"
+);

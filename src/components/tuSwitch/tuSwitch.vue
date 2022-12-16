@@ -1,35 +1,26 @@
 <template>
-	<div
-		type="checkbox"
-		:style="{
-			['--tu-color']: color ? getColor(color) : '',
-		}"
-		:class="[
-			'tu-switch',
-			{
-				'tu-switch--loading': loading,
-				'tu-switch--square': square,
-				'tu-switch--indeterminate': indeterminate,
-				'tu-switch--icon': icon,
-			},
-			{
-				[`tu-component--primary`]:
-					!danger && !success && !warn && !dark && !color,
-			},
-			{ [`tu-component--danger`]: !!danger },
-			{ [`tu-component--warn`]: !!warn },
-			{ [`tu-component--success`]: !!success },
-			{ [`tu-component--dark`]: !!dark },
-			{ isChecked: !!isChecked },
-		]"
-	>
-		<input
-			type="checkbox"
-			v-bind="$attrs"
-			:checked="isChecked"
-			v-on="inputListener"
-			:class="['tu-switch__input']"
-		/>
+	<div type="checkbox" :style="{
+		['--tu-color']: color ? getColor(color) : '',
+	}" :class="[
+	'tu-switch',
+	{
+		'tu-switch--loading': loading,
+		'tu-switch--square': square,
+		'tu-switch--indeterminate': indeterminate,
+		'tu-switch--icon': icon,
+	},
+	{
+		[`tu-component--primary`]:
+			!danger && !success && !warn && !dark && !color,
+	},
+	{ [`tu-component--danger`]: !!danger },
+	{ [`tu-component--warn`]: !!warn },
+	{ [`tu-component--success`]: !!success },
+	{ [`tu-component--dark`]: !!dark },
+	{ isChecked: !!isChecked },
+]">
+		<input type="checkbox" v-bind="$attrs" :checked="isChecked" v-on="inputListener"
+			:class="['tu-switch__input']" />
 		<div class="tu-switch__circle">
 			<slot name="circle" />
 		</div>
@@ -62,7 +53,7 @@ export default defineComponent({
 		icon: { type: Boolean, default: false }
 	},
 	emits: ["change", "update:modelValue"],
-	setup (props, context) {
+	setup(props, context) {
 		const isChecked = computed(() => {
 			let isChecked = false;
 
@@ -181,7 +172,7 @@ export default defineComponent({
 	&--icon {
 		.tu-switch__input {
 			&:checked {
-				~ .tu-switch__circle {
+				~.tu-switch__circle {
 					color: #fff !important;
 				}
 			}
@@ -234,9 +225,11 @@ export default defineComponent({
 		border-radius: 50%;
 		border-top: 3px solid transparent;
 		border-right: 3px solid transparent;
+
 		.isChecked {
 			animation: rotateSwitch 0.6s linear infinite 0.25s;
 		}
+
 		pointer-events: none;
 	}
 
@@ -254,6 +247,7 @@ export default defineComponent({
 		border-radius: 50%;
 		border-top: 3px solid transparent;
 		border-right: 3px solid transparent;
+
 		.isChecked {
 			animation: rotateSwitch 0.6s linear infinite 0.25s;
 		}
@@ -369,18 +363,18 @@ export default defineComponent({
 
 		&:active {
 			&:checked {
-				~ .tu-switch__circle {
+				~.tu-switch__circle {
 					left: calc(100% - 30px);
 				}
 			}
 
-			~ .tu-switch__circle {
+			~.tu-switch__circle {
 				width: 25px;
 			}
 		}
 
 		&:checked {
-			~ .tu-switch__background {
+			~.tu-switch__background {
 				opacity: 1;
 				transform: scale(1);
 				width: 100%;
@@ -390,7 +384,7 @@ export default defineComponent({
 				transition: all 0.25s ease;
 			}
 
-			~ .tu-switch__text {
+			~.tu-switch__text {
 				padding-left: 5px;
 				padding-right: 25px;
 				color: #fff;
@@ -412,9 +406,9 @@ export default defineComponent({
 				}
 			}
 
-			~ .tu-switch__circle {
+			~.tu-switch__circle {
 				left: calc(100% - 24px);
-				box-shadow: (-5px) 0px 25px 0px -getColor("background", 0.6);
+				box-shadow: (-5px) 0px 25px 0px -getColorAlpha("background", 0.6);
 				color: -getColor("color");
 			}
 		}

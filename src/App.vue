@@ -1,10 +1,11 @@
 <!-- eslint-disable unused-imports/no-unused-vars -->
 <template>
 	<div style="position: relative">
-		<h1 style="text-align: cente; margin-top: 50px">
+		<h1 class="text-color" style="text-align: cente; margin-top: 50px">
 			Vuesax3 (Typescript + composition API Demo) - TheCelebrimbor -
 			Github
 		</h1>
+		<tu-switch v-model="darkModeActive" dark> Dark Mode </tu-switch>
 		<div class="showcase-component">
 			<h3>Buttons:</h3>
 			<hr />
@@ -38,6 +39,9 @@
 				Border Only
 			</tu-button>
 			<tu-button flat color="primary" style="margin-right: 10px">
+				Flat
+			</tu-button>
+			<tu-button flat color="danger" style="margin-right: 10px">
 				Flat
 			</tu-button>
 			<tu-button gradient color="primary" style="margin-right: 10px">
@@ -438,7 +442,7 @@
 
 				<tu-input dark state="dark" label-placeholder="Dark" />
 
-				<tu-input border placeholder="Name" />
+				<tu-input border placeholder="Name" color="danger" />
 
 				<tu-input color="#7d33ff" border type="password" placeholder="Password">
 					<template #icon>
@@ -494,9 +498,7 @@
 				</tu-select-option>
 			</tu-select>
 
-			<tu-select inline
-				placeholder="Label-placeholder for something soooooo longggg Label-placeholder for something soooooo longggg"
-				v-model="selectValue1" style="margin: 10px" filter>
+			<tu-select placeholder="" v-model="selectValue1" filter>
 				<tu-select-option label="Test" value="1">
 					Test
 				</tu-select-option>
@@ -623,7 +625,7 @@
 			<hr />
 			aaa
 			<tu-popper arrow>
-				<button>click me</button>
+				<tu-button>click me</tu-button>
 				<template #content>
 					<tu-popup-menu>
 						<tu-popup-item :loading="true" loadingType="scale"> Test </tu-popup-item>
@@ -865,7 +867,7 @@
 		</div>
 		<div class="showcase-component">
 			<h4>Calendar:</h4>
-			<tu-calendar model="server" :items="items" :categories="Categories" @onClickDay="onClick" />
+			<tu-calendar model="local" :items="items" :categories="Categories" @onClickDay="onClick" />
 		</div>
 		<div class="showcase-component">
 			<h4>Tags:</h4>
@@ -937,6 +939,7 @@ export default defineComponent({
 		const checkBox2 = ref(["luis"]);
 		const loading = ref(false);
 		const sideBar = ref("home");
+		const darkModeActive = ref(false);
 		const activeDialog = ref(false);
 		const activeDialog1 = ref(false);
 		const activeDialog2 = ref(false);
@@ -1308,9 +1311,17 @@ export default defineComponent({
 			console.log(value);
 		}); */
 
+		watch(darkModeActive, (active) => {
+			if (!active)
+				document.body.classList.remove("tu-dark-theme");
+			else
+				document.body.classList.add("tu-dark-theme");
+		})
+
 		return {
 			// treeSelectedItems,
 			// treeItems,
+			darkModeActive,
 			columns,
 			universities,
 			numPages,
@@ -1368,10 +1379,16 @@ export default defineComponent({
 <style lang="scss">
 @import "./style/sass/_mixins";
 
+
 .showcase-component {
 	margin-bottom: 15px;
 	margin-left: 30px;
 	margin-top: 30px;
+	color: -getColor("text") !important;
+}
+
+.text-color {
+	color: -getColor("text");
 }
 
 .tu-select-content {
@@ -1379,6 +1396,6 @@ export default defineComponent({
 }
 
 body {
-	background-color: var(--tu-text);
+	background-color: -getColor(background)
 }
 </style>

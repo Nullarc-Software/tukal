@@ -1,75 +1,63 @@
 <template>
-	<button
-		:class="[
-			'tu-button',
-			// `tu-button--${color.replace('#', '')}`,
-			`tu-button--${componentColor}`,
-			`tu-button--size-${size}`,
-			{ [`tu-button--fff`]: color === '#fff' },
-			{ [`tu-button--active`]: !!active },
-			{ [`tu-button--active-disabled`]: !!activeDisabled },
-			{ [`tu-button--icon`]: !!icon },
-			{ [`tu-button--circle`]: !!circle },
-			{ [`tu-button--square`]: !!square },
-			{ [`tu-button--loading`]: !!loading },
-			{ [`tu-button--upload`]: !!upload },
-			{ [`tu-button--block`]: !!block },
-			{ [`tu-button--animate`]: !!$slots.animate },
-			{ [`tu-button--animate-${animationType}`]: !!animationType },
-			{ [`tu-button--animate-inactive`]: !!animateInactive },
-			{ [`inline`]: !!inline },
-
-			// colors
-			{
-				[`tu-button--primary`]:
-					!danger && !success && !warn && !dark && !'color'
-			},
-			{ [`tu-button--danger`]: !!danger },
-			{ [`tu-button--warn`]: !!warn },
-			{ [`tu-button--success`]: !!success },
-			{ [`tu-button--dark`]: !!dark },
-
-			{
-				[`tu-button--default`]:
-					!flat &&
-					!border &&
-					!gradient &&
-					!relief &&
-					!transparent &&
-					!shadow &&
-					!floating
-			},
-			{ [`tu-button--flat`]: !!flat },
-			{ [`tu-button--border`]: !!border },
-			{ [`tu-button--gradient`]: !!gradient },
-			{ [`tu-button--relief`]: !!relief },
-			{ [`tu-button--transparent`]: !!transparent },
-			{ [`tu-button--shadow`]: !!shadow },
-			{ [`tu-button--floating`]: !!floating }
-		]"
-		:style="{
-			['--tu-color']: color ? getColor(color) : '',
-			['--tu-color-secondary']: colorSecondary
-				? getColor(colorSecondary)
-				: '',
-			['--tu-button-text-color']: textColor ? getColor(textColor) : '',
-			width: width,
-			height: height
-		}"
-		v-bind="$attrs"
-		v-on="listeners"
-		ref="button"
-	>
+	<button :class="[
+		'tu-button',
+		// `tu-button--${color.replace('#', '')}`,
+		`tu-button--${componentColor}`,
+		`tu-button--size-${size}`,
+		{ [`tu-button--fff`]: color === '#fff' },
+		{ [`tu-button--active`]: !!active },
+		{ [`tu-button--active-disabled`]: !!activeDisabled },
+		{ [`tu-button--icon`]: !!icon },
+		{ [`tu-button--circle`]: !!circle },
+		{ [`tu-button--square`]: !!square },
+		{ [`tu-button--loading`]: !!loading },
+		{ [`tu-button--upload`]: !!upload },
+		{ [`tu-button--block`]: !!block },
+		{ [`tu-button--animate`]: !!$slots.animate },
+		{ [`tu-button--animate-${animationType}`]: !!animationType },
+		{ [`tu-button--animate-inactive`]: !!animateInactive },
+		{ [`inline`]: !!inline },
+	
+		// colors
+		{
+			[`tu-button--primary`]:
+				!danger && !success && !warn && !dark && !'color'
+		},
+		{ [`tu-button--danger`]: !!danger },
+		{ [`tu-button--warn`]: !!warn },
+		{ [`tu-button--success`]: !!success },
+		{ [`tu-button--dark`]: !!dark },
+	
+		{
+			[`tu-button--default`]:
+				!flat &&
+				!border &&
+				!gradient &&
+				!relief &&
+				!transparent &&
+				!shadow &&
+				!floating
+		},
+		{ [`tu-button--flat`]: !!flat },
+		{ [`tu-button--border`]: !!border },
+		{ [`tu-button--gradient`]: !!gradient },
+		{ [`tu-button--relief`]: !!relief },
+		{ [`tu-button--transparent`]: !!transparent },
+		{ [`tu-button--shadow`]: !!shadow },
+		{ [`tu-button--floating`]: !!floating }
+	]" :style="{
+	['--tu-color']: color ? getColor(color) : '', ['--tu-color-secondary']: colorSecondary ?
+		getColor(colorSecondary) : '', ['--tu-button-text-color']: textColor ? getColor(textColor) : '', width: width,
+	['--tu-color-rgb']: color ? getColorAsRgb(color) : '',
+	height: height
+}" v-bind="$attrs" v-on="listeners" ref="button">
 		<div class="tu-button__content">
 			<slot />
 		</div>
-		<div
-			v-if="$slots.animate"
-			:class="[
-				'tu-button__animate',
-				`tu-button__animate--${animationType}`
-			]"
-		>
+		<div v-if="$slots.animate" :class="[
+			'tu-button__animate',
+			`tu-button__animate--${animationType}`
+		]">
 			<slot name="animate" />
 		</div>
 		<div v-if="loading" class="tu-button__loading"></div>
@@ -140,8 +128,8 @@ export default defineComponent({
 							? "inherit"
 							: null,
 						props.flat &&
-							!props.active &&
-							document.activeElement !== button.value
+						!props.active &&
+						document.activeElement !== button.value
 					);
 				}
 				else ripple(event, null, false);
@@ -164,6 +152,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
+@use "sass:color";
 @import "../../style/sass/_mixins";
 @import "../../style/sass/root";
 
@@ -189,13 +178,15 @@ export default defineComponent({
 	outline: none;
 	font-size: 0.8rem;
 	box-sizing: border-box;
-	color: -getColor("button-text-color");
+	color: rgba(255, 255, 255);
 
 	&.tu-component-dark {
 		&.tu-button--transparent {
 			@if variable-exists("--tu-color") {
 				color: -getColor("color") !important;
-			} @else {
+			}
+
+			@else {
 				color: -getColor("text") !important;
 			}
 		}
@@ -327,7 +318,7 @@ export default defineComponent({
 			position: absolute;
 			width: 100%;
 			height: 100%;
-			background: -getColor("color", 0.4);
+			background: -getColorAlpha("color", 0.4);
 			top: 0px;
 			left: 0px;
 			z-index: 1200;
@@ -350,7 +341,7 @@ export default defineComponent({
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		background: -getColor("color", 0.8);
+		background: -getColorAlpha("color", 0.8);
 		border-radius: inherit;
 
 		&:after {
@@ -384,6 +375,7 @@ export default defineComponent({
 
 	&--size-xl {
 		border-radius: 20px;
+
 		.tu-button__content {
 			padding: 15px 20px;
 			font-size: 1.1rem;
@@ -445,74 +437,74 @@ export default defineComponent({
 .tu-button--default {
 	@debug "divider offset: #{color}";
 
-	background: -getColor("color", 1);
-	color: -getColor("button-text-color", 1);
+	background: -getColor("color");
+	color: white;
 
 	&.tu-button--active {
-		box-shadow: 0px 10px 20px -10px -getColor("color", 1);
+		box-shadow: 0px 10px 20px -10px -getColor("color");
 		transform: translate(0, -3px);
 	}
 
 	&:hover,
 	&:focus {
-		box-shadow: 0px 10px 20px -10px -getColor("color", 1);
+		box-shadow: 0px 10px 20px -10px -getColor("color");
 		transform: translate(0, -3px);
 	}
 }
 
 .tu-button--flat {
-	background: -getColor("color", 0.15);
-	color: -getColor("color", 1);
+	background: -getColorAlpha("color", 0.15);
+	color: -getColor("color");
 
 	&.tu-button--dark {
-		color: -getColor(text, 1);
+		color: -getColor(text);
 	}
 
 	&:hover {
-		background: -getColor("color", 0.25);
+		background: -getColorAlpha("color", 0.25);
 	}
 
 	&:focus {
 		color: #fff;
-		background: -getColor("color", 1);
+		background: -getColor("color");
 		transition: all 0.25s ease, background 0.25s ease 0.25s;
 	}
 
 	&.tu-button--active {
-		background: -getColor("color", 1);
+		background: -getColor("color");
 		color: #fff;
 	}
 }
 
 .tu-button--floating {
-	background: -getColor("color", 1);
+	background: -getColor("color");
 	color: #fff;
-	box-shadow: 0px 8px 20px -6px -getColor("color", 1);
+	box-shadow: 0px 8px 20px -6px -getColor("color");
 	transform: translate(0, -3px);
 
 	&:hover {
-		box-shadow: 0px 8px 20px -6px -getColor("color", 1);
+		box-shadow: 0px 8px 20px -6px -getColor("color");
 		transform: translate(0, -6px);
 	}
 
 	&:focus {
 		transform: translate(0, 0px);
-		box-shadow: 0px 0px 0px 0px -getColor("color", 1);
+		box-shadow: 0px 0px 0px 0px -getColor("color");
 	}
 
 	&.tu-button--active {
 		transform: translate(0, 0px);
-		box-shadow: 0px 0px 0px 0px -getColor("color", 1);
+		box-shadow: 0px 0px 0px 0px -getColor("color");
 	}
 }
 
 .tu-button--border {
-	background: -getColor("color", 0);
-	color: -getColor("color", 1);
+	background: -getColorAlpha("color", 0);
+	color: -getColor("color");
 
 	&:before {
 		content: "";
-		border: 2px solid -getColor("color", 1);
+		border: 2px solid -getColor("color");
 		position: absolute;
 		top: 0px;
 		left: 0px;
@@ -527,17 +519,17 @@ export default defineComponent({
 
 	&:hover {
 		&:before {
-			border: 2px solid -getColor("color", 0.5);
+			border: 2px solid -getColorAlpha("color", 0.5);
 		}
 	}
 
 	&:focus {
 		color: #fff;
-		background: -getColor("color", 1);
+		background: -getColor("color");
 	}
 
 	&.tu-button--active {
-		background: -getColor("color", 1);
+		background: -getColor("color");
 		color: #fff;
 	}
 }
@@ -556,11 +548,9 @@ export default defineComponent({
 
 	&::before {
 		content: "";
-		background: linear-gradient(
-			30deg,
-			-getColor("color", 1) 0%,
-			-getColor("color-secondary", 0.6) 100%
-		);
+		background: linear-gradient(30deg,
+				-getColor("color") 0%,
+				-getColorAlpha("color-secondary", 0.6) 100%);
 		position: absolute;
 		top: 0px;
 		left: 0px;
@@ -576,7 +566,7 @@ export default defineComponent({
 
 	&:hover {
 		transform: translate(0, -3px);
-		box-shadow: 0px 10px 20px -10px -getColor("color", 0.7);
+		box-shadow: 0px 10px 20px -10px -getColorAlpha("color", 0.7);
 
 		&::before {
 			opacity: 0;
@@ -655,7 +645,7 @@ export default defineComponent({
 
 	&::before {
 		content: "";
-		background: -getColor("color", 0.1);
+		background: -getColorAlpha("color", 0.1);
 
 		// background: -getColor('color', -var('background-opacity'))
 		position: absolute;
@@ -687,7 +677,7 @@ export default defineComponent({
 
 	&.tu-button--active {
 		&::before {
-			background: -getColor("color", 0.2);
+			background: -getColorAlpha("color", 0.2);
 			opacity: 1;
 			transform: scale(1);
 		}
