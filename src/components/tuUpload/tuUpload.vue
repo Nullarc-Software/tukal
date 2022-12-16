@@ -4,58 +4,36 @@
 
 		<div class="con-img-upload">
 			<!-- <transition-group v-for="(img,index) in getFilesFilter" :key="index" name="upload"> -->
-			<div
-				v-for="(img, index) in getFilesFilter"
-				:class="{
-					fileError: img.error,
-					removeItem: itemRemove.includes(index)
-				}"
-				:key="index"
-				class="img-upload"
-			>
-				<button
-					class="btn-x-file"
-					type="button"
-					@click="removeFile(index)"
-				>
+			<div v-for="(img, index) in getFilesFilter" :class="{
+				fileError: img.error,
+				removeItem: itemRemove.includes(index)
+			}" :key="index" class="img-upload">
+				<button class="btn-x-file" type="button" @click="removeFile(index)">
 					<i translate="no" class="material-icons notranslate">
 						clear
 					</i>
 				</button>
-				<button
-					v-if="showUploadButton"
-					:class="{
-						'on-progress': img.percent,
-						'ready-progress': img.percent >= 100
-					}"
-					:style="{
-						height: `${img.percent}%`
-					}"
-					class="btn-upload-file"
-					@click="upload(index)"
-				>
+				<button v-if="showUploadButton" :class="{
+					'on-progress': img.percent,
+					'ready-progress': img.percent >= 100
+				}" :style="{
+	height: `${img.percent}%`
+}" class="btn-upload-file" @click="upload(index)">
 					<i translate="no" class="material-icons notranslate">
 						{{
-							img.percent >= 100
-								? img.error
-									? "report_problem"
-									: "cloud_done"
-								: "cloud_upload"
+								img.percent >= 100
+									? img.error
+										? "report_problem"
+										: "cloud_done"
+									: "cloud_upload"
 						}}
 					</i>
 					<span>{{ img.percent }} %</span>
 				</button>
-				<img
-					v-if="img.src"
-					:style="{
-						maxWidth: img.orientation == 'h' ? '100%' : 'none',
-						maxHeight: img.orientation == 'w' ? '100%' : 'none'
-					}"
-					:key="index"
-					:src="img.src"
-					@touchend="viewImage(img.src, $event)"
-					@click="viewImage(img.src, $event)"
-				/>
+				<img v-if="img.src" :style="{
+					maxWidth: img.orientation == 'h' ? '100%' : 'none',
+					maxHeight: img.orientation == 'w' ? '100%' : 'none'
+				}" :key="index" :src="img.src" @touchend="viewImage(img.src, $event)" @click="viewImage(img.src, $event)" />
 				<h4 v-if="!img.src" class="text-archive">
 					<i translate="no" class="material-icons notranslate">
 						description
@@ -67,46 +45,28 @@
 			</div>
 			<!-- </transition-group > -->
 
-			<div
-				:class="{
-					'on-progress-all-upload': percent != 0,
-					'is-ready-all-upload': percent >= 100,
-					'disabled-upload':
-						$attrs.hasOwnProperty('disabled') || limit
-							? srcs.length - itemRemove.length >= Number(limit)
-							: false
-				}"
-				class="con-input-upload"
-			>
-				<input
-					ref="fileInput"
-					v-bind="$attrs"
-					:disabled="
-						$attrs.disabled || limit
-							? srcs.length - itemRemove.length >= Number(limit)
-							: false
-					"
-					type="file"
-					@change="getFiles"
-				/>
+			<div :class="{
+				'on-progress-all-upload': percent != 0,
+				'is-ready-all-upload': percent >= 100,
+				'disabled-upload':
+					$attrs.hasOwnProperty('disabled') || limit
+						? srcs.length - itemRemove.length >= Number(limit)
+						: false
+			}" class="con-input-upload">
+				<input ref="fileInput" v-bind="$attrs" :disabled="
+					$attrs.disabled || limit
+						? srcs.length - itemRemove.length >= Number(limit)
+						: false
+				" type="file" @change="getFiles" />
 				<span class="text-input">
 					{{ text }}
 				</span>
-				<span
-					:style="{
-						width: `${percent}%`
-					}"
-					class="input-progress"
-				>
+				<span :style="{
+					width: `${percent}%`
+				}" class="input-progress">
 				</span>
-				<button
-					v-if="showUploadButton"
-					:disabled="filesx.length == 0"
-					type="button"
-					title="Upload"
-					class="btn-upload-all vs-upload--button-upload"
-					@click="upload('all')"
-				>
+				<button v-if="showUploadButton" :disabled="filesx.length == 0" type="button" title="Upload"
+					class="btn-upload-all vs-upload--button-upload" @click="upload('all')">
 					<i translate="no" class="material-icons notranslate">
 						cloud_upload
 					</i>
@@ -168,7 +128,7 @@ export default defineComponent({
 			type: Boolean
 		}
 	},
-	setup (props, context) {
+	setup(props, context) {
 		const viewActive = ref(false);
 		const viewSrc = ref(null);
 		const srcs = ref([]);
@@ -200,7 +160,7 @@ export default defineComponent({
 			let timeout;
 			const eventx =
 				"ontouchstart" in window ||
-				(window.Touch && document instanceof window.Touch)
+					(window.Touch && document instanceof window.Touch)
 					? "touchstart"
 					: "click";
 			if (eventx === "click") {
@@ -233,7 +193,7 @@ export default defineComponent({
 		const getFiles = (e) => {
 			context.emit("update:vsFile", e.target.value);
 			const _this = this;
-			function uploadImage (e) {
+			function uploadImage(e) {
 				let orientation = "h";
 				const image = new Image();
 				image.src = e.target.result;
@@ -243,7 +203,7 @@ export default defineComponent({
 					switchImage(image, orientation);
 				};
 			}
-			function switchImage (image, orientation) {
+			function switchImage(image, orientation) {
 				srcs.value.push({
 					src: image.src,
 					orientation: orientation,
@@ -334,11 +294,11 @@ export default defineComponent({
 		const uploadx = (index, formData) => {
 			const self = this;
 			const xhr = new XMLHttpRequest();
-			xhr.onerror = function error (e) {
+			xhr.onerror = function error(e) {
 				context.emit("on-error", e);
 				if (typeof index === "number") srcs.value[index].error = true;
 			};
-			xhr.onload = function onload (e) {
+			xhr.onload = function onload(e) {
 				if (xhr.status < 200 || xhr.status >= 300) {
 					context.emit("on-error", e);
 					if (typeof index === "number")
@@ -352,7 +312,7 @@ export default defineComponent({
 				}
 			};
 			if (xhr.upload) {
-				xhr.upload.onprogress = function progress (e) {
+				xhr.upload.onprogress = function progress(e) {
 					if (e.total > 0) {
 						let percent = (e.loaded / e.total) * 100;
 						if (typeof index === "number")
@@ -404,13 +364,17 @@ export default defineComponent({
 });
 </script>
 
-<style></style>
+<style>
+
+</style>
 <style lang="scss">
 @import "../../style/sass/_mixins";
+
 .con-upload {
 	width: 100%;
 	position: relative;
 }
+
 .con-input-upload {
 	background: #f5f5f5;
 	width: 200px;
@@ -425,15 +389,18 @@ export default defineComponent({
 	justify-content: center;
 	flex-direction: column;
 	margin: 15px;
+
 	&:hover {
 		border: 1px dashed rgba(-getColor(primary), 0.5);
 	}
+
 	&.disabled-upload {
 		opacity: 0;
 		pointer-events: none;
 		user-select: none;
 		display: none;
 	}
+
 	input {
 		position: absolute;
 		width: 100%;
@@ -443,6 +410,7 @@ export default defineComponent({
 		top: 0px;
 		cursor: pointer;
 	}
+
 	.text-input {
 		min-width: 200px;
 		display: block;
@@ -452,6 +420,7 @@ export default defineComponent({
 		width: 100%;
 		font-weight: bold;
 	}
+
 	.input-progress {
 		height: 100%;
 		position: absolute;
@@ -462,6 +431,7 @@ export default defineComponent({
 		background: -getColor("primary");
 		border-radius: 10px;
 	}
+
 	&.on-progress-all-upload {
 		width: 100%;
 		height: 4px;
@@ -469,17 +439,20 @@ export default defineComponent({
 		padding: 0px;
 		border: 0px solid rgba(0, 0, 0, 0);
 	}
+
 	&.is-ready-all-upload {
 		.input-progress {
-			background: -getColor(success, 1) !important;
+			background: -getColor(success) !important;
 		}
 	}
 }
+
 .con-input-upload.on-progress-all-upload .text-input,
 .con-input-upload.on-progress-all-upload .vs-upload--button-upload {
 	opacity: 0;
 	transform: translate(-40px);
 }
+
 .vs-upload--button-upload {
 	position: absolute;
 	border: 0px;
@@ -497,10 +470,12 @@ export default defineComponent({
 	background: rgba(0, 0, 0, 0.03);
 	bottom: 0px;
 	width: 100%;
+
 	&:disabled {
 		opacity: 0.4;
 		pointer-events: none;
 	}
+
 	&:hover {
 		padding-bottom: 10px;
 		padding-top: 10px;
@@ -508,6 +483,7 @@ export default defineComponent({
 		color: #fff;
 	}
 }
+
 .con-img-upload {
 	width: 100%;
 	background: #fff;
@@ -518,6 +494,7 @@ export default defineComponent({
 	box-sizing: border-box;
 	column-gap: 5px;
 	overflow: hidden;
+
 	.img-upload {
 		backface-visibility: hidden;
 		overflow: hidden;
@@ -535,16 +512,20 @@ export default defineComponent({
 		margin: 5px;
 		position: relative;
 		cursor: pointer;
+
 		&.fileError {
-			border: 1px solid rgba(-getColor("danger"), 0.2);
-			box-shadow: 0px 5px 20px 0px rgba(-getColor("danger"), 0.2);
+			border: 1px solid -getColorAlpha("danger", 0.2);
+			box-shadow: 0px 5px 20px 0px -getColorAlpha("danger", 0.2);
+
 			.btn-upload-file {
-				background: rgba(-getColor("danger"), 0.3) !important;
+				background: -getColorAlpha("danger", 0.3) !important;
+
 				i {
 					background: -getColor("danger") !important;
 				}
 			}
 		}
+
 		&.removeItem {
 			transition: all 0.3s ease, height 0.2s ease 0.2s;
 			opacity: 0 !important;
@@ -553,21 +534,26 @@ export default defineComponent({
 			margin: 0px !important;
 			height: 0px !important;
 		}
+
 		img {
 			transition: all 0.3s ease;
 		}
+
 		&:hover {
 			transform: scale(0.99);
 			box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.1);
+
 			.btn-x-file {
 				opacity: 1;
 				transform: translate(0%, 0%);
 			}
+
 			.btn-upload-file {
 				opacity: 1;
 				transform: translate(-50%, 65%);
 			}
 		}
+
 		.btn-x-file {
 			display: block;
 			position: absolute;
@@ -582,6 +568,7 @@ export default defineComponent({
 			cursor: pointer;
 			transition: all 0.2s ease;
 			border-radius: 10px;
+
 			i {
 				transition: all 0.2s ease;
 				position: relative;
@@ -595,38 +582,44 @@ export default defineComponent({
 				color: #fff;
 				text-shadow: 0px 3px 10px rgba(0, 0, 0, 0.5);
 			}
+
 			&:hover {
 				i {
 					border-radius: 50%;
 					background: -getColor("danger");
 				}
-				& ~ .btn-upload-file {
+
+				&~.btn-upload-file {
 					&:not(.on-progress) {
-						background: radial-gradient(
-							ellipse at center,
-							-getColor(danger, 1) 0%,
-							rgba(0, 0, 0, 0) 70%
-						);
+						background: radial-gradient(ellipse at center,
+								-getColor(danger) 0%,
+								rgba(0, 0, 0, 0) 70%);
 						height: 300px;
+
 						i {
 							opacity: 0;
 						}
 					}
+
 					&:not(.on-progress):after {
 						border: 1px solid -getColor("danger");
 					}
 				}
-				& ~ .on-progress {
+
+				&~.on-progress {
 					background: rgba(-getColor(danger), 0.2);
+
 					i {
 						opacity: 0;
 					}
 				}
-				& ~ img {
+
+				&~img {
 					filter: grayscale(80%);
 				}
 			}
 		}
+
 		.text-archive {
 			display: flex;
 			align-items: center;
@@ -634,16 +627,19 @@ export default defineComponent({
 			position: relative;
 			text-align: center;
 			padding: 5px;
+
 			i {
 				position: absolute;
 				font-size: 7rem;
 				opacity: 0.05;
 			}
+
 			span {
 				position: relative;
 				padding: 5px;
 			}
 		}
+
 		.btn-upload-file {
 			margin: 0px;
 			opacity: 0;
@@ -656,14 +652,13 @@ export default defineComponent({
 			height: 200px;
 			transform: translate(-50%, 80%);
 			border: 0px;
-			background: radial-gradient(
-				ellipse at center,
-				-getColor(success, 1) 0%,
-				rgba(0, 0, 0, 0) 70%
-			);
+			background: radial-gradient(ellipse at center,
+					-getColor(success) 0%,
+					rgba(0, 0, 0, 0) 70%);
 			cursor: pointer;
 			transition: all 0.3s ease;
 			animation: upload-imageRebound 0.7s ease !important;
+
 			&:after {
 				content: "";
 				width: 200px;
@@ -675,20 +670,23 @@ export default defineComponent({
 				transform: translate(-50%, -50%);
 				top: 50%;
 				border-radius: 50%;
-				border: 1px solid -getColor(success, 1);
+				border: 1px solid -getColor(success);
 				animation: upload-circle 1.5s ease infinite;
 			}
+
 			&:not(.on-progress):hover {
 				width: 200px;
 				height: 200px;
 				transform: translate(-50%, 70%);
+
 				i {
 					font-size: 1.4rem;
-					background: -getColor(success, 1);
+					background: -getColor(success);
 					top: 6%;
 					padding: 10px;
 				}
 			}
+
 			i {
 				z-index: 50;
 				border-radius: 50%;
@@ -702,15 +700,17 @@ export default defineComponent({
 				padding: 20px;
 				backface-visibility: visible;
 			}
+
 			span {
 				opacity: 0;
 				z-index: 300;
 			}
+
 			&.on-progress {
 				width: 100%;
 				height: 20px;
 				background: rgba(-getColor(success), 0.3);
-				border-top: 1px solid -getColor(success, 1);
+				border-top: 1px solid -getColor(success);
 				bottom: 0px;
 				transform: translate(0);
 				left: 0px;
@@ -718,14 +718,16 @@ export default defineComponent({
 				overflow: hidden;
 				border-radius: 0px;
 				pointer-events: none;
+
 				i {
 					opacity: 0.2;
-					background: -getColor(success, 1);
+					background: -getColor(success);
 					box-shadow: 0px 5px 17px 0px rgba(0, 0, 0, 0.15);
 					top: 50%;
 					transform: translate(-50%, -50%) scale(1.2);
 					padding: 20px;
 				}
+
 				span {
 					transition: all 0.5s ease;
 					opacity: 1;
@@ -736,28 +738,32 @@ export default defineComponent({
 					left: 0px;
 					text-align: center;
 					width: 100%;
-					text-shadow: 0px 3px 15px -getColor(success, 1);
+					text-shadow: 0px 3px 15px -getColor(success);
 					font-weight: bold;
 					z-index: 300;
 					display: block;
 					transform: translate(0, -50%);
 				}
 			}
+
 			&.ready-progress {
-				border-top: 0px solid -getColor(success, 1);
+				border-top: 0px solid -getColor(success);
 				background: rgba(-getColor(success), 0.5);
+
 				span {
 					z-index: 10;
 					transform: translate(0, -50%) scale(0.5);
 					top: calc(50% + 20px);
 					opacity: 0;
 				}
+
 				&:after {
 					opacity: 0;
 				}
+
 				i {
 					opacity: 1;
-					background: -getColor(success, 1);
+					background: -getColor(success);
 					box-shadow: 0px 5px 17px 0px rgba(0, 0, 0, 0.15);
 					top: 50%;
 					transform: translate(-50%, -50%) scale(1);
@@ -767,6 +773,7 @@ export default defineComponent({
 		}
 	}
 }
+
 .upload-enter-active {
 	transition: all 0.7s ease !important;
 	animation: imageRebound 0.7s ease !important;
@@ -779,16 +786,19 @@ export default defineComponent({
 		border-radius: 30%;
 		pointer-events: none;
 	}
+
 	40% {
 		transform: scale(1.03);
 		border-radius: 14px;
 		pointer-events: none;
 	}
+
 	70% {
 		transform: scale(0.98);
 		border-radius: 18px;
 		pointer-events: none;
 	}
+
 	100% {
 		transform: scale(1);
 		border-radius: 10px;
@@ -800,6 +810,7 @@ export default defineComponent({
 	0% {
 		width: 0px height 0px;
 	}
+
 	100% {
 		width: 230px height 230px opacity 0;
 	}

@@ -122,7 +122,7 @@ export default defineComponent({
 		tuIcon
 	},
 	props: {
-		modelValue: { type: [Object, String, Object as any],  default: "" },
+		modelValue: { type: [Object, String, Object as any], default: "" },
 		labelPlaceholder: { default: "" },
 		label: { default: "" },
 		block: { type: Boolean, default: false },
@@ -222,15 +222,15 @@ export default defineComponent({
 @mixin state($color) {
 	.tu-input {
 		background: rgba(-getColor($color), 0.1) !important;
-		color: -getColor($color, 1);
+		color: -getColor($color);
 	}
 
 	.tu-input__label {
-		color: -getColor($color, 1);
+		color: -getColor($color);
 	}
 
 	.tu-input__icon {
-		color: -getColor($color, 1);
+		color: -getColor($color);
 		background: rgba(-getColor($color), 0.1);
 		box-shadow: (-15px) 10px 10px -10px rgba(-getColor($color), 0.1);
 	}
@@ -312,7 +312,7 @@ export default defineComponent({
 	justify-content: flex-start;
 	position: relative;
 	border-radius: 12px;
-	border: 1px solid rgba(-getColor("text"), 0.09);
+	border: 1px solid -getColorAlpha("text", 0.09);
 
 	+.tu-input__message {
 		padding-top: 2px;
@@ -324,18 +324,18 @@ export default defineComponent({
 
 			// box-shadow: 0px 10px 20px -5px -getColor('color',.3)
 			&:focus {
-				border-bottom: 2px solid -getColor("color", 1);
+				border-bottom: 2px solid -getColor("color");
 
 				~.tu-input__icon {
-					color: -getColor("color", 1);
+					color: -getColor("color");
 				}
 
 				~.tu-input__label {
-					color: -getColor("color", 1);
+					color: -getColor("color");
 				}
 
 				~.tu-input__label--placeholder {
-					color: -getColor("color", 1);
+					color: -getColor("color");
 				}
 			}
 		}
@@ -514,23 +514,23 @@ export default defineComponent({
 		overflow: hidden;
 
 		&--success {
-			color: -getColor("success", 1);
+			color: -getColor("success");
 		}
 
 		&--danger {
-			color: -getColor("danger", 1);
+			color: -getColor("danger");
 		}
 
 		&--warn {
-			color: -getColor("warn", 1);
+			color: -getColor("warn");
 		}
 
 		&--dark {
-			color: -getColor("dark", 1);
+			color: -getColor("dark");
 		}
 
 		&--primary {
-			color: -getColor("primary", 1);
+			color: -getColor("primary");
 		}
 	}
 
@@ -546,19 +546,19 @@ export default defineComponent({
 
 		&--danger {
 			.tu-input__progress__bar {
-				background: -getColor("danger", 1);
+				background: -getColor("danger");
 			}
 		}
 
 		&--warn {
 			.tu-input__progress__bar {
-				background: -getColor("warn", 1);
+				background: -getColor("warn");
 			}
 		}
 
 		&--success {
 			.tu-input__progress__bar {
-				background: -getColor("success", 1);
+				background: -getColor("success");
 			}
 		}
 
@@ -587,7 +587,7 @@ export default defineComponent({
 			position: absolute;
 			width: 100%;
 			height: 100%;
-			border: 2px solid -getColor("primary", 1);
+			border: 2px solid -getColor("primary");
 			border-radius: inherit;
 			border-top: 2px solid transparent;
 			border-left: 2px solid transparent;
@@ -603,7 +603,7 @@ export default defineComponent({
 			position: absolute;
 			width: 100%;
 			height: 100%;
-			border: 2px dashed -getColor("primary", 1);
+			border: 2px dashed -getColor("primary");
 			border-radius: inherit;
 			border-top: 2px solid transparent;
 			border-left: 2px solid transparent;
@@ -644,7 +644,7 @@ export default defineComponent({
 				}
 
 				&__2 {
-					border-bottom: 2px solid -getColor("color", 1);
+					border-bottom: 2px solid -getColor("color");
 					width: 0%;
 					height: 2px;
 					position: absolute;

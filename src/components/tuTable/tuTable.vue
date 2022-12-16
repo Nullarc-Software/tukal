@@ -758,7 +758,7 @@ export default defineComponent({
 		position: sticky;
 		top: 0;
 		z-index: 2;
-		border-bottom: 1px solid rgba(-getColor("text"), 0.2);
+		border-bottom: 1px solid -getColorAlpha("text", 0.2);
 
 		::v-deep(.tu-table__th) {
 			background: -getColor("gray-2");

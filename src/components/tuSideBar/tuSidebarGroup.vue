@@ -1,19 +1,10 @@
 <template>
-	<div
-		class="tu-sidebar__group"
-		:class="{ open: openState }"
-		ref="sidebarGroup"
-	>
+	<div class="tu-sidebar__group" :class="{ open: openState }" ref="sidebarGroup">
 		<div class="tu-sidebar__group__header" @click="openState = !openState">
 			<slot name="header" />
 		</div>
 		<transition @before-enter="beforeEnter" @enter="enter" @leave="leave">
-			<div
-				class="tu-sidebar__group__content"
-				ref="content"
-				name="show"
-				v-if="openState"
-			>
+			<div class="tu-sidebar__group__content" ref="content" name="show" v-if="openState">
 				<slot />
 			</div>
 		</transition>
@@ -30,7 +21,7 @@ export default defineComponent({
 			type: Boolean
 		}
 	},
-	setup (props, context) {
+	setup(props, context) {
 		const group = ref(true);
 		const openState = ref(false);
 		const sidebarGroup = ref<HTMLDivElement>();
@@ -108,7 +99,7 @@ export default defineComponent({
 			}
 		}
 
-		> .tu-sidebar__group__header {
+		>.tu-sidebar__group__header {
 			::v-deep(.tu-sidebar__item) {
 				opacity: 1;
 			}
@@ -138,7 +129,7 @@ export default defineComponent({
 			position: absolute;
 			left: 0px;
 			top: 0px;
-			background: rgba(-getColor("color"), 0.3);
+			background: -getColorAlpha("color", 0.3);
 			width: 4px;
 			height: 100%;
 			opacity: 0;
@@ -153,10 +144,11 @@ export default defineComponent({
 		}
 	}
 
-	> .tu-sidebar__group__header {
+	>.tu-sidebar__group__header {
 		::v-deep(.tu-sidebar__item):hover:not(.hasIcon) {
 			padding-left: 20px;
 		}
+
 		::v-deep(.tu-sidebar__item) {
 			&.hasIcon:hover {
 				padding-left: 5px;

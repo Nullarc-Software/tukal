@@ -40,6 +40,9 @@
 			<tu-button flat color="primary" style="margin-right: 10px">
 				Flat
 			</tu-button>
+			<tu-button flat color="danger" style="margin-right: 10px">
+				Flat
+			</tu-button>
 			<tu-button gradient color="primary" style="margin-right: 10px">
 				Gradient
 			</tu-button>
@@ -1385,6 +1388,6 @@ export default defineComponent({
 }
 
 body {
-	background-color: white;
+	background-color: -getColor(background)
 }
 </style>

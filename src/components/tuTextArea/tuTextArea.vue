@@ -213,7 +213,7 @@ export default defineComponent({
 	border: 0px solid rgba(0, 0, 0, 0);
 	display: block;
 	padding: 9px;
-	color: rgba(-getColor("text"), 0.8);
+	color: -getColorAlpha("text", 0.8);
 	font-size: 0.8rem;
 	width: 100%;
 	max-width: 100%;
@@ -229,15 +229,15 @@ export default defineComponent({
 }
 
 .textarea-danger {
-	border: 1px solid rgba(-getColor("danger"), 0.4);
-	box-shadow: 0px 4px 20px 0px rgba(-getColor("danger"), 0.1);
+	border: 1px solid -getColorAlpha("danger", 0.4);
+	box-shadow: 0px 4px 20px 0px -getColorAlpha("danger", 0.1);
 
 	.tu-textarea {
-		color: rgba(-getColor("danger"), 0.8);
+		color: -getColorAlpha("danger", 0.8);
 	}
 
 	.count {
-		background: -getColor("danger", 1);
+		background: -getColor("danger");
 	}
 }
 
@@ -252,17 +252,17 @@ export default defineComponent({
 	font-weight: bold;
 	box-shadow: 0px 4px 20px 0px rgba(0, 0, 0, 0.05);
 	cursor: default;
-	background: -getColor("primary", 1);
+	background: -getColor("primary");
 	color: -getColor("text") !important;
 	opacity: 0.3;
 	transition: all 0.25s ease;
 }
 
 .focusx.tu-con-textarea {
-	border: 1px solid -getColor("color", 1) !important;
+	border: 1px solid -getColor("color") !important;
 }
 
 .tu-textarea-label {
-	border-bottom: 1px solid rgba(-getColor("color"), 0.2);
+	border-bottom: 1px solid -getColorAlpha("color", 0.2);
 }
 </style>

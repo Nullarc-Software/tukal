@@ -1,43 +1,31 @@
 <template>
-	<div
-		class="tu-checkbox-content"
-		:class="[
-			{ 'tu-checkbox--checked': isChecked },
-			{ 'tu-checkbox--disabled': disabled },
-			{ 'tu-checkbox--loading': loading },
-			{ 'tu-checkbox--label-before': labelBefore },
-
-			// colors
-			{
-				[`tu-component--primary`]:
-					!danger && !success && !warn && !dark && !color
-			},
-			{ [`tu-component--danger`]: !!danger },
-			{ [`tu-component--warn`]: !!warn },
-			{ [`tu-component--success`]: !!success },
-			{ [`tu-component--dark`]: !!dark }
-		]"
-	>
+	<div class="tu-checkbox-content" :class="[
+		{ 'tu-checkbox--checked': isChecked },
+		{ 'tu-checkbox--disabled': disabled },
+		{ 'tu-checkbox--loading': loading },
+		{ 'tu-checkbox--label-before': labelBefore },
+	
+		// colors
+		{
+			[`tu-component--primary`]:
+				!danger && !success && !warn && !dark && !color
+		},
+		{ [`tu-component--danger`]: !!danger },
+		{ [`tu-component--warn`]: !!warn },
+		{ [`tu-component--success`]: !!success },
+		{ [`tu-component--dark`]: !!dark }
+	]">
 		<div class="tu-checkbox-con">
-			<input
-				class="tu-checkbox"
-				type="checkbox"
-				v-bind="$attrs"
-				:id="`input-${uid}`"
-				v-on="listeners"
-				:checked="checkedForce || isChecked"
-			/>
+			<input class="tu-checkbox" type="checkbox" v-bind="$attrs" :id="`input-${uid}`" v-on="listeners"
+				:checked="checkedForce || isChecked" />
 			<div class="tu-checkbox-mask" :indeterminate="indeterminate">
 				<slot v-if="$slots.icon" name="icon" />
 				<tu-icon v-else-if="!indeterminate">check</tu-icon>
 				<tu-icon v-else>horizontal_rule</tu-icon>
 			</div>
 		</div>
-		<label
-			v-if="$slots.default"
-			:for="`input-${uid}`"
-			:class="['tu-checkbox-label', { ['lineThrough']: lineThrough }]"
-		>
+		<label v-if="$slots.default" :for="`input-${uid}`"
+			:class="['tu-checkbox-label', { ['lineThrough']: lineThrough }]">
 			<slot />
 		</label>
 	</div>
@@ -74,7 +62,7 @@ export default defineComponent({
 		}
 	},
 	emits: ["update:modelValue", "change", "click", "blur", "update:checked"],
-	setup (props, context) {
+	setup(props, context) {
 		const uid = uid_++;
 		/* watch(
 			() => props.indeterminate,
@@ -88,7 +76,7 @@ export default defineComponent({
 			return {
 				// ...$listeners,
 				input: (evt: Event) => {
-					
+
 
 					if (typeof props.modelValue === "boolean")
 						context.emit("update:modelValue", !props.modelValue);
@@ -250,7 +238,7 @@ export default defineComponent({
 		left: 0px;
 		width: 100%;
 		height: 100%;
-		background: -getColor("color", 1);
+		background: -getColor("color");
 		transform: scale(0.5);
 		border-radius: inherit;
 		opacity: 0;
@@ -268,7 +256,7 @@ export default defineComponent({
 		border-radius: inherit;
 		transition: all 0.25s ease;
 		z-index: -1;
-		border: 2px solid -getColor("text", 1);
+		border: 2px solid -getColor("text");
 		box-sizing: border-box;
 	}
 
@@ -296,33 +284,33 @@ export default defineComponent({
 	}
 
 	&:active {
-		~ .tu-checkbox-mask {
-			background: -getColor("gray-4", 1) !important;
+		~.tu-checkbox-mask {
+			background: -getColor("gray-4") !important;
 		}
 	}
 
 	&:hover {
-		~ .tu-checkbox-mask {
-			background: -getColor("gray-3", 1);
+		~.tu-checkbox-mask {
+			background: -getColor("gray-3");
 
 			&:before {
-				border: 2px solid rgba(-getColor("gray-4"), 0);
+				border: 2px solid -getColorAlpha("gray-4", 0);
 			}
 
-			// border: 2px solid -getColor('gray-3', 1)
+			// border: 2px solid -getColor('gray-3')
 		}
 	}
 
 	&:checked {
 		&:hover {
-			~ .tu-checkbox-mask {
-				box-shadow: 0px 3px 15px 0px rgba(-getColor("color"), 0.35);
+			~.tu-checkbox-mask {
+				box-shadow: 0px 3px 15px 0px -getColorAlpha("color", 0.35);
 			}
 		}
 
-		~ .tu-checkbox-mask {
-			// border: 2px solid -getColor('color', 1) !important
-			box-shadow: 0px 0px 0px 0px rgba(-getColor("color"), 0.35);
+		~.tu-checkbox-mask {
+			// border: 2px solid -getColor('color') !important
+			box-shadow: 0px 0px 0px 0px -getColorAlpha("color", 0.35);
 
 			::v-deep(i:not(.tu-icon-check)) {
 				opacity: 1;
@@ -378,7 +366,7 @@ export default defineComponent({
 		position: absolute;
 		width: 0px;
 		height: 2px;
-		background: rgba(-getColor("text"), 0.6);
+		background: -getColorAlpha("text", 0.6);
 		content: "";
 		transition: all 0.25s ease;
 	}
@@ -416,7 +404,7 @@ export default defineComponent({
 
 			&:before {
 				border-radius: 50%;
-				border: 2px solid -getColor("color", 1) !important;
+				border: 2px solid -getColor("color") !important;
 				border-top: 2px solid transparent !important;
 				animation: rotateCheckboxLoading 0.6s linear infinite;
 				opacity: 1 !important;
@@ -434,7 +422,7 @@ export default defineComponent({
 
 		&:before {
 			border-radius: 50%;
-			border: 2px solid -getColor("gray-4", 1) !important;
+			border: 2px solid -getColor("gray-4") !important;
 			border-top: 2px solid transparent !important;
 			animation: rotateCheckboxLoading 0.6s linear infinite;
 		}

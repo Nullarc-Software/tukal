@@ -1,19 +1,12 @@
 <template>
-	<button
-		:disabled="disabled"
-		class="tu-select__option"
-		:class="[
-			{
-				activeOption: isActive,
-				isHover: isHover,
-				isMultiple: isMultiple,
-				hiddenOption: hiddenOption
-			}
-		]"
-		v-bind="$attrs"
-		v-on="listeners"
-		ref="option"
-	>
+	<button :disabled="disabled" class="tu-select__option" :class="[
+		{
+			activeOption: isActive,
+			isHover: isHover,
+			isMultiple: isMultiple,
+			hiddenOption: hiddenOption
+		}
+	]" v-bind="$attrs" v-on="listeners" ref="option">
 		<tu-checkbox v-if="isMultiple" v-model="isActive">
 			<slot />
 		</tu-checkbox>
@@ -47,7 +40,7 @@ export default defineComponent({
 		tuCheckbox
 	},
 	extends: tuComponent,
-	setup (props, context) {
+	setup(props, context) {
 		const activeOption = ref(false);
 		const hiddenOption = ref(false);
 		const option = ref<HTMLButtonElement>();
@@ -92,7 +85,7 @@ export default defineComponent({
 				? parentValue?.value === props.value
 				: _.find(parentValue?.value, (o) => {
 					return o === props.value;
-				  }) !== undefined;
+				}) !== undefined;
 		});
 
 		const isHover = computed(() => {
@@ -151,6 +144,7 @@ export default defineComponent({
 
 <style lang="scss">
 @import "../../style/sass/_mixins";
+
 .tu-select__option {
 	border: 0px;
 	width: 100%;
@@ -228,8 +222,8 @@ export default defineComponent({
 	}
 
 	&.activeOption {
-		background: rgba(-getColor("color"), 0.05);
-		color: -getColor("color", 1);
+		background: -getColorAlpha("color", 0.05);
+		color: -getColor("color");
 	}
 
 	// &:last-child

@@ -1,193 +1,195 @@
-import { setColor } from '../index'
-import './style.sass'
-const ripple = (evt: any, color: any = '', solid: boolean = false) => {
+import { setColor } from "../index";
 
-  const el = evt.currentTarget
-  const offset = el.getBoundingClientRect()
-  const x = evt.clientX - offset.left
-  const y = evt.clientY - offset.top
+import "./style.scss";
 
-  let time = 0.6
+const ripple = (evt: any, color: any = "", solid = false) => {
 
-  if(el.clientWidth > 150) {
-    time = 1.2
-  }
+	const el = evt.currentTarget;
+	const offset = el.getBoundingClientRect();
+	const x = evt.clientX - offset.left;
+	const y = evt.clientY - offset.top;
 
-  const effectContent = document.createElement('div')
+	let time = .6;
 
-  effectContent.className = 'tu-ripple-content'
+	if(el.clientWidth > 150) 
+		time = 1.2;
+  
 
-  const effect = document.createElement('div')
-  if (!color) {
-    setColor('color', '#fff', effectContent)
-  }
+	const effectContent = document.createElement("div");
 
-  effect.className = 'tu-ripple'
-  if (solid) {
-    effect.classList.add('tu-ripple--solid')
-    // setColor('color', color || 'primary', effectContent)
-  }
-  effect.style.transition = `all ${time}s ease`
+	effectContent.className = "tu-ripple-content";
 
-  effect.style.left = `${x}px`
-  effect.style.top = `${y}px`
+	const effect = document.createElement("div");
+	if (!color) 
+		setColor("color", "#fff", effectContent);
+  
 
-  effectContent.appendChild(effect)
+	effect.className = "tu-ripple";
+	if (solid) 
+		effect.classList.add("tu-ripple--solid");
+	// setColor('color', color || 'primary', effectContent)
+  
+	effect.style.transition = `all ${time}s ease`;
 
-  el.appendChild(effectContent)
+	effect.style.left = `${x}px`;
+	effect.style.top = `${y}px`;
 
-  effect.style.width = `${el.clientWidth * 2.5}px`
-  effect.style.height = `${el.clientWidth * 2.5}px`
-  effect.style.opacity = `1`
+	effectContent.appendChild(effect);
 
-  let noTime = false
-  setTimeout(() => {
-    noTime = true
-  }, 300)
+	el.appendChild(effectContent);
 
-  function removeEffect(evt: any) {
-    effect.style.transition = `all 0.${time * 600}s ease`
-    setTimeout(() => {
-      effect.style.opacity = '0'
-      setTimeout(() => {
-        el.removeChild(effectContent)
-      }, time * 300)
-    }, (noTime ? 0 : time * 400))
+	effect.style.width = `${el.clientWidth * 2.5}px`;
+	effect.style.height = `${el.clientWidth * 2.5}px`;
+	effect.style.opacity = "1";
 
-    evt.target.removeEventListener('mouseup', removeEffect)
-    evt.target.removeEventListener('mouseleave', removeEffect)
-  }
+	let noTime = false;
+	setTimeout(() => {
+		noTime = true;
+	}, 300);
 
-  evt.target.addEventListener('mouseup', removeEffect)
-  evt.target.addEventListener('mouseleave', removeEffect)
-}
+	function removeEffect(evt: any) {
+		effect.style.transition = `all 0.${time * 600}s ease`;
+		setTimeout(() => {
+			effect.style.opacity = "0";
+			setTimeout(() => {
+				el.removeChild(effectContent);
+			}, time * 300);
+		}, (noTime ? 0 : time * 400));
+
+		evt.target.removeEventListener("mouseup", removeEffect);
+		evt.target.removeEventListener("mouseleave", removeEffect);
+	}
+
+	evt.target.addEventListener("mouseup", removeEffect);
+	evt.target.addEventListener("mouseleave", removeEffect);
+};
 
 const rippleReverse = (evt: any) => {
-  const el = evt.currentTarget
-  const offset = el.getBoundingClientRect()
-  const x = evt.clientX - offset.left
-  const y = evt.clientY - offset.top
+	const el = evt.currentTarget;
+	const offset = el.getBoundingClientRect();
+	const x = evt.clientX - offset.left;
+	const y = evt.clientY - offset.top;
 
-  let time = 0.6
+	let time = 0.6;
 
-  if(el.clientWidth > 150) {
-    time = 1.2
-  }
+	if(el.clientWidth > 150) 
+		time = 1.2;
+  
 
-  const effectContent = document.createElement('div')
+	const effectContent = document.createElement("div");
 
-  effectContent.className = 'tu-ripple-content'
+	effectContent.className = "tu-ripple-content";
 
-  const effect = document.createElement('div')
+	const effect = document.createElement("div");
 
-  effect.className = 'tu-ripple-invert'
-  // effect.style.transition = `all ${time}s ease`
+	effect.className = "tu-ripple-invert";
+	// effect.style.transition = `all ${time}s ease`
 
-  effect.style.left = `${x}px`
-  effect.style.top = `${y}px`
-  effect.style.width = `${el.clientWidth * 2.5}px`
-  effect.style.height = `${el.clientWidth * 2.5}px`
-  effect.style.opacity = '0'
+	effect.style.left = `${x}px`;
+	effect.style.top = `${y}px`;
+	effect.style.width = `${el.clientWidth * 2.5}px`;
+	effect.style.height = `${el.clientWidth * 2.5}px`;
+	effect.style.opacity = "0";
 
-  effectContent.appendChild(effect)
+	effectContent.appendChild(effect);
 
-  el.appendChild(effectContent)
+	el.appendChild(effectContent);
 
-  setTimeout(() => {
-    effect.style.width = '0px'
-    effect.style.height = '0px'
-    effect.style.opacity = '0.5'
-  }, 1)
+	setTimeout(() => {
+		effect.style.width = "0px";
+		effect.style.height = "0px";
+		effect.style.opacity = "0.5";
+	}, 1);
 
-  let noTime = false
-  setTimeout(() => {
-    noTime = true
-  }, 300)
+	let noTime = false;
+	setTimeout(() => {
+		noTime = true;
+	}, 300);
 
-  function removeEffect(evt: any) {
-    effect.style.transition = `all 0.${time * 600}s ease`
-    setTimeout(() => {
-      effect.style.opacity = '0'
-      setTimeout(() => {
-        el.removeChild(effectContent)
-      }, time * 300)
-    }, (noTime ? 0 : time * 400))
+	function removeEffect(evt: any) {
+		effect.style.transition = `all 0.${time * 600}s ease`;
+		setTimeout(() => {
+			effect.style.opacity = "0";
+			setTimeout(() => {
+				el.removeChild(effectContent);
+			}, time * 300);
+		}, (noTime ? 0 : time * 400));
 
-    evt.target.removeEventListener('mouseup', removeEffect)
-    evt.target.removeEventListener('mouseleave', removeEffect)
-  }
+		evt.target.removeEventListener("mouseup", removeEffect);
+		evt.target.removeEventListener("mouseleave", removeEffect);
+	}
 
-  evt.target.addEventListener('mouseup', removeEffect)
-  evt.target.addEventListener('mouseleave', removeEffect)
-}
+	evt.target.addEventListener("mouseup", removeEffect);
+	evt.target.addEventListener("mouseleave", removeEffect);
+};
 
 //
 const rippleCut = (evt: any) => {
-  const el = evt.currentTarget
-  const offset = el.getBoundingClientRect()
-  const x = evt.clientX - offset.left
-  const y = evt.clientY - offset.top
+	const el = evt.currentTarget;
+	const offset = el.getBoundingClientRect();
+	const x = evt.clientX - offset.left;
+	const y = evt.clientY - offset.top;
 
-  let time = 0.6
+	let time = 0.6;
 
-  if(el.clientWidth > 150) {
-    time = 1.2
-  }
+	if(el.clientWidth > 150) 
+		time = 1.2;
+  
 
-  const effectContent = document.createElement('div')
+	const effectContent = document.createElement("div");
 
-  effectContent.className = 'tu-ripple-content'
+	effectContent.className = "tu-ripple-content";
 
-  const effect = document.createElement('div')
-  const effect2 = document.createElement('div')
+	const effect = document.createElement("div");
+	const effect2 = document.createElement("div");
 
-  effect.className = 'tu-ripple-cut-1'
-  effect2.className = 'tu-ripple-cut-2'
-  // effect.style.transition = `all ${time}s ease`
+	effect.className = "tu-ripple-cut-1";
+	effect2.className = "tu-ripple-cut-2";
+	// effect.style.transition = `all ${time}s ease`
 
-  effect.style.left = effect2.style.left = `${x}px`
-  effect.style.top = effect2.style.top = `${y}px`
-  effect.style.width = effect2.style.width = `${el.clientWidth * 2.5}px`
-  effect.style.height = effect2.style.height = `${el.clientWidth * 2.5}px`
-  effect.style.opacity = effect2.style.opacity = `1`
+	effect.style.left = effect2.style.left = `${x}px`;
+	effect.style.top = effect2.style.top = `${y}px`;
+	effect.style.width = effect2.style.width = `${el.clientWidth * 2.5}px`;
+	effect.style.height = effect2.style.height = `${el.clientWidth * 2.5}px`;
+	effect.style.opacity = effect2.style.opacity = "1";
 
-  effectContent.appendChild(effect)
-  effectContent.appendChild(effect2)
+	effectContent.appendChild(effect);
+	effectContent.appendChild(effect2);
 
-  el.appendChild(effectContent)
+	el.appendChild(effectContent);
 
-  setTimeout(() => {
-    effect.style.left = `-${el.clientWidth * 1.3}px`
-    effect.style.opacity = '1'
+	setTimeout(() => {
+		effect.style.left = `-${el.clientWidth * 1.3}px`;
+		effect.style.opacity = "1";
 
-    effect2.style.left = `${el.clientWidth * 1.3}px`
-    effect2.style.opacity = '1'
-  }, 1)
+		effect2.style.left = `${el.clientWidth * 1.3}px`;
+		effect2.style.opacity = "1";
+	}, 1);
 
-  let noTime = false
-  setTimeout(() => {
-    noTime = true
-  }, 300)
+	let noTime = false;
+	setTimeout(() => {
+		noTime = true;
+	}, 300);
 
-  function removeEffect(evt: any) {
-    effect.style.transition = `all 0.${time * 600}s ease`
-    setTimeout(() => {
-      effect.style.opacity = '0'
-      setTimeout(() => {
-        el.removeChild(effectContent)
-      }, time * 300)
-    }, (noTime ? 0 : time * 400))
+	function removeEffect(evt: any) {
+		effect.style.transition = `all 0.${time * 600}s ease`;
+		setTimeout(() => {
+			effect.style.opacity = "0";
+			setTimeout(() => {
+				el.removeChild(effectContent);
+			}, time * 300);
+		}, (noTime ? 0 : time * 400));
 
-    evt.target.removeEventListener('mouseup', removeEffect)
-    evt.target.removeEventListener('mouseleave', removeEffect)
-  }
+		evt.target.removeEventListener("mouseup", removeEffect);
+		evt.target.removeEventListener("mouseleave", removeEffect);
+	}
 
-  evt.target.addEventListener('mouseup', removeEffect)
-  evt.target.addEventListener('mouseleave', removeEffect)
-}
+	evt.target.addEventListener("mouseup", removeEffect);
+	evt.target.addEventListener("mouseleave", removeEffect);
+};
 
-export default ripple
+export default ripple;
 export {
-  rippleReverse,
-  rippleCut
-}
+	rippleReverse,
+	rippleCut
+};

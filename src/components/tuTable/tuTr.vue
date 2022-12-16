@@ -1,25 +1,21 @@
 <template>
-	<tr
-		class="tu-table__tr"
-		@click="rowClick"
-		:class="{
-			selected: computeSelected,
-			isExpand: !!instanceExpand,
-			expand: $slots.expand,
-			invisible: isInvisible
-		}"
-	>
+	<tr class="tu-table__tr" @click="rowClick" :class="{
+		selected: computeSelected,
+		isExpand: !!instanceExpand,
+		expand: $slots.expand,
+		invisible: isInvisible
+	}">
 		<slot />
 	</tr>
 	<transition name="expand-row" appear>
 		<tr v-if="$slots.expand && expand" class="tu-table__tr__expand">
-				<td class="tu-table__expand__td" :colspan="colSpan">
-					<div class="tu-table__expand__td__content" ref="content">
-						<div class="tu-table__expand__td__content__sub">
-							<slot name="expand" />
-						</div>
+			<td class="tu-table__expand__td" :colspan="colSpan">
+				<div class="tu-table__expand__td__content" ref="content">
+					<div class="tu-table__expand__td__content__sub">
+						<slot name="expand" />
 					</div>
-				</td>
+				</div>
+			</td>
 		</tr>
 	</transition>
 </template>
@@ -71,7 +67,7 @@ export default defineComponent({
 		}
 	},
 	emits: ["rowClick", "selected", "rowExpanded"],
-	setup (props, context) {
+	setup(props, context) {
 		const expand = ref(false);
 		const instance = getCurrentInstance();
 		const selected = inject<Function>("selected");
@@ -87,7 +83,7 @@ export default defineComponent({
 			else return props.isSelected;
 		});
 
-		function insertAfter (element: any) {
+		function insertAfter(element: any) {
 			if (instance.vnode.el.nextSibling) {
 				instance.vnode.el.parentNode.insertBefore(
 					element,
@@ -98,7 +94,7 @@ export default defineComponent({
 				instance.vnode.el.parentNode.appendChild(element);
 		}
 
-		function handleClickHasExpand (expanded?: boolean) {
+		function handleClickHasExpand(expanded?: boolean) {
 
 			if (_.isUndefined(expanded) === false)
 				expand.value = expanded;
@@ -152,6 +148,7 @@ export default defineComponent({
 .expand-row-enter-from,
 .expand-row-leave-to {
 	opacity: 0;
+
 	.tu-table__expand__td__content {
 		height: 0px;
 	}
@@ -177,18 +174,19 @@ export default defineComponent({
 .tu-table__tr {
 	padding: 5px;
 	border: 0px;
-	border-bottom: 1px solid rgba(-getColor("text"), 0.2);
+	border-bottom: 1px solid -getColorAlpha("text", 0.2);
+
 	&.expand {
 		cursor: pointer;
 	}
 
 	&.tu-change-color {
 		::v-deep(.tu-table__td) {
-			background: rgba(-getColor("color"), 0.1) !important;
-			color: -getColor("color", 1) !important;
+			background: -getColorAlpha("color", 0.1) !important;
+			color: -getColor("color") !important;
 
 			&:hover {
-				background: rgba(-getColor("color"), 0.2) !important;
+				background: -getColorAlpha("color", 0.2) !important;
 			}
 		}
 	}
@@ -225,7 +223,7 @@ export default defineComponent({
 			}
 		}
 
-		+ .tu-table__tr__expand {
+		+.tu-table__tr__expand {
 			td {
 				border-radius: 0px 0px 15px 15px !important;
 			}
@@ -234,20 +232,20 @@ export default defineComponent({
 
 	&.selected {
 		::v-deep(.tu-table__td) {
-			background: rgba(-getColor("color"), 0.1) !important;
-			color: -getColor("color", 1) !important;
+			background: -getColorAlpha("color", 0.1) !important;
+			color: -getColor("color") !important;
 		}
 	}
 
 	::v-deep(.tu-table__td) {
-		background: rgba(-getColor("bg"), 0.1);
-		color: -getColor("bg", 1);
+		background: -getColorAlpha("bg", 0.1);
+		color: -getColor("bg");
 	}
 
 	&.tu-change-color {
 		&:hover {
 			::v-deep(.tu-table__td) {
-				background: rgba(-getColor("color"), 0.2) !important;
+				background: -getColorAlpha("color", 0.2) !important;
 			}
 		}
 	}
@@ -262,6 +260,7 @@ export default defineComponent({
 .tu-table__tr__expand {
 	transition: all 0.25s ease;
 	border: 0px;
+
 	::v-deep(td) {
 		transition: all 0.25s ease;
 		padding: 0px;
@@ -270,7 +269,7 @@ export default defineComponent({
 
 		.tu-table__expand__td__content {
 			overflow: hidden;
-			display: block;		
+			display: block;
 
 			&__sub {
 				padding: 10px 15px;
@@ -280,6 +279,7 @@ export default defineComponent({
 		}
 	}
 }
+
 .invisible {
 	border-bottom: none !important;
 }

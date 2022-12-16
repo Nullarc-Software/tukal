@@ -154,7 +154,7 @@ export default defineComponent({
 @each $color,
 $index in --tu-colors {
 	.tu-breadcrumb-text-#{$color} {
-		color: -getColor(colorx, 1);
+		color: -getColor(colorx);
 	}
 }
 </style>

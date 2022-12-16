@@ -644,7 +644,7 @@ export default defineComponent({
 
 		.tu-tabs-progress__icon {
 			&:hover {
-				background: rgba(-getColor("text"), 0.1);
+				background: -getColorAlpha("text", 0.1);
 				border-radius: 20px;
 			}
 		}
@@ -657,19 +657,19 @@ $index in --tu-colors {
 		.con-ul-tabs {
 			button {
 				&:not(:disabled):hover {
-					color: -getColor($tu-color, 1) !important;
+					color: -getColor($tu-color) !important;
 				}
 			}
 
 			.activeChild {
 				button {
-					color: -getColor($tu-color, 1) !important;
+					color: -getColor($tu-color) !important;
 				}
 			}
 
 			.line-tu-tabs {
 				background: linear-gradient(30deg,
-						-getColor($tu-color, 1) 0%,
+						-getColor($tu-color) 0%,
 						rgba(-getColor($tu-color), 0.5) 100%) !important;
 				box-shadow: 0px 0px 8px 0px rgba(-getColor($tu-color), 0.4) !important;
 			}

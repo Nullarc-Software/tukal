@@ -1,13 +1,16 @@
 @use "sass:color";
-@function -getColor($color, $alpha: 1) {
-  @return cssvar($color);
+@function -getColor($color) {
+	@return cssvar($color);
+}
+
+@function -getColorAlpha($color, $alpha: 1) {
+	@return rgba(cssvar("#{$color}-rgb"), $alpha);
 }
 
 @function -var($var) {
-  @return unquote("var(--tu-#{$var})");
+	@return unquote("var(--tu-#{$var})");
 }
 
-
 @function cssvar($name, $prefix: tu) {
-  @return var(--#{$prefix}-#{$name});
+	@return var(--#{$prefix}-#{$name});
 }
