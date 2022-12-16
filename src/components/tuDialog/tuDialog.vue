@@ -284,7 +284,7 @@ export default defineComponent({
 	}
 }
 
-.dark {
+.tu-dark-theme {
 	.tu-dialog {
 		background: -getColor("gray-1");
 	}

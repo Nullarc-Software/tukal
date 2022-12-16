@@ -1,6 +1,6 @@
 <template>
 	<div class="tu-input-parent" v-bind="$attrs" :style="{
-		['--tu-getColor']: color ? getColor(color) : ''
+		['--tu-color']: color ? getColor(color) : ''
 	}" :class="[
 	`tu-input-parent--state-${state}`,
 	{ 'tu-input-parent--border': !!border },
@@ -20,11 +20,11 @@
 	{ [`tu-component--warn`]: !!warn },
 	{ [`tu-component--success`]: !!success },
 	{ [`tu-component--dark`]: !!dark },
-	{ [`tu-component--is-getColor`]: !!isColor },
+	{ [`tu-component--is-color`]: !!isColor },
 	{ [`tu-component-static-editable`]: !!editableStaticInternal }
 ]">
 		<div class="tu-input-content" :class="[
-			{ [`tu-input-content--has-getColor`]: hasColor },
+			{ [`tu-input-content--has-color`]: hasColor },
 			{
 				[`tu-input-content--has-label`]: label || labelPlaceholder
 			}

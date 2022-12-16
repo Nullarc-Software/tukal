@@ -442,7 +442,7 @@
 
 				<tu-input dark state="dark" label-placeholder="Dark" />
 
-				<tu-input border placeholder="Name" />
+				<tu-input border placeholder="Name" color="danger" />
 
 				<tu-input color="#7d33ff" border type="password" placeholder="Password">
 					<template #icon>
@@ -1313,9 +1313,9 @@ export default defineComponent({
 
 		watch(darkModeActive, (active) => {
 			if (!active)
-				document.body.classList.remove("dark");
+				document.body.classList.remove("tu-dark-theme");
 			else
-				document.body.classList.add("dark");
+				document.body.classList.add("tu-dark-theme");
 		})
 
 		return {

@@ -46,12 +46,9 @@
 		{ [`tu-button--shadow`]: !!shadow },
 		{ [`tu-button--floating`]: !!floating }
 	]" :style="{
-	['--tu-color']: color ? getColor(color) : '',
-	['--tu-color-secondary']: colorSecondary
-		? getColor(colorSecondary)
-		: '',
-	['--tu-button-text-color']: textColor ? getColor(textColor) : '',
-	width: width,
+	['--tu-color']: color ? getColor(color) : '', ['--tu-color-secondary']: colorSecondary ?
+		getColor(colorSecondary) : '', ['--tu-button-text-color']: textColor ? getColor(textColor) : '', width: width,
+	['--tu-color-rgb']: color ? getColorAsRgb(color) : '',
 	height: height
 }" v-bind="$attrs" v-on="listeners" ref="button">
 		<div class="tu-button__content">
@@ -155,6 +152,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
+@use "sass:color";
 @import "../../style/sass/_mixins";
 @import "../../style/sass/root";
 

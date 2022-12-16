@@ -11,7 +11,7 @@
 					<tu-icon class="icon-sort-2">keyboard_arrow_down</tu-icon>
 				</div>
 			</div>
-			<tu-input v-if="search" block border v-model="colSearch" type="search" @keypress="keyPressed" />
+			<tu-input v-if="search" block v-model="colSearch" type="search" @keypress="keyPressed" />
 		</div>
 		<div class="tu-table__th__resizer_right" :class="{ active: headerElement ? true : false }"
 			v-on="resizeListeners" v-if="!fixed"></div>
