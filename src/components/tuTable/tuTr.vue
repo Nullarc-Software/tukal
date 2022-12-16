@@ -194,6 +194,18 @@ export default defineComponent({
 	&:first-of-type {
 		::v-deep(.tu-table__td) {
 			&:last-child {
+				border-radius: 0px 0px 0px 0px;
+			}
+
+			&:first-child {
+				border-radius: 0px 0px 0px 0px;
+			}
+		}
+	}
+
+	&:last-of-type {
+		::v-deep(.tu-table__td) {
+			&:last-child {
 				border-radius: 0px 0px 15px 0px;
 			}
 

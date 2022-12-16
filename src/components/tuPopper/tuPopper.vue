@@ -56,6 +56,7 @@ export default defineComponent({
 	},
 	provide() {
 		return {
+			borderRadius: this.borderRadius,
 			closeParent: () => {
 				this.hide();
 			}

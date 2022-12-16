@@ -42,6 +42,7 @@ export interface TuHeaderDefn {
 		search?: boolean;
 		sort?: boolean;
 	};
+	textWrap?: boolean;
 	valueFormatter?: Function;
 	hidden?: boolean;
 }

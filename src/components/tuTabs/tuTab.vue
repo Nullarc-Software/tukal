@@ -8,11 +8,11 @@
 				? 'fade-tab-vertical'
 				: 'fade-tab'
 	">
-		<div v-if="active" class="con-tab tu-tabs--content">
+		<div v-if="active" class="con-tab tu-tabs--content" v-bind="$attrs">
 			<slot />
 		</div>
 	</transition>
-	<div v-else-if="active" class="con-tab tu-tabs--content">
+	<div v-else-if="active" class="con-tab tu-tabs--content" v-bind="$attrs">
 		<slot />
 	</div>
 
@@ -111,6 +111,8 @@ export default defineComponent({
 
 <style lang="scss">
 .tabs-fixed-height {
+	overflow: auto !important;
+
 	.con-tab {
 		height: inherit;
 	}
