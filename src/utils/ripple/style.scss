@@ -25,8 +25,8 @@
 		transition: all 0.5s ease;
 		background: radial-gradient(
 			circle,
-			-getColorAlpha(text, 0.05),
-			-getColorAlpha(text, 0.6)
+			-getColorAlpha(background, 0.05),
+			-getColorAlpha(background, 0.6)
 		);
 
 		&--solid {
@@ -45,8 +45,8 @@
 		transition: all 0.5s ease;
 		background-image: radial-gradient(
 			circle,
-			-getColorAlpha(text, 0.5),
-			-getColorAlpha(text, 0)
+			-getColorAlpha(background, 0.5),
+			-getColorAlpha(background, 0)
 		);
 	}
 

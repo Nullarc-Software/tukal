@@ -1,7 +1,7 @@
 @import "./mixins";
 :root {
 	@extend :root;
-	body.dark {
+	body.tu-dark-theme {
 		--tu-background: #151916;
 		--tu-component-background: #1e1f22;
 		--tu-text: #ffffff;
