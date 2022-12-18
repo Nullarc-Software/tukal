@@ -37,7 +37,7 @@ export default defineComponent({
 		};
 	},
 	props: {
-		color: { type: String, default: "primary" },
+		color: { type: String, default: null },
 		danger: { type: Boolean, default: false },
 		success: { type: Boolean, default: false },
 		warn: { type: Boolean, default: false },
