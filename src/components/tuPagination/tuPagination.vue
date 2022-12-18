@@ -1,6 +1,7 @@
 <template>
 	<div class="tu-pagination-content" :style="{
-		['--tu-color']: color ? getColor(color) : ''
+		['--tu-color']: color ? getColor(color) : '',
+		'--tu-color-rgb': color ? getColorAsRgb(color) : ''
 	}" :class="[
 	{
 		buttonsDotted: buttonsDotted,

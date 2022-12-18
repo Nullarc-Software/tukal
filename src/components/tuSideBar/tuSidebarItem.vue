@@ -1,12 +1,8 @@
 <template>
-	<button
-		class="tu-sidebar__item"
-		:class="{
-			active: (parentValue && this.id == parentValue) || internalActive,
-			hasIcon: !!$slots.icon
-		}"
-		@click="onClick"
-	>
+	<button class="tu-sidebar__item" :class="{
+		active: (parentValue && this.id == parentValue) || internalActive,
+		hasIcon: !!$slots.icon
+	}" @click="onClick">
 		<div v-if="$slots.icon" class="tu-sidebar__item__icon">
 			<slot name="icon" />
 		</div>
@@ -46,7 +42,7 @@ export default defineComponent({
 		id: { type: String },
 		arrow: { type: Boolean }
 	},
-	setup (props, context) {
+	setup(props, context) {
 		const parentValue = inject<any>("parentValue");
 		const handleClickItem = inject<Function>("handleClickItem");
 		const reduced = inject<Ref<Boolean>>("reduced");
@@ -188,7 +184,7 @@ export default defineComponent({
 		justify-content: center;
 		font-size: 1.2rem;
 		z-index: 50;
-		background: -getColor("background");
+		background: transparent;
 	}
 
 	&:hover:not(.hasIcon) {

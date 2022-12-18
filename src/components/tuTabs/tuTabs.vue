@@ -15,8 +15,8 @@
 						[`tu-tabs--li-${child.name}`]: child.name,
 						activeChild: childActive == child.id
 					}" @mouseover="hover = true" @mouseout="hover = false">
-					<button v-bind="child.attrs" :style="styleAlignIcon(child.icon)" :disabled="child.disabled"
-						class="tu-tabs--btn" type="button" @click="activeChild(child.id)">
+					<button :style="styleAlignIcon(child.icon)" :disabled="child.disabled" class="tu-tabs--btn"
+						type="button" @click="activeChild(child.id)">
 						<tu-icon v-if="child.icon" :icon-pack="child.iconPack" :icon="child.icon" :color="color"
 							class="tu-tabs--btn-icon"></tu-icon>
 						<span v-if="child.label">{{ child.label }}</span>
@@ -391,7 +391,7 @@ export default defineComponent({
 </script>
 
 
-<style lang="scss" >
+<style lang="scss" scoped >
 @import "../../style/sass/_mixins";
 
 .con-tu-tabs {
