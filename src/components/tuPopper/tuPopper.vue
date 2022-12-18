@@ -235,10 +235,6 @@ export default defineComponent({
 	box-shadow: var(--popper-theme-shadow);
 	z-index: 90000;
 }
-.popper:hover,
-.popper:hover>#arrow::before {
-	background: var(--popper-theme-background-color-hover);
-}
 .inline-block {
 	display: inline-block;
 }

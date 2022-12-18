@@ -146,7 +146,7 @@ const setColor = (
 };
 
 const getApplyColor = (color: string, alphax = 1) => {
-	return `rgba(${getColor(color)} , ${alphax})`;
+		return `rgba(${getColor(color)} , ${alphax})`;
 };
 
 function isHex (color: string) {

@@ -103,7 +103,6 @@ import { isUndefined } from "lodash";
 import { ICalendarItem, TuCalendarServerModel } from "./ICalendarItem";
 import * as _color from "../../utils";
 import "./css/light.scss";
-import "./css/dark.scss";
 import "./css/index.scss";
 import tuComponent from "../tuComponent";
 import { TukalGlobals } from "../tukalGlobals";

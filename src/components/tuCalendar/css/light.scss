@@ -26,16 +26,16 @@ $border-color_1: #ccc;
 			color: -getColor("text") ;
 		}
 		.category-button {
-			color: #060000;
+			color: -getColor("text");
 		}
 	}
 	.cv-header-day {
-		background-color: -getColor("gray-1") !important;
+		background-color: -getColor("gray-2") !important;
 	}
 	.cv-weeknumber {
-		background-color:  -getColor("gray-1") !important;
+		background-color:  -getColor("gray-2") !important;
 		border-color: $border-color_1;
-		color: #808080
+		color: #808080;
 	}
 	.cv-day {
 		background-color: -getColor("gray-1") !important;

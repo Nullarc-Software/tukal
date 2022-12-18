@@ -117,6 +117,9 @@ export default defineComponent({
 			opacity: var(--tu-disabled-opacity) !important;
 			color: rgba(0, 0, 0, var(--tu-disabled-opacity)) !important;
 		}
+	&:hover {
+		background: var(--popper-theme-background-color-hover) !important;
+	}
 	}
 	&.divider {
 		border-top: 1px solid rgba(0, 0, 0, 0.08);
