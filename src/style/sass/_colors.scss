@@ -76,7 +76,8 @@
 	--tu-text-60: 255, 255, 255, 0.6;
 
 	--popper-theme-background-color: #ffffff;
-	--popper-theme-background-color-hover: #ffffff;
+	--popper-theme-background-color-hover: var(--tu-primary);
+	--popper-theme-background-color-hover-rgb: var(--tu-primary-rgb);
 	--popper-theme-text-color: inherit;
 	--popper-theme-border: 1px solid #efefef;
 	--popper-theme-border-radius: 6px;

@@ -26,6 +26,7 @@
 import { defineComponent, computed, onBeforeUnmount, watch, toRefs, PropType } from "vue";
 import usePopper from "./composables/userPopper";
 import clickAway from "./directives/click-away";
+import tuComponent from "../tuComponent";
 /**
  * The Popper component.
  */
@@ -54,6 +55,7 @@ export default defineComponent({
 	directives: {
 		clickAway
 	},
+	extends: tuComponent,
 	provide() {
 		return {
 			borderRadius: this.borderRadius,
@@ -196,10 +198,12 @@ export default defineComponent({
 .pointer-hand {
 	cursor: pointer;
 }
+
 .popper-contatiner {
 	display: flex;
 	align-self: center;
 }
+
 #arrow,
 #arrow::before {
 	position: absolute;
@@ -207,26 +211,33 @@ export default defineComponent({
 	height: 8px;
 	background: var(--popper-theme-background-color);
 }
+
 #arrow {
 	visibility: hidden;
 }
+
 #arrow::before {
 	visibility: visible;
 	content: "";
 	transform: rotate(45deg);
 }
+
 .popper[data-popper-placement^="top"]>#arrow {
 	bottom: -4px;
 }
+
 .popper[data-popper-placement^="bottom"]>#arrow {
 	top: -4px;
 }
+
 .popper[data-popper-placement^="left"]>#arrow {
 	right: -4px;
 }
+
 .popper[data-popper-placement^="right"]>#arrow {
 	left: -4px;
 }
+
 .popper {
 	background: var(--popper-theme-background-color);
 	color: var(--popper-theme-text-color);
@@ -235,17 +246,16 @@ export default defineComponent({
 	box-shadow: var(--popper-theme-shadow);
 	z-index: 90000;
 }
-.popper:hover,
-.popper:hover>#arrow::before {
-	background: var(--popper-theme-background-color-hover);
-}
+
 .inline-block {
 	display: inline-block;
 }
+
 .fade-enter-active,
 .fade-leave-active {
 	transition: opacity 0.2s ease;
 }
+
 .fade-enter-from,
 .fade-leave-to {
 	opacity: 0;

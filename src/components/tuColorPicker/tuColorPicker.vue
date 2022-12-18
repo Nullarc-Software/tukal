@@ -1,11 +1,6 @@
 <template>
 	<div>
-		<color-picker
-			style="box-sizing:content-box;"
-			:color="color"
-			:sucker-hide="true"
-			@changeColor="changeColor"
-		/>
+		<color-picker style="box-sizing:content-box;" :color="color" :sucker-hide="true" @changeColor="changeColor" />
 	</div>
 </template>
 
@@ -27,7 +22,7 @@ export default defineComponent({
 		}
 	},
 	emits: ["update:modelValue"],
-	setup (props, context) {
+	setup(props, context) {
 		const color = ref("#59c7f9");
 		const changeColor = (color) => {
 			const {
@@ -42,8 +37,14 @@ export default defineComponent({
 });
 </script>
 
-<style>
+<style lang="scss">
+@import "../../style/sass/_mixins";
+
 .content-box {
 	box-sizing: content-box !important;
+}
+
+.hu-color-picker {
+	background-color: -getColor("gray-2");
 }
 </style>
