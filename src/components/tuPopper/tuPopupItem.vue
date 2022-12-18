@@ -1,40 +1,23 @@
 <template>
-	<li
-		:class="{ divider: divider, 'divider-bottom': dividerBottom, 'tu-popup-item-disabled': disabled }"
-		:style="{
-			color: hoverx ? giveColor() + ' !important' : null,
-			background: hoverx ? giveColor(0.01) + ' !important' : null
-		}"
-		class="tu-component tu-dropdown--item"		
-		@click="clickClose"
-		@mouseover="hoverx = true"
-		@mouseout="hoverx = false"
-	>
-		
+	<li :class="{ divider: divider, 'divider-bottom': dividerBottom, 'tu-popup-item-disabled': disabled }" :style="{
+		color: hoverx ? giveColor() + ' !important' : null,
+		background: hoverx ? giveColor(0.01) + ' !important' : null
+	}" class="tu-component tu-dropdown--item" @click="clickClose" @mouseover="hoverx = true" @mouseout="hoverx = false">
 
-		<router-link
-			v-if="to"
-			:to="to"
-			v-bind="$attrs"
-			class="tu-dropdown--item-link"
-		>
+
+		<router-link v-if="to" :to="to" v-bind="$attrs" class="tu-dropdown--item-link">
 			{{ $attrs.disabled }}
-			
+
 			<slot />
 		</router-link>
-		<a
-			v-else
-			v-bind="$attrs"
-			:class="{ disabled: disabled }"
-			class="tu-dropdown--item-link"
-		>
+		<a v-else v-bind="$attrs" :class="{ disabled: disabled }" class="tu-dropdown--item-link">
 			<slot />
 		</a>
 	</li>
 </template>
 
 <script lang="ts">
-import { defineComponent, inject, ref, watch, PropType} from "vue";
+import { defineComponent, inject, ref, watch, PropType } from "vue";
 import _color from "../../utils/color";
 import { TuLoadingTypes } from "../tuLoading";
 export default defineComponent({
@@ -60,9 +43,9 @@ export default defineComponent({
 		dividerBottom: {
 			default: false,
 			type: Boolean
-		}		
+		}
 	},
-	setup (props, context) {
+	setup(props, context) {
 		const hoverx = ref(false);
 		const tuDropDownItem = ref(true);
 		const color = ref("");
@@ -98,6 +81,7 @@ export default defineComponent({
 	list-style: none;
 	font-weight: normal !important;
 	font-size: 0.9375em;
+
 	::v-deep(.tu-dropdown--item-link) {
 		background: inherit !important;
 		color: inherit !important;
@@ -110,6 +94,7 @@ export default defineComponent({
 		position: relative;
 		display: block;
 		color: rgba(0, 0, 0, 0.7);
+
 		&.disabled {
 			user-select: none;
 			pointer-events: none !important;
@@ -117,14 +102,17 @@ export default defineComponent({
 			opacity: var(--tu-disabled-opacity) !important;
 			color: rgba(0, 0, 0, var(--tu-disabled-opacity)) !important;
 		}
-	&:hover {
-		background: var(--popper-theme-background-color-hover) !important;
+
+		&:hover {
+			background: rgba(var(--popper-theme-background-color-hover-rgb), 0.3) !important;
+		}
 	}
-	}
+
 	&.divider {
 		border-top: 1px solid rgba(0, 0, 0, 0.08);
 		margin-top: 5px;
 	}
+
 	&.divider-bottom {
 		border-bottom: 1px solid rgba(0, 0, 0, 0.08);
 		margin-bottom: 5px;
