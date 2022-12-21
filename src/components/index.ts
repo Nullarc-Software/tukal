@@ -28,7 +28,7 @@ export { tuSidebar, tuSidebarGroup, tuSidebarItem } from "./tuSideBar";
 export { tuPopper, tuPopupMenu, tuPopupItem } from "./tuPopper";
 export { default as tuDialog } from "./tuDialog";
 export { tuCollapse, tuCollapseItem } from "./tuCollapse";
-export { tuTreeView, tuTreeItem } from "./tuTreeView";
+export { tuTreeView } from "./tuTreeView";
 export { tuCalendar } from "./tuCalendar";
 export { tuColorPicker } from "./tuColorPicker";
 export { tuRichTextEditor } from "./tuRichTextEditor";

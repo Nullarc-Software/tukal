@@ -876,6 +876,17 @@
 			<tu-tag name="Location" value="Far East" />
 			<tu-tag name="Location" value="Far East" />
 		</div>
+		<div class="showcase-component">
+			<h4>Treeview Component:</h4>
+			<hr />
+			<tu-tree-view :checkNode="true" :removeNode="true" :addNode="true" :editNode="true" :filterNode="true"
+				model="local" :expandAll="true" :collapseAll="true" v-model="nodes" v-model:checkedNodes="checkedNodes"
+				:nodes="treeDisplayData">
+				<template v-slot:icon>
+					<tu-icon>file_copy</tu-icon>
+				</template>
+			</tu-tree-view>
+		</div>
 	</div>
 </template>
 
@@ -1318,9 +1329,72 @@ export default defineComponent({
 				document.body.classList.add("tu-dark-theme");
 		})
 
+		const checkedNodes = ref();
+		const nodes = ref();
+
+		const treeDisplayData = ref([
+			{
+				text: "Root 1",
+				id: "1",
+				state: { checked: false, selected: false, expanded: false },
+				// checkable: false,
+				nodes: [
+					{
+						text: "Child 1",
+						id: "3",
+						state: {
+							checked: false,
+							selected: false,
+							expanded: false
+						},
+						nodes: [
+							{
+								text: "Grandchild 1",
+								id: "5",
+								state: {
+									checked: false,
+									selected: false,
+									expanded: false
+								}
+							},
+							{
+								text: "Grandchild 2",
+								id: "6",
+								state: {
+									checked: false,
+									selected: false,
+									expanded: false
+								}
+							}
+						]
+					},
+					{
+						text: "Child 2",
+						id: "4",
+						state: {
+							checked: false,
+							selected: false,
+							expanded: false
+						}
+					}
+				]
+			},
+			{
+				text: "Root 2",
+				id: "2",
+				state: { checked: false, selected: false, expanded: false }
+			}
+		]);
+
+		watch(checkedNodes, () => {
+			console.log(checkedNodes.value)
+		})
+
 		return {
 			// treeSelectedItems,
 			// treeItems,
+			checkedNodes,
+			treeDisplayData,
 			darkModeActive,
 			columns,
 			universities,
