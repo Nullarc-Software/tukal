@@ -671,12 +671,16 @@ export default defineComponent({
 
 	&:not(.tu-tabs-progress) {
 
-		.line-tu-tabs {
-			background: linear-gradient(30deg,
-					-getColor($tu-color) 0%,
-					-getColorAlpha($tu-color, 0.5) 100%) !important;
-			box-shadow: 0px 0px 8px 0px -getColorAlpha($tu-color, 0.4) !important;
+		&:not(.tu-tabs-card) {
+			.line-tu-tabs {
+				background: linear-gradient(30deg,
+						-getColor($tu-color) 0%,
+						-getColorAlpha($tu-color, 0.5) 100%) !important;
+				box-shadow: 0px 0px 8px 0px -getColorAlpha($tu-color, 0.4) !important;
+			}
 		}
+
+
 	}
 
 }

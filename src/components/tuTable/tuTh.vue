@@ -11,7 +11,11 @@
 					<tu-icon class="icon-sort-2">keyboard_arrow_down</tu-icon>
 				</div>
 			</div>
-			<tu-input v-if="search" block v-model="colSearch" type="search" @keypress="keyPressed" />
+			<tu-input v-if="search && type === 'text'" block v-model="colSearch" type="search" @keypress="keyPressed" />
+			<div v-if="search && type === 'timestamp'" style="display: inline-flex; flex-direction: column;">
+				<tu-input type="datetime-local" v-model="startDateTime" label="From" @change="setDateFilter" />
+				<tu-input type="datetime-local" v-model="endDateTime" label="To" @change="setDateFilter" />
+			</div>
 		</div>
 		<div class="tu-table__th__resizer_right" :class="{ active: headerElement ? true : false }"
 			v-on="resizeListeners" v-if="!fixed"></div>
@@ -81,6 +85,9 @@ export default defineComponent({
 		const tableId = inject<string>("tableId");
 		const colSearch = ref("");
 		const theader = ref<HTMLElement>();
+		const startDateTime = ref("");
+		const endDateTime = ref("");
+
 		const sortType = computed(() => {
 			const item = _.find(tableInstance.getSorters.value, (value) => {
 				return value.field === props.field;
@@ -93,6 +100,10 @@ export default defineComponent({
 
 		const headerElement = ref<HTMLElement>();
 		let startOffset = 0;
+
+		function setDateFilter() {
+			tableInstance.setFilter(props.field, "date-between", [startDateTime.value, endDateTime.value]);
+		}
 
 		function keyPressed(event: KeyboardEvent) {
 			if (event.key === "Enter") {
@@ -114,7 +125,7 @@ export default defineComponent({
 					case "date":
 						tableInstance.setFilter(
 							props.field,
-							"in",
+							"date-between",
 							colSearch.value
 						);
 						break;
@@ -169,10 +180,13 @@ export default defineComponent({
 			headerElement,
 			theader,
 			colSearch,
+			startDateTime,
+			endDateTime,
 			sortType,
 			resizeListeners,
 			keyPressed,
-			toggleSort
+			toggleSort,
+			setDateFilter
 		};
 	}
 });

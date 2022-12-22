@@ -1153,16 +1153,20 @@ export default defineComponent({
 				field: "web_pages",
 				caption: "Web Page",
 				props: {
-					sort: true
+					sort: true,
+					search: false
 				}
 			},
 
 			{
 				index: 6,
-				field: "something",
-				caption: "Undefined Col",
-				isComponent: true,
-				component: markRaw(components.tuInput)
+				field: "testDate",
+				caption: "Date",
+				dataType: "timestamp",
+				props: {
+					sort: true,
+					search: true
+				}
 			}
 		];
 
@@ -1241,6 +1245,17 @@ export default defineComponent({
 
 		const numPages = ref(Math.ceil(users.length / 3));
 
+		const generateRandomDOB = (): string => {
+			const random = getRandomDate(new Date('1950-02-12T01:57:45.271Z'), new Date('2022-02-12T01:57:45.271Z'))
+			return random.toISOString();
+		}
+
+		function getRandomDate(from: Date, to: Date) {
+			const fromTime = from.getTime();
+			const toTime = to.getTime();
+			return new Date(fromTime + Math.random() * (toTime - fromTime));
+		}
+
 		const selected = ref([]);
 		const tabName = ref("ho");
 
@@ -1255,6 +1270,7 @@ export default defineComponent({
 			.then((response) => {
 				const temp = response.data;
 				temp.forEach((value) => {
+					value.testDate = generateRandomDOB();
 					value.expanded = {
 						isComponent: true,
 						component: testComponent,

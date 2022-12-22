@@ -47,7 +47,8 @@
 							'animation-table':
 								(isDrag && header.index === dragIndex) ||
 								header.index === dropIndex
-						}" :sort="header.props ? header.props.sort : false" :search="header.props ? header.props.search : false">
+						}" :sort="header.props ? header.props.sort : false" :type="header.dataType"
+						:search="header.props ? header.props.search : false">
 						{{ header.caption }}
 					</tu-th>
 				</thead>

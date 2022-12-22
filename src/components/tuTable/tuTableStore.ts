@@ -20,12 +20,14 @@ export interface TuTableRow {
 	};
 }
 
+export type TuFilterDefnType = "like" | "equals" | "date-between";
 export interface TuFilterDefn {
 	field: string;
-	type: string;
+	type: TuFilterDefnType;
 	value: any;
 }
 
+export type TuHeaderDataTypes = string | "timestamp"
 export interface TuHeaderDefn {
 	index?: number;
 	minWidth?: number | string;
@@ -44,7 +46,9 @@ export interface TuHeaderDefn {
 	};
 	textWrap?: boolean;
 	valueFormatter?: Function;
+	searchFunction?: Function;
 	hidden?: boolean;
+	dataType?: TuHeaderDataTypes; 
 }
 
 export interface TuTableSorterDefn {
@@ -182,18 +186,45 @@ export class TuTableStore {
 				this.rowCount.value = this.table.data.length;
 				// apply search filter
 				data = _.filter(this.table.data, (value: TuTableRow) => {
-					return _.every(this.table.currentFilters, (filterValue) => {
+					return _.every(this.table.currentFilters, (filterValue: TuFilterDefn) => {
 						const fieldValue = this.getField(
 							value.rowData,
 							filterValue.field
 						);
 						if (filterValue.value === "") return true;
 						if (fieldValue !== undefined) {
-							return String(fieldValue)
-								.toLowerCase()
-								.includes(
-									String(filterValue.value).toLowerCase()
-								);
+							const headerObject = this.getHeaderObject(filterValue.field);
+							if (headerObject && headerObject.searchFunction) 
+								return headerObject.searchFunction(fieldValue, filterValue.value);
+							//TODO: Is this needed to make it more seamless ??
+							/* else if (headerObject && headerObject.valueFormatter) {
+								return (headerObject.valueFormatter(fieldValue) as string).toLowerCase()
+									.includes(
+										String(filterValue.value).toLowerCase()
+									);
+							} */
+							else {
+								if (filterValue.type === "like") {
+									return String(fieldValue)
+										.toLowerCase()
+										.includes(
+											String(filterValue.value).toLowerCase()
+										);
+								}
+								else if (filterValue.type === "date-between") {
+
+									if (_.isEmpty(filterValue.value[0]) && _.isEmpty(filterValue.value[1]))
+										return true;
+
+									const valueDate = new Date(fieldValue);
+									if (_.isEmpty(filterValue.value[0]) && !_.isEmpty(filterValue.value[1]))
+										return valueDate <= new Date(filterValue.value[1]);
+									else if (!_.isEmpty(filterValue.value[0]) && _.isEmpty(filterValue.value[1]))
+										return valueDate >= new Date(filterValue.value[0]);
+									else 
+										return valueDate >= new Date(filterValue.value[0]) && valueDate <= new Date(filterValue.value[1]);
+								}
+							}
 						}
 						else return true;
 					});
@@ -439,7 +470,9 @@ export class TuTableStore {
 					caption: value.caption,
 					props: value.props,
 					valueFormatter: value.valueFormatter,
-					hidden: false
+					searchFunction: value.searchFunction,
+					hidden: false,
+					dataType: value.dataType
 				};
 				this.table.headers.push(header);
 				this.headerCount.value++;
@@ -545,7 +578,7 @@ export class TuTableStore {
 		});
 	}
 
-	public setFilter (field: string, type: string, value: string) {
+	public setFilter (field: string, type: TuFilterDefnType, value: any) {
 		const idx = _.findIndex(this.table.currentFilters, (value) => {
 			return value.field === field;
 		});

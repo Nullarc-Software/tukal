@@ -146,6 +146,13 @@ const setColor = (
 };
 
 const getApplyColor = (color: string, alphax = 1) => {
+	let hColor: string = getColor(color);
+	hColor = hColor.trim();
+	if (isHex(hColor)) {
+		const rgb = hexToRgb(hColor);
+		return `rgba(${rgb?.r},${rgb?.g},${rgb?.b}, ${alphax})`;
+	}
+	else
 		return `rgba(${getColor(color)} , ${alphax})`;
 };
 

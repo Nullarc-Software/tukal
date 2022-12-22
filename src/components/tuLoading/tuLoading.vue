@@ -4,7 +4,7 @@
 			`tu-loading--${type || 'default'}`,
 			{ 'tu-loading--target': !!target },
 			{ 'tu-loading--background': !!background }
-		]">
+		]" v-bind="$attrs">
 			<div class="tu-loading__load" :style="{
 				transform: `scale(${scale})`
 			}">
@@ -31,12 +31,14 @@
 
 <script lang="ts">
 import { setColor, setVar } from "@/utils";
+import { PositionProperty } from "csstype";
 import { defineComponent, getCurrentInstance, watch, PropType } from "vue";
 
 type LoadingType = "default" | "waves" | "corners" | "border" | "points" | "square" | "gradient" | "rectangle" | "circles" | "square-rotate" | "scale"
 export default defineComponent({
 	name: "TuLoading",
 	props: {
+		position: { type: String, default: null },
 		text: { type: String, default: null },
 		type: { type: String, default: "default" },
 		color: { type: String, default: null },
