@@ -107,6 +107,7 @@ import "./css/index.scss";
 import tuComponent from "../tuComponent";
 import { TukalGlobals } from "../tukalGlobals";
 import { XHRRequestWrapper } from "@/utils/apiWrapper";
+import { log } from "console";
 type Category = {
 	name: string;
 	color: string;
@@ -283,7 +284,13 @@ export default defineComponent({
 				background: background
 			};
 		};
+
+		function log(value) {
+			console.log(value);
+
+		}
 		return {
+			log,
 			showDate,
 			setShowDate,
 			activateDialog,

@@ -16,7 +16,7 @@
 			}" ref="popperNode">
 				<!-- A slot for the popper content -->
 				<slot name="content" />
-				<div v-if="arrow" id="arrow" data-popper-arrow></div>
+				<div v-if="arrow" class="popper-arrow" data-popper-arrow></div>
 			</div>
 		</Transition>
 	</div>
@@ -204,37 +204,38 @@ export default defineComponent({
 	align-self: center;
 }
 
-#arrow,
-#arrow::before {
+.popper-arrow,
+.popper-arrow::before {
 	position: absolute;
 	width: 8px;
 	height: 8px;
 	background: var(--popper-theme-background-color);
 }
 
-#arrow {
+.popper-arrow {
 	visibility: hidden;
+	z-index: -1;
 }
 
-#arrow::before {
+.popper-arrow::before {
 	visibility: visible;
 	content: "";
 	transform: rotate(45deg);
 }
 
-.popper[data-popper-placement^="top"]>#arrow {
+.popper[data-popper-placement^="top"]>.popper-arrow {
 	bottom: -4px;
 }
 
-.popper[data-popper-placement^="bottom"]>#arrow {
+.popper[data-popper-placement^="bottom"]>.popper-arrow {
 	top: -4px;
 }
 
-.popper[data-popper-placement^="left"]>#arrow {
+.popper[data-popper-placement^="left"]>.popper-arrow {
 	right: -4px;
 }
 
-.popper[data-popper-placement^="right"]>#arrow {
+.popper[data-popper-placement^="right"]>.popper-arrow {
 	left: -4px;
 }
 

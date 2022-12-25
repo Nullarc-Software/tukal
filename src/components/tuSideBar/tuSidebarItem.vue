@@ -1,22 +1,24 @@
 <template>
-	<button class="tu-sidebar__item" :class="{
-		active: (parentValue && this.id == parentValue) || internalActive,
-		hasIcon: !!$slots.icon
-	}" @click="onClick">
-		<div v-if="$slots.icon" class="tu-sidebar__item__icon">
-			<slot name="icon" />
-		</div>
-		<div class="tu-sidebar__item__text" :class="{ reduced: reduced }">
-			<slot />
-		</div>
-		<div class="tu-sidebar__item__text-tooltip">
-			<slot />
-		</div>
-		<div v-if="$slots.arrow || arrow" class="tu-sidebar__item__arrow">
-			<slot v-if="$slots.arrow" name="arrow" />
-			<tu-icon v-else>keyboard_arrow_down</tu-icon>
-		</div>
-	</button>
+	<a :href="href" class="tu-sidebar__a">
+		<button class="tu-sidebar__item" :class="{
+			active: (parentValue && this.id == parentValue) || internalActive,
+			hasIcon: !!$slots.icon
+		}" @click="onClick">
+			<div v-if="$slots.icon" class="tu-sidebar__item__icon">
+				<slot name="icon" />
+			</div>
+			<div class="tu-sidebar__item__text" :class="{ reduced: reduced }">
+				<slot />
+			</div>
+			<div class="tu-sidebar__item__text-tooltip">
+				<slot />
+			</div>
+			<div v-if="$slots.arrow || arrow" class="tu-sidebar__item__arrow">
+				<slot v-if="$slots.arrow" name="arrow" />
+				<tu-icon v-else>keyboard_arrow_down</tu-icon>
+			</div>
+		</button>
+	</a>
 </template>
 <script lang="ts">
 import { defineComponent, inject, onMounted, ref, Ref, watch } from "vue";
@@ -36,7 +38,9 @@ export default defineComponent({
 			type: [Object, String],
 			default: null
 		},
-		href: {},
+		href: {
+			type: String
+		},
 		target: { default: "_blank" },
 		value: { type: String },
 		id: { type: String },
@@ -116,6 +120,10 @@ export default defineComponent({
 
 <style lang="scss">
 @import "../../style/sass/_mixins";
+
+.tu-sidebar__a {
+	display: contents;
+}
 
 .tu-sidebar__item {
 	width: 100%;

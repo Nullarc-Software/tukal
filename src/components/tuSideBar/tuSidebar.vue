@@ -1,33 +1,27 @@
 <template>
-	<div
-		:style="{
-			['--tu-color']: color ? getColor(color) : ''
-		}"
-		:class="[
-			'tu-sidebar-content',
-			{
-				reduce: reduceInternal,
-				open: open,
-				notLineActive: notLineActive,
-				square: square,
-				notShadow: notShadow,
-				textWhite: textWhite,
-				relative: relative,
-				absolute: absolute,
-				right: right
-			},
-			// colors
-			{ [`tu-component--primary`]: !!primary },
-			{ [`tu-component--danger`]: !!danger },
-			{ [`tu-component--warn`]: !!warn },
-			{ [`tu-component--success`]: !!success },
-			{ [`tu-component--dark`]: !!dark },
-			{ [`tu-component--is-color`]: !!isColor }
-		]"
-		v-on="listeners"
-		ref="sidebar"
-		v-bind="$attrs"
-	>
+	<div :style="{
+		['--tu-color']: color ? getColor(color) : ''
+	}" :class="[
+	'tu-sidebar-content',
+	{
+		reduce: reduceInternal,
+		open: open,
+		notLineActive: notLineActive,
+		square: square,
+		notShadow: notShadow,
+		textWhite: textWhite,
+		relative: relative,
+		absolute: absolute,
+		right: right
+	},
+	// colors
+	{ [`tu-component--primary`]: !!primary },
+	{ [`tu-component--danger`]: !!danger },
+	{ [`tu-component--warn`]: !!warn },
+	{ [`tu-component--success`]: !!success },
+	{ [`tu-component--dark`]: !!dark },
+	{ [`tu-component--is-color`]: !!isColor }
+]" v-on="listeners" ref="sidebar" v-bind="$attrs">
 		<div v-if="$slots.logo" class="tu-sidebar__logo">
 			<slot name="logo" />
 		</div>
@@ -68,14 +62,14 @@ export default defineComponent({
 		fixedExpandWidth: { default: null, type: Number }
 	},
 	emits: ["update:open", "update:value", "update:expanded"],
-	provide () {
+	provide() {
 		return {
 			parentValue: computed(() => this.value),
 			handleClickItem: this.handleClickItem,
 			reduced: computed(() => this.reduceInternal)
 		};
 	},
-	setup (props, context) {
+	setup(props, context) {
 		const staticWidth = ref(260);
 		const forceExpand = ref(false);
 		const reduceInternal = ref(false);

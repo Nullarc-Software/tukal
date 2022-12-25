@@ -776,7 +776,7 @@
 			<h4>Tabs:</h4>
 			<hr />
 
-			<tu-tabs position="top" noTransitions v-model="tabName" fixed-height="500px">
+			<tu-tabs position="top" tabStyle="card" noTransitions v-model="tabName">
 				<tu-tab label="Home" name="ho"> Home </tu-tab>
 				<tu-tab label="Service" name="se"> Service </tu-tab>
 				<tu-tab label="login" name="lo"> Login </tu-tab>
@@ -951,7 +951,7 @@ export default defineComponent({
 		const navValue = ref("guide");
 		const selectValue = ref([]);
 		const selectValue2 = ref("1");
-		const selectValue1 = ref(null);
+		const selectValue1 = ref("");
 		const page = ref(1);
 		const Export: ExportData = new ExportData();
 		const rowClicked = (tr) => {
