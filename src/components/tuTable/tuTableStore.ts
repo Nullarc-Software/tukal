@@ -275,10 +275,10 @@ export class TuTableStore {
 							inst.rowCount.value = obj.total_rows;
 							inst.setTableData(obj.data);
 						}
+						data = inst.table.data;
 						inst.pageLength.value = Math.ceil(
 							data.length / inst.table.pageSize
 						);
-						data = inst.table.data;
 						this.loading.value = false;
 					}
 				};

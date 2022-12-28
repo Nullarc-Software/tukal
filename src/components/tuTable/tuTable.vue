@@ -21,12 +21,12 @@
 			</template>
 		</tu-popper>
 		<div class="tu-table" :class="{
-			isSelectedValue: modelValue,
-			striped: striped,
-			isMultipleSelected: isMultipleSelected,
-			[`size-${size}`]: true,
-			compact: compact
-		}">
+	isSelectedValue: modelValue,
+	striped: striped,
+	isMultipleSelected: isMultipleSelected,
+	[`size-${size}`]: true,
+	compact: compact
+}">
 			<table class="tu-table__element" ref="tableElement">
 				<thead ref="thead" class="tu-table__thead">
 					<tu-th v-if="rowExpand" fixed @click="expandedAll = !expandedAll" style="width: 50px">
@@ -38,16 +38,16 @@
 					</tu-th>
 					<tu-th v-for="header in table.getTableHeaders.value" :key="header.index" :field="header.field"
 						:style="{
-							width: header.width,
-							minWidth: header.minWidth,
-							maxWidth: header.maxWidth
-						}" @enable-drag-listener="isDraggable = true" @disable-drag-listener="isDraggable = false"
+	width: header.width,
+	minWidth: header.minWidth,
+	maxWidth: header.maxWidth
+}" @enable-drag-listener="isDraggable = true" @disable-drag-listener="isDraggable = false"
 						:draggable="`${isDraggable}`" @dragstart="startDrag($event, header)" @drop="onDrop(header)"
 						@dragover.prevent @dragenter.prevent :class="{
-							'animation-table':
-								(isDrag && header.index === dragIndex) ||
-								header.index === dropIndex
-						}" :sort="header.props ? header.props.sort : false" :type="header.dataType"
+	'animation-table':
+		(isDrag && header.index === dragIndex) ||
+		header.index === dropIndex
+}" :sort="header.props ? header.props.sort : false" :type="header.dataType"
 						:search="header.props ? header.props.search : false">
 						{{ header.caption }}
 					</tu-th>
@@ -65,21 +65,21 @@
 							<tu-checkbox v-model="tr.selected" :checked="selectedAll" />
 						</tu-td>
 						<tu-td v-for="(th, j) in table.getTableHeaders.value" :key="j" :class="{
-							'animation-table':
-								(isDrag && th.index === dragIndex) ||
-								th.index === dropIndex
-						}" :textWrap="th.textWrap">
+	'animation-table':
+		(isDrag && th.index === dragIndex) ||
+		th.index === dropIndex
+}" :textWrap="th.textWrap">
 							<span :title="tr.rowData[th.field]" v-if="th.isComponent === false">
 								{{
-										th.valueFormatter
-											? th.valueFormatter(
-												tr.rowData[th.field],
-												tr.rowData
-											)
-											: th.field.indexOf(".") !== -1
-												? getNestedField(tr.rowData, th.field)
-												: tr.rowData[th.field] ?? "undefined"
-								}}
+		th.valueFormatter
+			? th.valueFormatter(
+				tr.rowData[th.field],
+				tr.rowData
+			)
+			: th.field.indexOf(".") !== -1
+				? getNestedField(tr.rowData, th.field)
+				: tr.rowData[th.field] ?? "undefined"
+}}
 							</span>
 							<!--
 								v-model is always instance specific. So, if any component needs to echo values to the parent, they should only use generic 'v-models'
@@ -90,18 +90,18 @@
 								This component will try and bind to the inbuild componentValue Ref first, if a user defined modelValue is defined in the header, that will be used instead
 							-->
 							<component v-else-if="
-								th.isComponent &&
-								tr.componentValues[th.field]
-							" v-model="tr.componentValues[th.field].value" v-bind="th.componentProps" :is="th.component"
-								:rowIndex="tr.index" :rowData="tr.rowData" />
+	th.isComponent &&
+	tr.componentValues[th.field]
+" v-model="tr.componentValues[th.field].value" v-bind="th.componentProps" :is="th.component" :rowIndex="tr.index"
+								:rowData="tr.rowData" />
 							<component v-else-if="th.isComponent" v-bind="th.componentProps" :is="th.component"
 								:rowIndex="tr.index" :rowData="tr.rowData" />
 						</tu-td>
 						<template #expand v-if="tr.rowData['expanded']">
 							<component :is="
-								tr.rowData['expanded'].component ??
-								require(`${tr.rowData['expanded'].componentName}`)
-							" v-bind="tr.rowData['expanded'].props" />
+	tr.rowData['expanded'].component ??
+	require(`${tr.rowData['expanded'].componentName}`)
+" v-bind="tr.rowData['expanded'].props" />
 						</template>
 					</tu-tr>
 				</tbody>

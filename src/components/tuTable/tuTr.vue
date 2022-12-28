@@ -176,6 +176,7 @@ export default defineComponent({
 	border: 0px;
 	border-bottom: 1px solid -getColorAlpha("text", 0.2);
 
+
 	&.expand {
 		cursor: pointer;
 	}

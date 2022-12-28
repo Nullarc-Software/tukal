@@ -29,7 +29,8 @@
 						multiple: multiple,
 						simple: !multiple && !filter
 					}
-				]" v-on="inputListener" />
+				]" v-on="inputListener">
+			<tu-icon v-if="addValue" class="tu-select-add-icon" @click="addNewOption">add</tu-icon>
 			<label v-if="label || labelPlaceholder" class="tu-select__label" :for="uid" :class="{
 				'tu-select__label--placeholder': labelPlaceholder,
 				'tu-select__label--label': label,
@@ -85,10 +86,15 @@
 							<span v-else> No Data Available </span>
 						</div>
 						<slot />
+						<tu-select-option v-for="addedOption of addedOptions" :key="addedOption.value"
+							:label="addedOption.label" :value="addedOption.value">
+							{{ addedOption.label }}
+						</tu-select-option>
 					</div>
 				</div>
 			</transition>
 			<div v-if="loading" class="tu-select__loading" />
+
 			<tu-icon @click="iconClicked" class="tu-icon-arrow" :class="{
 				'tu-select-icon-down': !activeOptions,
 				'tu-select-icon-up': activeOptions
@@ -131,6 +137,7 @@ import {
 	onBeforeUnmount
 } from "vue";
 import tuComponent from "../tuComponent";
+import tuSelectOption from "../tuSelect/tuSelectOption.vue";
 import { insertBody, removeBody, setCords } from "@/utils";
 import tuOption from "../tuSelect/tuSelectOption.vue";
 import tuIcon from "../tuIcon";
@@ -141,12 +148,20 @@ class SelectConstants {
 	public static id = 0;
 }
 
+type ChildOptions = {
+	disabled?: boolean,
+	value: string,
+	label: string,
+	offsetTop?: number
+}
+
 export default defineComponent({
 	name: "TuSelect",
 	extends: tuComponent,
 	components: {
 		tuOption,
-		tuIcon
+		tuIcon,
+		tuSelectOption
 	},
 	props: {
 		modelValue: {},
@@ -154,6 +169,7 @@ export default defineComponent({
 		dropdown: { type: Boolean, default: false },
 		inline: { type: Boolean, default: false },
 		filter: { type: Boolean, default: false },
+		addValue: { type: Boolean, default: false },
 		placeholder: { type: String, default: "" },
 		labelPlaceholder: { type: String, default: "" },
 		label: { type: String, default: "" },
@@ -215,7 +231,8 @@ export default defineComponent({
 		const valueLabel = ref<any>(null);
 		const hoverOption = ref(-1);
 		const uids = ref<any[]>([]);
-		const childOptions = ref<any[]>([]);
+		const addedOptions = ref<ChildOptions[]>([]);
+		const childOptions = ref<ChildOptions[]>([]);
 		const targetSelect = ref(false);
 		const targetSelectInput = ref(false);
 		const targetClose = ref(false);
@@ -243,6 +260,27 @@ export default defineComponent({
 
 			hoverOption.value = index;
 		};
+
+		function addNewOption() {
+			let alreadyExists = false;
+			childOptions.value.forEach(child => {
+				if (child.label.trim().toLowerCase() === textFilter.value.trim().toLowerCase())
+					alreadyExists = true;
+				return;
+			});
+
+			if (alreadyExists)
+				return;
+
+			else {
+				addedOptions.value.push({
+					label: textFilter.value.trim(),
+					value: textFilter.value.trim()
+				});
+
+			}
+
+		}
 
 		const handleWindowClick = function (evt: any) {
 			if (!targetSelectInput.value) handleBlur();
@@ -548,19 +586,13 @@ export default defineComponent({
 		});
 
 		const notData = computed(() => {
-			let newChildOptions: any = [];
-
-			childOptions.value.forEach((option: any): any => {
-				if (!option.hiddenOption) newChildOptions.push(option);
-			});
-
-			newChildOptions = childOptions.value.filter((item) => {
-				if (item.optionGroup) return !item.hiddenOptionGroup;
-
+			if (content.value) {
+				if (content.value.querySelectorAll(".tu-select__option.hiddenOption").length === childOptions.value.length)
+					return true;
+			}
+			else if (childOptions.value.length === 0)
 				return true;
-			});
-
-			return newChildOptions.length === 0;
+			return false;
 		});
 
 		const iconClicked = function () {
@@ -664,6 +696,7 @@ export default defineComponent({
 		});
 
 		return {
+			addedOptions,
 			chipsHovered,
 			renderSelect,
 			activeOptions,
@@ -697,6 +730,7 @@ export default defineComponent({
 			leave,
 			setHover,
 			onClickOption,
+			addNewOption,
 			isValue
 		};
 	}
@@ -705,8 +739,6 @@ export default defineComponent({
 
 <style lang="scss">
 @import "../../style/sass/_mixins";
-
-
 
 @mixin state($color) {
 	.tu-select__input {
@@ -777,6 +809,10 @@ export default defineComponent({
 		&:before {
 			background: -getColor($color);
 		}
+	}
+
+	.tu-select-add-icon {
+		color: -getColor($color);
 	}
 }
 
@@ -898,6 +934,19 @@ export default defineComponent({
 		transition: all 0.25s ease;
 		pointer-events: auto;
 		cursor: pointer;
+	}
+
+	.tu-select-add-icon {
+		position: absolute;
+		right: -20px;
+		font-size: 16px;
+		color: -getColor("text");
+		transition: all .25s ease;
+
+		&:hover {
+			color: -getColor("color");
+			transform: rotate(180deg);
+		}
 	}
 
 	&.activeOptions {

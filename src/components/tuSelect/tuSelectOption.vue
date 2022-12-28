@@ -165,7 +165,7 @@ export default defineComponent({
 	max-height: 40px;
 
 	&.hiddenOption {
-		// display: none
+		//display: none;
 		opacity: 0;
 		visibility: hidden;
 		max-height: 0px;
