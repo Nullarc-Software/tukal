@@ -1,22 +1,19 @@
 export type NodeData = {
-	state: {
-		partiallyChecked: boolean,
-		checked: boolean;
-		expanded: boolean;
-		selected: boolean;
+	state?: {
+		partiallyChecked?: boolean,
+		checked?: boolean;
+		expanded?: boolean;
 		hidden?: boolean;
-		[key: string]: any;
 	}
-	nodes?: NodeData[];
+	children?: NodeData[];
+	text: string;
 	id: string;
-	depth: number;
-	[key: string]: any;
 }
 
 export interface serverNodeData {
 	id: string;
 	text: string;
-	children: boolean;
+	children: Array<serverNodeData>;
 	icon?: string;
 	iconPack?: string;
 }

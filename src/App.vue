@@ -1336,59 +1336,40 @@ export default defineComponent({
 			{
 				text: "Root 1",
 				id: "1",
-				state: { checked: false, selected: false, expanded: false },
-				// checkable: false,
-				nodes: [
+				children: [
 					{
 						text: "Child 1",
 						id: "3",
-						state: {
-							checked: false,
-							selected: false,
-							expanded: false
-						},
-						nodes: [
+						children: [
 							{
 								text: "Grandchild 1",
 								id: "5",
-								state: {
-									checked: false,
-									selected: false,
-									expanded: false
-								}
+								children: []
 							},
 							{
 								text: "Grandchild 2",
 								id: "6",
-								state: {
-									checked: false,
-									selected: false,
-									expanded: false
-								}
+								children: []
 							}
 						]
 					},
 					{
 						text: "Child 2",
 						id: "4",
-						state: {
-							checked: false,
-							selected: false,
-							expanded: false
-						}
+						children: []
 					}
 				]
 			},
 			{
 				text: "Root 2",
 				id: "2",
-				state: { checked: false, selected: false, expanded: false }
+				children: []
 			}
 		]);
 
-		watch(checkedNodes, () => {
-			console.log(checkedNodes.value)
-		})
+		// watch(checkedNodes, () => {
+		// 	console.log(checkedNodes.value)
+		// })
 
 		return {
 			// treeSelectedItems,

@@ -10,9 +10,8 @@
 				:isRemoveNode="removeNode" :isAddNode="addNode" :isEditNode="editNode" :icon="icon"
 				:custom-styles="customStyles" :depth="1" :key="node" :node="node" :parent-node="node"
 				:root="currentNodes" :model="model" :serverSideConfig="serverSideConfig"
-				v-on:emitNodeSelected="onNodeSelected" v-on:emitNodeAdded="onNodeAdded"
-				v-on:emitNodeDeleted="onNodeDeleted" v-on:emitNodeChecked="onNodeChecked"
-				v-on:emitNodeEdited="onNodeEdited">
+				v-on:emitNodeAdded="onNodeAdded" v-on:emitNodeDeleted="onNodeDeleted"
+				v-on:emitNodeChecked="onNodeChecked" v-on:emitNodeEdited="onNodeEdited">
 				<template v-slot:customIcon>
 					<slot v-if="$slots.icon" name="icon" />
 				</template>
@@ -27,14 +26,13 @@ import {
 	NodeData,
 	NodesProperties,
 	TreeCustomStyles,
-	TuTreeServerModel
+	TuTreeServerModel,
+	serverNodeData
 } from "./interface";
 import tuTreeRow from "./tuTreeRow.vue";
-import { recCallNodes } from "./helper";
+import { recCallNodes, serverRequest } from "./helper";
+import { DFT } from "./dfs.ts";
 import tuComponent from "@/components/tuComponent";
-import { TukalGlobals } from "../../tukalGlobals";
-import { XHRRequestWrapper } from "@/utils/apiWrapper";
-import { isUndefined } from "lodash";
 export default defineComponent({
 	name: "TuTree",
 	extends: tuComponent,
@@ -95,48 +93,32 @@ export default defineComponent({
 		"update:modelValue"
 	],
 	setup(props, context) {
-		let currentNodes;
-		let initialServerRequest;
+		let currentNodes = ref();
 		if (props.model === "local") {
 			currentNodes = ref(props.nodes);
+			let addProperty = (arr) => {
+				for (let i = 0; i < arr.length; i++) {
+					arr[i].state = 	{
+							checked: false,
+							expanded: false
+						}
+					if (arr[i]?.children && arr[i].children.length > 0) {
+						addProperty(arr[i].children)
+					}
+				}
+			}
+			addProperty(props.nodes)
 		}
 		else if (props.model === "server") {
 			currentNodes = ref([]);
-			initialServerRequest = () => {
-				const xhrRequest = new XHRRequestWrapper();
-				const serverSideModel = props.serverSideConfig;
-				if (isUndefined(serverSideModel.method))
-					serverSideModel.method = "GET";
-				xhrRequest.request.onreadystatechange = function () {
-					if (
-						xhrRequest.request.readyState === XMLHttpRequest.DONE &&
-						xhrRequest.request.status === 200
-					) {
-						if (xhrRequest.request.responseType === "json") {
-							currentNodes.value = xhrRequest.request.response.data;
-						}
-						else if (xhrRequest.request.responseType === "text") {
-							currentNodes.value = JSON.parse(xhrRequest.request.responseText);
-						}
-						else {
-							currentNodes.value = JSON.parse(xhrRequest.request.responseText);
-						}
-						for (let i = 0; i < currentNodes.value.length; i++) {
-							currentNodes.value[i].state = {
-								expanded: false
-							}
-						}
+			serverRequest(props.serverSideConfig, "").then((data) => {
+				currentNodes.value = data;
+				for (let i = 0; i < currentNodes.value.length; i++) {
+					currentNodes.value[i].state = {
+						expanded: false
 					}
-				};
-				xhrRequest.open(
-					serverSideModel.method,
-					TukalGlobals.ApiRequestTarget + serverSideModel.url + "root",
-				);
-				xhrRequest.request.setRequestHeader("Content-Type", "application/json");
-				xhrRequest.request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-				xhrRequest.request.send();
-			}
-			initialServerRequest();
+				}
+			});
 		}
 		const keyWord = ref("");
 		const firstSearch = ref(false);
@@ -204,11 +186,11 @@ export default defineComponent({
 					return false;
 				}
 				else if (
-					node.nodes &&
+					node.children &&
 					maxDepth > depth &&
 					(tmp = recFindNodePath(
 						nodeId,
-						node.nodes,
+						node.children,
 						depth + 1,
 						maxDepth
 					)) != null &&
@@ -236,11 +218,11 @@ export default defineComponent({
 					return false;
 				}
 				else if (
-					node.nodes &&
+					node.children &&
 					maxDepth > depth &&
 					(tmp = recFindNode(
 						nodeId,
-						node.nodes,
+						node.children,
 						depth + 1,
 						maxDepth
 					)) != null
@@ -258,8 +240,8 @@ export default defineComponent({
 			fullNode: boolean
 		) {
 			arr.push(fullNode ? node : node.id);
-			if (node.state.expanded === true && node.nodes) {
-				node.nodes.forEach((nodeChild) => {
+			if (node.state.expanded === true && node.children) {
+				node.children.forEach((nodeChild) => {
 					recGetVisibleNodes(arr, nodeChild, fullNode);
 				});
 			}
@@ -268,7 +250,7 @@ export default defineComponent({
 		function recGetNodesData(
 			argWanted: string | string[],
 			conditions: NodesProperties,
-			nodes: NodeData[] | undefined
+			children: NodeData[] | undefined
 		): NodesProperties[] {
 			let arr: NodesProperties[] = [];
 			if (nodes === undefined) return arr;
@@ -292,7 +274,7 @@ export default defineComponent({
 					else arr.push(node[argWanted]);
 				}
 				arr = arr.concat(
-					recGetNodesData(argWanted, conditions, node.nodes)
+					recGetNodesData(argWanted, conditions, node.children)
 				);
 			});
 			return arr;
@@ -315,7 +297,7 @@ export default defineComponent({
 					arr[node.id] = recGetNodesDataWithFormat(
 						argWanted,
 						conditions,
-						node.nodes
+						node.children
 					);
 				}
 				else {
@@ -324,7 +306,7 @@ export default defineComponent({
 						recGetNodesDataWithFormat(
 							argWanted,
 							conditions,
-							node.nodes
+							node.children
 						)
 					);
 				}
@@ -355,17 +337,17 @@ export default defineComponent({
 			if (node.text.startsWith(keyWord.value)) {
 				return node;
 			}
-			if (node.nodes) {
+			if (node.children) {
 				let requiredNodes = node;
 				let nodeFound = false;
-				for (let i = 0; i < node.nodes.length; i++) {
-					let result = dfs(node.nodes[i], node)
+				for (let i = 0; i < node.children.length; i++) {
+					let result = dfs(node.children[i], node)
 					if (result != null) {
-						requiredNodes.nodes[i].state.hidden = false;
+						requiredNodes.children[i].state.hidden = false;
 						nodeFound = true;
 					}
 					else {
-						requiredNodes.nodes[i].state.hidden = true;
+						requiredNodes.children[i].state.hidden = true;
 					}
 				}
 				if (nodeFound === true) {
@@ -382,50 +364,19 @@ export default defineComponent({
 
 		const searchKeyword = () => {
 			if (props.model === "local") {
-				let requiredNodes = [];
-				for (let i = 0; i < props.nodes.length; i++) {
-					let result = dfs(props.nodes[i]);
-					if (result !== null)
-						requiredNodes.push(result);
-				}
-				currentNodes.value = requiredNodes
-				recCallNodes(true, "expanded", props.nodes);
-				firstSearch.value = true
+				const dft = new DFT();
+				currentNodes.value = dft.search(currentNodes.value, keyWord.value);
 			}
 			if (props.model === "server") {
-				const xhrRequest = new XHRRequestWrapper();
-				const serverSideModel = props.serverSideConfig;
-				if (isUndefined(serverSideModel.method))
-					serverSideModel.method = "GET";
-				xhrRequest.request.onreadystatechange = function () {
-					if (
-						xhrRequest.request.readyState === XMLHttpRequest.DONE &&
-						xhrRequest.request.status === 200
-					) {
-						if (xhrRequest.request.responseType === "json") {
-							currentNodes.value = xhrRequest.request.response.data;
-						}
-						else if (xhrRequest.request.responseType === "text") {
-							currentNodes.value = JSON.parse(xhrRequest.request.responseText);
-						}
-						else {
-							currentNodes.value = JSON.parse(xhrRequest.request.responseText);
-						}
-						for (let i = 0; i < currentNodes.value.length; i++) {
-							currentNodes.value[i].state = {
-								expanded: true,
-								checked: false
-							}
+				serverRequest(props.serverSideConfig, `?search=${keyWord.value}`).then((data) => {
+					currentNodes.value = data;
+					for (let i = 0; i < currentNodes.value.length; i++) {
+						currentNodes.value[i].state = {
+							expanded: true,
+							checked: false
 						}
 					}
-				};
-				xhrRequest.open(
-					serverSideModel.method,
-					TukalGlobals.ApiRequestTarget + serverSideModel.url + `?search=${keyWord.value}`,
-				);
-				xhrRequest.request.setRequestHeader("Content-Type", "application/json");
-				xhrRequest.request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-				xhrRequest.request.send();
+				})
 			}
 		}
 		watch(keyWord, () => {
@@ -437,7 +388,15 @@ export default defineComponent({
 				searchKeyword();
 			}
 			if (keyWord.value === "" && props.model === "server") {
-				initialServerRequest();
+				serverRequest(props.serverSideConfig, `root`).then((data) => {
+					currentNodes.value = data;
+					for (let i = 0; i < currentNodes.value.length; i++) {
+						currentNodes.value[i].state = {
+							expanded: false,
+							checked: false
+						}
+					}
+				})
 			}
 		})
 		const onNodeChecked = () => {
@@ -448,7 +407,6 @@ export default defineComponent({
 		}
 		return {
 			styles,
-			// onNodeSelected,
 			expandAllNodes,
 			collapseAllNodes,
 			force,

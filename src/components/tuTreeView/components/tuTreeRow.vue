@@ -2,19 +2,14 @@
 	<li class="node"
 		:class="[{ 'tree-node-hidden': currentNode.state?.hidden === true || currentNode?.hidden === true }, 'tree-row']"
 		:data-id="currentNode.id">
-		<div :class="['row_data', editSelected && isCheckNode ? 'position-bottom' : null, editSelected && !isCheckNode ? 'position-bottom-l' : null]"
-			:style="
-				currentNode.state?.selected
-					? styles.row.child.active.style
-					: styles.row.child.style
-			">
+		<div :class="['row_data', editSelected && isCheckNode ? 'position-bottom' : null, editSelected && !isCheckNode ? 'position-bottom-l' : null]">
 			<span @click.stop="expandNode()">
 				<tu-icon :class="[
 					currentNode.state?.expanded
 						? 'keyboard_arrow_down'
 						: 'keyboard_arrow_right',
-					currentNode.nodes != undefined &&
-						currentNode.nodes.length > 0 || currentNode.children === true ?
+					currentNode.children != undefined &&
+						currentNode.children.length > 0 || currentNode.children === true ?
 						null : 'invisible'
 				]">
 					keyboard_arrow_right
@@ -35,13 +30,8 @@
 					" @click="toggleCheckState(currentNode)">
 					<div v-if="!editSelected">
 						<span data-toggle="tooltip" data-placement="top" :title="currentNode.definition" v-bind:class="[
-							{ selected: currentNode.state?.selected },
 							styles.text.class
-						]" :style="
-	currentNode.state?.selected
-		? styles.text.active.style
-		: styles.text.style
-">
+						]">
 							{{ currentNode.text }}
 						</span>
 						<span v-if="isAddNode && model === 'local'" @click.stop="addNode(currentNode)"
@@ -74,13 +64,8 @@
 				<div :class="['node-alignment']">
 					<div v-if="!isCheckNode && !editSelected">
 						<span data-toggle="tooltip" data-placement="top" :title="currentNode.definition" v-bind:class="[
-							{ selected: currentNode.state?.selected },
 							styles.text.class
-						]" :style="
-	currentNode.state?.selected
-		? styles.text.active.style
-		: styles.text.style
-">
+						]">
 							{{ currentNode.text }}
 						</span>
 						<span v-if="isAddNode && model === 'local'" @click.stop="addNode(currentNode)"
@@ -113,8 +98,8 @@
 			</div>
 		</div>
 		<div :style="getHeight" v-if="currentNode.state?.expanded" class="line">
-			<ul v-if="currentNode.state?.expanded && currentNode.nodes" :style="styles.rowIndent">
-				<tu-tree-row v-for="child in currentNode.nodes" :ref="`tree-row-` + child.id" :isCheckNode="isCheckNode"
+			<ul v-if="currentNode.state?.expanded && currentNode.children" :style="styles.rowIndent">
+				<tu-tree-row v-for="child in currentNode.children" :ref="`tree-row-` + child.id" :isCheckNode="isCheckNode"
 					:isAddNode="isAddNode" :isRemoveNode="isRemoveNode" :isEditNode="isEditNode" :icon="icon"
 					:custom-styles="customStyles" :depth="depth + 1" :key="child" :node="child" :root="root"
 					:parent-node="currentNode" :model="model" v-on:emitNodeExpanded="emitNodeExpanded"
@@ -197,7 +182,6 @@ export default defineComponent({
 		"emitNodeEdited"
 	],
 	setup(props, context) {
-
 		const currentNode: Ref<NodeData> = ref(props.node);
 		//const currentNodeIsPartiallyChecked = ref(false);
 		const currentParentNode = ref(props.parentNode);
@@ -315,28 +299,28 @@ export default defineComponent({
 						xhrRequest.request.status === 200
 					) {
 						if (xhrRequest.request.responseType === "json") {
-							currentNode.value.nodes = xhrRequest.request.response.data;
+							currentNode.value.children = xhrRequest.request.response.data;
 							loading.value = false;
 						}
 						else if (xhrRequest.request.responseType === "text") {
-							currentNode.value.nodes = JSON.parse(xhrRequest.request.responseText);
+							currentNode.value.children = JSON.parse(xhrRequest.request.responseText);
 							loading.value = false;
 						}
 						else {
-							currentNode.value.nodes = JSON.parse(xhrRequest.request.responseText);
+							currentNode.value.children = JSON.parse(xhrRequest.request.responseText);
 							loading.value = false;
 						}
 						if (server === undefined) {
-							for (let i = 0; i < currentNode.value.nodes.length; i++) {
-								currentNode.value.nodes[i].state = {
+							for (let i = 0; i < currentNode.value.children.length; i++) {
+								currentNode.value.children[i].state = {
 									expanded: false,
 									checked: currentNode.value.state.checked
 								}
 							}
 						}
 						if (server === true) {
-							for (let i = 0; i < currentNode.value.nodes.length; i++) {
-								currentNode.value.nodes[i].state = {
+							for (let i = 0; i < currentNode.value.children.length; i++) {
+								currentNode.value.children[i].state = {
 									expanded: true
 								}
 							}
@@ -356,11 +340,11 @@ export default defineComponent({
 			expandNode(true)
 		}
 		const isAllCheck = (node: NodeData) => {
-			if (node.nodes === undefined || node.nodes === null) return false;
+			if (node.children === undefined || node.children === null) return false;
 			else {
-				for (let i = 0; i < node.nodes.length; i++) {
-					if (node.nodes[i].state.checked === true) {
-						if (i === node.nodes.length - 1) return true;
+				for (let i = 0; i < node.children.length; i++) {
+					if (node.children[i].state.checked === true) {
+						if (i === node.children.length - 1) return true;
 						else continue;
 					}
 					else return false;
@@ -368,21 +352,25 @@ export default defineComponent({
 			}
 		};
 		const atleastOneCheck = (node: NodeData) => {
-			if (node.nodes === undefined || node.nodes === null) return false;
-			for (let i = 0; i < node.nodes.length; i++)
-				if (node.nodes[i].state.checked === true || node.nodes[i].state.partiallyChecked) return true;
+			if (node.children === undefined || node.children === null) return false;
+			for (let i = 0; i < node.children.length; i++)
+				if (node.children[i].state.checked === true || node.children[i].state.partiallyChecked) return true;
 			return false;
 		};
 		const onParentNodeEmit = (node: NodeData, isCheckParent?: boolean) => {
 			if (!isCheckParent || isCheckParent === undefined) {
 				if (node === currentNode.value) {
-					if (atleastOneCheck(currentNode.value)) {
-						currentNode.value.state.partiallyChecked = true;
+					if (isAllCheck(currentNode.value)) {
+						currentNode.value.state.checked = true;
+						currentNode.value.state.partiallyChecked = false;
 					}
-					else {
+					if (atleastOneCheck(currentNode.value) && !isAllCheck(currentNode.value)) {
+						currentNode.value.state.partiallyChecked = true;
+						currentNode.value.state.checked = false;
+					}
+					else if( !atleastOneCheck(currentNode.value) && !isAllCheck(currentNode.value)) {
 						currentNode.value.state.checked = false;
 						currentNode.value.state.partiallyChecked = false;
-
 					}
 				}
 			}
@@ -393,7 +381,7 @@ export default defineComponent({
 				}
 				else if (atleastOneCheck(currentNode.value)) {
 					currentNode.value.state.partiallyChecked = true;
-
+					currentNode.value.state.checked = false;
 				}
 				else {
 					if (
@@ -406,37 +394,37 @@ export default defineComponent({
 				}
 			}
 			nextTick(() => {
-
 				context.emit("emitParentNode", currentParentNode.value);
 			});
 		};
 		function toggleCheckState(node: NodeData) {
-			// if checkbox partailly checked make it true and all child nodes true else toggle true or false
-			if (currentNode.value.state.partiallyChecked === true)
+			// if checkbox partailly checked make it true and all child children true else toggle true or false
+			if (currentNode.value.state.partiallyChecked === true) {
 				currentNode.value.state.partiallyChecked = false;
+				currentNode.value.state.checked = false;
+			}
 			else {
 				currentNode.value.state.checked =
 					!currentNode.value.state.checked;
 			}
-			// if parent node is true and current node is false emit to parent node to make parent nodes partially checked
+			// if parent node is true and current node is false emit to parent node to make parent children partially checked
 			if (
 				currentParentNode.value.state.checked === true &&
 				currentNode.value.state.checked === false
 			)
 				context.emit("emitParentNode", currentParentNode.value);
-			// else emit to parent node and check if parent nodes are all checked if so make parent node checkbox true
+			// else emit to parent node and check if parent children are all checked if so make parent node checkbox true
 			else context.emit("emitParentNode", currentParentNode.value, true);
-			// if child nodes exist make all child nodes true
+			// if child children exist make all child children true
 			recCallNodes(
 				currentNode.value.state.checked,
 				"checked",
-				node.nodes
+				node.children
 			);
-
 			context.emit("emitNodeChecked");
 		}
 		const getHeight = () => {
-			const heightNum = currentNode.value.nodes.length * 35 + 35;
+			const heightNum = currentNode.value.children.length * 35 + 35;
 			return {
 				height: heightNum + "px"
 			};
@@ -445,9 +433,9 @@ export default defineComponent({
 			if (node === currentParentNode.value)
 				emitNodeDeleted(node);
 			else {
-				for (let i = 0; i < currentParentNode.value.nodes.length; i++) {
-					if (node.id === currentParentNode.value.nodes[i].id) {
-						currentParentNode.value.nodes.splice(i, 1);
+				for (let i = 0; i < currentParentNode.value.children.length; i++) {
+					if (node.id === currentParentNode.value.children[i].id) {
+						currentParentNode.value.children.splice(i, 1);
 						emitNodeDeleted(currentParentNode.value, true);
 					}
 				}
@@ -459,10 +447,10 @@ export default defineComponent({
 			const newNode = {
 				text: "new Node",
 				id: Math.floor(Math.random() * 100).toString(),
-				state: { checked: false, selected: false, expanded: false }
+				state: { checked: false, expanded: false }
 			};
-			if (node.nodes === undefined) node.nodes = [newNode];
-			else node.nodes.push(newNode);
+			if (node.children === undefined) node.children = [newNode];
+			else node.children.push(newNode);
 			currentNode.value = node;
 			context.emit("emitNodeAdded", currentNode.value);
 		};
@@ -482,9 +470,6 @@ export default defineComponent({
 		const onNodeEdited = () => {
 			context.emit("emitNodeEdited");
 		}
-
-
-
 		return {
 			styles,
 			toggleCheckState,
@@ -499,7 +484,6 @@ export default defineComponent({
 			expandNode,
 			parentNodeIsPartialState,
 			onParentNodeEmit,
-
 			itemRefs,
 			currentNodeCheckState,
 			getHeight,
