@@ -98,10 +98,11 @@ export default defineComponent({
 			currentNodes = ref(props.nodes);
 			let addProperty = (arr) => {
 				for (let i = 0; i < arr.length; i++) {
-					arr[i].state = 	{
-							checked: false,
-							expanded: false
-						}
+					arr[i].state = {
+						checked: false,
+						expanded: false,
+						hidden: false,
+					}
 					if (arr[i]?.children && arr[i].children.length > 0) {
 						addProperty(arr[i].children)
 					}
@@ -365,7 +366,8 @@ export default defineComponent({
 		const searchKeyword = () => {
 			if (props.model === "local") {
 				const dft = new DFT();
-				currentNodes.value = dft.search(currentNodes.value, keyWord.value);
+				dft.search(currentNodes.value, keyWord.value);
+				expandAllNodes();
 			}
 			if (props.model === "server") {
 				serverRequest(props.serverSideConfig, `?search=${keyWord.value}`).then((data) => {

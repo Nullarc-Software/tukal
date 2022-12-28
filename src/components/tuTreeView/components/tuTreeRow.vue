@@ -2,16 +2,17 @@
 	<li class="node"
 		:class="[{ 'tree-node-hidden': currentNode.state?.hidden === true || currentNode?.hidden === true }, 'tree-row']"
 		:data-id="currentNode.id">
-		<div :class="['row_data', editSelected && isCheckNode ? 'position-bottom' : null, editSelected && !isCheckNode ? 'position-bottom-l' : null]">
+		<div
+			:class="['row_data', editSelected && isCheckNode ? 'position-bottom' : null, editSelected && !isCheckNode ? 'position-bottom-l' : null]">
 			<span @click.stop="expandNode()">
 				<tu-icon :class="[
-					currentNode.state?.expanded
-						? 'keyboard_arrow_down'
-						: 'keyboard_arrow_right',
-					currentNode.children != undefined &&
-						currentNode.children.length > 0 || currentNode.children === true ?
-						null : 'invisible'
-				]">
+	currentNode.state?.expanded
+		? 'keyboard_arrow_down'
+		: 'keyboard_arrow_right',
+	currentNode.children != undefined &&
+		currentNode.children.length > 0 || currentNode.children === true ?
+		null : 'invisible'
+]">
 					keyboard_arrow_right
 				</tu-icon>
 			</span>
@@ -24,37 +25,37 @@
 			<div :class="[{ 'margin-left-loading': loading }, 'inline-block']">
 				<tu-checkbox :eventBubble="true" v-if="isCheckNode" type="checkbox" :data-id="currentNode.id"
 					:indeterminate="currentNode.state.partiallyChecked" :checked="
-						currentNode.state.partiallyChecked
-							? false
-							: currentNode.state.checked
-					" @click="toggleCheckState(currentNode)">
+	currentNode.state.partiallyChecked
+		? false
+		: currentNode.state.checked
+" @click="toggleCheckState(currentNode)">
 					<div v-if="!editSelected">
 						<span data-toggle="tooltip" data-placement="top" :title="currentNode.definition" v-bind:class="[
-							styles.text.class
-						]">
+	styles.text.class
+]">
 							{{ currentNode.text }}
 						</span>
 						<span v-if="isAddNode && model === 'local'" @click.stop="addNode(currentNode)"
 							:class="styles.iconParent.class">
 							<i v-bind:class="[
-								styles.addNode.class
-							]" :style="styles.addNode.style">
+	styles.addNode.class
+]" :style="styles.addNode.style">
 							</i>
 						</span>
 						<span v-if="isEditNode && model === 'local'" @click.stop="editNode"
 							:class="styles.iconParent.class">
 							<i v-bind:class="[
-								'icon-hover',
-								styles.editNode.class
-							]" :style="styles.editNode.style">
+	'icon-hover',
+	styles.editNode.class
+]" :style="styles.editNode.style">
 							</i>
 						</span>
 						<span v-if="isRemoveNode && model === 'local'" @click.stop="removeNode(currentNode)"
 							:class="styles.iconParent.class">
 							<i v-bind:class="[
-								'icon-hover',
-								styles.deleteNode.class
-							]" :style="styles.deleteNode.style">
+	'icon-hover',
+	styles.deleteNode.class
+]" :style="styles.deleteNode.style">
 							</i>
 						</span>
 					</div>
@@ -64,31 +65,31 @@
 				<div :class="['node-alignment']">
 					<div v-if="!isCheckNode && !editSelected">
 						<span data-toggle="tooltip" data-placement="top" :title="currentNode.definition" v-bind:class="[
-							styles.text.class
-						]">
+	styles.text.class
+]">
 							{{ currentNode.text }}
 						</span>
 						<span v-if="isAddNode && model === 'local'" @click.stop="addNode(currentNode)"
 							:class="styles.iconParent.class">
 							<i v-bind:class="[
-								styles.addNode.class
-							]" :style="styles.addNode.style">
+	styles.addNode.class
+]" :style="styles.addNode.style">
 							</i>
 						</span>
 						<span v-if="isEditNode && model === 'local'" @click.stop="editNode"
 							:class="styles.iconParent.class">
 							<i v-bind:class="[
-								'icon-hover',
-								styles.editNode.class
-							]" :style="styles.editNode.style">
+	'icon-hover',
+	styles.editNode.class
+]" :style="styles.editNode.style">
 							</i>
 						</span>
 						<span v-if="isRemoveNode && model === 'local'" @click.stop="removeNode(currentNode)"
 							:class="styles.iconParent.class">
 							<i v-bind:class="[
-								'icon-hover',
-								styles.deleteNode.class
-							]" :style="styles.deleteNode.style">
+	'icon-hover',
+	styles.deleteNode.class
+]" :style="styles.deleteNode.style">
 							</i>
 						</span>
 					</div>
@@ -99,13 +100,14 @@
 		</div>
 		<div :style="getHeight" v-if="currentNode.state?.expanded" class="line">
 			<ul v-if="currentNode.state?.expanded && currentNode.children" :style="styles.rowIndent">
-				<tu-tree-row v-for="child in currentNode.children" :ref="`tree-row-` + child.id" :isCheckNode="isCheckNode"
-					:isAddNode="isAddNode" :isRemoveNode="isRemoveNode" :isEditNode="isEditNode" :icon="icon"
-					:custom-styles="customStyles" :depth="depth + 1" :key="child" :node="child" :root="root"
-					:parent-node="currentNode" :model="model" v-on:emitNodeExpanded="emitNodeExpanded"
-					v-on:emitNodeSelected="emitNodeSelected" v-on:emitNodeDeleted="emitNodeDeleted"
-					v-on:emitNodeAdded="onNodeAdded" v-on:emitParentNode="onParentNodeEmit"
-					v-on:emitNodeChecked="onNodeChecked" v-on:emitNodeEdited="onNodeEdited">
+				<tu-tree-row v-for="child in currentNode.children" :ref="`tree-row-` + child.id"
+					:isCheckNode="isCheckNode" :isAddNode="isAddNode" :isRemoveNode="isRemoveNode"
+					:isEditNode="isEditNode" :icon="icon" :custom-styles="customStyles" :depth="depth + 1" :key="child"
+					:node="child" :root="root" :parent-node="currentNode" :model="model"
+					v-on:emitNodeExpanded="emitNodeExpanded" v-on:emitNodeSelected="emitNodeSelected"
+					v-on:emitNodeDeleted="emitNodeDeleted" v-on:emitNodeAdded="onNodeAdded"
+					v-on:emitParentNode="onParentNodeEmit" v-on:emitNodeChecked="onNodeChecked"
+					v-on:emitNodeEdited="onNodeEdited">
 					<template v-slot:customIcon>
 						<slot v-if="$slots.customIcon" name="customIcon" />
 					</template>
@@ -251,7 +253,6 @@ export default defineComponent({
 			},
 			text: {
 				style: {},
-				class: "capitalize",
 				active: {
 					style: {
 						"font-weight": "bold"
@@ -368,7 +369,7 @@ export default defineComponent({
 						currentNode.value.state.partiallyChecked = true;
 						currentNode.value.state.checked = false;
 					}
-					else if( !atleastOneCheck(currentNode.value) && !isAllCheck(currentNode.value)) {
+					else if (!atleastOneCheck(currentNode.value) && !isAllCheck(currentNode.value)) {
 						currentNode.value.state.checked = false;
 						currentNode.value.state.partiallyChecked = false;
 					}
@@ -447,7 +448,7 @@ export default defineComponent({
 			const newNode = {
 				text: "new Node",
 				id: Math.floor(Math.random() * 100).toString(),
-				state: { checked: false, expanded: false }
+				state: { checked: false, expanded: false, hidden: false }
 			};
 			if (node.children === undefined) node.children = [newNode];
 			else node.children.push(newNode);
