@@ -1,4 +1,4 @@
-import { NodeData, TuTreeServerModel, serverNodeData } from "./interface";
+import { NodeData, TuTreeServerModel } from "./interface";
 import { TukalGlobals } from "../../tukalGlobals";
 import { XHRRequestWrapper } from "@/utils/apiWrapper";
 import { isUndefined } from "lodash";
@@ -24,25 +24,27 @@ export const recCallNodes = (state: boolean, event: string, nodes: NodeData[]|un
 	if (nodes === undefined) return;
 
 	const targetId = pathIds.shift();
-	nodes.forEach((node) => {
-		if (targetId !== undefined && targetId !== node.id)
-			return;
-		console.log("hi");
-		const disabledStateKey = (disabledState as any)[event];
-		if (targetId === node.id && pathIds.length === 0) {
-			node.state[event] = state;
-			return;
-		}
-		else if (disabledStateKey && node[disabledStateKey] !== false)
-			node.state[event] = state;
-		recCallNodes(state, event, node.children, pathIds);
-	});
+	if(nodes.length > 0) {
+		nodes.forEach((node) => {
+			if (targetId !== undefined && targetId !== node.id)
+				return;
+
+			const disabledStateKey = (disabledState as any)[event];
+			if (targetId === node.id && pathIds.length === 0) {
+				node.state[event] = state;
+				return;
+			}
+			else if (disabledStateKey && node[disabledStateKey] !== false)
+				node.state[event] = state;
+			recCallNodes(state, event, node.children, pathIds);
+		});
+	}
 };
 
 export function serverRequest (serverSideConfig: TuTreeServerModel, query?: string) {
-	return new Promise<serverNodeData[]>((resolve,reject) => {
+	return new Promise<NodeData[]>((resolve,reject) => {
 		const xhrRequest = new XHRRequestWrapper();
-		let nodes: serverNodeData[];
+		let nodes: NodeData[];
 		if (isUndefined(serverSideConfig.method))
 			serverSideConfig.method = "GET";
 		xhrRequest.request.onreadystatechange = function () {
@@ -66,7 +68,7 @@ export function serverRequest (serverSideConfig: TuTreeServerModel, query?: stri
 		};
 		xhrRequest.open(
 			serverSideConfig.method,
-			TukalGlobals.ApiRequestTarget + "http://localhost:4001/" + query
+			TukalGlobals.ApiRequestTarget + "http://localhost:3000/" + query
 		);
 		xhrRequest.request.setRequestHeader("Content-Type", "application/json");
 		xhrRequest.request.setRequestHeader("X-Requested-With", "XMLHttpRequest");

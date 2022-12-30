@@ -9,7 +9,7 @@
 			<tu-tree-row v-for="node in currentNodes" :ref="'tree-row-' + node.id" :isCheckNode="checkNode"
 				:isRemoveNode="removeNode" :isAddNode="addNode" :isEditNode="editNode" :icon="icon"
 				:custom-styles="customStyles" :depth="1" :key="node" :node="node" :parent-node="node"
-				:root="currentNodes" :model="model" :serverSideConfig="serverSideConfig"
+				:root="currentNodes" :model="model" :serverSideConfig="serverSideConfig" :keyWord="keyWord"
 				v-on:emitNodeAdded="onNodeAdded" v-on:emitNodeDeleted="onNodeDeleted"
 				v-on:emitNodeChecked="onNodeChecked" v-on:emitNodeEdited="onNodeEdited">
 				<template v-slot:customIcon>
@@ -116,7 +116,9 @@ export default defineComponent({
 				currentNodes.value = data;
 				for (let i = 0; i < currentNodes.value.length; i++) {
 					currentNodes.value[i].state = {
-						expanded: false
+						expanded: false,
+						checked: false,
+						hidden: false
 					}
 				}
 			});
@@ -334,35 +336,6 @@ export default defineComponent({
 			}
 			context.emit("update:modelValue", currentNodes.value);
 		};
-		let dfs = (node: NodeData, parentNode?: NodeData) => {
-			if (node.text.startsWith(keyWord.value)) {
-				return node;
-			}
-			if (node.children) {
-				let requiredNodes = node;
-				let nodeFound = false;
-				for (let i = 0; i < node.children.length; i++) {
-					let result = dfs(node.children[i], node)
-					if (result != null) {
-						requiredNodes.children[i].state.hidden = false;
-						nodeFound = true;
-					}
-					else {
-						requiredNodes.children[i].state.hidden = true;
-					}
-				}
-				if (nodeFound === true) {
-					return requiredNodes;
-				}
-				else {
-					return null
-				}
-			}
-			else {
-				return null;
-			}
-		}
-
 		const searchKeyword = () => {
 			if (props.model === "local") {
 				const dft = new DFT();
@@ -370,7 +343,7 @@ export default defineComponent({
 				expandAllNodes();
 			}
 			if (props.model === "server") {
-				serverRequest(props.serverSideConfig, `?search=${keyWord.value}`).then((data) => {
+				serverRequest(props.serverSideConfig, `?search=${keyWord.value}`).then((data: NodeData[]) => {
 					currentNodes.value = data;
 					for (let i = 0; i < currentNodes.value.length; i++) {
 						currentNodes.value[i].state = {
@@ -390,11 +363,11 @@ export default defineComponent({
 				searchKeyword();
 			}
 			if (keyWord.value === "" && props.model === "server") {
-				serverRequest(props.serverSideConfig, `root`).then((data) => {
+				serverRequest(props.serverSideConfig, ``).then((data: NodeData[]) => {
 					currentNodes.value = data;
 					for (let i = 0; i < currentNodes.value.length; i++) {
 						currentNodes.value[i].state = {
-							expanded: false,
+							expanded: true,
 							checked: false
 						}
 					}

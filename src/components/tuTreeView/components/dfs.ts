@@ -27,10 +27,6 @@ export class DFT {
 					const result = this.dft(node.children[i], func, isFindById);
 					if (result === null) 
 						res.children[i].state.hidden = true;
-					/* if (isFindById === true && result !== null) {
-						res = result;
-						return res;
-					} */
 				}
 			}
 		}
@@ -50,22 +46,5 @@ export class DFT {
 			return node; 
 		else
 			return null; 
-	}
-
-	public findById (nodes: NodeData[], id: string) {
-		const func = (node: NodeData) => {
-			if (node.id === id) 
-				return node;
-			else 
-				return null;
-		};
-		let res: NodeData;
-		for (let i = 0; i < nodes.length; i++) {
-			const intermediate = this.dft(nodes[i] ,func, true);
-			if(intermediate !== null  && intermediate !== undefined) {
-				res = intermediate;
-				break;
-			}
-		}
 	}
 }

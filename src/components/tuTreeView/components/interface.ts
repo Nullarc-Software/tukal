@@ -8,15 +8,10 @@ export type NodeData = {
 	children?: NodeData[];
 	text: string;
 	id: string;
-}
-
-export interface serverNodeData {
-	id: string;
-	text: string;
-	children: Array<serverNodeData>;
 	icon?: string;
 	iconPack?: string;
 }
+
 
 export interface NodesProperties {
 	[key: string]: any;

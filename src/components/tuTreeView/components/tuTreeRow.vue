@@ -101,7 +101,7 @@
 		<div :style="getHeight" v-if="currentNode.state?.expanded" class="line">
 			<ul v-if="currentNode.state?.expanded && currentNode.children" :style="styles.rowIndent">
 				<tu-tree-row v-for="child in currentNode.children" :ref="`tree-row-` + child.id"
-					:isCheckNode="isCheckNode" :isAddNode="isAddNode" :isRemoveNode="isRemoveNode"
+					:isCheckNode="isCheckNode" :isAddNode="isAddNode" :isRemoveNode="isRemoveNode" :keyWord="keyWord"
 					:isEditNode="isEditNode" :icon="icon" :custom-styles="customStyles" :depth="depth + 1" :key="child"
 					:node="child" :root="root" :parent-node="currentNode" :model="model"
 					v-on:emitNodeExpanded="emitNodeExpanded" v-on:emitNodeSelected="emitNodeSelected"
@@ -123,7 +123,7 @@ import {
 	TreeRowCustomStyles,
 	TuTreeServerModel
 } from "./interface";
-import { recCallNodes } from "./helper";
+import { recCallNodes, serverRequest } from "./helper";
 import tuComponent from "@/components/tuComponent";
 import { TukalGlobals } from "../../tukalGlobals";
 import { XHRRequestWrapper } from "@/utils/apiWrapper";
@@ -170,6 +170,10 @@ export default defineComponent({
 			default: () => {
 				return {};
 			}
+		},
+		keyWord: {
+			type: String,
+			default: null
 		},
 		parentNode: Object as PropType<NodeData>,
 		depth: Number
@@ -282,6 +286,7 @@ export default defineComponent({
 			context.emit("emitNodeDeleted", node, isSingleNode);
 		}
 		const expandNode = (server?: boolean) => {
+			console.log(props.keyWord);
 			if (server === undefined) {
 				currentNode.value.state.expanded =
 					!currentNode.value.state.expanded;
@@ -290,53 +295,36 @@ export default defineComponent({
 				if (currentNode.value.children === true) {
 					loading.value = true;
 				}
-				const xhrRequest = new XHRRequestWrapper();
-				const serverSideModel = props.serverSideConfig;
-				if (isUndefined(serverSideModel.method))
-					serverSideModel.method = "GET";
-				xhrRequest.request.onreadystatechange = function () {
-					if (
-						xhrRequest.request.readyState === XMLHttpRequest.DONE &&
-						xhrRequest.request.status === 200
-					) {
-						if (xhrRequest.request.responseType === "json") {
-							currentNode.value.children = xhrRequest.request.response.data;
-							loading.value = false;
-						}
-						else if (xhrRequest.request.responseType === "text") {
-							currentNode.value.children = JSON.parse(xhrRequest.request.responseText);
-							loading.value = false;
-						}
-						else {
-							currentNode.value.children = JSON.parse(xhrRequest.request.responseText);
-							loading.value = false;
-						}
-						if (server === undefined) {
-							for (let i = 0; i < currentNode.value.children.length; i++) {
-								currentNode.value.children[i].state = {
-									expanded: false,
-									checked: currentNode.value.state.checked
-								}
-							}
-						}
-						if (server === true) {
-							for (let i = 0; i < currentNode.value.children.length; i++) {
-								currentNode.value.children[i].state = {
-									expanded: true
-								}
+				let query;
+				if (props.keyWord !== "")
+					query = `?search=${props.keyWord}`
+				else
+					query=`?expand=${currentNode.value.id}`
+				serverRequest(props.serverSideConfig, query).then((data) => {
+					currentNode.value.children = data;
+					console.log(currentNode.value.children);
+					loading.value = false;
+					if (server === undefined) {
+						for (let i = 0; i < currentNode.value.children.length; i++) {
+							currentNode.value.children[i].state = {
+								expanded: false,
+								hidden: data[i].state.hidden,
+								checked: currentNode.value.state.checked,
 							}
 						}
 					}
-				};
-				xhrRequest.open(
-					serverSideModel.method,
-					TukalGlobals.ApiRequestTarget + serverSideModel.url + `?expand=${currentNode.value.id}`,
-				);
-				xhrRequest.request.setRequestHeader("Content-Type", "application/json");
-				xhrRequest.request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-				xhrRequest.request.send();
+					if (server === true) {
+						for (let i = 0; i < currentNode.value.children.length; i++) {
+							currentNode.value.children[i].state = {
+								expanded: true,
+								hidden: data[i].state.hidden,
+								checked: false,
+							}
+						}
+					}
+				});
 			}
-		};
+		}
 		if (props.model === "server" && currentNode.value.state.expanded === true) {
 			expandNode(true)
 		}

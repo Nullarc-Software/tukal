@@ -880,7 +880,7 @@
 			<h4>Treeview Component:</h4>
 			<hr />
 			<tu-tree-view :checkNode="true" :removeNode="true" :addNode="true" :editNode="true" :filterNode="true"
-				model="local" :expandAll="true" :collapseAll="true" v-model="nodes" v-model:checkedNodes="checkedNodes"
+				model="server" :expandAll="true" :collapseAll="true" v-model="nodes" v-model:checkedNodes="checkedNodes"
 				:nodes="treeDisplayData">
 				<template v-slot:icon>
 					<tu-icon>file_copy</tu-icon>
