@@ -277,7 +277,7 @@ export class TuTableStore {
 						}
 						data = inst.table.data;
 						inst.pageLength.value = Math.ceil(
-							data.length / inst.table.pageSize
+							inst.rowCount.value / inst.table.pageSize
 						);
 						this.loading.value = false;
 					}
