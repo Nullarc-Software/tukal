@@ -286,7 +286,7 @@ export default defineComponent({
 			context.emit("emitNodeDeleted", node, isSingleNode);
 		}
 		const expandNode = (server?: boolean) => {
-			console.log(props.keyWord);
+
 			if (server === undefined) {
 				currentNode.value.state.expanded =
 					!currentNode.value.state.expanded;
@@ -295,11 +295,7 @@ export default defineComponent({
 				if (currentNode.value.children === true) {
 					loading.value = true;
 				}
-				let query;
-				if (props.keyWord !== "")
-					query = `?search=${props.keyWord}`
-				else
-					query=`?expand=${currentNode.value.id}`
+				let query = `?expand=${currentNode.value.id}`
 				serverRequest(props.serverSideConfig, query).then((data) => {
 					currentNode.value.children = data;
 					console.log(currentNode.value.children);
@@ -326,7 +322,7 @@ export default defineComponent({
 			}
 		}
 		if (props.model === "server" && currentNode.value.state.expanded === true) {
-			expandNode(true)
+			//expandNode(true)
 		}
 		const isAllCheck = (node: NodeData) => {
 			if (node.children === undefined || node.children === null) return false;
