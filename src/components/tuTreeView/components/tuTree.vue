@@ -5,7 +5,7 @@
 		<tu-button v-if="collapseAll && model === 'local'" @click="collapseAllNodes">Collapse all</tu-button>
 	</div>
 	<div :id="id">
-		<ul :style="styles.tree.style" v-if="force">
+		<ul :style="styles.tree.style">
 			<tu-tree-row v-for="node in currentNodes" :ref="'tree-row-' + node.id" :isCheckNode="checkNode"
 				:isRemoveNode="removeNode" :isAddNode="addNode" :isEditNode="editNode" :icon="icon"
 				:custom-styles="customStyles" :depth="1" :key="node" :node="node" :parent-node="node"
@@ -27,11 +27,10 @@ import {
 	NodesProperties,
 	TreeCustomStyles,
 	TuTreeServerModel,
-	serverNodeData
 } from "./interface";
 import tuTreeRow from "./tuTreeRow.vue";
 import { recCallNodes, serverRequest } from "./helper";
-import { DFT } from "./dfs.ts";
+import { DFT } from "./dfs";
 import tuComponent from "@/components/tuComponent";
 export default defineComponent({
 	name: "TuTree",
@@ -93,7 +92,7 @@ export default defineComponent({
 		"update:modelValue"
 	],
 	setup(props, context) {
-		let currentNodes = ref();
+		let currentNodes: Ref<NodeData[]> = ref();
 		if (props.model === "local") {
 			currentNodes = ref(props.nodes);
 			let addProperty = (arr) => {
@@ -124,7 +123,6 @@ export default defineComponent({
 			});
 		}
 		const keyWord = ref("");
-		const firstSearch = ref(false);
 		const styles: TreeCustomStyles = reactive({
 			tree: {
 				style: {
@@ -134,12 +132,6 @@ export default defineComponent({
 				}
 			}
 		});
-		const selectedNodeData = reactive({ id: "" });
-		const force = ref(true);
-		// Find the ancestors ids of a node
-		function findNodePath(nodeId: string, maxDepth = 9999): string[] {
-			return recFindNodePath(nodeId, currentNodes.value, 1, maxDepth);
-		}
 		// Return checked nodes
 		function getCheckedNodes(
 			argWanted: string | string[],
@@ -173,91 +165,14 @@ export default defineComponent({
 				);
 			}
 		}
-		// Private functions
-		// Recursive function of findNodePath
-		function recFindNodePath(
-			nodeId: string,
-			nodes: NodeData[],
-			depth: number,
-			maxDepth: number
-		): string[] {
-			let ret: string[] = [];
-			nodes.forEach((node) => {
-				let tmp: string[] = [];
-				if (nodeId === node.id && maxDepth >= depth) {
-					ret.unshift(node.id);
-					return false;
-				}
-				else if (
-					node.children &&
-					maxDepth > depth &&
-					(tmp = recFindNodePath(
-						nodeId,
-						node.children,
-						depth + 1,
-						maxDepth
-					)) != null &&
-					tmp.length > 0
-				) {
-					tmp.unshift(node.id);
-					ret = tmp;
-					return false;
-				}
-			});
-			return ret;
-		}
-		// Recursive function of findNode
-		function recFindNode(
-			nodeId: string,
-			nodes: NodeData[],
-			depth: number,
-			maxDepth: number
-		): NodeData | null {
-			let ret: NodeData | null = null;
-			nodes.forEach((node) => {
-				let tmp: NodeData | null;
-				if (nodeId === node.id && maxDepth >= depth) {
-					ret = node;
-					return false;
-				}
-				else if (
-					node.children &&
-					maxDepth > depth &&
-					(tmp = recFindNode(
-						nodeId,
-						node.children,
-						depth + 1,
-						maxDepth
-					)) != null
-				) {
-					ret = tmp;
-					return false;
-				}
-			});
-			return ret;
-		}
-		// Recursive function of getVisibleNodes
-		function recGetVisibleNodes(
-			arr: Array<NodeData | string>,
-			node: NodeData,
-			fullNode: boolean
-		) {
-			arr.push(fullNode ? node : node.id);
-			if (node.state.expanded === true && node.children) {
-				node.children.forEach((nodeChild) => {
-					recGetVisibleNodes(arr, nodeChild, fullNode);
-				});
-			}
-		}
-		// Recursive function of recGetNodesData (return node[])
 		function recGetNodesData(
 			argWanted: string | string[],
 			conditions: NodesProperties,
 			children: NodeData[] | undefined
 		): NodesProperties[] {
 			let arr: NodesProperties[] = [];
-			if (nodes === undefined) return arr;
-			nodes.forEach((node) => {
+			if (children === undefined) return arr;
+			children.forEach((node) => {
 				if (
 					node.state &&
 					Object.keys(node.state).filter(
@@ -339,7 +254,7 @@ export default defineComponent({
 		const searchKeyword = () => {
 			if (props.model === "local") {
 				const dft = new DFT();
-				dft.search(currentNodes.value, keyWord.value);
+				dft.iterate(currentNodes.value, keyWord.value);
 				expandAllNodes();
 			}
 			if (props.model === "server") {
@@ -348,6 +263,7 @@ export default defineComponent({
 					for (let i = 0; i < currentNodes.value.length; i++) {
 						currentNodes.value[i].state = {
 							expanded: true,
+							hidden: data[i].state.hidden,
 							checked: false
 						}
 					}
@@ -355,12 +271,8 @@ export default defineComponent({
 			}
 		}
 		watch(keyWord, () => {
-			if (firstSearch.value === true) {
-				recCallNodes(false, "hidden", props.nodes);
-			}
 			if (keyWord.value === "" && props.model === "local") {
 				recCallNodes(false, "hidden", props.nodes);
-				searchKeyword();
 			}
 			if (keyWord.value === "" && props.model === "server") {
 				serverRequest(props.serverSideConfig, ``).then((data: NodeData[]) => {
@@ -384,7 +296,6 @@ export default defineComponent({
 			styles,
 			expandAllNodes,
 			collapseAllNodes,
-			force,
 			currentNodes,
 			onNodeAdded,
 			onNodeDeleted,

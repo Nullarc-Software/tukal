@@ -125,9 +125,6 @@ import {
 } from "./interface";
 import { recCallNodes, serverRequest } from "./helper";
 import tuComponent from "@/components/tuComponent";
-import { TukalGlobals } from "../../tukalGlobals";
-import { XHRRequestWrapper } from "@/utils/apiWrapper";
-import { isUndefined } from "lodash";
 export default defineComponent({
 	name: "TuTreeRow",
 	extends: tuComponent,
@@ -190,7 +187,7 @@ export default defineComponent({
 	setup(props, context) {
 		const currentNode: Ref<NodeData> = ref(props.node);
 		//const currentNodeIsPartiallyChecked = ref(false);
-		const currentParentNode = ref(props.parentNode);
+		const currentParentNode: Ref<NodeData> = ref(props.parentNode);
 		const currentNodeCheckState = ref(currentNode.value.state.checked);
 		const parentNodeIsPartialState: Ref<boolean> = ref(false);
 		const itemRefs = ref(null);
@@ -286,11 +283,8 @@ export default defineComponent({
 			context.emit("emitNodeDeleted", node, isSingleNode);
 		}
 		const expandNode = (server?: boolean) => {
-
-			if (server === undefined) {
 				currentNode.value.state.expanded =
 					!currentNode.value.state.expanded;
-			}
 			if (props.model === "server" && currentNode.value.state?.expanded === true) {
 				if (currentNode.value.children === true) {
 					loading.value = true;
@@ -300,7 +294,6 @@ export default defineComponent({
 					currentNode.value.children = data;
 					console.log(currentNode.value.children);
 					loading.value = false;
-					if (server === undefined) {
 						for (let i = 0; i < currentNode.value.children.length; i++) {
 							currentNode.value.children[i].state = {
 								expanded: false,
@@ -308,21 +301,8 @@ export default defineComponent({
 								checked: currentNode.value.state.checked,
 							}
 						}
-					}
-					if (server === true) {
-						for (let i = 0; i < currentNode.value.children.length; i++) {
-							currentNode.value.children[i].state = {
-								expanded: true,
-								hidden: data[i].state.hidden,
-								checked: false,
-							}
-						}
-					}
 				});
 			}
-		}
-		if (props.model === "server" && currentNode.value.state.expanded === true) {
-			//expandNode(true)
 		}
 		const isAllCheck = (node: NodeData) => {
 			if (node.children === undefined || node.children === null) return false;

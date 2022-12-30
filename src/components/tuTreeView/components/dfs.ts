@@ -1,50 +1,52 @@
 import { NodeData } from "./interface";
 import _ from "lodash";
-export type DftCallback = (node: NodeData) => any; 
+type DftCallback = (node: NodeData, id?: any) => boolean;
 
 export class DFT {
-	public search(nodes: NodeData[] , keyWord: string, funcSearch?: DftCallback) {
-		const func = (node: NodeData) => {
-			if (node.text.toLowerCase().includes(keyWord.toLowerCase()))  
-				return node;
-			else 
-				return null;
-		};
-		const res = [];
-		for (let i = 0; i < nodes.length; i++) {
-			const intermediate = this.dft(nodes[i] , funcSearch ?? func);
-			if(intermediate !== null  && intermediate !== undefined) 
-				res.push(intermediate);
-			else
-				nodes[i].state.hidden = true;
-		}
-	}
-	private dft(node: NodeData, func: DftCallback, isFindById?: boolean) {
-		const res = node;
-		if (node.children) {  
-			if (node.children.length > 0) { 
-				for (let i  = node.children.length - 1; i >= 0; i--) {
-					const result = this.dft(node.children[i], func, isFindById);
-					if (result === null) 
-						res.children[i].state.hidden = true;
+	public iterate(nodes: NodeData[] , query: string, funcSearch? : DftCallback) {
+		const func = (node: NodeData, query: string) => {
+			if (node.children && node.children.length > 0) {
+				if (_.some(node.children, {
+					state: {
+						hidden: false
+					}
+				})) {
+					node.state.hidden = false;
+					node.state.expanded = true;
+				}
+				else {
+					if (node.text.toLowerCase().includes(query?.toLowerCase())) 
+						node.state.hidden = false;
+					
+					else 
+						node.state.hidden = true;
 				}
 			}
+			else {
+				if (node.text.toLowerCase().includes(query?.toLowerCase())) 
+					node.state.hidden = false;
+				
+				else 
+					node.state.hidden = true;
+			}
+			return true;
+			
+		};
+		for (let i = 0; i < nodes.length; i++) 
+			this.dft(nodes[i] , funcSearch ?? func, query); 	
+		
+	}
+	private dft(node: NodeData, func: DftCallback, query?: query | null) {
+		const res = node; 
+		if (node.children && node.children.length > 0) {  
+			
+			for (let i  = node.children.length - 1; i >= 0; i--) {
+				const result = this.dft(node.children[i], func, query); 
+				if (result === false)
+					break;
+			}
+			
 		}
-		if (res.children && res.children.length > 0) {
-			if (_.some(res.children, {
-				state: {
-					hidden: false
-				}
-			})) 
-				return res;
-			if(func(res) !== null) 
-				return res;
-			else
-				return null;
-		}
-		else if (func(node) !== null) 
-			return node; 
-		else
-			return null; 
+		return func?.call(this, res, query);
 	}
 }
