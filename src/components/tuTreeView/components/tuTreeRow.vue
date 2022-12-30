@@ -596,10 +596,6 @@ ul {
 	left: 12.5px;
 }
 
-.position-bottom {
-	position: relative;
-	bottom: 20px;
-}
 
 .position-bottom-l {
 	position: relative;
