@@ -185,7 +185,6 @@ export default defineComponent({
 						events.value = JSON.parse(xhrRequest.request.responseText);
 					else {
 						events.value = JSON.parse(xhrRequest.request.responseText);
-						console.log(events.value);
 					}
 				}
 			};
@@ -278,7 +277,7 @@ export default defineComponent({
 		// 	newItemTitle.value = null;
 		// };
 		const styleChip = (categoryColor: string) => {
-			const background = _color.getApplyColor(categoryColor, 0.6);
+			const background = _color.getColor(categoryColor, 0.6);
 			return {
 				background: background
 			};

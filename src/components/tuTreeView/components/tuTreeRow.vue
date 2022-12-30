@@ -463,6 +463,8 @@ export default defineComponent({
 });
 </script>
 <style lang="scss" scoped>
+@import "../../../style/sass/_mixins.scss";
+
 .small-tree-indent {
 	margin: 0 3px;
 	display: inline-block;
@@ -513,7 +515,7 @@ li {
 
 div.row_data {
 	&:hover {
-		background-color: rgb(240, 240, 240, 0.4);
+		background-color: -getColor("gray-2");
 	}
 }
 
@@ -630,7 +632,7 @@ ul {
 		position: absolute;
 		width: 100%;
 		height: 100%;
-		border: 2px solid -getColor("primary", 1);
+		border: 2px solid -getColor("primary");
 		border-radius: inherit;
 		border-top: 2px solid transparent;
 		border-left: 2px solid transparent;

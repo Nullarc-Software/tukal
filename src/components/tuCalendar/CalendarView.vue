@@ -103,7 +103,7 @@
 								enableDragDrop
 									? i == state.currentDragItem
 									: undefined
-							" :class="i.classes" :title="i.tooltip || i.title" :style="`background:${_color.getApplyColor(
+							" :class="i.classes" :title="i.tooltip || i.title" :style="`background:${_color.getColor(
 	getItemCategoryColor(i),
 	0.2
 )};top:${getItemTop(
@@ -117,7 +117,7 @@ openEventDialog(i);
 									i.itemRow < 3 ||
 									props.displayPeriodUom === 'week'
 								">
-								<span class="event-dot" :style="`background: ${_color.getApplyColor(
+								<span class="event-dot" :style="`background: ${_color.getColor(
 									getItemCategoryColor(i),
 									0.9
 								)}`"></span>
@@ -143,7 +143,7 @@ openEventDialog(i);
 			<div class="header">Events</div>
 			<div class="dialog-content tu-overflow-auto">
 				<div type="1" v-for="event in selectedDayEvents" :key="event.originalItem.id">
-					<div class="text-wrapper" @click="openEventDialog(event)" :style="`background:${_color.getApplyColor(
+					<div class="text-wrapper" @click="openEventDialog(event)" :style="`background:${_color.getColor(
 						getItemCategoryColor(event),
 						0.2
 					)}`">
@@ -254,7 +254,7 @@ openEventDialog(i);
 								<tu-select inline :disabled="!isEditEvent" v-model="selectedEvent.Category">
 									<tu-select-option v-for="category in categories" :key="category"
 										:label="category.name" :value="category.name">
-										<span class="dot" :style="`background: ${_color.getApplyColor(
+										<span class="dot" :style="`background: ${_color.getColor(
 											category.color,
 											0.6
 										)}`"></span>
@@ -1004,7 +1004,7 @@ const deleteItem = (item?: ISelectedEvent) => {
 
 const getItemBorderColor = (item: INormalizedCalendarItem) => {
 	if (item.classes.includes("isHovered"))
-		return _color.getApplyColor(getItemCategoryColor(item), 1);
+		return _color.getColor(getItemCategoryColor(item), 1);
 };
 
 const selectedEventClose = () => {
