@@ -12,8 +12,8 @@
 			<tu-button transparent class="currentPeriod" aria-label="Current Period"
 				@click.prevent="onInput(headerProps.currentPeriod)">
 				<span class="label-span">{{
-						headerProps.currentPeriodLabel
-				}}</span>
+		headerProps.currentPeriodLabel
+}}</span>
 			</tu-button>
 			<tu-button transparent :disabled="!headerProps.nextPeriod" class="nextPeriod" aria-label="Next Period"
 				@click.prevent="onInput(headerProps.nextPeriod!)">

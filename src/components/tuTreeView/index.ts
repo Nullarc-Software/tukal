@@ -7,4 +7,5 @@ tuComponent.install = (vue: any) => {
 if (typeof window !== "undefined" && (<any>window).Vue)
 	tuComponent.install((<any>window).Vue);
 
+export * from "./components/interface";
 export { tuComponent as tuTreeView };

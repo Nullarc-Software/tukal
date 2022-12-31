@@ -30,6 +30,7 @@ export { default as tuTextArea } from "./components/tuTextArea";
 export { tuTable, tuTd, tuTh, tuTr } from "./components/tuTable";
 export * from "./components/tuTable";
 export { tuTreeView } from "./components/tuTreeView";
+export * from "./components/tuTreeView";
 export { tuUpload } from "./components/tuUpload";
 export * from "./components/tuTreeView/types";
 export { tuRichTextEditor } from "./components/tuRichTextEditor";

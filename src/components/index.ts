@@ -35,6 +35,7 @@ export { tuRichTextEditor } from "./tuRichTextEditor";
 export { tuUpload } from "./tuUpload";
 export { tuTag } from "./tuTag";
 export * from "./tuTreeView/types";
+export * from "./tuTreeView";
 
 // New Component import
 

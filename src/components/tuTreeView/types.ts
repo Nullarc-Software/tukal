@@ -3,7 +3,6 @@ import { Component } from "vue";
 export type CheckedState = "true" | "false" | "indeterminate";
 export type SelectState = "selected" | "unselected";
 export interface TuTreeViewItemDefn {
-
     children?: TuTreeViewItemDefn[]
     type: string
     checkedStatus?: CheckedState,
