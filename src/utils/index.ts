@@ -1,3 +1,4 @@
+
 import { inject } from "vue";
 import { Router } from "vue-router";
 
@@ -179,7 +180,7 @@ function getColorAsRgb (color: string, alphax = 1) {
 		newColor = newColor.trim();
 		if (isHex(newColor)) {
 			const rgb = hexToRgb(newColor);
-			return `${rgb?.r},${rgb?.g},${rgb?.b}`;
+			return `${rgb?.r},${rgb?.g},${rgb?.b},${alphax}`;
 		}
 		return newColor; 
 	}
@@ -195,14 +196,13 @@ const getColor = (color: string, alphax = 1) => {
 	);
 	const isHEX = /^(#)/.test(color);
 	let newColor;
-
 	if (isRGB) {
 		const arrayColor = color.replace(/[rgba()]/g, "").split(",");
 		newColor = `${arrayColor[0]},${arrayColor[1]},${arrayColor[2]}`;
 	}
 	else if (isHEX) {
 		const rgb = hexToRgb(color);
-		newColor = `${rgb?.r},${rgb?.g},${rgb?.b}`;
+		newColor = `${rgb?.r},${rgb?.g},${rgb?.b},${alphax}`;
 	}
 	else if (isColor(color)) {
 		const style = window.getComputedStyle(document.body);

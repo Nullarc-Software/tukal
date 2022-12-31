@@ -103,6 +103,7 @@ const onInput = (d: Date): void => {
 	emit("input", d);
 };
 const addCategory = () => {
+	console.log(categoryColor.value);
 	emit("updateCategory", [categoryColor.value, categoryName.value]);
 	addCategoryDialog.value = false;
 };

@@ -292,12 +292,6 @@ export default defineComponent({
 	&:hover {
 		~.tu-checkbox-mask {
 			background: -getColor("gray-3");
-
-			&:before {
-				border: 2px solid -getColorAlpha("gray-4", 0);
-			}
-
-			// border: 2px solid -getColor('gray-3')
 		}
 	}
 

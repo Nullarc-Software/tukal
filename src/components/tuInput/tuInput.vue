@@ -29,7 +29,7 @@
 				[`tu-input-content--has-label`]: label || labelPlaceholder
 			}
 		]">
-			<input class="tu-input" :value="modelValue" :class="[
+			<input v-bind="$attrs" :type="type" class="tu-input" :value="modelValue" :class="[
 				{ ['tu-input--has-icon']: !!$slots.icon },
 				{ ['tu-input--has-icon--after']: !!iconAfter }
 			]" @input="onInput" @keyup.enter="onEnter" :id="getId" :disabled="editableStaticInternal || disable" />
@@ -139,6 +139,7 @@ export default defineComponent({
 		square: { type: Boolean, default: false },
 		id: { type: String, default: null },
 		placeholder: { type: String, default: null },
+		type: { type: String, default: null },
 		inline: { type: Boolean, default: false },
 		disable: { type: Boolean, default: false },
 		editableStatic: {
@@ -186,7 +187,7 @@ export default defineComponent({
 
 		const onEnter = function () {
 			context.emit("onEnter");
-		};
+		}
 
 		const iconClick = function (evt) {
 			context.emit("click-icon", evt.target.value);

@@ -103,10 +103,10 @@
 								enableDragDrop
 									? i == state.currentDragItem
 									: undefined
-							" :class="i.classes" :title="i.tooltip || i.title" :style="`background:${_color.getColor(
+							" :class="i.classes" :title="i.tooltip || i.title" :style="`background: rgba(${_color.getColorAsRgb(
 	getItemCategoryColor(i),
 	0.2
-)};top:${getItemTop(
+)});top:${getItemTop(
 	i
 )};border: 2px solid ${getItemBorderColor(i)};`" class="cv-item" @dragstart="onDragItemStart(i, $event)"
 								@mouseenter="onMouseEnterItem(i, $event)" @mouseleave="onMouseLeaveItem(i, $event)"
@@ -117,10 +117,10 @@ openEventDialog(i);
 									i.itemRow < 3 ||
 									props.displayPeriodUom === 'week'
 								">
-								<span class="event-dot" :style="`background: ${_color.getColor(
+								<span class="event-dot" :style="`background: rgba(${_color.getColorAsRgb(
 									getItemCategoryColor(i),
 									0.9
-								)}`"></span>
+								)})`"></span>
 								{{ getItemTitle(i) }}
 							</div>
 						</slot>
@@ -143,10 +143,10 @@ openEventDialog(i);
 			<div class="header">Events</div>
 			<div class="dialog-content tu-overflow-auto">
 				<div type="1" v-for="event in selectedDayEvents" :key="event.originalItem.id">
-					<div class="text-wrapper" @click="openEventDialog(event)" :style="`background:${_color.getColor(
+					<div class="text-wrapper" @click="openEventDialog(event)" :style="`background: rgba(${_color.getColorAsRgb(
 						getItemCategoryColor(event),
 						0.2
-					)}`">
+					)})`">
 						<div class="event-title">
 							{{ event.originalItem.title }}
 						</div>
@@ -254,10 +254,10 @@ openEventDialog(i);
 								<tu-select inline :disabled="!isEditEvent" v-model="selectedEvent.Category">
 									<tu-select-option v-for="category in categories" :key="category"
 										:label="category.name" :value="category.name">
-										<span class="dot" :style="`background: ${_color.getColor(
+										<span class="dot" :style="`background: rgba(${_color.getColorAsRgb(
 											category.color,
 											0.6
-										)}`"></span>
+										)})`"></span>
 										{{ category.name }}
 									</tu-select-option>
 								</tu-select>
@@ -1004,7 +1004,7 @@ const deleteItem = (item?: ISelectedEvent) => {
 
 const getItemBorderColor = (item: INormalizedCalendarItem) => {
 	if (item.classes.includes("isHovered"))
-		return _color.getColor(getItemCategoryColor(item), 1);
+		return `rgba(${_color.getColorAsRgb(getItemCategoryColor(item), 1)})`;
 };
 
 const selectedEventClose = () => {
