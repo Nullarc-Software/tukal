@@ -32,7 +32,7 @@
 			<input v-bind="$attrs" :type="type" class="tu-input" :value="modelValue" :class="[
 				{ ['tu-input--has-icon']: !!$slots.icon },
 				{ ['tu-input--has-icon--after']: !!iconAfter }
-			]" @input="onInput" :id="getId" :disabled="editableStaticInternal || disable" />
+			]" @input="onInput" :style="{ width:width }" :id="getId" :disabled="editableStaticInternal || disable" />
 			<label v-if="label" :for="getId" :class="[
 				'tu-input__label',
 				{ 'tu-input__label--hidden': modelValue !== '' }
@@ -145,6 +145,10 @@ export default defineComponent({
 		editableStatic: {
 			type: Boolean,
 			default: false
+		},
+		width: {
+			type: String,
+			default: "200px"
 		}
 	},
 	emits: ["update:modelValue", "click-icon"],
@@ -351,7 +355,6 @@ export default defineComponent({
 	border-radius: inherit;
 	transition: all 0.25s ease;
 	padding-left: 10px;
-	width: 200px;
 
 	&:focus {
 		background: -getColor("gray-3");
@@ -636,7 +639,7 @@ export default defineComponent({
 				pointer-events: none;
 
 				&__1 {
-					border-bottom: 2px solid -getColor("gray-3");
+					border-bottom: 2px solid -getColor("gray-1");
 					width: 100%;
 					height: 2px;
 					position: absolute;
