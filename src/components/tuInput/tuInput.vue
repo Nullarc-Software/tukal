@@ -129,7 +129,6 @@ export default defineComponent({
 		iconAfter: { type: Boolean, default: false },
 		visiblePassword: { type: Boolean, default: false },
 		loading: { type: Boolean, default: false },
-		color: { type: String, default: null },
 		state: { type: String, default: null },
 		progress: { type: Number, default: 0 },
 		border: { type: Boolean, default: false },
@@ -639,7 +638,7 @@ export default defineComponent({
 				pointer-events: none;
 
 				&__1 {
-					border-bottom: 2px solid -getColor("gray-1");
+					border-bottom: 2px solid -getColorAlpha("text", 0.3);
 					width: 100%;
 					height: 2px;
 					position: absolute;
