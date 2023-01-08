@@ -186,7 +186,6 @@ export default defineComponent({
 						events.value = JSON.parse(xhrRequest.request.responseText);
 					else {
 						events.value = JSON.parse(xhrRequest.request.responseText);
-						console.log(events.value);
 					}
 				}
 			};
@@ -269,6 +268,7 @@ export default defineComponent({
 				color: color
 			};
 			eventCategories.value.push(newCategory);
+			console.log(newCategory);
 			context.emit("categoriesUpdated", newCategory);
 		};
 		// const closeDialog = () => {
@@ -279,7 +279,14 @@ export default defineComponent({
 		// 	newItemTitle.value = null;
 		// };
 		const styleChip = (categoryColor: string) => {
-			const background = _color.getApplyColor(categoryColor, 0.6);
+			let background;
+			console.log(categoryColor)
+			if(/^(rgb|rgba)/.test(categoryColor)) {
+				background = categoryColor
+			}
+			else {
+				background = `rgba(${_color.getColorAsRgb(categoryColor, 0.6)})`;
+			}
 			return {
 				background: background
 			};

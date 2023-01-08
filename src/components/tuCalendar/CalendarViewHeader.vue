@@ -12,8 +12,8 @@
 			<tu-button transparent class="currentPeriod" aria-label="Current Period"
 				@click.prevent="onInput(headerProps.currentPeriod)">
 				<span class="label-span">{{
-						headerProps.currentPeriodLabel
-				}}</span>
+		headerProps.currentPeriodLabel
+}}</span>
 			</tu-button>
 			<tu-button transparent :disabled="!headerProps.nextPeriod" class="nextPeriod" aria-label="Next Period"
 				@click.prevent="onInput(headerProps.nextPeriod!)">
@@ -103,6 +103,7 @@ const onInput = (d: Date): void => {
 	emit("input", d);
 };
 const addCategory = () => {
+	console.log(categoryColor.value);
 	emit("updateCategory", [categoryColor.value, categoryName.value]);
 	addCategoryDialog.value = false;
 };

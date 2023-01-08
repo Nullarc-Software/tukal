@@ -1,20 +1,20 @@
 <template>
 	<div class="tu-checkbox-content" :class="[
-		{ 'tu-checkbox--checked': isChecked },
-		{ 'tu-checkbox--disabled': disabled },
-		{ 'tu-checkbox--loading': loading },
-		{ 'tu-checkbox--label-before': labelBefore },
-	
-		// colors
-		{
-			[`tu-component--primary`]:
-				!danger && !success && !warn && !dark && !color
-		},
-		{ [`tu-component--danger`]: !!danger },
-		{ [`tu-component--warn`]: !!warn },
-		{ [`tu-component--success`]: !!success },
-		{ [`tu-component--dark`]: !!dark }
-	]">
+	{ 'tu-checkbox--checked': isChecked },
+	{ 'tu-checkbox--disabled': disabled },
+	{ 'tu-checkbox--loading': loading },
+	{ 'tu-checkbox--label-before': labelBefore },
+
+	// colors
+	{
+		[`tu-component--primary`]:
+			!danger && !success && !warn && !dark && !color
+	},
+	{ [`tu-component--danger`]: !!danger },
+	{ [`tu-component--warn`]: !!warn },
+	{ [`tu-component--success`]: !!success },
+	{ [`tu-component--dark`]: !!dark }
+]">
 		<div class="tu-checkbox-con">
 			<input class="tu-checkbox" type="checkbox" v-bind="$attrs" :id="`input-${uid}`" v-on="listeners"
 				:checked="checkedForce || isChecked" />
@@ -292,12 +292,6 @@ export default defineComponent({
 	&:hover {
 		~.tu-checkbox-mask {
 			background: -getColor("gray-3");
-
-			&:before {
-				border: 2px solid -getColorAlpha("gray-4", 0);
-			}
-
-			// border: 2px solid -getColor('gray-3')
 		}
 	}
 

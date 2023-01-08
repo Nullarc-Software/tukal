@@ -32,7 +32,7 @@
 			<input v-bind="$attrs" :type="type" class="tu-input" :value="modelValue" :class="[
 	{ ['tu-input--has-icon']: !!$slots.icon },
 	{ ['tu-input--has-icon--after']: !!iconAfter }
-]" @input="onInput" :style="{ width: width }" :id="getId" :disabled="editableStaticInternal || disable" />
+]" @input="onInput" @keyup.enter="onEnter" :id="getId" :disabled="editableStaticInternal || disable" />
 			<label v-if="label" :for="getId" :class="[
 	'tu-input__label',
 	{ 'tu-input__label--hidden': modelValue !== '' }
@@ -122,7 +122,7 @@ export default defineComponent({
 		tuIcon
 	},
 	props: {
-		modelValue: { type: [Object, String, Object as any], default: "" },
+		modelValue: { type: [Object, String, Number, Object as any], default: "" },
 		labelPlaceholder: { default: "" },
 		label: { default: "" },
 		block: { type: Boolean, default: false },
@@ -150,7 +150,7 @@ export default defineComponent({
 			default: "unset"
 		}
 	},
-	emits: ["update:modelValue", "click-icon"],
+	emits: ["update:modelValue", "click-icon", "onEnter"],
 	setup(props, context) {
 		const getId = computed(() => {
 			return `tu-input--${props.id || ++InputConstants.id}`;
@@ -188,6 +188,10 @@ export default defineComponent({
 			context.emit("update:modelValue", evt.target.value);
 		};
 
+		const onEnter = function () {
+			context.emit("onEnter");
+		}
+
 		const iconClick = function (evt) {
 			context.emit("click-icon", evt.target.value);
 		};
@@ -215,7 +219,8 @@ export default defineComponent({
 			onInput,
 			iconClick,
 			hasColor,
-			getId
+			getId,
+			onEnter
 		};
 	}
 });
