@@ -19,7 +19,7 @@
 	{ [`tu-component--dark`]: !!dark },
 	{ isChecked: !!isChecked },
 ]">
-		<input type="checkbox" v-bind="$attrs" :checked="isChecked" v-on="inputListener"
+		<input type="checkbox" v-bind="$attrs" :disabled="disabled" :checked="isChecked" v-on="inputListener"
 			:class="['tu-switch__input']" />
 		<div class="tu-switch__circle">
 			<slot name="circle" />
@@ -50,7 +50,8 @@ export default defineComponent({
 		loading: { type: Boolean, default: false },
 		square: { type: Boolean, default: false },
 		indeterminate: { type: Boolean, default: false },
-		icon: { type: Boolean, default: false }
+		icon: { type: Boolean, default: false },
+		disabled: { type: Boolean, default: false}
 	},
 	emits: ["change", "update:modelValue"],
 	setup(props, context) {

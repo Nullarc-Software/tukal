@@ -129,7 +129,6 @@ export default defineComponent({
 		iconAfter: { type: Boolean, default: false },
 		visiblePassword: { type: Boolean, default: false },
 		loading: { type: Boolean, default: false },
-		color: { type: String, default: null },
 		state: { type: String, default: null },
 		progress: { type: Number, default: 0 },
 		border: { type: Boolean, default: false },
@@ -145,6 +144,10 @@ export default defineComponent({
 		editableStatic: {
 			type: Boolean,
 			default: false
+		},
+		width: {
+			type: String,
+			default: "unset"
 		}
 	},
 	emits: ["update:modelValue", "click-icon", "onEnter"],
@@ -356,7 +359,6 @@ export default defineComponent({
 	border-radius: inherit;
 	transition: all 0.25s ease;
 	padding-left: 10px;
-	width: 200px;
 
 	&:focus {
 		background: -getColor("gray-3");
@@ -641,7 +643,7 @@ export default defineComponent({
 				pointer-events: none;
 
 				&__1 {
-					border-bottom: 2px solid -getColor("gray-3");
+					border-bottom: 2px solid -getColorAlpha("text", 0.3);
 					width: 100%;
 					height: 2px;
 					position: absolute;
