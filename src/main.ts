@@ -10,6 +10,7 @@ import "material-design-icons/iconfont/material-icons.css";
 import { createPinia } from "pinia";
 import { createRouter, createWebHashHistory } from "vue-router";
 import Component1 from "../test/Component1.vue";
+import Component2 from "../test/Component2.vue";
 
 const install = function (Vue : App, options : any = {}) {
 	// set default options
@@ -40,7 +41,27 @@ const router = createRouter({
 	routes: [
 		{
 			path: "/test",
-			component: Component1
+			components: {
+				tabs1: Component1
+			}
+		},
+		{
+			path: "/test2",
+			components: {
+				tabs1: Component2
+			}
+		},
+		{
+			path: "/test11",
+			components: {
+				tabs2: Component1
+			}
+		},
+		{
+			path: "/test22",
+			components: {
+				tabs2: Component2
+			}
 		}
 	],
 	history: createWebHashHistory()

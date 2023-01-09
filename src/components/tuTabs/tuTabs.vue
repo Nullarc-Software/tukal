@@ -68,7 +68,9 @@
 	height: fixedHeight
 }" :class="{ 'tabs-fixed-height': fixedHeight ? true : false }">
 			<slot v-if="type === 'normal'" />
-			<router-view v-if="type === 'router'"></router-view>
+
+			<router-view v-if="type === 'router' && name !== null" :name="name"></router-view>
+			<router-view v-else-if="type === 'router'"></router-view>
 		</div>
 	</div>
 </template>
@@ -165,6 +167,10 @@ export default defineComponent({
 			type: String,
 			default: "normal"
 		},
+		name: {
+			type: String,
+			default: null,
+		},
 		tabs: {
 			type: Object as PropType<TuTabsChildData[]>,
 			default: () => []
@@ -212,7 +218,12 @@ export default defineComponent({
 		const reactiveData = reactive(data);
 
 		if (props.type === "router") {
-			reactiveData.children.push(...props.tabs);
+
+			props.tabs.forEach(tab => {
+				tab.id = tabIdInstance.value.tabId++;
+				reactiveData.children.push(tab);
+			})
+
 		}
 
 		const styleTab = (childId) => {
@@ -292,20 +303,6 @@ export default defineComponent({
 
 		const activeChild = function (index, initialAnimation?) {
 
-			 if (props.type === "router") {
-
-				const router = ComponentConstants.router;
-				if (router) {
-
-
-					const childWithId = _.find(reactiveData.children, { id: index });
-					if (childWithId) {
-						router.replace(childWithId.to);
-					}
-				}
-				return;
-
-			}
 			initialAnimation = !!initialAnimation;
 			const elem = ul.value?.getElementsByClassName(
 				`tu-tabs--li-${index}`
@@ -319,29 +316,44 @@ export default defineComponent({
 				}, 200);
 			}
 
-			reactiveData.children.forEach((value, key) => {
-				if (key !== index) value.setActive(false);
-			});
+			if (props.type === "normal") {
+				reactiveData.children.forEach((value, key) => {
+					if (key !== index) value.setActive(false);
+				});
 
-			if (reactiveData.childActive > index) {
-				reactiveData.children[index]?.setInvert(true);
-				reactiveData.children[reactiveData.childActive]?.setInvert(
-					false
-				);
-			}
-			else {
-				reactiveData.children[reactiveData.childActive]?.setInvert(
-					true
-				);
-				reactiveData.children[index]?.setInvert(false);
-			}
+				if (reactiveData.childActive > index) {
+					reactiveData.children[index]?.setInvert(true);
+					reactiveData.children[reactiveData.childActive]?.setInvert(
+						false
+					);
+				}
+				else {
+					reactiveData.children[reactiveData.childActive]?.setInvert(
+						true
+					);
+					reactiveData.children[index]?.setInvert(false);
+				}
 
-			reactiveData.children[index]?.setActive(true);
+				reactiveData.children[index]?.setActive(true);
+
+				if (props.position === "left" || props.position === "right")
+					reactiveData.children[index]?.setVertical(true);
+			}
+			if (props.type === "router") {
+
+				const router = ComponentConstants.router;
+				if (router) {
+
+
+					const childWithId = _.find(reactiveData.children, { id: index });
+					if (childWithId) {
+						router.replace(childWithId.to);
+					}
+				}
+
+			}
 			reactiveData.childActive = index;
 			context.emit("update:modelValue", reactiveData.childActive);
-
-			if (props.position === "left" || props.position === "right")
-				reactiveData.children[index]?.setVertical(true);
 
 			if (props.tabStyle !== "progress")
 				changePositionLine(elem, initialAnimation);

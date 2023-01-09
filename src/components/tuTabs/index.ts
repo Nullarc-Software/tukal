@@ -11,7 +11,7 @@ if (typeof window !== "undefined" && (<any>window).Vue)
 	tuComponent.install((<any>window).Vue);
 
 export interface TuTabsChildData {
-	id: number;
+	id?: number;
 	label: string;
 	name: string;
 	to?: string;

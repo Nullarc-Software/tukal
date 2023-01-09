@@ -776,19 +776,16 @@
 			<h4>Tabs:</h4>
 			<hr />
 
-			<tu-tabs position="top" tabStyle="card" noTransitions v-model="tabName">
-				<tu-tab to="/test1" label="Home" name="ho"> Home </tu-tab>
-				<tu-tab label="Service" name="se"> Service </tu-tab>
-				<tu-tab label="login" name="lo"> Login </tu-tab>
-				<tu-tab label="Disabled" name="di"> Disabled </tu-tab>
-			</tu-tabs>
-			<!-- <tu-tabs position="top" noTransitions tabStyle="progress" progressWidth="20" v-model="tabName">
+			<tu-tabs name="tabs1" type="router" position="top" tabStyle="card" noTransitions v-model="tabName"
+				:tabs="tabsRouter" />
+			<tu-tabs position="top" noTransitions tabStyle="progress" progressWidth="20" v-model="tabName">
 				<tu-tab label="Home" name="ho"> Home </tu-tab>
 				<tu-tab label="Service" name="se"> Service </tu-tab>
 				<tu-tab label="login" name="lo"> Login </tu-tab>
 				<tu-tab label="Disabled" name="di"> Disabled </tu-tab>
 			</tu-tabs>
-			<tu-tabs position="left" noTransitions v-model="tabName">
+			<tu-tabs name="tabs2" type="router" position="left" noTransitions v-model="tabName" :tabs="tabsRouter2" />
+			<!--<tu-tabs position="left" noTransitions v-model="tabName">
 				<tu-tab label="Home" name="ho"> Home </tu-tab>
 				<tu-tab label="Service" name="se"> Service </tu-tab>
 				<tu-tab label="login" name="lo"> Login </tu-tab>
@@ -888,7 +885,7 @@
 				</tu-tree-view>
 			</div>
 		</div>
-		</div>
+	</div>
 </template>
 
 <script lang="ts">
@@ -969,16 +966,54 @@ export default defineComponent({
 		const page = ref(1);
 		const tabsRouter = [
 			{
-				id:1,
-				label:"Home",
-				name:"home",
-				to:"/test"
+
+				label: "Home",
+				name: "ho1",
+				to: "/test"
 			},
 			{
-				id:2,
-				label:"About",
-				name:"About",
-				to:"/test"
+
+				label: "About",
+				name: "se1",
+				to: "/test2"
+			},
+			{
+
+				label: "Service",
+				name: "lo1",
+				to: "/test2"
+			},
+			{
+
+				label: "Test",
+				name: "di1",
+				to: "/test2"
+			}
+		]
+		const tabsRouter2 = [
+			{
+
+				label: "Home",
+				name: "ho",
+				to: "/test11"
+			},
+			{
+
+				label: "About",
+				name: "se",
+				to: "/test22"
+			},
+			{
+
+				label: "Service",
+				name: "lo",
+				to: "/test22"
+			},
+			{
+
+				label: "Test",
+				name: "di",
+				to: "/test22"
 			}
 		]
 		const tabs: TuTabsChildData[] = [
@@ -1471,7 +1506,8 @@ export default defineComponent({
 			Categories,
 			configUpdate,
 			nodes,
-			tabsRouter
+			tabsRouter,
+			tabsRouter2
 		};
 	}
 });
