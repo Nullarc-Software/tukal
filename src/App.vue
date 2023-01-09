@@ -142,23 +142,23 @@
 			<h3>Breadcrumbs:</h3>
 			<hr />
 			<tu-breadcrumb :items="[
-				{
-					title: 'Dashboard',
-					url: 'dashboard'
-				},
-				{
-					title: 'Link 1',
-					url: 'link-1'
-				},
-				{
-					title: 'Link 2',
-					disabled: true
-				},
-				{
-					title: 'Active',
-					active: true
-				}
-			]"></tu-breadcrumb>
+	{
+		title: 'Dashboard',
+		url: 'dashboard'
+	},
+	{
+		title: 'Link 1',
+		url: 'link-1'
+	},
+	{
+		title: 'Link 2',
+		disabled: true
+	},
+	{
+		title: 'Active',
+		active: true
+	}
+]"></tu-breadcrumb>
 
 			<tu-breadcrumb>
 				<li>
@@ -210,8 +210,8 @@
 				{{ checkBox1 }}
 			</tu-checkbox>
 			<tu-checkbox v-model:checked="checkBox9" indeterminate>{{
-					checkBox9
-			}}</tu-checkbox>
+		checkBox9
+}}</tu-checkbox>
 			<div class="">
 				<button @click="resetOpts">Reset</button>
 				<ul class="centerx">
@@ -1441,7 +1441,8 @@ export default defineComponent({
 			items,
 			onClick,
 			Categories,
-			configUpdate
+			configUpdate,
+			nodes
 		};
 	}
 });

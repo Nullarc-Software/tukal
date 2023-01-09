@@ -1,8 +1,8 @@
 <template>
 	<th class="tu-table__th" :class="{
-		sort: sort,
-		search: search
-	}" v-bind="$attrs" :data-sort-type="sortType" ref="theader">
+	sort: sort,
+	search: search
+}" v-bind="$attrs" :data-sort-type="sortType" ref="theader">
 		<div class="tu-table__th__content">
 			<div class="tu-table__th__content__text" @click="toggleSort">
 				<slot />
@@ -13,8 +13,8 @@
 			</div>
 			<tu-input v-if="search && type === 'text'" block v-model="colSearch" type="search" @keypress="keyPressed" />
 			<div v-if="search && type === 'timestamp'" style="display: inline-flex; flex-direction: column;">
-				<tu-input type="datetime-local" v-model="startDateTime" label="From" @change="setDateFilter" />
-				<tu-input type="datetime-local" v-model="endDateTime" label="To" @change="setDateFilter" />
+				<tu-input border type="datetime-local" v-model="startDateTime" label="From" @change="setDateFilter" />
+				<tu-input border type="datetime-local" v-model="endDateTime" label="To" @change="setDateFilter" />
 			</div>
 		</div>
 		<div class="tu-table__th__resizer_right" :class="{ active: headerElement ? true : false }"

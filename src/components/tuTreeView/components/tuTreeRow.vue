@@ -1,6 +1,5 @@
 <template>
-	<li class="node"
-		:class="[{ 'tree-node-hidden': currentNode.state?.hidden === true || currentNode?.hidden === true }, 'tree-row']"
+	<li class="node" :class="[{ 'tree-node-hidden': currentNode.state?.hidden === true }, 'tree-row']"
 		:data-id="currentNode.id">
 		<div
 			:class="['row_data', editSelected && isCheckNode ? 'position-bottom' : null, editSelected && !isCheckNode ? 'position-bottom-l' : null]">
@@ -10,7 +9,7 @@
 		? 'keyboard_arrow_down'
 		: 'keyboard_arrow_right',
 	currentNode.children != undefined &&
-		currentNode.children.length > 0 || currentNode.children === true ?
+		(Array.isArray(currentNode.children) && currentNode.children.length > 0) || currentNode.children === true ?
 		null : 'invisible'
 ]">
 					keyboard_arrow_right
@@ -30,7 +29,7 @@
 		: currentNode.state.checked
 " @click="toggleCheckState(currentNode)">
 					<div v-if="!editSelected">
-						<span data-toggle="tooltip" data-placement="top" :title="currentNode.definition" v-bind:class="[
+						<span data-toggle="tooltip" data-placement="top" v-bind:class="[
 	styles.text.class
 ]">
 							{{ currentNode.text }}
@@ -64,7 +63,7 @@
 				</tu-checkbox>
 				<div :class="['node-alignment']">
 					<div v-if="!isCheckNode && !editSelected">
-						<span data-toggle="tooltip" data-placement="top" :title="currentNode.definition" v-bind:class="[
+						<span data-toggle="tooltip" data-placement="top" v-bind:class="[
 	styles.text.class
 ]">
 							{{ currentNode.text }}
@@ -100,18 +99,20 @@
 		</div>
 		<div :style="getHeight" v-if="currentNode.state?.expanded" class="line">
 			<ul v-if="currentNode.state?.expanded && currentNode.children" :style="styles.rowIndent">
-				<tu-tree-row v-for="child in currentNode.children" :ref="`tree-row-` + child.id"
-					:isCheckNode="isCheckNode" :isAddNode="isAddNode" :isRemoveNode="isRemoveNode" :keyWord="keyWord"
-					:isEditNode="isEditNode" :icon="icon" :custom-styles="customStyles" :depth="depth + 1" :key="child"
-					:node="child" :root="root" :parent-node="currentNode" :model="model"
-					v-on:emitNodeExpanded="emitNodeExpanded" v-on:emitNodeSelected="emitNodeSelected"
-					v-on:emitNodeDeleted="emitNodeDeleted" v-on:emitNodeAdded="onNodeAdded"
-					v-on:emitParentNode="onParentNodeEmit" v-on:emitNodeChecked="onNodeChecked"
-					v-on:emitNodeEdited="onNodeEdited">
-					<template v-slot:customIcon>
-						<slot v-if="$slots.customIcon" name="customIcon" />
-					</template>
-				</tu-tree-row>
+				<div style="display: contents;" v-if="Array.isArray(currentNode.children)">
+					<tu-tree-row v-for="child in currentNode.children" :ref="`tree-row-` + (child as NodeData).id"
+						:isCheckNode="isCheckNode" :isAddNode="isAddNode" :isRemoveNode="isRemoveNode"
+						:keyWord="keyWord" :isEditNode="isEditNode" :icon="icon" :custom-styles="customStyles"
+						:depth="depth + 1" :key="(child as NodeData).id" :node="child" :root="root"
+						:parent-node="currentNode" :model="model" v-on:emitNodeExpanded="emitNodeExpanded"
+						v-on:emitNodeSelected="emitNodeSelected" v-on:emitNodeDeleted="emitNodeDeleted"
+						v-on:emitNodeAdded="onNodeAdded" v-on:emitParentNode="onParentNodeEmit"
+						v-on:emitNodeChecked="onNodeChecked" v-on:emitNodeEdited="onNodeEdited">
+						<template v-slot:customIcon>
+							<slot v-if="$slots.customIcon" name="customIcon" />
+						</template>
+					</tu-tree-row>
+				</div>
 			</ul>
 		</div>
 	</li>
@@ -283,8 +284,8 @@ export default defineComponent({
 			context.emit("emitNodeDeleted", node, isSingleNode);
 		}
 		const expandNode = (server?: boolean) => {
-				currentNode.value.state.expanded =
-					!currentNode.value.state.expanded;
+			currentNode.value.state.expanded =
+				!currentNode.value.state.expanded;
 			if (props.model === "server" && currentNode.value.state?.expanded === true) {
 				if (currentNode.value.children === true) {
 					loading.value = true;
@@ -294,19 +295,19 @@ export default defineComponent({
 					currentNode.value.children = data;
 					console.log(currentNode.value.children);
 					loading.value = false;
-						for (let i = 0; i < currentNode.value.children.length; i++) {
-							currentNode.value.children[i].state = {
-								expanded: false,
-								hidden: data[i].state.hidden,
-								checked: currentNode.value.state.checked,
-							}
+					for (let i = 0; i < currentNode.value.children.length; i++) {
+						currentNode.value.children[i].state = {
+							expanded: false,
+							hidden: data[i].state.hidden,
+							checked: currentNode.value.state.checked,
 						}
+					}
 				});
 			}
 		}
 		const isAllCheck = (node: NodeData) => {
 			if (node.children === undefined || node.children === null) return false;
-			else {
+			else if (Array.isArray(node.children)) {
 				for (let i = 0; i < node.children.length; i++) {
 					if (node.children[i].state.checked === true) {
 						if (i === node.children.length - 1) return true;
@@ -318,8 +319,11 @@ export default defineComponent({
 		};
 		const atleastOneCheck = (node: NodeData) => {
 			if (node.children === undefined || node.children === null) return false;
-			for (let i = 0; i < node.children.length; i++)
-				if (node.children[i].state.checked === true || node.children[i].state.partiallyChecked) return true;
+			else if (Array.isArray(node.children)) {
+				for (let i = 0; i < node.children.length; i++)
+					if (node.children[i].state.checked === true || node.children[i].state.partiallyChecked) return true;
+			}
+
 			return false;
 		};
 		const onParentNodeEmit = (node: NodeData, isCheckParent?: boolean) => {
@@ -384,12 +388,12 @@ export default defineComponent({
 			recCallNodes(
 				currentNode.value.state.checked,
 				"checked",
-				node.children
+				node.children as NodeData[]
 			);
 			context.emit("emitNodeChecked");
 		}
 		const getHeight = () => {
-			const heightNum = currentNode.value.children.length * 35 + 35;
+			const heightNum = (currentNode.value.children as NodeData[]).length * 35 + 35;
 			return {
 				height: heightNum + "px"
 			};
@@ -398,10 +402,12 @@ export default defineComponent({
 			if (node === currentParentNode.value)
 				emitNodeDeleted(node);
 			else {
-				for (let i = 0; i < currentParentNode.value.children.length; i++) {
-					if (node.id === currentParentNode.value.children[i].id) {
-						currentParentNode.value.children.splice(i, 1);
-						emitNodeDeleted(currentParentNode.value, true);
+				if (Array.isArray(currentParentNode.value.children)) {
+					for (let i = 0; i < currentParentNode.value.children.length; i++) {
+						if (node.id === currentParentNode.value.children[i].id) {
+							currentParentNode.value.children.splice(i, 1);
+							emitNodeDeleted(currentParentNode.value, true);
+						}
 					}
 				}
 			}

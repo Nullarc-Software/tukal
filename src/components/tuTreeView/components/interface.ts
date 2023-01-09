@@ -5,7 +5,7 @@ export type NodeData = {
 		expanded?: boolean;
 		hidden?: boolean;
 	}
-	children?: NodeData[];
+	children?: NodeData[] | boolean;
 	text: string;
 	id: string;
 	icon?: string;
@@ -86,7 +86,7 @@ export interface TreeRowCustomStyles {
 		style: {
 			[key: string]: string;
 		},
-		class: string;
+		class?: string;
 		active: {
 			style: {
 				[key: string]: string;

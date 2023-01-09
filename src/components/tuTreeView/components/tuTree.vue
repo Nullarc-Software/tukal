@@ -7,8 +7,8 @@
 	<div :id="id">
 		<ul :style="styles.tree.style">
 			<tu-tree-row v-for="node in currentNodes" :ref="'tree-row-' + node.id" :isCheckNode="checkNode"
-				:isRemoveNode="removeNode" :isAddNode="addNode" :isEditNode="editNode" :icon="icon"
-				:custom-styles="customStyles" :depth="1" :key="node" :node="node" :parent-node="node"
+				:isRemoveNode="removeNode" :isAddNode="addNode" :isEditNode="editNode" :icon="node.icon"
+				:custom-styles="customStyles" :depth="1" :key="node.id" :node="node" :parent-node="node"
 				:root="currentNodes" :model="model" :serverSideConfig="serverSideConfig" :keyWord="keyWord"
 				v-on:emitNodeAdded="onNodeAdded" v-on:emitNodeDeleted="onNodeDeleted"
 				v-on:emitNodeChecked="onNodeChecked" v-on:emitNodeEdited="onNodeEdited">
@@ -26,6 +26,7 @@ import {
 	NodeData,
 	NodesProperties,
 	TreeCustomStyles,
+	TreeRowCustomStyles,
 	TuTreeServerModel,
 } from "./interface";
 import tuTreeRow from "./tuTreeRow.vue";
@@ -60,7 +61,7 @@ export default defineComponent({
 			default: false
 		},
 		customStyles: {
-			type: Object as PropType<TreeCustomStyles>
+			type: Object as PropType<TreeRowCustomStyles>
 		},
 		id: String,
 		nodes: {
@@ -192,7 +193,7 @@ export default defineComponent({
 					else arr.push(node[argWanted]);
 				}
 				arr = arr.concat(
-					recGetNodesData(argWanted, conditions, node.children)
+					recGetNodesData(argWanted, conditions, node.children as NodeData[])
 				);
 			});
 			return arr;
@@ -215,7 +216,7 @@ export default defineComponent({
 					arr[node.id] = recGetNodesDataWithFormat(
 						argWanted,
 						conditions,
-						node.children
+						node.children as NodeData[]
 					);
 				}
 				else {
@@ -224,7 +225,7 @@ export default defineComponent({
 						recGetNodesDataWithFormat(
 							argWanted,
 							conditions,
-							node.children
+							node.children as NodeData[]
 						)
 					);
 				}

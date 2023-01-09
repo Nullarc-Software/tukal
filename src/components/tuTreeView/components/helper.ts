@@ -36,7 +36,7 @@ export const recCallNodes = (state: boolean, event: string, nodes: NodeData[]|un
 			}
 			else if (disabledStateKey && node[disabledStateKey] !== false)
 				node.state[event] = state;
-			recCallNodes(state, event, node.children, pathIds);
+			recCallNodes(state, event, node.children as NodeData[], pathIds);
 		});
 	}
 };

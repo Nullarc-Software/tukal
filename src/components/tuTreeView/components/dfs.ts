@@ -5,8 +5,8 @@ type DftCallback = (node: NodeData, id?: any) => boolean;
 export class DFT {
 	public iterate(nodes: NodeData[] , query: string, funcSearch? : DftCallback) {
 		const func = (node: NodeData, query: string) => {
-			if (node.children && node.children.length > 0) {
-				if (_.some(node.children, {
+			if (node.children && Array.isArray(node.children) && node.children.length > 0) {
+				if (_.some(node.children as NodeData[], {
 					state: {
 						hidden: false
 					}
@@ -36,9 +36,9 @@ export class DFT {
 			this.dft(nodes[i] , funcSearch ?? func, query); 	
 		
 	}
-	private dft(node: NodeData, func: DftCallback, query?: query | null) {
+	private dft(node: NodeData, func: DftCallback, query?: string) {
 		const res = node; 
-		if (node.children && node.children.length > 0) {  
+		if (node.children && Array.isArray(node.children) && node.children.length > 0) {  
 			
 			for (let i  = node.children.length - 1; i >= 0; i--) {
 				const result = this.dft(node.children[i], func, query); 
