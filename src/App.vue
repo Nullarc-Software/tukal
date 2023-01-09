@@ -776,13 +776,13 @@
 			<h4>Tabs:</h4>
 			<hr />
 
-			<tu-tabs position="top" tabStyle="card" noTransitions v-model="tabName">
-				<tu-tab label="Home" name="ho"> Home </tu-tab>
+			<tu-tabs type="router" position="top" tabStyle="card" noTransitions v-model="tabName">
+				<tu-tab to="/test1" label="Home" name="ho"> Home </tu-tab>
 				<tu-tab label="Service" name="se"> Service </tu-tab>
 				<tu-tab label="login" name="lo"> Login </tu-tab>
 				<tu-tab label="Disabled" name="di"> Disabled </tu-tab>
 			</tu-tabs>
-			<tu-tabs position="top" noTransitions tabStyle="progress" progressWidth="20" v-model="tabName">
+			<!-- <tu-tabs position="top" noTransitions tabStyle="progress" progressWidth="20" v-model="tabName">
 				<tu-tab label="Home" name="ho"> Home </tu-tab>
 				<tu-tab label="Service" name="se"> Service </tu-tab>
 				<tu-tab label="login" name="lo"> Login </tu-tab>
@@ -799,7 +799,7 @@
 				<tu-tab label="Service" name="se"> Service </tu-tab>
 				<tu-tab label="login" name="lo"> Login </tu-tab>
 				<tu-tab label="Disabled" name="di"> Disabled </tu-tab>
-			</tu-tabs>
+			</tu-tabs> -->
 		</div>
 		<div class="showcase-component">
 			<h4>Progress:</h4>
@@ -864,30 +864,30 @@
 			<h4>Upload Component:</h4>
 			<hr />
 			<!-- <tu-upload singleUpload :limit="1" /> -->
+			div>
+			<div class="showcase-component">
+				<h4>Calendar:</h4>
+				<tu-calendar model="local" :items="items" :categories="Categories" @onClickDay="onClick" />
+			</div>
+			<div class="showcase-component">
+				<h4>Tags:</h4>
+				<tu-tag name="Location" value="Far East" />
+				<tu-tag name="Location" value="Far East" />
+				<tu-tag name="Location" value="Far East" />
+				<tu-tag name="Location" value="Far East" />
+			</div>
+			<div class="showcase-component">
+				<h4>Treeview Component:</h4>
+				<hr />
+				<tu-tree-view :checkNode="true" :removeNode="true" :addNode="true" :editNode="true" :filterNode="true"
+					model="local" :expandAll="true" :collapseAll="true" v-model="nodes"
+					v-model:checkedNodes="checkedNodes" :nodes="treeDisplayData">
+					<template v-slot:icon>
+						<tu-icon>file_copy</tu-icon>
+					</template>
+				</tu-tree-view>
+			</div>
 		</div>
-		<div class="showcase-component">
-			<h4>Calendar:</h4>
-			<tu-calendar model="local" :items="items" :categories="Categories" @onClickDay="onClick" />
-		</div>
-		<div class="showcase-component">
-			<h4>Tags:</h4>
-			<tu-tag name="Location" value="Far East" />
-			<tu-tag name="Location" value="Far East" />
-			<tu-tag name="Location" value="Far East" />
-			<tu-tag name="Location" value="Far East" />
-		</div>
-		<div class="showcase-component">
-			<h4>Treeview Component:</h4>
-			<hr />
-			<tu-tree-view :checkNode="true" :removeNode="true" :addNode="true" :editNode="true" :filterNode="true"
-				model="local" :expandAll="true" :collapseAll="true" v-model="nodes" v-model:checkedNodes="checkedNodes"
-				:nodes="treeDisplayData">
-				<template v-slot:icon>
-					<tu-icon>file_copy</tu-icon>
-				</template>
-			</tu-tree-view>
-		</div>
-	</div>
 </template>
 
 <script lang="ts">
@@ -914,6 +914,8 @@ import "material-icons/iconfont/material-icons.css";
 import axios from "axios";
 import { TuHeaderDefn, TuTableContextMenuEntry } from "./components";
 import tuTableContextMenuVue from "./components/tuTable/tuTableContextMenu.vue";
+import { TuTabsChildData } from "./components/tuTabs";
+import { useRouter } from "vue-router";
 // import { TuTreeViewItemDefn } from "./components/tuTreeView";
 export default defineComponent({
 	components: {
@@ -964,6 +966,18 @@ export default defineComponent({
 		const selectValue2 = ref("1");
 		const selectValue1 = ref("");
 		const page = ref(1);
+		const tabs: TuTabsChildData[] = [
+			{
+				id: 1,
+				label: "Home",
+				name: "Ho"
+			},
+			{
+				id: 2,
+				label: "Service",
+				name: "sa"
+			}
+		]
 		const Export: ExportData = new ExportData();
 		const rowClicked = (tr) => {
 			console.log(tr);
@@ -1037,7 +1051,7 @@ export default defineComponent({
 				"Data"
 			);
 		};
-		provide("appRouter", null);
+		provide("appRouter", useRouter());
 		provide("iconPackGlobal", "material-icons-outlined");
 		/*
 		waves
@@ -1389,7 +1403,7 @@ export default defineComponent({
 
 		return {
 			// treeSelectedItems,
-			// treeItems,
+			ems,
 			checkedNodes,
 			treeDisplayData,
 			darkModeActive,

@@ -9,6 +9,7 @@ import { createApp } from "vue";
 import "material-design-icons/iconfont/material-icons.css";
 import { createPinia } from "pinia";
 import { createRouter, createWebHashHistory } from "vue-router";
+import Component1 from "../test/Component1.vue";
 
 const install = function (Vue : App, options : any = {}) {
 	// set default options
@@ -36,7 +37,12 @@ if (typeof window !== "undefined" && (<any>window).Vue)
 
 const pinia = createPinia();
 const router = createRouter({
-	routes: [],
+	routes: [
+		{
+			path: "/test1",
+			component: Component1
+		}
+	],
 	history: createWebHashHistory()
 });
 appVm.use(router);

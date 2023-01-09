@@ -10,19 +10,20 @@ tuComponent.install = (vue: any) => {
 if (typeof window !== "undefined" && (<any>window).Vue)
 	tuComponent.install((<any>window).Vue);
 
-export interface ChildData {
-	label: string;
-	icon: string;
-	iconPack: string;
-	tag: string;
+export interface TuTabsChildData {
 	id: number;
-	name?: string;
-	attrs: Object;
-	disabled: boolean;
-	vnode: VNode | undefined;
-	setActive: Function;
-	setInvert: Function;
-	setVertical: Function;
+	label: string;
+	name: string;
+	to?: string;
+	icon?: string;
+	iconPack?: string;
+	tag?: string;
+	attrs?: Object;
+	disabled?: boolean;
+	vnode?: VNode | undefined;
+	setActive?: Function;
+	setInvert?: Function;
+	setVertical?: Function;
 }
 
 export class TabId {
