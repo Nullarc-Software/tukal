@@ -292,7 +292,7 @@ export default defineComponent({
 
 		const activeChild = function (index, initialAnimation?) {
 
-			/* if (props.type === "router") {
+			 if (props.type === "router") {
 
 				const router = ComponentConstants.router;
 				if (router) {
@@ -306,7 +306,6 @@ export default defineComponent({
 				return;
 
 			}
- */
 			initialAnimation = !!initialAnimation;
 			const elem = ul.value?.getElementsByClassName(
 				`tu-tabs--li-${index}`

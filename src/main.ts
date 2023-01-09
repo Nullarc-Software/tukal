@@ -39,7 +39,7 @@ const pinia = createPinia();
 const router = createRouter({
 	routes: [
 		{
-			path: "/test1",
+			path: "/test",
 			component: Component1
 		}
 	],

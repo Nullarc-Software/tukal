@@ -776,7 +776,7 @@
 			<h4>Tabs:</h4>
 			<hr />
 
-			<tu-tabs type="router" position="top" tabStyle="card" noTransitions v-model="tabName">
+			<tu-tabs position="top" tabStyle="card" noTransitions v-model="tabName">
 				<tu-tab to="/test1" label="Home" name="ho"> Home </tu-tab>
 				<tu-tab label="Service" name="se"> Service </tu-tab>
 				<tu-tab label="login" name="lo"> Login </tu-tab>
@@ -888,6 +888,7 @@
 				</tu-tree-view>
 			</div>
 		</div>
+		</div>
 </template>
 
 <script lang="ts">
@@ -966,6 +967,20 @@ export default defineComponent({
 		const selectValue2 = ref("1");
 		const selectValue1 = ref("");
 		const page = ref(1);
+		const tabsRouter = [
+			{
+				id:1,
+				label:"Home",
+				name:"home",
+				to:"/test"
+			},
+			{
+				id:2,
+				label:"About",
+				name:"About",
+				to:"/test"
+			}
+		]
 		const tabs: TuTabsChildData[] = [
 			{
 				id: 1,
@@ -1403,7 +1418,7 @@ export default defineComponent({
 
 		return {
 			// treeSelectedItems,
-			ems,
+			items,
 			checkedNodes,
 			treeDisplayData,
 			darkModeActive,
@@ -1452,11 +1467,11 @@ export default defineComponent({
 			newItemEndDate,
 			newItemEndTime,
 			submitNewItem,
-			items,
 			onClick,
 			Categories,
 			configUpdate,
-			nodes
+			nodes,
+			tabsRouter
 		};
 	}
 });
