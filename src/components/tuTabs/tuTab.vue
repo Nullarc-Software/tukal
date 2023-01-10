@@ -1,13 +1,13 @@
 <template>
 	<transition v-if="!noTransitions" :name="
-		invert
-			? vertical
-				? 'fade-tab-vertical-invert'
-				: 'fade-tab-invert'
-			: vertical
-				? 'fade-tab-vertical'
-				: 'fade-tab'
-	">
+	invert
+		? vertical
+			? 'fade-tab-vertical-invert'
+			: 'fade-tab-invert'
+		: vertical
+			? 'fade-tab-vertical'
+			: 'fade-tab'
+">
 		<div v-if="active" class="con-tab tu-tabs--content" v-bind="$attrs">
 			<slot />
 		</div>
@@ -15,7 +15,6 @@
 	<div v-else-if="active" class="con-tab tu-tabs--content" v-bind="$attrs">
 		<slot />
 	</div>
-
 </template>
 
 <script lang="ts">
@@ -53,6 +52,10 @@ export default defineComponent({
 		noTransitions: {
 			type: Boolean,
 			default: false
+		},
+		to: {
+			type: String,
+			default: null
 		}
 	},
 	setup(props, context) {
@@ -94,7 +97,8 @@ export default defineComponent({
 			id: currentId,
 			attrs: context.attrs,
 			disabled: props.disabled,
-			name: props.name
+			name: props.name,
+			to: props.to
 		});
 
 		onMounted(() => {

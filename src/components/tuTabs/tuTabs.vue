@@ -1,9 +1,9 @@
 <template>
 	<div :class="[
-		`tu-tabs-${color}`,
-		`tu-tabs-position-${position}`,
-		`tu-tabs-${tabStyle}`
-	]" class="con-tu-tabs tu-tabs" :style="{
+	`tu-tabs-${color}`,
+	`tu-tabs-position-${position}`,
+	`tu-tabs-${tabStyle}`
+]" class="con-tu-tabs tu-tabs" :style="{
 	width: fixedWidth,
 	height: fixedHeight
 }">
@@ -11,10 +11,10 @@
 			<ul ref="ul" :class="[`ul-tabs-${alignment}`]" class="ul-tabs tu-tabs--ul" v-if="tabStyle !== 'progress'">
 				<li v-for="child in children" :key="child.id" :style="childActive == child.id ? styleTab(child.id) : {}"
 					class="tu-tabs--li" :class="{
-						[`tu-tabs--li-${child.id}`]: true,
-						[`tu-tabs--li-${child.name}`]: child.name,
-						activeChild: childActive == child.id
-					}" @mouseover="hover = true" @mouseout="hover = false">
+	[`tu-tabs--li-${child.id}`]: true,
+	[`tu-tabs--li-${child.name}`]: child.name,
+	activeChild: childActive == child.id
+}" @mouseover="hover = true" @mouseout="hover = false">
 					<button :style="styleAlignIcon(child.icon)" :disabled="child.disabled" class="tu-tabs--btn"
 						type="button" @click="activeChild(child.id)">
 						<tu-icon v-if="child.icon" :icon-pack="child.iconPack" :icon="child.icon" :color="color"
@@ -33,12 +33,12 @@
 						<span> </span>
 						<span style="margin-left: 5px">
 							<span :style="{
-								color: `rgb(${getColor(color)})`
-							}">{{ activeIdx + 1 }}
+	color: `rgb(${getColor(color)})`
+}">{{ activeIdx + 1 }}
 							</span>
 							<span :style="{
-								color: `rgba(${getColor('text')}, 0.75)`
-							}">
+	color: `rgba(${getColor('text')}, 0.75)`
+}">
 								of {{ children.length }}
 							</span>
 						</span>
@@ -55,19 +55,22 @@
 					</div>
 				</div>
 				<div hidden v-for="child in children" :key="child.id" class="tu-tabs--li" :class="{
-					[`tu-tabs--li-${child.id}`]: true,
-					[`tu-tabs--li-${child.name}`]: child.name,
-					activeChild: childActive == child.id
-				}" />
+	[`tu-tabs--li-${child.id}`]: true,
+	[`tu-tabs--li-${child.name}`]: child.name,
+	activeChild: childActive == child.id
+}" />
 			</div>
 			<span :style="stylex" class="line-tu-tabs" />
 		</div>
 
 		<div class="con-slot-tabs" :style="{
-			width: fixedWidth,
-			height: fixedHeight
-		}" :class="{ 'tabs-fixed-height': fixedHeight ? true : false }">
-			<slot />
+	width: fixedWidth,
+	height: fixedHeight
+}" :class="{ 'tabs-fixed-height': fixedHeight ? true : false }">
+			<slot v-if="type === 'normal'" />
+
+			<router-view v-if="type === 'router' && name !== null" :name="name"></router-view>
+			<router-view v-else-if="type === 'router'"></router-view>
 		</div>
 	</div>
 </template>
@@ -82,19 +85,21 @@ import {
 	reactive,
 	ref,
 	toRefs,
-	watch
+	watch,
+	PropType
 } from "vue";
-import { ChildData, TabId } from ".";
+import { TuTabsChildData, TabId } from ".";
 import * as utils from "../../utils";
-import tuComponent from "../tuComponent";
+import tuComponent, { ComponentConstants } from "../tuComponent";
 import tuIcon from "../tuIcon";
 import tuProgress from "../tuProgress";
+import { useRouter } from "vue-router";
 
 interface TabData {
 	topx: string;
 	heightx: number;
 	hover: boolean;
-	children: ChildData[];
+	children: TuTabsChildData[];
 	childActive: number;
 	leftx: number;
 	widthx: number;
@@ -157,14 +162,26 @@ export default defineComponent({
 		fixedHeight: {
 			type: String,
 			default: null
+		},
+		type: {
+			type: String,
+			default: "normal"
+		},
+		name: {
+			type: String,
+			default: null,
+		},
+		tabs: {
+			type: Object as PropType<TuTabsChildData[]>,
+			default: () => []
 		}
 	},
 	provide() {
 		return {
-			addChild: (instance: ChildData) => {
+			addChild: (instance: TuTabsChildData) => {
 				this.children.push(instance);
 			},
-			updateChild: (instance: ChildData) => {
+			updateChild: (instance: TuTabsChildData) => {
 				this.children[instance.id] = _.merge(
 					this.children[instance.id],
 					instance
@@ -198,8 +215,16 @@ export default defineComponent({
 		};
 
 		const activeIdx = ref(0);
-
 		const reactiveData = reactive(data);
+
+		if (props.type === "router") {
+
+			props.tabs.forEach(tab => {
+				tab.id = tabIdInstance.value.tabId++;
+				reactiveData.children.push(tab);
+			})
+
+		}
 
 		const styleTab = (childId) => {
 			const style: any = {
@@ -277,6 +302,7 @@ export default defineComponent({
 		};
 
 		const activeChild = function (index, initialAnimation?) {
+
 			initialAnimation = !!initialAnimation;
 			const elem = ul.value?.getElementsByClassName(
 				`tu-tabs--li-${index}`
@@ -290,29 +316,44 @@ export default defineComponent({
 				}, 200);
 			}
 
-			reactiveData.children.forEach((value, key) => {
-				if (key !== index) value.setActive(false);
-			});
+			if (props.type === "normal") {
+				reactiveData.children.forEach((value, key) => {
+					if (key !== index) value.setActive(false);
+				});
 
-			if (reactiveData.childActive > index) {
-				reactiveData.children[index]?.setInvert(true);
-				reactiveData.children[reactiveData.childActive]?.setInvert(
-					false
-				);
-			}
-			else {
-				reactiveData.children[reactiveData.childActive]?.setInvert(
-					true
-				);
-				reactiveData.children[index]?.setInvert(false);
-			}
+				if (reactiveData.childActive > index) {
+					reactiveData.children[index]?.setInvert(true);
+					reactiveData.children[reactiveData.childActive]?.setInvert(
+						false
+					);
+				}
+				else {
+					reactiveData.children[reactiveData.childActive]?.setInvert(
+						true
+					);
+					reactiveData.children[index]?.setInvert(false);
+				}
 
-			reactiveData.children[index]?.setActive(true);
+				reactiveData.children[index]?.setActive(true);
+
+				if (props.position === "left" || props.position === "right")
+					reactiveData.children[index]?.setVertical(true);
+			}
+			if (props.type === "router") {
+
+				const router = ComponentConstants.router;
+				if (router) {
+
+
+					const childWithId = _.find(reactiveData.children, { id: index });
+					if (childWithId) {
+						router.replace(childWithId.to);
+					}
+				}
+
+			}
 			reactiveData.childActive = index;
 			context.emit("update:modelValue", reactiveData.childActive);
-
-			if (props.position === "left" || props.position === "right")
-				reactiveData.children[index]?.setVertical(true);
 
 			if (props.tabStyle !== "progress")
 				changePositionLine(elem, initialAnimation);
