@@ -185,7 +185,12 @@ export default defineComponent({
 		};
 
 		const onInput = function (evt) {
-			context.emit("update:modelValue", evt.target.value);
+			if(props.type === "number") {
+				context.emit("update:modelValue", evt.target.valueAsNumber);
+			}
+			else {
+				context.emit("update:modelValue", evt.target.value);
+			}
 		};
 
 		const onEnter = function () {
