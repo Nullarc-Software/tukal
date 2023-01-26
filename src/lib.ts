@@ -6,7 +6,7 @@ export { default as tuSwitch } from "./components/tuSwitch";
 export { default as tuCheckbox } from "./components/tuCheckBox";
 export { default as tuRadio } from "./components/tuRadio";
 export { default as tuInput } from "./components/tuInput";
-export { tuTab, tuTabs } from "./components/tuTabs";
+export  * from "./components/tuTabs";
 export { default as tuAlert } from "./components/tuAlert";
 export { tuChip, tuChips } from "./components/tuChip";
 export { tuCard, tuCardGroup } from "./components/tuCard";

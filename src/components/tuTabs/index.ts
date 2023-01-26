@@ -26,6 +26,13 @@ export interface TuTabsChildData {
 	setVertical?: Function;
 }
 
+export type TuTabsRouterParams = {
+	tabs: TuTabsChildData[],
+	baseRoute?: string,
+	name?: string,
+	preventAutoRedirect?: boolean
+}
+
 export class TabId {
 	public tabId = 0;
 	public resetId () {

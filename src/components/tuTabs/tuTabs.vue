@@ -1,9 +1,9 @@
 <template>
 	<div :class="[
-	`tu-tabs-${color}`,
-	`tu-tabs-position-${position}`,
-	`tu-tabs-${tabStyle}`
-]" class="con-tu-tabs tu-tabs" :style="{
+		`tu-tabs-${color}`,
+		`tu-tabs-position-${position}`,
+		`tu-tabs-${tabStyle}`
+	]" class="con-tu-tabs tu-tabs" :style="{
 	width: fixedWidth,
 	height: fixedHeight
 }">
@@ -11,20 +11,22 @@
 			<ul ref="ul" :class="[`ul-tabs-${alignment}`]" class="ul-tabs tu-tabs--ul" v-if="tabStyle !== 'progress'">
 				<li v-for="child in children" :key="child.id" :style="childActive == child.id ? styleTab(child.id) : {}"
 					class="tu-tabs--li" :class="{
-	[`tu-tabs--li-${child.id}`]: true,
-	[`tu-tabs--li-${child.name}`]: child.name,
-	activeChild: childActive == child.id
-}" @mouseover="hover = true" @mouseout="hover = false">
-					<button :style="styleAlignIcon(child.icon)" :disabled="child.disabled" class="tu-tabs--btn"
-						type="button" @click="activeChild(child.id)">
-						<tu-icon v-if="child.icon" :icon-pack="child.iconPack" :icon="child.icon" :color="color"
-							class="tu-tabs--btn-icon"></tu-icon>
-						<span v-if="child.label">{{ child.label }}</span>
-					</button>
+						[`tu-tabs--li-${child.id}`]: true,
+						[`tu-tabs--li-${child.name}`]: child.name,
+						activeChild: childActive == child.id
+					}" @mouseover="hover = true" @mouseout="hover = false">
+					<a :href="type === 'router' ? getALinkHref(child.to) : null" class="tu-tabs--a">
+						<button :style="styleAlignIcon(child.icon)" :disabled="child.disabled" class="tu-tabs--btn"
+							type="button" @click="activeChild(child.id)">
+							<tu-icon v-if="child.icon" :icon-pack="child.iconPack" :icon="child.icon" :color="color"
+								class="tu-tabs--btn-icon"></tu-icon>
+							<span v-if="child.label">{{ child.label }}</span>
+						</button>
 
-					<button v-if="child.tag" class="tu-tabs--btn-tag" @click="clickTag(child)">
-						<tu-icon :icon-pack="child.iconPack" :icon="child.tag"></tu-icon>
-					</button>
+						<button v-if="child.tag" class="tu-tabs--btn-tag" @click="clickTag(child)">
+							<tu-icon :icon-pack="child.iconPack" :icon="child.tag"></tu-icon>
+						</button>
+					</a>
 				</li>
 			</ul>
 			<div v-else ref="ul" :class="[`ul-tabs-${alignment}`]" class="ul-tabs tu-tabs--ul">
@@ -33,12 +35,12 @@
 						<span> </span>
 						<span style="margin-left: 5px">
 							<span :style="{
-	color: `rgb(${getColor(color)})`
-}">{{ activeIdx + 1 }}
+								color: `rgb(${getColor(color)})`
+							}">{{ activeIdx + 1 }}
 							</span>
 							<span :style="{
-	color: `rgba(${getColor('text')}, 0.75)`
-}">
+								color: `rgba(${getColor('text')}, 0.75)`
+							}">
 								of {{ children.length }}
 							</span>
 						</span>
@@ -55,21 +57,22 @@
 					</div>
 				</div>
 				<div hidden v-for="child in children" :key="child.id" class="tu-tabs--li" :class="{
-	[`tu-tabs--li-${child.id}`]: true,
-	[`tu-tabs--li-${child.name}`]: child.name,
-	activeChild: childActive == child.id
-}" />
+					[`tu-tabs--li-${child.id}`]: true,
+					[`tu-tabs--li-${child.name}`]: child.name,
+					activeChild: childActive == child.id
+				}" />
 			</div>
 			<span :style="stylex" class="line-tu-tabs" />
 		</div>
 
 		<div class="con-slot-tabs" :style="{
-	width: fixedWidth,
-	height: fixedHeight
-}" :class="{ 'tabs-fixed-height': fixedHeight ? true : false }">
+			width: fixedWidth,
+			height: fixedHeight
+		}" :class="{ 'tabs-fixed-height': fixedHeight ? true : false }">
 			<slot v-if="type === 'normal'" />
 
-			<router-view v-if="type === 'router' && name !== null" :name="name"></router-view>
+			<router-view v-if="type === 'router' && routerModeParams.name !== null"
+				:name="routerModeParams.name"></router-view>
 			<router-view v-else-if="type === 'router'"></router-view>
 		</div>
 	</div>
@@ -86,14 +89,17 @@ import {
 	ref,
 	toRefs,
 	watch,
-	PropType
+	PropType,
+	onUnmounted
 } from "vue";
-import { TuTabsChildData, TabId } from ".";
+import { TuTabsChildData, TabId, TuTabsRouterParams } from ".";
 import * as utils from "../../utils";
 import tuComponent, { ComponentConstants } from "../tuComponent";
 import tuIcon from "../tuIcon";
 import tuProgress from "../tuProgress";
+
 import { useRouter } from "vue-router";
+import { buildProps } from "@vue/compiler-core";
 
 interface TabData {
 	topx: string;
@@ -151,10 +157,6 @@ export default defineComponent({
 			type: String,
 			default: "default"
 		},
-		title: {
-			type: String,
-			default: null
-		},
 		fixedWidth: {
 			type: String,
 			default: null
@@ -167,14 +169,10 @@ export default defineComponent({
 			type: String,
 			default: "normal"
 		},
-		name: {
-			type: String,
-			default: null,
+		routerModeParams: {
+			type: Object as PropType<TuTabsRouterParams>,
+			default: () => { }
 		},
-		tabs: {
-			type: Object as PropType<TuTabsChildData[]>,
-			default: () => []
-		}
 	},
 	provide() {
 		return {
@@ -216,14 +214,13 @@ export default defineComponent({
 
 		const activeIdx = ref(0);
 		const reactiveData = reactive(data);
+		let routerHook = null;
 
 		if (props.type === "router") {
-
-			props.tabs.forEach(tab => {
+			props.routerModeParams.tabs.forEach(tab => {
 				tab.id = tabIdInstance.value.tabId++;
 				reactiveData.children.push(tab);
 			})
-
 		}
 
 		const styleTab = (childId) => {
@@ -301,6 +298,21 @@ export default defineComponent({
 			return activeIndex;
 		};
 
+
+		// This is used only for type=router where on initial page load we have to 
+		// set the active tab based on the current route.
+		const setActiveTab = function (index) {
+			const initialAnimation = true;
+			const elem = ul.value?.getElementsByClassName(
+				`tu-tabs--li-${index}`
+			)[0];
+			reactiveData.childActive = index;
+			context.emit("update:modelValue", reactiveData.childActive);
+
+			if (props.tabStyle !== "progress")
+				changePositionLine(elem, initialAnimation);
+		}
+
 		const activeChild = function (index, initialAnimation?) {
 
 			initialAnimation = !!initialAnimation;
@@ -344,10 +356,10 @@ export default defineComponent({
 				const router = ComponentConstants.router;
 				if (router) {
 
-
 					const childWithId = _.find(reactiveData.children, { id: index });
 					if (childWithId) {
-						router.replace(childWithId.to);
+						const targetPath = props.routerModeParams.baseRoute ? utils.joinPath(props.routerModeParams.baseRoute, childWithId.to) : childWithId.to;
+						router.replace(targetPath);
 					}
 				}
 
@@ -395,13 +407,54 @@ export default defineComponent({
 			);
 		});
 
+		function getALinkHref(to: string) {
+			const finalPath = utils.joinPath("/#/", props.routerModeParams?.baseRoute ? utils.joinPath(props.routerModeParams?.baseRoute, to) : to);
+			return finalPath;
+		}
+
 		onMounted(() => {
-			const activeIndex = parseIndex(props.modelValue);
+			let activeIndex = parseIndex(props.modelValue);
+
+			if (props.type === "router") {
+				if (ComponentConstants.router) {
+					const tabMatched = _.findIndex(reactiveData.children, { to: ComponentConstants.router.currentRoute.value.fullPath });
+					if (tabMatched !== -1 && reactiveData.childActive !== tabMatched) {
+						activeIndex = tabMatched;
+					}
+					routerHook = ComponentConstants.router.afterEach((to, from) => {
+						if (props.routerModeParams?.baseRoute) {
+							if (to.fullPath === props.routerModeParams.baseRoute && !props.routerModeParams.preventAutoRedirect) {
+								activeChild(0, true);
+							}
+							else {
+								const targetPath = to.fullPath.replace(props.routerModeParams.baseRoute, "");
+								const tabMatched = _.findIndex(reactiveData.children, { to: targetPath });
+								if (tabMatched !== -1 && reactiveData.childActive !== tabMatched) {
+									setActiveTab(tabMatched);
+								}
+							}
+						}
+						else {
+							const tabMatched = _.findIndex(reactiveData.children, { to: to.fullPath });
+							if (tabMatched !== -1 && reactiveData.childActive !== tabMatched) {
+								setActiveTab(tabMatched);
+							}
+						}
+					})
+
+				}
+			}
 			reactiveData.childActive = activeIndex;
 			nextTick(() => {
 				activeChild(activeIndex, true);
 			});
 		});
+
+		onUnmounted(() => {
+			if (routerHook) {
+				routerHook();
+			}
+		})
 
 		watch(
 			() => props.modelValue,
@@ -425,6 +478,7 @@ export default defineComponent({
 			clickTag,
 			activeChild,
 			parseIndex,
+			getALinkHref,
 			tabIdInstance
 		};
 	}
@@ -491,6 +545,11 @@ export default defineComponent({
 	transition: all 0.2s ease;
 	transform: translateZ(0);
 	will-change: left, right;
+}
+
+.tu-tabs--a {
+	display: contents;
+	color: unset;
 }
 
 .tu-tabs--li {

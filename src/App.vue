@@ -142,23 +142,23 @@
 			<h3>Breadcrumbs:</h3>
 			<hr />
 			<tu-breadcrumb :items="[
-	{
-		title: 'Dashboard',
-		url: 'dashboard'
-	},
-	{
-		title: 'Link 1',
-		url: 'link-1'
-	},
-	{
-		title: 'Link 2',
-		disabled: true
-	},
-	{
-		title: 'Active',
-		active: true
-	}
-]"></tu-breadcrumb>
+				{
+					title: 'Dashboard',
+					url: 'dashboard'
+				},
+				{
+					title: 'Link 1',
+					url: 'link-1'
+				},
+				{
+					title: 'Link 2',
+					disabled: true
+				},
+				{
+					title: 'Active',
+					active: true
+				}
+			]"></tu-breadcrumb>
 
 			<tu-breadcrumb>
 				<li>
@@ -210,8 +210,8 @@
 				{{ checkBox1 }}
 			</tu-checkbox>
 			<tu-checkbox v-model:checked="checkBox9" indeterminate>{{
-		checkBox9
-}}</tu-checkbox>
+				checkBox9
+			}}</tu-checkbox>
 			<div class="">
 				<button @click="resetOpts">Reset</button>
 				<ul class="centerx">
@@ -772,20 +772,21 @@
 			/> -->
 		</div>
 
-		<div class="showcase-component">
+		<tu-button @click="enableTabs = !enableTabs">Click Enable Tabs</tu-button>
+		<div class="showcase-component" v-if="enableTabs">
 			<h4>Tabs:</h4>
 			<hr />
 
-			<tu-tabs name="tabs1" type="router" position="top" tabStyle="card" noTransitions v-model="tabName"
-				:tabs="tabsRouter" />
+			<tu-tabs name="tabs1" type="router" position="top" noTransitions v-model="tabName"
+				:router-mode-params="routerTabParams" />
 			<tu-tabs position="top" noTransitions tabStyle="progress" progressWidth="20" v-model="tabName">
 				<tu-tab label="Home" name="ho"> Home </tu-tab>
 				<tu-tab label="Service" name="se"> Service </tu-tab>
 				<tu-tab label="login" name="lo"> Login </tu-tab>
 				<tu-tab label="Disabled" name="di"> Disabled </tu-tab>
 			</tu-tabs>
-			<tu-tabs name="tabs2" type="router" position="left" noTransitions v-model="tabName" :tabs="tabsRouter2" />
-			<!--<tu-tabs position="left" noTransitions v-model="tabName">
+			<!--<tu-tabs name="tabs2" type="router" position="left" noTransitions v-model="tabName" :tabs="tabsRouter2" />
+			<tu-tabs position="left" noTransitions v-model="tabName">
 				<tu-tab label="Home" name="ho"> Home </tu-tab>
 				<tu-tab label="Service" name="se"> Service </tu-tab>
 				<tu-tab label="login" name="lo"> Login </tu-tab>
@@ -912,7 +913,7 @@ import "material-icons/iconfont/material-icons.css";
 import axios from "axios";
 import { TuHeaderDefn, TuTableContextMenuEntry } from "./components";
 import tuTableContextMenuVue from "./components/tuTable/tuTableContextMenu.vue";
-import { TuTabsChildData } from "./components/tuTabs";
+import { TuTabsChildData, TuTabsRouterParams } from "./components/tuTabs";
 import { useRouter } from "vue-router";
 // import { TuTreeViewItemDefn } from "./components/tuTreeView";
 export default defineComponent({
@@ -964,32 +965,22 @@ export default defineComponent({
 		const selectValue2 = ref("1");
 		const selectValue1 = ref("");
 		const page = ref(1);
-		const tabsRouter = [
-			{
+		const routerTabParams: TuTabsRouterParams = {
+			tabs: [
+				{
 
-				label: "Home",
-				name: "ho1",
-				to: "/test"
-			},
-			{
+					label: "Home",
+					name: "ho1",
+					to: "/test"
+				},
+				{
 
-				label: "About",
-				name: "se1",
-				to: "/test2"
-			},
-			{
-
-				label: "Service",
-				name: "lo1",
-				to: "/test2"
-			},
-			{
-
-				label: "Test",
-				name: "di1",
-				to: "/test2"
-			}
-		]
+					label: "About",
+					name: "se1",
+					to: "/test2"
+				},
+			],
+		}
 		const tabsRouter2 = [
 			{
 
@@ -1197,7 +1188,8 @@ export default defineComponent({
 					customIcon: {
 						icon: "desktop_windows"
 					}
-				}
+				},
+				dataType: "string"
 			},
 			{
 				index: 2,
@@ -1451,8 +1443,11 @@ export default defineComponent({
 			console.log(checkedNodes.value)
 		})
 
+		const enableTabs = ref(false);
+
 		return {
 			// treeSelectedItems,
+			enableTabs,
 			items,
 			checkedNodes,
 			treeDisplayData,
@@ -1506,7 +1501,7 @@ export default defineComponent({
 			Categories,
 			configUpdate,
 			nodes,
-			tabsRouter,
+			routerTabParams,
 			tabsRouter2
 		};
 	}

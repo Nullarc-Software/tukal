@@ -27,8 +27,10 @@ export interface TuFilterDefn {
 	value: any;
 }
 
-export type TuHeaderDataTypes = string | "timestamp"
-export interface TuHeaderDefn {
+
+export type TuHeaderDataTypes = "string" | "number" | "boolean" | "timestamp";
+
+export interface TuHeaderDefn{
 	index?: number;
 	minWidth?: number | string;
 	maxWidth?: number | string;
@@ -48,7 +50,7 @@ export interface TuHeaderDefn {
 	valueFormatter?: Function;
 	searchFunction?: Function;
 	hidden?: boolean;
-	dataType?: TuHeaderDataTypes; 
+	dataType?:  TuHeaderDataTypes; 
 }
 
 export interface TuTableSorterDefn {
@@ -150,11 +152,7 @@ export class TuTableStore {
 	}
 
 	private getField (obj: any, field: string) {
-		let temp = Object.assign({}, obj);
-		for (const key of field.split("."))
-			if (temp[key]) temp = temp[key];
-		
-		return temp;
+		return _.get(obj, field, undefined);
 	}
 
 	constructor (tableId: string, columnsInitial = 0, persistenceId?: string) {
