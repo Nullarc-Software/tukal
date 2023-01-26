@@ -60,7 +60,7 @@
 	activeChild: childActive == child.id
 }" />
 			</div>
-			<span :style="stylex" class="line-tu-tabs" />
+			<span :style="stylex" v-if="tabStyle !== 'progress'" class="line-tu-tabs" />
 		</div>
 
 		<div class="con-slot-tabs" :style="{
