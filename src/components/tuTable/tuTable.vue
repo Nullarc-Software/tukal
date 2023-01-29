@@ -134,6 +134,7 @@ import {
 	TuTableInitialComponentValues,
 	TuHeaderDefn,
 	TuTableLocal,
+	TuTableStoreConstructor,
 	TuTableLocalColumn
 } from "./tuTableStore";
 
@@ -169,7 +170,7 @@ export default defineComponent({
 		modelValue: {},
 		pageSize: {
 			type: Number,
-			default: 10
+			default: 25
 		},
 		page: {
 			type: Number,
@@ -328,19 +329,19 @@ export default defineComponent({
 			}
 		}
 
-		if (props.multiSelect && props.rowExpand)
-			table = new TuTableStore(props.id, 2, props.persistentId);
-		else if (props.multiSelect || props.rowExpand)
-			table = new TuTableStore(props.id, 1, props.persistentId);
-		else table = new TuTableStore(props.id, 0, props.persistentId);
-
-		table.constructHeaders(props.columns, props.persistentId);
-
-		if (props.model === "local") table.setTableData(props.data);
-		else {
-			table.serverSideModel = true;
-			table.serverModelProps = reactive(props.serverSideConfig);
+		const tableConstructor: TuTableStoreConstructor = {
+			columnsInitial: (props.multiSelect && props.rowExpand) ? 2 : (props.multiSelect || props.rowExpand) ? 1 : 0,
+			tableId: props.id,
+			persistenceId: props.persistentId,
+			serverSideModel: props.model !== "local",
+			serverSideConfig: props.serverSideConfig,
+			pageSize: props.pageSize,
+			page: props.page
 		}
+
+		table = new TuTableStore(tableConstructor);
+		table.constructHeaders(props.columns, props.persistentId);
+		if (props.model === "local") table.setTableData(props.data);
 
 		const isMultipleSelected = computed(() => {
 			return _.isArray(props.modelValue);
@@ -382,77 +383,11 @@ export default defineComponent({
 			}
 		};
 		const colsControl = ref([]);
-		/* const updateColumns = () => {
-			for (let i = 0; i < props.columns.length; i++)
-				persistentColumns.columns[i].visibility = colsControl.value[i];
-			localStorage.setItem(
-				`table-${props.persistentId}`,
-				JSON.stringify(persistentColumns)
-			);
-			context.emit(
-				"onTableConfigUpdated",
-				JSON.parse(localStorage.getItem(`table-${props.persistentId}`))
-			);
-			for (let i = 0; i < colsControl.value.length; i++)
-				table.setColumnVisibility(i, !colsControl.value[i]);
-		}; */
-		/* if (props.persistentId !== null) {
-			if (localStorage.getItem(`table-${props.persistentId}`) === null) {
-				for (let i = 0; i < props.columns.length; i++) {
-					colsControl.value[i] = true;
-					persistentColumns.columns[i].visibility = true;
-				}
-				localStorage.setItem(
-					`table-${props.persistentId}`,
-					JSON.stringify(persistentColumns)
-				);
-				context.emit(
-					"onTableConfigUpdated",
-					JSON.parse(
-						localStorage.getItem(`table-${props.persistentId}`)
-					)
-				);
-			}
-			else {
-				persistentColumns = JSON.parse(
-					localStorage.getItem(`table-${props.persistentId}`)
-				);
-				for (let i = 0; i < props.columns.length; i++) {
-					colsControl.value[i] =
-						persistentColumns.columns[i].visibility;
-				}
-				updateColumns();
-				localStorage.setItem(
-					`table-${props.persistentId}`,
-					JSON.stringify(persistentColumns)
-				);
-				context.emit(
-					"onTableConfigUpdated",
-					JSON.parse(
-						localStorage.getItem(`table-${props.persistentId}`)
-					)
-				);
-			}
-		} */
-		/* watch(
-			colsControl,
-			() => {
-				updateColumns();
-			},
-			{
-				deep: true
-			}
-		); */
-
-
 
 		watch(
 			[() => props.pageSize, () => props.page],
 			() => {
 				table.setPaging(props.pageSize, props.page);
-			},
-			{
-				immediate: true
 			}
 		);
 
@@ -469,7 +404,7 @@ export default defineComponent({
 
 		watch(table.loading, (value) => {
 			if (value) {
-				if (_.isNil(load) === true) {
+				if (_.isNil(load) && isMounted.value) {
 					context.emit("onTableBeginLoad");
 					setLoading();
 				}
@@ -513,6 +448,13 @@ export default defineComponent({
 						lastHeader.element.offsetLeft ?? 0) + "px";
 			}
 			context.emit("update:tableInstance", table);
+
+			if (table.loading && _.isNil(load)) {
+				context.emit("onTableBeginLoad");
+				table.refresh();
+				setLoading();
+			}
+
 			isMounted.value = true;
 		});
 
@@ -705,6 +647,7 @@ export default defineComponent({
 	&__tbody {
 		background-color: -getColor("background");
 		overflow: auto;
+		position: relative;
 
 		&:empty {
 			display: none;

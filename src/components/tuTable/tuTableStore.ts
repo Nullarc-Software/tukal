@@ -111,6 +111,16 @@ export interface TuTableInitialComponentValues {
 	value: any;
 }
 
+export interface TuTableStoreConstructor {
+	tableId: string;
+	columnsInitial: number;
+	persistenceId?: string;
+	serverSideModel?: boolean;
+	serverSideConfig?: TuTableServerModel;
+	pageSize?: number;
+	page?: number;
+}
+
 export class TuTableStore {
 	private id: string;
 	private persistenceId: string;
@@ -156,31 +166,33 @@ export class TuTableStore {
 		return _.get(obj, field, undefined);
 	}
 
-	constructor (tableId: string, columnsInitial = 0, persistenceId?: string) {
-		this.id = tableId;
-		this.persistenceId = persistenceId;
+	constructor (values: TuTableStoreConstructor) {
+		this.id = values.tableId;
+		this.persistenceId = values.persistenceId;
 		this.table = reactive({
 			headers: [],
 			data: [],
 			currentFilters: [],
 			currentSort: [],
-			pageSize: 25,
-			currentPage: 1
+			pageSize: values.pageSize,
+			currentPage: values.page
 		});
 		this.persistentSettings = reactive({
 			columns: []
 		});
 		this.loading = ref(false);
 		this.dataView = ref([]);
+		this.serverModelProps = values.serverSideConfig;
+		this.serverSideModel = values.serverSideModel;
 
-		this.headerCount = ref(columnsInitial);
+		this.headerCount = ref(values.columnsInitial);
 		this.pageLength = ref(1);
 		this.activeSort = ref(0);
 		this.rowCount = ref(0);
 		this.refreshTable = ref(false);
 		this.getTableData = () : Promise<boolean> =>  {
 
-			return new Promise((resolve, reject) => {
+			return new Promise(((resolve, reject) => {
 				this.loading.value = true;
 				if (this.serverSideModel === false) {
 					this.rowCount.value = this.table.data.length;
@@ -322,7 +334,7 @@ export class TuTableStore {
 					xhrRequest.request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
 					xhrRequest.request.send(JSON.stringify(props));
 				}
-			});	
+			}).bind(this));	
 		};
 
 		this.getTableHeaders = computed(() => {
@@ -344,10 +356,6 @@ export class TuTableStore {
 
 		this.getFilters = computed(() => {
 			return this.table.currentFilters;
-		});
-
-		this.serverModelProps = reactive({
-			ajaxUrl: ""
 		});
 
 		this.isPartiallyChecked = computed(() => {
@@ -376,12 +384,11 @@ export class TuTableStore {
 			this.refreshTable
 		], (newValue, oldValue) => {
 			this.getTableData().then(result => {
+				this.loading.value = false;
 				// No need to do anything as this.dataView would be set on success and reactivity will take over.
 			}).catch(error => {
 				console.error("TuTable: Error Occurred while fetching from API");
 			});
-		}, {
-			immediate: true
 		});
 
 		
@@ -425,7 +432,6 @@ export class TuTableStore {
 	public setPaging (pageSize: number, page: number) {
 		this.table.pageSize = pageSize;
 		this.table.currentPage = page;
-		console.log(this.table.currentPage);
 	}
 
 	public refresh () {
