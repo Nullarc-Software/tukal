@@ -389,6 +389,8 @@ export class TuTableStore {
 			}).catch(error => {
 				console.error("TuTable: Error Occurred while fetching from API");
 			});
+		}, {
+			deep: true
 		});
 
 		
