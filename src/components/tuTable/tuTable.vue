@@ -498,11 +498,9 @@ export default defineComponent({
 		});
 
 		onMounted(() => {
-			if (table.loading.value) setLoading();
 
 			if (thead.value) {
 				colspan.value = thead.value.querySelectorAll("th").length;
-
 			}
 
 			const lastHeader = table.getHeaderObject(-1);

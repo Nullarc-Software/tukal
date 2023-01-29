@@ -17,8 +17,7 @@ export default defineComponent({
 		w: { type: Number, default: 12 },
 		justify: { type: String, default: "flex-start" },
 		align: { type: String, default: "flex-start" },
-		//"unset" | "column" | "column-reverse" | "row" | "row-reverse"
-		direction: { type: String, default: "row" }
+		direction: { type: String as PropType<"unset" | "column" | "column-reverse" | "row" | "row-reverse">, default: "row" }
 	}
 });
 </script>

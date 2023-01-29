@@ -1,7 +1,6 @@
 import { XHRRequestWrapper } from "@/utils/apiWrapper";
 import * as _ from "lodash";
 import { Component, computed, ComputedRef, reactive, ReactiveEffect, ref, Ref, shallowReactive, watch } from "vue";
-import { computedAsync } from "@vueuse/core";
 
 import { TukalGlobals } from "../tukalGlobals";
 
@@ -80,7 +79,7 @@ export interface TuTableProps {
 	serverSideConfig?: TuTableServerModel;
 	columns: Array<TuHeaderDefn | null>;
 	model: "server" | "local" | string;
-	size: string;
+	size?: string;
 }
 
 export interface TuTableLocalColumn {
@@ -171,7 +170,7 @@ export class TuTableStore {
 		this.persistentSettings = reactive({
 			columns: []
 		});
-		this.loading = ref(true);
+		this.loading = ref(false);
 		this.dataView = ref([]);
 
 		this.headerCount = ref(columnsInitial);
@@ -179,22 +178,6 @@ export class TuTableStore {
 		this.activeSort = ref(0);
 		this.rowCount = ref(0);
 		this.refreshTable = ref(false);
-
-		watch([
-			() => this.table.currentFilters, 
-			() => this.table.currentSort, 
-			() => this.table.pageSize, 
-			() => this.table.currentPage,
-			this.refreshTable
-		], (newValue, oldValue) => {
-			console.log(newValue);
-			this.getTableData().then(result => {
-				// No need to do anything as this.dataView would be set on success and reactivity will take over.
-			}).catch(error => {
-				console.error("TuTable: Error Occurred while fetching from API");
-			});
-		});
-
 		this.getTableData = () : Promise<boolean> =>  {
 
 			return new Promise((resolve, reject) => {
@@ -317,6 +300,7 @@ export class TuTableStore {
 					};
 
 					xhrRequest.request.onerror = () => {
+						this.loading.value = false;
 						reject(false);
 					};
 
@@ -383,6 +367,23 @@ export class TuTableStore {
 					this.setColumnVisibility(column.field, !column.visibility);				
 			});
 		}
+
+		watch([
+			() => this.table.currentFilters, 
+			() => this.table.currentSort, 
+			() => this.table.pageSize, 
+			() => this.table.currentPage,
+			this.refreshTable
+		], (newValue, oldValue) => {
+			this.getTableData().then(result => {
+				// No need to do anything as this.dataView would be set on success and reactivity will take over.
+			}).catch(error => {
+				console.error("TuTable: Error Occurred while fetching from API");
+			});
+		}, {
+			immediate: true
+		});
+
 		
 	}
 

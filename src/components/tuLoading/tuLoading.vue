@@ -31,7 +31,6 @@
 
 <script lang="ts">
 import { setColor, setVar } from "@/utils";
-import { PositionProperty } from "csstype";
 import { defineComponent, getCurrentInstance, watch, PropType } from "vue";
 
 type LoadingType = "default" | "waves" | "corners" | "border" | "points" | "square" | "gradient" | "rectangle" | "circles" | "square-rotate" | "scale"
