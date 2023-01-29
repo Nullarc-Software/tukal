@@ -72,7 +72,7 @@ export default defineComponent({
 			default: false
 		},
 		type: {
-			type: Object as PropType<TuHeaderDataTypes>,
+			type: String,
 			default: "string"
 		},
 		index: {

@@ -1,6 +1,7 @@
 import { XHRRequestWrapper } from "@/utils/apiWrapper";
 import * as _ from "lodash";
 import { Component, computed, ComputedRef, reactive, ReactiveEffect, ref, Ref, shallowReactive, watch } from "vue";
+import { computedAsync } from "@vueuse/core";
 
 import { TukalGlobals } from "../tukalGlobals";
 
@@ -129,8 +130,9 @@ export class TuTableStore {
 	public headerCount: Ref<number>;
 	public pageLength: Ref<number>;
 	public rowCount: Ref<number>;
+	public dataView: Ref<TuTableRow[]>;
 
-	public getTableData: ComputedRef<TuTableRow[]>;
+	public getTableData: () => Promise<boolean>;
 	public isPartiallyChecked: ComputedRef<boolean>;
 	public getTableHeaders: ComputedRef<TuHeaderDefn[]>;
 	public getSorters: ComputedRef<TuTableSorterDefn[]>;
@@ -170,138 +172,174 @@ export class TuTableStore {
 			columns: []
 		});
 		this.loading = ref(true);
+		this.dataView = ref([]);
 
 		this.headerCount = ref(columnsInitial);
 		this.pageLength = ref(1);
 		this.activeSort = ref(0);
 		this.rowCount = ref(0);
 		this.refreshTable = ref(false);
-		this.getTableData = computed(() => {
-			this.refreshTable.value = !this.refreshTable.value;
-			this.loading.value = true;
-			let data: any[] = [];
-			if (this.serverSideModel === false) {
-				this.rowCount.value = this.table.data.length;
-				// apply search filter
-				data = _.filter(this.table.data, (value: TuTableRow) => {
-					return _.every(this.table.currentFilters, (filterValue: TuFilterDefn) => {
-						const fieldValue = this.getField(
-							value.rowData,
-							filterValue.field
-						);
-						if (filterValue.value === "") return true;
-						if (fieldValue !== undefined) {
-							const headerObject = this.getHeaderObject(filterValue.field);
-							if (headerObject && headerObject.searchFunction) 
-								return headerObject.searchFunction(fieldValue, filterValue.value);
-							//TODO: Is this needed to make it more seamless ??
-							/* else if (headerObject && headerObject.valueFormatter) {
+
+		watch([
+			() => this.table.currentFilters, 
+			() => this.table.currentSort, 
+			() => this.table.pageSize, 
+			() => this.table.currentPage,
+			this.refreshTable
+		], (newValue, oldValue) => {
+			console.log(newValue);
+			this.getTableData().then(result => {
+				// No need to do anything as this.dataView would be set on success and reactivity will take over.
+			}).catch(error => {
+				console.error("TuTable: Error Occurred while fetching from API");
+			});
+		});
+
+		this.getTableData = () : Promise<boolean> =>  {
+
+			return new Promise((resolve, reject) => {
+				this.loading.value = true;
+				if (this.serverSideModel === false) {
+					this.rowCount.value = this.table.data.length;
+					// apply search filter
+					this.dataView.value = _.filter(this.table.data, (value: TuTableRow) => {
+						return _.every(this.table.currentFilters, (filterValue: TuFilterDefn) => {
+							const fieldValue = this.getField(
+								value.rowData,
+								filterValue.field
+							);
+							if (filterValue.value === "") return true;
+							if (fieldValue !== undefined) {
+								const headerObject = this.getHeaderObject(filterValue.field);
+								if (headerObject && headerObject.searchFunction) 
+									return headerObject.searchFunction(fieldValue, filterValue.value);
+								//TODO: Is this needed to make it more seamless ??
+								/* else if (headerObject && headerObject.valueFormatter) {
 								return (headerObject.valueFormatter(fieldValue) as string).toLowerCase()
 									.includes(
 										String(filterValue.value).toLowerCase()
 									);
 							} */
-							else {
-								if (filterValue.type === "like") {
-									return String(fieldValue)
-										.toLowerCase()
-										.includes(
-											String(filterValue.value).toLowerCase()
-										);
-								}
-								else if (filterValue.type === "date-between") {
+								else {
+									if (filterValue.type === "like") {
+										return String(fieldValue)
+											.toLowerCase()
+											.includes(
+												String(filterValue.value).toLowerCase()
+											);
+									}
+									else if (filterValue.type === "date-between") {
 
-									if (_.isEmpty(filterValue.value[0]) && _.isEmpty(filterValue.value[1]))
-										return true;
+										if (_.isEmpty(filterValue.value[0]) && _.isEmpty(filterValue.value[1]))
+											return true;
 
-									const valueDate = new Date(fieldValue);
-									if (_.isEmpty(filterValue.value[0]) && !_.isEmpty(filterValue.value[1]))
-										return valueDate <= new Date(filterValue.value[1]);
-									else if (!_.isEmpty(filterValue.value[0]) && _.isEmpty(filterValue.value[1]))
-										return valueDate >= new Date(filterValue.value[0]);
-									else 
-										return valueDate >= new Date(filterValue.value[0]) && valueDate <= new Date(filterValue.value[1]);
+										const valueDate = new Date(fieldValue);
+										if (_.isEmpty(filterValue.value[0]) && !_.isEmpty(filterValue.value[1]))
+											return valueDate <= new Date(filterValue.value[1]);
+										else if (!_.isEmpty(filterValue.value[0]) && _.isEmpty(filterValue.value[1]))
+											return valueDate >= new Date(filterValue.value[0]);
+										else 
+											return valueDate >= new Date(filterValue.value[0]) && valueDate <= new Date(filterValue.value[1]);
+									}
 								}
 							}
-						}
-						else return true;
+							else return true;
+						});
 					});
-				});
 
-				// apply sorters
-				const fields = _.map(this.table.currentSort, (value) => {
-					return `rowData.${value.field}`;
-				});
-				const sortDirs = _.map(this.table.currentSort, (value) => {
-					return value.dir;
-				});
+					// apply sorters
+					const fields = _.map(this.table.currentSort, (value) => {
+						return `rowData.${value.field}`;
+					});
+					const sortDirs = _.map(this.table.currentSort, (value) => {
+						return value.dir;
+					});
 
-				if (fields.length) data = _.orderBy(data, fields, sortDirs);
+					if (fields.length) this.dataView.value = _.orderBy(this.dataView.value, fields, sortDirs);
 
-				this.pageLength.value = Math.ceil(
-					data.length / this.table.pageSize
-				);
-				if (this.table.pageSize > 0) {
-					data = _.slice(
-						data,
-						this.table.pageSize * (this.table.currentPage - 1),
-						this.table.pageSize * (this.table.currentPage - 1) +
-							this.table.pageSize
+					this.pageLength.value = Math.ceil(
+						this.dataView.value.length / this.table.pageSize
 					);
-				}
-				this.loading.value = false;
-			}
-			else {
-				const inst = this;
-				const xhrRequest = new  XHRRequestWrapper();
-				xhrRequest.request.onreadystatechange = () => {
-					if (
-						xhrRequest.request.readyState === XMLHttpRequest.DONE &&
-						xhrRequest.request.status === 200
-					) {
-						if (xhrRequest.request.responseType === "json") {
-							inst.setTableData(xhrRequest.request.response.data);
-							inst.rowCount.value = xhrRequest.request.response.total_rows;
-						}
-						else if (xhrRequest.request.responseType === "text") {
-							const obj = JSON.parse(xhrRequest.request.responseText);
-							inst.rowCount.value = obj.total_rows;
-							inst.setTableData(obj.data);
-						}
-						else {
-							const obj = JSON.parse(xhrRequest.request.responseText);
-							inst.rowCount.value = obj.total_rows;
-							inst.setTableData(obj.data);
-						}
-						data = inst.table.data;
-						inst.pageLength.value = Math.ceil(
-							inst.rowCount.value / inst.table.pageSize
+					if (this.table.pageSize > 0) {
+						this.dataView.value = _.slice(
+							this.dataView.value,
+							this.table.pageSize * (this.table.currentPage - 1),
+							this.table.pageSize * (this.table.currentPage - 1) +
+							this.table.pageSize
 						);
-						this.loading.value = false;
 					}
-				};
-				const props: any = {
-					filters: this.getFilters.value,
-					sorters: this.getSorters.value,
-					size: this.table.pageSize,
-					page: this.table.currentPage
-				};
+					this.loading.value = false;
+					resolve(true);
+				}
+				else {					
+					const xhrRequest = new  XHRRequestWrapper();
+					xhrRequest.request.onreadystatechange = () => {
+						if (
+							xhrRequest.request.readyState === XMLHttpRequest.DONE &&
+							xhrRequest.request.status === 200
+						) {
+							if (xhrRequest.request.responseType === "json") {
+								const obj = JSON.parse(xhrRequest.request.responseText);								
+								this.setTableData(xhrRequest.request.response.data);
+								this.rowCount.value = xhrRequest.request.response.total_rows;
+							}
+							else if (xhrRequest.request.responseType === "text") {
+								const obj = JSON.parse(xhrRequest.request.responseText);
+								if (Array.isArray(obj)) {
+									this.setTableData(obj);
+									this.rowCount.value = obj.length;
+								}
+								else {
+									this.rowCount.value = obj.total_rows;
+									this.setTableData(obj.data);
+								}
+								
+							}
+							else {
+								const obj = JSON.parse(xhrRequest.request.responseText);
+								this.rowCount.value = obj.total_rows;
+								if (Array.isArray(obj)) {
+									this.setTableData(obj);
+									this.rowCount.value = obj.length;
+								}
+								else {
+									this.rowCount.value = obj.total_rows;
+									this.setTableData(obj.data);
+								}
+							}
+							this.dataView.value = this.table.data;
+							this.pageLength.value = Math.ceil(
+								this.rowCount.value / this.table.pageSize
+							);
+							this.loading.value = false;
+							resolve (true);							
+						}
+					};
 
-				if (_.isUndefined(this.serverModelProps.method))
-					this.serverModelProps.method = "GET";
+					xhrRequest.request.onerror = () => {
+						reject(false);
+					};
 
-				xhrRequest.open(
-					this.serverModelProps.method,
-					TukalGlobals.ApiRequestTarget + this.serverModelProps.ajaxUrl					
-				);
-				xhrRequest.request.setRequestHeader("Content-Type", "application/json");
-				xhrRequest.request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-				xhrRequest.request.send(JSON.stringify(props));
-				data = this.table.data;
-			}
-
-			return data;
-		});
+					const props: any = {
+						filters: this.getFilters.value,
+						sorters: this.getSorters.value,
+						size: this.table.pageSize,
+						page: this.table.currentPage
+					};
+	
+					if (_.isUndefined(this.serverModelProps.method))
+						this.serverModelProps.method = "GET";
+	
+					xhrRequest.open(
+						this.serverModelProps.method,
+						TukalGlobals.ApiRequestTarget + this.serverModelProps.ajaxUrl					
+					);
+					xhrRequest.request.setRequestHeader("Content-Type", "application/json");
+					xhrRequest.request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+					xhrRequest.request.send(JSON.stringify(props));
+				}
+			});	
+		};
 
 		this.getTableHeaders = computed(() => {
 			return _.filter(this.table.headers, {

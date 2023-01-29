@@ -54,7 +54,7 @@
 				</thead>
 				<tbody :id="`${id}-tbody`" :class="{ 'loading-body': !isLoaded }" class="tu-table__tbody">
 					<slot v-if="$slots.tbody" name="tbody" />
-					<tu-tr v-else v-for="tr in table.getTableData.value" :key="tr.index" :data="tr.rowData"
+					<tu-tr v-else v-for="tr in table.dataView.value" :key="tr.index" :data="tr.rowData"
 						:rowId="tr.index" :expanded="expandedAll" :expandHandle="rowExpand"
 						@rowExpanded="tr.expanded = $event" @rowClick="rowListeners.click($event, this, tr.rowData)">
 						<tu-td expand v-if="rowExpand">
@@ -92,8 +92,8 @@
 							<component v-else-if="
 								th.isComponent &&
 								tr.componentValues[th.field]
-							" v-model="tr.componentValues[th.field].value" v-bind="th.componentProps" :is="th.component" :rowIndex="tr.index"
-								:rowData="tr.rowData" />
+							" v-model="tr.componentValues[th.field].value" v-bind="th.componentProps" :is="th.component"
+								:rowIndex="tr.index" :rowData="tr.rowData" />
 							<component v-else-if="th.isComponent" v-bind="th.componentProps" :is="th.component"
 								:rowIndex="tr.index" :rowData="tr.rowData" />
 						</tu-td>
@@ -199,7 +199,7 @@ export default defineComponent({
 		 */
 		size: {
 			type: String,
-			default: "fitData"
+			default: ""
 		},
 		columnMode: {
 			type: String,
@@ -483,10 +483,9 @@ export default defineComponent({
 			}
 		});
 
-		watch(table.getTableData, () => {
-			const newVal = table.getTableData.value as Array<TuTableRow>;
-			context.emit("update:data", newVal);
-			noOfTableValues.value = newVal.length;
+		watch(table.dataView, () => {
+			context.emit("update:data", table.dataView.value);
+			noOfTableValues.value = table.dataView.value.length;
 			isLoaded.value = true;
 		});
 

@@ -1,12 +1,9 @@
 <template>
-	<div
-		:style="{
-			justifyContent: justify,
-			alignItems: align,
-			flexDirection: direction
-		}"
-		class="tu-row"
-	>
+	<div :style="{
+		justifyContent: justify,
+		alignItems: align,
+		flexDirection: direction
+	}" class="tu-row">
 		<slot />
 	</div>
 </template>
@@ -20,7 +17,8 @@ export default defineComponent({
 		w: { type: Number, default: 12 },
 		justify: { type: String, default: "flex-start" },
 		align: { type: String, default: "flex-start" },
-		direction: { type: Object as PropType<"unset" |"column" | "column-reverse" | "row" | "row-reverse">, default: "row" }
+		//"unset" | "column" | "column-reverse" | "row" | "row-reverse"
+		direction: { type: String, default: "row" }
 	}
 });
 </script>
