@@ -885,6 +885,9 @@
 					</template>
 				</tu-tree-view>
 			</div>
+			<div class="showcase-component"> 
+				<tu-history :events="histEvents" />
+			</div>
 		</div>
 	</div>
 </template>
@@ -965,6 +968,23 @@ export default defineComponent({
 		const selectValue2 = ref("1");
 		const selectValue1 = ref("");
 		const page = ref(1);
+		const histEvents = [
+			{
+				title: "Event 1",
+				description: "Lorem ipsum dolor sit ameters consectetur adipisicing elit. Sed qui veroes praesentium maiores, sint eos vero sapiente voluptas debitis dicta dolore.",
+				date: "12=09-03",
+			},
+			{
+				title: "Event 2",
+				description: "Lorem ipsum dolor sit ameters consectetur adipisicing elit. Sed qui veroes praesentium maiores, sint eos vero sapiente voluptas debitis dicta dolore.",
+				date: "12=09-03",
+			},
+			{
+				title: "Event 3",
+				description: "Lorem ipsum dolor sit ameters consectetur adipisicing elit. Sed qui veroes praesentium maiores, sint eos vero sapiente voluptas debitis dicta dolore.",
+				date: "12=09-03",
+			}
+		]
 		const routerTabParams: TuTabsRouterParams = {
 			tabs: [
 				{
@@ -1502,7 +1522,8 @@ export default defineComponent({
 			configUpdate,
 			nodes,
 			routerTabParams,
-			tabsRouter2
+			tabsRouter2,
+			histEvents
 		};
 	}
 });
