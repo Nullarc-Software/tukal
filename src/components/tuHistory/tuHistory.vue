@@ -1,15 +1,14 @@
 <template>
-  <div class="wrapper">
+  <div :class="type === 'alternative' ? 'alter' : 'default'">
     <div class="center-line">
-      <a href="#" class="scroll-icon"><i class="fas fa-caret-up"></i></a>
     </div>
-    <div v-for="(ev, index) in events" :key="index" class="row" :class="{ parseInt(index) % 2 === 0 ? 'row-1' : 'row-2' }">
-      <section>
-        <i class="icon fas fa-home"></i>
+    <div class="row" v-for="(ev, index) in events" :key="index" :class="parseInt(index) % 2 === 0 ? 'row-1' : 'row-2'">
+      <section :style="categoryColor(ev)">
+        <tu-icon class="icon" :style="categoryColorIcon(ev)"> {{ ev.icon }}</tu-icon>
         <div class="details">
-          <span class="title">{{ ev.title }}</span>
-          <span>{{ ev.date }}</span>
+          <span class="title-date">{{ ev.date }}</span>
         </div>
+        <div class="title">{{ ev.title }}</div>
         <p>{{ ev.description }}</p>
       </section>
     </div>
@@ -19,164 +18,203 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import tuComponent from '../tuComponent';
+import * as _color from "../../utils";
 export default defineComponent({
-    name:"tuHistory",
-    extends: tuComponent,
-    props: {
-        events: {
-            type: Object,
-            default: []
-        }
+  name: "tuHistory",
+  extends: tuComponent,
+  props: {
+    events: {
+      type: Object,
+      default: []
     },
-    setup(props,context) {
-        console.log(props.events)
-        return {}
+    type: {
+      type: String,
+      default: 'default'
     }
+  },
+  setup(props, context) {
+    const categoryColor = (ev) => {
+      const background = `rgba(${_color.getColorAsRgb(ev.category, 0.1)})`;
+      return {
+        background: background
+      }
+    }
+    const categoryColorIcon = (ev) => {
+      const color = `rgba(${_color.getColorAsRgb(ev.category, 0.9)})`;
+      return {
+        color: color
+      }
+    }
+    return { categoryColor, categoryColorIcon }
+  }
 })
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
-*{
+@import "../../style/sass/_mixins.scss";
+
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Poppins", sans-serif;
 }
-html{
-  scroll-behavior: smooth;
-}
-body{
-  background: #3ea0e2;
-}
-::selection{
-  color: #fff;
-  background: #3ea0e2;
-}
-.wrapper{
+
+.default,
+.alter {
   max-width: 1080px;
-  margin: 50px auto;
+  margin: auto;
+  width: 50vw;
   padding: 0 20px;
   position: relative;
+  justify-content: center;
 }
-.wrapper .center-line{
+
+.center-line {
   position: absolute;
+  background: var(--tu-gray-3);
   height: 100%;
   width: 4px;
-  background: #fff;
   left: 50%;
   top: 20px;
   transform: translateX(-50%);
 }
-.wrapper .row{
+
+.row {
   display: flex;
 }
-.wrapper .row-1{
+
+.row-1 {
   justify-content: flex-start;
 }
-.wrapper .row-2{
+
+.row-2 {
   justify-content: flex-end;
 }
-.wrapper .row section{
-  background: #fff;
+
+.row section {
   border-radius: 5px;
   width: calc(50% - 40px);
   padding: 20px;
   position: relative;
+  box-sizing: border-box !important;
 }
-.wrapper .row section::before{
+
+.row section::before {
   position: absolute;
   content: "";
   height: 15px;
   width: 15px;
-  background: #fff;
   top: 28px;
   z-index: -1;
   transform: rotate(45deg);
 }
-.row-1 section::before{
+
+.row-1 section::before {
   right: -7px;
 }
-.row-2 section::before{
+
+.row-2 section::before {
   left: -7px;
 }
+
 .row section .icon,
-.center-line .scroll-icon{
+.center-line .scroll-icon {
   position: absolute;
-  background: #f2f2f2;
-  height: 40px;
-  width: 40px;
+  height: 20px;
+  width: 20px;
   text-align: center;
-  line-height: 40px;
+  line-height: 20px;
   border-radius: 50%;
-  color: #3ea0e2;
   font-size: 17px;
-  box-shadow: 0 0 0 4px #fff, inset 0 2px 0 rgba(0,0,0,0.08), 0 3px 0 4px rgba(0,0,0,0.05);
+  box-shadow: 0 0 0 4px var(--tu-gray-3), inset 0 2px 0 var(--tu-gray-3), 0 3px 0 4px var(--tu-gray-3);
 }
-.center-line .scroll-icon{
-  bottom: 0px;
-  left: 50%;
-  font-size: 25px;
-  transform: translateX(-50%);
-}
-.row-1 section .icon{
+
+.row-2 section .icon {
   top: 15px;
-  right: -60px;
+  left: -50px;
 }
-.row-2 section .icon{
-  top: 15px;
-  left: -60px;
-}
-.row section .details,
-.row section .bottom{
+
+.row section .details {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
-.row section .details .title{
+
+.title-date {
+  font-size: 18px;
+  margin-bottom: 8px;
+  font-weight: 400;
+  color: var(--tu-text);
+}
+
+.title {
   font-size: 22px;
   font-weight: 600;
+  color: var(--tu-text);
 }
-.row section p{
+
+.row section p {
   margin: 10px 0 17px 0;
 }
-.row section .bottom a{
-  text-decoration: none;
-  background: #3ea0e2;
-  color: #fff;
-  padding: 7px 15px;
-  border-radius: 5px;
-  /* font-size: 17px; */
-  font-weight: 400;
-  transition: all 0.3s ease;
-}
-.row section .bottom a:hover{
+
+.row section .bottom a:hover {
   transform: scale(0.97);
 }
-@media(max-width: 790px){
-  .wrapper .center-line{
-    left: 40px;
-  }
-  .wrapper .row{
-    margin: 30px 0 3px 60px;
-  }
-  .wrapper .row section{
-    width: 100%;
-  }
-  .row-1 section::before{
-    left: -7px;
-  }
-  .row-1 section .icon{
-    left: -60px;
-  }
+
+/* code for making it normal */
+
+.default .center-line {
+  left: 40px !important;
 }
-@media(max-width: 440px){
+
+.default .row {
+  margin: 30px 0 3px 60px !important;
+}
+
+.default .row section {
+  width: 100% !important;
+}
+
+.default .row-1 section::before {
+  left: -7px;
+}
+
+.default .row-1 section .icon {
+  left: -50px;
+}
+
+/*end of that*/
+
+/* making it alternative */
+.alter .wrapper .center-line {
+  left: 50% !important;
+}
+
+.alter .wrapper .row section {
+  width: calc(50% - 40px) !important;
+}
+
+.alter .row-1 section::before {
+  right: -7px !important;
+}
+
+.alter .row-1 section .icon {
+  top: 15px !important;
+  right: -50px !important;
+}
+
+/* end */
+
+
+@media(max-width: 440px) {
+
   .wrapper .center-line,
   .row section::before,
-  .row section .icon{
+  .row section .icon {
     display: none;
   }
-  .wrapper .row{
+
+  .wrapper .row {
     margin: 10px 0;
   }
 }
