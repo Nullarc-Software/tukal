@@ -1,5 +1,5 @@
 <template>
-  <div :class="type === 'alternative' ? 'alter' : 'default'">
+  <div :style="centerStyle()" :class="alternative ? 'alter' : 'default'">
     <div class="center-line">
     </div>
     <div class="row" v-for="(ev, index) in events" :key="index" :class="parseInt(index) % 2 === 0 ? 'row-1' : 'row-2'">
@@ -16,36 +16,86 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, PropType } from 'vue';
 import tuComponent from '../tuComponent';
 import * as _color from "../../utils";
+export interface historyEvent {
+  title: string;
+  description: string;
+  date: string;
+  icon?: string;
+  category?: string;
+}
 export default defineComponent({
   name: "tuHistory",
   extends: tuComponent,
   props: {
     events: {
-      type: Object,
+      type: Object as PropType<Array<historyEvent>>,
       default: []
     },
-    type: {
-      type: String,
-      default: 'default'
+    alternative: {
+      type: Boolean,
+      default: false
+    },
+    center: {
+      type: Boolean,
+      default: false
     }
   },
   setup(props, context) {
-    const categoryColor = (ev) => {
-      const background = `rgba(${_color.getColorAsRgb(ev.category, 0.1)})`;
+    const categoryColor = (ev: historyEvent) => {
+      let background: string;
+      if (ev.category) {
+        background = `rgba(${_color.getColorAsRgb(ev.category, 0.1)})`;
+      }
+      else {
+        background = 'var(--tu-gray-2)'
+      }
+      if (props.alternative) {
+        return {
+        width: 'calc(50% - 40px)',
+        background: background
+      }
+      }
+      else {
       return {
+        width: 'auto',
         background: background
       }
     }
-    const categoryColorIcon = (ev) => {
-      const color = `rgba(${_color.getColorAsRgb(ev.category, 0.9)})`;
-      return {
+    }
+    const categoryColorIcon = (ev: historyEvent) => {
+      let color;
+      if (!ev.icon) {
+        return {
+          background: 'var(--tu-gray-4)'
+        }
+      }
+      else if (ev.category) {
+        color = `rgba(${_color.getColorAsRgb(ev.category, 0.9)})`;
+      }
+      else {
+        color = 'var(--tu-text)'
+      }
+        return {
         color: color
       }
     }
-    return { categoryColor, categoryColorIcon }
+    const centerStyle = () => {
+      if (props.center) {
+        return {
+          margin: 'auto',
+          width: '50vw'
+        }
+      }
+      else {
+        return {
+          margin: '40px auto'
+        }
+      }
+    }
+    return { categoryColor , categoryColorIcon , centerStyle }
   }
 })
 </script>
@@ -62,11 +112,8 @@ export default defineComponent({
 .default,
 .alter {
   max-width: 1080px;
-  margin: auto;
-  width: 50vw;
   padding: 0 20px;
   position: relative;
-  justify-content: center;
 }
 
 .center-line {
@@ -85,10 +132,6 @@ export default defineComponent({
 
 .row-1 {
   justify-content: flex-start;
-}
-
-.row-2 {
-  justify-content: flex-end;
 }
 
 .row section {
@@ -126,7 +169,6 @@ export default defineComponent({
   line-height: 20px;
   border-radius: 50%;
   font-size: 17px;
-  box-shadow: 0 0 0 4px var(--tu-gray-3), inset 0 2px 0 var(--tu-gray-3), 0 3px 0 4px var(--tu-gray-3);
 }
 
 .row-2 section .icon {
@@ -171,9 +213,6 @@ export default defineComponent({
   margin: 30px 0 3px 60px !important;
 }
 
-.default .row section {
-  width: 100% !important;
-}
 
 .default .row-1 section::before {
   left: -7px;
@@ -201,6 +240,10 @@ export default defineComponent({
 .alter .row-1 section .icon {
   top: 15px !important;
   right: -50px !important;
+}
+
+.alter .row-2 {
+  justify-content: flex-end;
 }
 
 /* end */

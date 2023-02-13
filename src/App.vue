@@ -886,7 +886,9 @@
 				</tu-tree-view>
 			</div>
 			<div class="showcase-component">
-				<tu-history :events="histEvents" type="alternative" />
+				<h4>History Component:</h4>
+				<hr />
+				<tu-history :events="histEvents" alternative/>
 			</div>
 		</div>
 	</div>
@@ -971,21 +973,21 @@ export default defineComponent({
 		const histEvents = [
 			{
 				title: "Added New Agent",
-				description: "Lorem ipsum dolor sit ameters consectetur adipisicing elit. Sed qui veroes praesentium maiores, sint eos vero sapiente voluptas debitis dicta dolore.",
+				description: "Lorem ipsum dolor  elit. Sed qui veroes praesentium maiores, sint eos vero sapiente voluptas debitis dicta dolore Lorem ipsum dolor  elit. Sed qui veroes praesentium maiores, sint eos vero",
 				date: "07:50",
 				category: "danger",
 				icon: 'file_copy'
 			},
 			{
 				title: "Added New Agent",
-				description: "Lorem ipsum dolor sit ameters consectetur adipisicing elit. Sed qui veroes praesentium maiores, sint eos vero sapiente voluptas debitis dicta dolore.",
+				description: "Lorem ipsum adipisicing elit. Sed qui veroes praesentium maiores, sint eos vero sapiente voluptas debitis dicta dolore.",
 				date: "07:50",
 				category: "success",
 				icon: 'alarm'
 			},
 			{
 				title: "Added New Agent",
-				description: "Lorem ipsum dolor sit ameters consectetur adipisicing elit. Sed qui veroes praesentium maiores, sint eos vero sapiente voluptas debitis dicta dolore.",
+				description: "Lorem ipsum  adipisicing elit. Sed qui veroes praesentium maiores, sint eos vero sapiente voluptas debitis dicta dolore.",
 				date: "07:50",
 				category: "warn",
 				icon: 'anchor'
