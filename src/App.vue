@@ -975,22 +975,25 @@ export default defineComponent({
 				title: "Added New Agent",
 				description: "Lorem ipsum dolor  elit. Sed qui veroes praesentium maiores, sint eos vero sapiente voluptas debitis dicta dolore Lorem ipsum dolor  elit. Sed qui veroes praesentium maiores, sint eos vero",
 				date: "07:50",
-				category: "danger",
-				icon: 'file_copy'
+				color: "danger",
+				icon: 'file_copy',
+				url: "https://www.youtube.com/watch?v=ElZfdU54Cp8&ab_channel=ZeeMusicCompany"
 			},
 			{
 				title: "Added New Agent",
 				description: "Lorem ipsum adipisicing elit. Sed qui veroes praesentium maiores, sint eos vero sapiente voluptas debitis dicta dolore.",
 				date: "07:50",
-				category: "success",
-				icon: 'alarm'
+				color: "success",
+				icon: 'alarm',
+				url: "/test"
 			},
 			{
 				title: "Added New Agent",
 				description: "Lorem ipsum  adipisicing elit. Sed qui veroes praesentium maiores, sint eos vero sapiente voluptas debitis dicta dolore.",
 				date: "07:50",
-				category: "warn",
-				icon: 'anchor'
+				color: "warn",
+				icon: 'anchor',
+				url: "/test"
 			}
 		]
 		const routerTabParams: TuTabsRouterParams = {

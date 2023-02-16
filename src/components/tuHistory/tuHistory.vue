@@ -8,7 +8,8 @@
         <div class="details">
           <span class="title-date">{{ ev.date }}</span>
         </div>
-        <div class="title">{{ ev.title }}</div>
+        <div v-if="ev.url" style="text-decoration: none;"><a class="title title-router" :href="ev.url">{{ ev.title }}</a></div>
+        <div v-else class="title">{{ ev.title }}</div>
         <p>{{ ev.description }}</p>
       </section>
     </div>
@@ -19,12 +20,15 @@
 import { defineComponent, PropType } from 'vue';
 import tuComponent from '../tuComponent';
 import * as _color from "../../utils";
+import { useRouter } from 'vue-router';
 export interface historyEvent {
   title: string;
   description: string;
   date: string;
   icon?: string;
-  category?: string;
+  color?: string;
+  url?: string;
+  data?: any;
 }
 export default defineComponent({
   name: "tuHistory",
@@ -44,10 +48,11 @@ export default defineComponent({
     }
   },
   setup(props, context) {
+    const router = useRouter();
     const categoryColor = (ev: historyEvent) => {
       let background: string;
-      if (ev.category) {
-        background = `rgba(${_color.getColorAsRgb(ev.category, 0.1)})`;
+      if (ev.color) {
+        background = `rgba(${_color.getColorAsRgb(ev.color, 0.1)})`;
       }
       else {
         background = 'var(--tu-gray-2)'
@@ -72,8 +77,8 @@ export default defineComponent({
           background: 'var(--tu-gray-4)'
         }
       }
-      else if (ev.category) {
-        color = `rgba(${_color.getColorAsRgb(ev.category, 0.9)})`;
+      else if (ev.color) {
+        color = `rgba(${_color.getColorAsRgb(ev.color, 0.9)})`;
       }
       else {
         color = 'var(--tu-text)'
@@ -95,7 +100,12 @@ export default defineComponent({
         }
       }
     }
-    return { categoryColor , categoryColorIcon , centerStyle }
+    const redirect = (ev: historyEvent) => {
+      if(ev.url) {
+        router.replace(ev.url);
+      }
+    }
+    return { categoryColor , categoryColorIcon , centerStyle, redirect }
   }
 })
 </script>
@@ -248,17 +258,8 @@ export default defineComponent({
 
 /* end */
 
-
-@media(max-width: 440px) {
-
-  .wrapper .center-line,
-  .row section::before,
-  .row section .icon {
-    display: none;
-  }
-
-  .wrapper .row {
-    margin: 10px 0;
-  }
+.title-router {
+  cursor: pointer;
+  text-decoration: none !important;
 }
 </style>
