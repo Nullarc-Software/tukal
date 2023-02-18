@@ -885,6 +885,12 @@
 					</template>
 				</tu-tree-view>
 			</div>
+			<div class="showcase-component">
+			<h4>Cron Component:</h4>
+			<hr />
+			<tu-cron v-model="cronValue" />
+			<span>{{  cronValue }}</span>
+		</div>
 		</div>
 	</div>
 </template>
@@ -965,6 +971,7 @@ export default defineComponent({
 		const selectValue2 = ref("1");
 		const selectValue1 = ref("");
 		const page = ref(1);
+		const cronValue = ref();
 		const routerTabParams: TuTabsRouterParams = {
 			tabs: [
 				{
@@ -1502,7 +1509,8 @@ export default defineComponent({
 			configUpdate,
 			nodes,
 			routerTabParams,
-			tabsRouter2
+			tabsRouter2,
+			cronValue
 		};
 	}
 });

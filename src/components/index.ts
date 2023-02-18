@@ -13,6 +13,7 @@ export { default as tuPagination } from "./tuPagination";
 export { default as tuBreadcrumb } from "./tuBreadcrumb";
 export { default as tuProgress } from "./tuProgress";
 export { default as tuTextArea } from "./tuTextArea";
+export { default as tuCron } from "./tuCron";
 export { TuLoading, tuLoading } from "./tuLoading";
 export type { TuLoadingAttributes, TuLoadingTypes } from "./tuLoading";
 
