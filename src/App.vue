@@ -887,7 +887,7 @@
 			<div class="showcase-component">
 				<h4>Cron Component:</h4>
 				<hr />
-				<tu-cron v-model="cronValue" />
+				<tu-cron :customLocale="customLocale" v-model="cronValue" />
 				<span>{{ cronValue }}</span>
 			</div>
 		</div>
