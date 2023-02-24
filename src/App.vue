@@ -232,7 +232,7 @@
 				</ul>
 			</div>
 		</div>
-		<!-- <div class="showcase-component">
+	<!-- <div class="showcase-component">
 				<h3>Chips:</h3>
 				<hr />
 				<div class="centerx">
@@ -261,7 +261,7 @@
 						Icon edit
 					</tu-chip>
 				</div>
-			</div> -->
+				</div> -->
 		<div class="showcase-component" style="margin-top: 100px">
 			<h3>Collapse:</h3>
 			<hr />
@@ -760,7 +760,7 @@
 			<h4>Pagination:</h4>
 			<hr />
 
-			<!-- <tu-pagination progress not-margin v-model="page" :length="20" />
+		<!-- <tu-pagination progress not-margin v-model="page" :length="20" />
 				<tu-pagination
 					progress
 					dark
@@ -768,7 +768,7 @@
 					not-margin
 					v-model="page"
 					:length="20"
-				/> -->
+					/> -->
 		</div>
 
 		<tu-button @click="enableTabs = !enableTabs">Click Enable Tabs</tu-button>
@@ -784,7 +784,7 @@
 				<tu-tab label="login" name="lo"> Login </tu-tab>
 				<tu-tab label="Disabled" name="di"> Disabled </tu-tab>
 			</tu-tabs>
-			<!--<tu-tabs name="tabs2" type="router" position="left" noTransitions v-model="tabName" :tabs="tabsRouter2" />
+		<!--<tu-tabs name="tabs2" type="router" position="left" noTransitions v-model="tabName" :tabs="tabsRouter2" />
 				<tu-tabs position="left" noTransitions v-model="tabName">
 					<tu-tab label="Home" name="ho"> Home </tu-tab>
 					<tu-tab label="Service" name="se"> Service </tu-tab>
@@ -796,7 +796,7 @@
 					<tu-tab label="Service" name="se"> Service </tu-tab>
 					<tu-tab label="login" name="lo"> Login </tu-tab>
 					<tu-tab label="Disabled" name="di"> Disabled </tu-tab>
-				</tu-tabs> -->
+					</tu-tabs> -->
 		</div>
 		<div class="showcase-component">
 			<h4>Progress:</h4>
@@ -838,7 +838,7 @@
 					v-model:numPages="numPages" :page="page" :pageSize="5" :data="universities" :columns="columns"
 					:columnSelector="true" @onRowClicked="rowClicked" @onTableBeginLoad="beginLoad"
 					@onTableEndLoad="afterLoad" @onTableConfigUpdated="configUpdate">
-					<!-- <template #thead>
+				<!-- <template #thead>
 						<tu-th field="country" sort search> Country </tu-th>
 						<tu-th field="name" sort search :index="1" width="500px"> Name </tu-th>
 						<tu-th field="name" sort search :index="2" width="500px"> Name </tu-th>
@@ -847,7 +847,7 @@
 						<tu-th field="name" sort search :index="5" width="500px"> Name </tu-th>
 						<tu-th field="web_pages" sort search> Web site </tu-th>
 						<tu-th field="something" sort search> No value </tu-th>
-					</template> -->
+						</template> -->
 					<template #footer>
 						<tu-pagination not-margin flat v-model="page" :length="numPages" />
 					</template>
@@ -887,7 +887,7 @@
 			<div class="showcase-component">
 				<h4>Cron Component:</h4>
 				<hr />
-				<tu-cron :customLocale="customLocale" v-model="cronValue" />
+				<tu-cron v-model="cronValue" />
 				<span>{{ cronValue }}</span>
 			</div>
 		</div>

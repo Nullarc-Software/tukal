@@ -17,7 +17,7 @@
 		{ [`tu-button--animate-${animationType}`]: !!animationType },
 		{ [`tu-button--animate-inactive`]: !!animateInactive },
 		{ [`inline`]: !!inline },
-	
+
 		// colors
 		{
 			[`tu-button--primary`]:
@@ -27,7 +27,7 @@
 		{ [`tu-button--warn`]: !!warn },
 		{ [`tu-button--success`]: !!success },
 		{ [`tu-button--dark`]: !!dark },
-	
+
 		{
 			[`tu-button--default`]:
 				!flat &&
@@ -464,11 +464,7 @@ export default defineComponent({
 		background: -getColorAlpha("color", 0.25);
 	}
 
-	&:focus {
-		color: #fff;
-		background: -getColor("color");
-		transition: all 0.25s ease, background 0.25s ease 0.25s;
-	}
+
 
 	&.tu-button--active {
 		background: -getColor("color");
