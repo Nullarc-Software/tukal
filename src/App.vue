@@ -336,8 +336,7 @@
 					javascript frameworks in the world and with a huge community
 					with which you will have all the help and documentation to
 					create and make your project
-
-
+	
 				</div>
 				<tu-pagination not-margin flat v-model="page" :length="numPages" />
 
@@ -888,7 +887,9 @@
 			<div class="showcase-component">
 				<h4>History Component:</h4>
 				<hr />
-				<tu-history :events="histEvents" alternative/>
+				<div style="height: 500px;">
+					<tu-history :events="histEvents"/>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -970,7 +971,80 @@ export default defineComponent({
 		const selectValue2 = ref("1");
 		const selectValue1 = ref("");
 		const page = ref(1);
+
 		const histEvents = [
+			{
+				title: "Added New Agent",
+				description: "Lorem ipsum dolor  elit. Sed qui veroes praesentium maiores, sint eos vero sapiente voluptas debitis dicta dolore Lorem ipsum dolor  elit. Sed qui veroes praesentium maiores, sint eos vero",
+				date: "07:50",
+				color: "danger",
+				icon: 'file_copy',
+				url: "https://www.youtube.com/watch?v=ElZfdU54Cp8&ab_channel=ZeeMusicCompany"
+			},
+			{
+				title: "Added New Agent",
+				description: "Lorem ipsum adipisicing elit. Sed qui veroes praesentium maiores, sint eos vero sapiente voluptas debitis dicta dolore.",
+				date: "07:50",
+				color: "success",
+				icon: 'alarm',
+				url: "/test"
+			},
+			{
+				title: "Added New Agent",
+				description: "Lorem ipsum  adipisicing elit. Sed qui veroes praesentium maiores, sint eos vero sapiente voluptas debitis dicta dolore.",
+				date: "07:50",
+				color: "warn",
+				icon: 'anchor',
+				url: "/test"
+			},
+			{
+				title: "Added New Agent",
+				description: "Lorem ipsum dolor  elit. Sed qui veroes praesentium maiores, sint eos vero sapiente voluptas debitis dicta dolore Lorem ipsum dolor  elit. Sed qui veroes praesentium maiores, sint eos vero",
+				date: "07:50",
+				color: "danger",
+				icon: 'file_copy',
+				url: "https://www.youtube.com/watch?v=ElZfdU54Cp8&ab_channel=ZeeMusicCompany"
+			},
+			{
+				title: "Added New Agent",
+				description: "Lorem ipsum adipisicing elit. Sed qui veroes praesentium maiores, sint eos vero sapiente voluptas debitis dicta dolore.",
+				date: "07:50",
+				color: "success",
+				icon: 'alarm',
+				url: "/test"
+			},
+			{
+				title: "Added New Agent",
+				description: "Lorem ipsum  adipisicing elit. Sed qui veroes praesentium maiores, sint eos vero sapiente voluptas debitis dicta dolore.",
+				date: "07:50",
+				color: "warn",
+				icon: 'anchor',
+				url: "/test"
+			},
+			{
+				title: "Added New Agent",
+				description: "Lorem ipsum dolor  elit. Sed qui veroes praesentium maiores, sint eos vero sapiente voluptas debitis dicta dolore Lorem ipsum dolor  elit. Sed qui veroes praesentium maiores, sint eos vero",
+				date: "07:50",
+				color: "danger",
+				icon: 'file_copy',
+				url: "https://www.youtube.com/watch?v=ElZfdU54Cp8&ab_channel=ZeeMusicCompany"
+			},
+			{
+				title: "Added New Agent",
+				description: "Lorem ipsum adipisicing elit. Sed qui veroes praesentium maiores, sint eos vero sapiente voluptas debitis dicta dolore.",
+				date: "07:50",
+				color: "success",
+				icon: 'alarm',
+				url: "/test"
+			},
+			{
+				title: "Added New Agent",
+				description: "Lorem ipsum  adipisicing elit. Sed qui veroes praesentium maiores, sint eos vero sapiente voluptas debitis dicta dolore.",
+				date: "07:50",
+				color: "warn",
+				icon: 'anchor',
+				url: "/test"
+			},
 			{
 				title: "Added New Agent",
 				description: "Lorem ipsum dolor  elit. Sed qui veroes praesentium maiores, sint eos vero sapiente voluptas debitis dicta dolore Lorem ipsum dolor  elit. Sed qui veroes praesentium maiores, sint eos vero",

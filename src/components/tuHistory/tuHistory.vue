@@ -1,8 +1,9 @@
 <template>
-  <div :style="centerStyle()" :class="alternative ? 'alter' : 'default'">
+  <div class="container">
+  <div ref="scroll" :style="centerStyle()" :class="alternative ? 'alter' : 'default'">
     <div class="center-line">
     </div>
-    <div class="row" v-for="(ev, index) in events" :key="index" :class="parseInt(index) % 2 === 0 ? 'row-1' : 'row-2'">
+    <div class="row" v-for="(ev, index) in  histEvents" :key="index" :class="parseInt(index) % 2 === 0 ? 'row-1' : 'row-2'">
       <section :style="categoryColor(ev)">
         <tu-icon class="icon" :style="categoryColorIcon(ev)"> {{ ev.icon }}</tu-icon>
         <div class="details">
@@ -13,26 +14,29 @@
         <p>{{ ev.description }}</p>
       </section>
     </div>
+    <tuInfiniteLoading @infinite="load">
+					<template #complete>
+						<span class="complete-text" style="font-size: smaller;"></span>
+					</template>
+    </tuInfiniteLoading>
+  </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
+import { defineComponent, onMounted, PropType, ref, watch } from 'vue';
 import tuComponent from '../tuComponent';
 import * as _color from "../../utils";
 import { useRouter } from 'vue-router';
-export interface historyEvent {
-  title: string;
-  description: string;
-  date: string;
-  icon?: string;
-  color?: string;
-  url?: string;
-  data?: any;
-}
+import { serverRequest, historyEvent , TuHistoryServerModel } from "./utils"
+import { tuInfiniteLoading } from '../tuInfiniteLoading';
+
 export default defineComponent({
   name: "tuHistory",
   extends: tuComponent,
+  components: {
+    tuInfiniteLoading
+  },
   props: {
     events: {
       type: Object as PropType<Array<historyEvent>>,
@@ -45,10 +49,30 @@ export default defineComponent({
     center: {
       type: Boolean,
       default: false
-    }
+    },
+		model: {
+			type: String,
+			default: "local"
+		},
+		serverSideConfig: {
+			type: Object as PropType<TuHistoryServerModel>,
+			default: () => {
+				return {};
+			}
+		},
   },
   setup(props, context) {
     const router = useRouter();
+    const histEvents = ref([]);
+    const currentPage = ref(1);
+    const scroll = ref();
+    const lineHeight = ref()
+    if (props.model === "local") {
+
+    }
+    else {
+      histEvents.value = props.events
+    }
     const categoryColor = (ev: historyEvent) => {
       let background: string;
       if (ev.color) {
@@ -91,12 +115,12 @@ export default defineComponent({
       if (props.center) {
         return {
           margin: 'auto',
-          width: '50vw'
+          width: '50vw',
         }
       }
       else {
         return {
-          margin: '40px auto'
+          margin: '40px auto',
         }
       }
     }
@@ -105,7 +129,26 @@ export default defineComponent({
         router.replace(ev.url);
       }
     }
-    return { categoryColor , categoryColorIcon , centerStyle, redirect }
+    const load = async $state => {
+      console.log("loading")
+			serverRequest(props.serverSideConfig, `?page=${currentPage.value}`).then((data: historyEvent[]) => {
+       if(data.length > 0) {
+        for(let i = 0; i < data.length; i++) {
+          histEvents.value.push(data[i]);
+        }
+        $state.loaded();
+        let val = ( scroll.value.offSetHeight ).toString()
+        console.log(scroll.value.clientHeight)
+        lineHeight.value = val as string + "px !important"
+      }
+      else {
+        $state.complete();
+      }
+			});
+      currentPage.value++;
+      console.log(currentPage.value)
+  };
+    return { categoryColor , categoryColorIcon , centerStyle, redirect,  histEvents, load, scroll, lineHeight }
   }
 })
 </script>
@@ -125,14 +168,20 @@ export default defineComponent({
   padding: 0 20px;
   position: relative;
 }
+.container {
+  overflow-y: scroll !important;
+  display: block;
+  height: 100%;
+}
 
 .center-line {
   position: absolute;
   background: var(--tu-gray-3);
-  height: 100%;
+  height: inherit !important;
   width: 4px;
   left: 50%;
   top: 20px;
+  height: 100% !important;
   transform: translateX(-50%);
 }
 
@@ -147,7 +196,7 @@ export default defineComponent({
 .row section {
   border-radius: 5px;
   width: calc(50% - 40px);
-  padding: 20px;
+  padding: 12px;
   position: relative;
   box-sizing: border-box !important;
 }
@@ -193,7 +242,7 @@ export default defineComponent({
 }
 
 .title-date {
-  font-size: 18px;
+  font-size: 15px;
   margin-bottom: 8px;
   font-weight: 400;
   color: var(--tu-text);

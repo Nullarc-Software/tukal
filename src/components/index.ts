@@ -14,6 +14,7 @@ export { default as tuBreadcrumb } from "./tuBreadcrumb";
 export { default as tuProgress } from "./tuProgress";
 export { default as tuTextArea } from "./tuTextArea";
 export { TuLoading, tuLoading } from "./tuLoading";
+export { tuInfiniteLoading } from "./tuInfiniteLoading";
 export type { TuLoadingAttributes, TuLoadingTypes } from "./tuLoading";
 
 export { default as tuDivider } from "./tuDivider";
