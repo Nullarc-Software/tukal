@@ -261,7 +261,7 @@
 						Icon edit
 					</tu-chip>
 				</div>
-				</div> -->
+						</div> -->
 		<div class="showcase-component" style="margin-top: 100px">
 			<h3>Collapse:</h3>
 			<hr />
@@ -768,7 +768,7 @@
 					not-margin
 					v-model="page"
 					:length="20"
-					/> -->
+							/> -->
 		</div>
 
 		<tu-button @click="enableTabs = !enableTabs">Click Enable Tabs</tu-button>
@@ -796,7 +796,7 @@
 					<tu-tab label="Service" name="se"> Service </tu-tab>
 					<tu-tab label="login" name="lo"> Login </tu-tab>
 					<tu-tab label="Disabled" name="di"> Disabled </tu-tab>
-					</tu-tabs> -->
+							</tu-tabs> -->
 		</div>
 		<div class="showcase-component">
 			<h4>Progress:</h4>
@@ -834,10 +834,10 @@
 			<button @click="exportTableToPDF">Export to pdf</button>
 			{{ selected }}
 			<div style="height: 400px">
-<tu-table row-expand multi-select striped size="" persistent-id="twne" :draggable="true"
-					v-model="selected" v-model:numPages="numPages" :page="page" :pageSize="5" v-bind="srvTableConfig"
-					:columnSelector="true" @onRowClicked="rowClicked" @onTableBeginLoad="beginLoad"
-					@onTableEndLoad="afterLoad" @onTableConfigUpdated="configUpdate">
+				<tu-table row-expand multi-select striped size="" persistent-id="twne" :draggable="true" v-model="selected"
+					v-bind="srvTableConfig" v-model:numPages="numPages" :page="page" :pageSize="5" :columnSelector="true"
+					@onRowClicked="rowClicked" @onTableBeginLoad="beginLoad" @onTableEndLoad="afterLoad"
+					@onTableConfigUpdated="configUpdate">
 				<!-- <template #thead>
 						<tu-th field="country" sort search> Country </tu-th>
 						<tu-th field="name" sort search :index="1" width="500px"> Name </tu-th>
@@ -847,7 +847,7 @@
 						<tu-th field="name" sort search :index="5" width="500px"> Name </tu-th>
 						<tu-th field="web_pages" sort search> Web site </tu-th>
 						<tu-th field="something" sort search> No value </tu-th>
-						</template> -->
+								</template> -->
 					<template #footer>
 						<tu-pagination not-margin flat v-model="page" :length="numPages" />
 					</template>
@@ -1612,10 +1612,8 @@ export default defineComponent({
 			nodes,
 			routerTabParams,
 			tabsRouter2,
-
 			cronValue,
-			customLocale
-
+			customLocale,
 			srvTableConfig
 
 		};
