@@ -834,8 +834,8 @@
 			<button @click="exportTableToPDF">Export to pdf</button>
 			{{ selected }}
 			<div style="height: 400px">
-				<tu-table row-expand multi-select striped size="" persistent-id="one" :draggable="true" v-model="selected"
-					v-model:numPages="numPages" :page="page" :pageSize="5" :data="universities" :columns="columns"
+<tu-table row-expand multi-select striped size="" persistent-id="twne" :draggable="true"
+					v-model="selected" v-model:numPages="numPages" :page="page" :pageSize="5" v-bind="srvTableConfig"
 					:columnSelector="true" @onRowClicked="rowClicked" @onTableBeginLoad="beginLoad"
 					@onTableEndLoad="afterLoad" @onTableConfigUpdated="configUpdate">
 				<!-- <template #thead>
@@ -861,7 +861,7 @@
 			<h4>Upload Component:</h4>
 			<hr />
 			<!-- <tu-upload singleUpload :limit="1" /> -->
-			div>
+
 			<div class="showcase-component">
 				<h4>Calendar:</h4>
 				<tu-calendar model="local" :items="items" :categories="Categories" @onClickDay="onClick" />
@@ -1411,7 +1411,7 @@ export default defineComponent({
 		const editStatic = ref("Some Text");
 		const universities = shallowRef([]);
 		axios
-			.get("http://universities.hipolabs.com/search?country=India")
+			.get("http://universities.hipolabs.com/search?country=Singapore")
 			.then((response) => {
 				const temp = response.data;
 				temp.forEach((value) => {
@@ -1429,6 +1429,37 @@ export default defineComponent({
 				universities.value = temp.slice(0, 8);
 				console.log(universities.value);
 			});
+
+		const srvTableConfig: components.TuTableProps = {
+			columns: [
+				{
+					caption: "name",
+					field: "name",
+					dataType: "string"
+				},
+				{
+					caption: "Country",
+					field: "country",
+					dataType: "string"
+				},
+				{
+					caption: "alpha_two_code",
+					field: "alpha_two_code",
+					dataType: "string"
+				},
+				{
+					caption: "state-province",
+					field: "state-province",
+					dataType: "string"
+				}
+			],
+			size: "",
+			model: "server",
+			serverSideConfig: {
+				ajaxUrl: "http://universities.hipolabs.com/search?country=Singapore",
+				method: "GET"
+			}
+		}
 
 		/*
 		const treeSelectedItems = ref<TuTreeViewItemDefn[]>([]);
@@ -1581,8 +1612,12 @@ export default defineComponent({
 			nodes,
 			routerTabParams,
 			tabsRouter2,
+
 			cronValue,
 			customLocale
+
+			srvTableConfig
+
 		};
 	}
 });
