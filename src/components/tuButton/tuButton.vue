@@ -498,6 +498,7 @@ export default defineComponent({
 	background: -getColorAlpha("color", 0);
 	color: -getColor("color");
 
+
 	&:before {
 		content: "";
 		border: 2px solid -getColor("color");
@@ -509,7 +510,7 @@ export default defineComponent({
 		border-radius: inherit;
 		background: transparent;
 		pointer-events: none;
-		transition: all 0.25s ease;
+		transition: all .15s ease;
 		box-sizing: border-box;
 	}
 
@@ -519,10 +520,7 @@ export default defineComponent({
 		}
 	}
 
-	&:focus {
-		color: #fff;
-		background: -getColor("color");
-	}
+
 
 	&.tu-button--active {
 		background: -getColor("color");

@@ -10,7 +10,7 @@
 				</tu-button>
 				<template #content>
 					<div class="vcron-items">
-						<tu-button flat color="primary" v-for="(item, j) in getChildItems(itemRows)" :key="j"
+						<tu-button border color="primary" v-for="(item, j) in getChildItems(itemRows)" :key="j"
 							:active="isSelected(item)" @click="select(item)"
 							@click.stop="multiple ? () => { } : toggleMenu()" loadingType="scale">
 							<span v-if="item">{{ item.text }}</span>
