@@ -14,9 +14,9 @@
         <p>{{ ev.description }}</p>
       </section>
     </div>
-    <tuInfiniteLoading @infinite="load">
+    <tuInfiniteLoading v-if="model === 'server'" @infinite="load">
 					<template #complete>
-						<span class="complete-text" style="font-size: smaller;"></span>
+						<span class="complete-text">No more results!</span>
 					</template>
     </tuInfiniteLoading>
   </div>
@@ -68,9 +68,6 @@ export default defineComponent({
     const scroll = ref();
     const lineHeight = ref()
     if (props.model === "local") {
-
-    }
-    else {
       histEvents.value = props.events
     }
     const categoryColor = (ev: historyEvent) => {
@@ -165,7 +162,6 @@ export default defineComponent({
 .default,
 .alter {
   max-width: 1080px;
-  padding: 0 20px;
   position: relative;
 }
 .container {
@@ -181,7 +177,7 @@ export default defineComponent({
   width: 4px;
   left: 50%;
   top: 20px;
-  height: 100% !important;
+  height: 95% !important;
   transform: translateX(-50%);
 }
 
@@ -196,7 +192,7 @@ export default defineComponent({
 .row section {
   border-radius: 5px;
   width: calc(50% - 40px);
-  padding: 12px;
+  padding: 11px;
   position: relative;
   box-sizing: border-box !important;
 }
@@ -310,5 +306,10 @@ export default defineComponent({
 .title-router {
   cursor: pointer;
   text-decoration: none !important;
+}
+
+.complete-text {
+  display: table;
+  margin: 0 auto;
 }
 </style>

@@ -78,7 +78,7 @@ onUnmounted(() => {
       v-if="state == 'complete'"
       name="complete"
     >
-      <span class="complete-text"> {{ slots?.complete || "No more results!" }} </span>
+      <span> {{ slots?.complete || "No more results!" }} </span>
     </slot>
     <slot
       v-if="state == 'error'"
@@ -94,6 +94,13 @@ onUnmounted(() => {
           retry
         </button>
       </span>
+      
+    </slot>
+    <slot
+      v-if="state == 'complete'"
+      name="complete"
+    >
+      <span class="complete-text"> {{ slots?.complete || "No more results!" }} </span>
     </slot>
   </div>
 </template>
@@ -121,8 +128,4 @@ onUnmounted(() => {
   opacity: 0.8;
 }
 
-.complete-text {
-    text-align: center !important;
-    padding-top: 20px !important;
-}
 </style>

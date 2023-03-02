@@ -888,7 +888,7 @@
 				<h4>History Component:</h4>
 				<hr />
 				<div style="height: 500px;">
-					<tu-history :events="histEvents"/>
+					<tu-history model="server" center  alternative :events="histEvents"/>
 				</div>
 			</div>
 		</div>
