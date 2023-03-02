@@ -86,6 +86,7 @@ export default defineComponent({
       }
       else {
       return {
+        maxWidth: '100%',
         width: 'auto',
         background: background
       }
@@ -166,9 +167,17 @@ export default defineComponent({
 }
 .container {
   overflow-y: scroll !important;
+  overflow-x: hidden !important;
   display: block;
   height: 100%;
+  width: 100%;
 }
+.container::-webkit-scrollbar {
+		display: none;
+	}
+  .container::-webkit-scrollbar-track {
+       background: #f1f1f1;
+    }
 
 .center-line {
   position: absolute;
@@ -191,7 +200,7 @@ export default defineComponent({
 
 .row section {
   border-radius: 5px;
-  width: calc(50% - 40px);
+  width: 50%;
   padding: 11px;
   position: relative;
   box-sizing: border-box !important;
@@ -245,13 +254,14 @@ export default defineComponent({
 }
 
 .title {
-  font-size: 22px;
+  font-size: 120%;
   font-weight: 600;
   color: var(--tu-text);
 }
 
 .row section p {
-  margin: 10px 0 17px 0;
+  font-size: 90%;
+  margin: 1.5% 0 1.5% 0;
 }
 
 .row section .bottom a:hover {
@@ -265,7 +275,7 @@ export default defineComponent({
 }
 
 .default .row {
-  margin: 30px 0 3px 60px !important;
+  margin: 20px 0 1px 50px !important;
 }
 
 
@@ -310,6 +320,6 @@ export default defineComponent({
 
 .complete-text {
   display: table;
-  margin: 0 auto;
+  margin: 10px auto;
 }
 </style>

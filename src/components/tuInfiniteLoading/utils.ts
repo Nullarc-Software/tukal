@@ -24,7 +24,7 @@ const initEmitter = (emit, stateHandler, params) => {
   
 const isVisible = (el, view) => {
 	const elRect = el.getBoundingClientRect();
-	if (!view) return elRect.top >= 0 && elRect.bottom <= window.innerHeight;
+	if (!view) return elRect.top >= 0 && (elRect.bottom - window.innerHeight) <= 150;
 	const viewRect = view.getBoundingClientRect();
 	return elRect.top >= viewRect.top && elRect.bottom <= viewRect.bottom;
 };

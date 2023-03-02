@@ -21,7 +21,6 @@ const infiniteLoading = ref(null);
 const state = ref("ready");
 const { top, firstload, target, distance } = props;
 const { identifier } = toRefs(props);
-const removeLoad = ref(false);
 const params = {
   infiniteLoading,
   target,
@@ -36,17 +35,12 @@ const stateWatcher = () =>
   watch(state, async newVal => {
     const parentEl = params.parentEl || document.documentElement;
     await nextTick();
-    if(newVal == "loading") {
-        removeLoad.value = true; 
-    }
     if (newVal == "loaded" && top)
       parentEl.scrollTop = parentEl.scrollHeight - params.prevHeight;
     if (newVal == "loaded" && isVisible(infiniteLoading.value, params.parentEl)) {
-      removeLoad.value = false;
       params.emit();
     }
     if (newVal == "complete") {
-        removeLoad.value = false;
         observer.disconnect();
     }
   });
@@ -70,9 +64,8 @@ onUnmounted(() => {
   <div ref="infiniteLoading">
     <slot
       v-if="state == 'loading'"
-      name="spinner"
     >
-      <tu-loading :isVisible="removeLoad" />
+      <tu-loading/>
     </slot>
     <slot
       v-if="state == 'complete'"
@@ -95,12 +88,6 @@ onUnmounted(() => {
         </button>
       </span>
       
-    </slot>
-    <slot
-      v-if="state == 'complete'"
-      name="complete"
-    >
-      <span class="complete-text"> {{ slots?.complete || "No more results!" }} </span>
     </slot>
   </div>
 </template>
