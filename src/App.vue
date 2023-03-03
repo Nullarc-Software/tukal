@@ -173,6 +173,34 @@
 			<h3>Cards:</h3>
 			<hr />
 			<tu-card-group>
+				<tu-card type="6">
+					<template #title>
+						<h3>Pot with a plant</h3>
+					</template>
+					<template #content>
+
+					</template>
+					<template #text>
+						<div style="height: 300px;">
+					<tu-history :events="histEvents"/>
+				</div>
+					</template>
+				</tu-card>
+				<tu-card type="6">
+					<template #title>
+						<h3>Pot with a plant</h3>
+					</template>
+					<template #content>
+
+					</template>
+					<template #text>
+						<div style="height: 300px;">
+					<tu-history alternative :events="histEvents"/>
+				</div>
+					</template>
+				</tu-card>
+			</tu-card-group>
+			<tu-card-group>
 				<tu-card type="2" v-for="card in 6" :key="card">
 					<template #title>
 						<h3>Pot with a plant</h3>
@@ -888,7 +916,7 @@
 				<h4>History Component:</h4>
 				<hr />
 				<div style="height: 500px;">
-					<tu-history model="server" center  alternative :events="histEvents"/>
+					<tu-history center :events="histEvents"/>
 				</div>
 			</div>
 		</div>

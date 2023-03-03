@@ -7,5 +7,5 @@ tuComponent.install = (vue: any) => {
 if (typeof window !== "undefined" && (<any>window).Vue) 
 	tuComponent.install((<any>window).Vue);
 
-
-export default tuComponent;
+export type { TuHistoryEvent, TuHistoryServerModel } from "./utils";
+export { tuComponent as tuHistory };

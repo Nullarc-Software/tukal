@@ -38,6 +38,8 @@ export { tuRichTextEditor } from "./components/tuRichTextEditor";
 export { tuCalendar } from "./components/tuCalendar";
 export type {VirtualElement} from "./components/tuTable";
 export { tuTag } from "./components/tuTag";
+export type { tuHistory } from "./components/tuHistory";
+export type { TuHistoryEvent, TuHistoryServerModel } from "./components/tuHistory";
 // New Component import
 
 // layout

@@ -3,7 +3,7 @@ import { TukalGlobals } from "../tukalGlobals";
 import { XHRRequestWrapper } from "@/utils/apiWrapper";
 import { isUndefined } from "lodash";
 
-export interface historyEvent {
+export interface TuHistoryEvent {
     title: string;
     description: string;
     date: string;
@@ -21,9 +21,9 @@ export interface TuHistoryServerModel {
   }
 
 export function serverRequest (serverSideConfig: TuHistoryServerModel, query?: string) {
-	return new Promise<historyEvent[]>((resolve,reject) => {
+	return new Promise<TuHistoryEvent[]>((resolve,reject) => {
 		const xhrRequest = new XHRRequestWrapper();
-		let events: historyEvent[];
+		let events: TuHistoryEvent[];
 		if (isUndefined(serverSideConfig.method))
 			serverSideConfig.method = "GET";
 		xhrRequest.request.onreadystatechange = function () {
@@ -47,7 +47,7 @@ export function serverRequest (serverSideConfig: TuHistoryServerModel, query?: s
 		};
 		xhrRequest.open(
 			serverSideConfig.method,
-			TukalGlobals.ApiRequestTarget + "http://localhost:3000/" + query
+			TukalGlobals.ApiRequestTarget + serverSideConfig.ajaxUrl + query
 		);
 		xhrRequest.request.setRequestHeader("Content-Type", "application/json");
 		xhrRequest.request.setRequestHeader("X-Requested-With", "XMLHttpRequest");

@@ -37,7 +37,8 @@ export { tuUpload } from "./tuUpload";
 export { tuTag } from "./tuTag";
 export * from "./tuTreeView/types";
 export * from "./tuTreeView";
-export { default as tuHistory } from "./tuHistory";
+export { tuHistory } from "./tuHistory";
+export type { TuHistoryEvent, TuHistoryServerModel } from "./tuHistory";
 
 // New Component import
 
