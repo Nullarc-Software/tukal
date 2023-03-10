@@ -38,7 +38,9 @@ export { tuRichTextEditor } from "./components/tuRichTextEditor";
 export { tuCalendar } from "./components/tuCalendar";
 export type {VirtualElement} from "./components/tuTable";
 export { tuTag } from "./components/tuTag";
+
 // New Component import
+export { tuCalendarHeatMap } from "./components/tuCalendarHeatMap";
 
 // layout
 export { default as tuRow } from "./layout/tuRow";
