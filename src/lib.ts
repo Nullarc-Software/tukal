@@ -15,7 +15,11 @@ export { default as tuPagination } from "./components/tuPagination";
 export { default as tuBreadcrumb } from "./components/tuBreadcrumb";
 export { default as tuProgress } from "./components/tuProgress";
 export { TuLoading, tuLoading } from "./components/tuLoading";
+
 export { tuInfiniteLoading } from "./components/tuInfiniteLoading";
+
+export { default as tuCron } from "./components/tuCron";
+
 export type { TuLoadingAttributes, TuLoadingTypes } from "./components/tuLoading";
 
 export { default as tuDivider } from "./components/tuDivider";

@@ -50,8 +50,7 @@
 			<tu-button relief color="primary" style="margin-right: 10px">
 				Relief
 			</tu-button>
-			<tu-button :loading="loading" @click="loading = true" type="filled" color="primary"
-				style="margin-right: 10px">
+			<tu-button :loading="loading" @click="loading = true" type="filled" color="primary" style="margin-right: 10px">
 				Loading
 			</tu-button>
 			<tu-button upload type="border" color="danger" style="margin-right: 10px">
@@ -261,36 +260,36 @@
 				</ul>
 			</div>
 		</div>
-		<!-- <div class="showcase-component">
-			<h3>Chips:</h3>
-			<hr />
-			<div class="centerx">
-				<tu-chip>
-					<tu-avatar />
-					Icon Default
-				</tu-chip>
-				<tu-chip color="primary">
-					<tu-avatar icon="send" />
-					Icon send
-				</tu-chip>
-				<tu-chip color="success">
-					<tu-avatar icon="markunread" />
-					Icon markunread
-				</tu-chip>
-				<tu-chip color="danger">
-					<tu-avatar icon="link" />
-					Icon link_off
-				</tu-chip>
-				<tu-chip color="warning">
-					<tu-avatar icon="battery_alert" />
-					Icon battery_alert
-				</tu-chip>
-				<tu-chip color="dark">
-					<tu-avatar icon="edit" />
-					Icon edit
-				</tu-chip>
-			</div>
-		</div> -->
+	<!-- <div class="showcase-component">
+				<h3>Chips:</h3>
+				<hr />
+				<div class="centerx">
+					<tu-chip>
+						<tu-avatar />
+						Icon Default
+					</tu-chip>
+					<tu-chip color="primary">
+						<tu-avatar icon="send" />
+						Icon send
+					</tu-chip>
+					<tu-chip color="success">
+						<tu-avatar icon="markunread" />
+						Icon markunread
+					</tu-chip>
+					<tu-chip color="danger">
+						<tu-avatar icon="link" />
+						Icon link_off
+					</tu-chip>
+					<tu-chip color="warning">
+						<tu-avatar icon="battery_alert" />
+						Icon battery_alert
+					</tu-chip>
+					<tu-chip color="dark">
+						<tu-avatar icon="edit" />
+						Icon edit
+					</tu-chip>
+				</div>
+						</div> -->
 		<div class="showcase-component" style="margin-top: 100px">
 			<h3>Collapse:</h3>
 			<hr />
@@ -788,15 +787,15 @@
 			<h4>Pagination:</h4>
 			<hr />
 
-			<!-- <tu-pagination progress not-margin v-model="page" :length="20" />
-			<tu-pagination
-				progress
-				dark
-				flat
-				not-margin
-				v-model="page"
-				:length="20"
-			/> -->
+		<!-- <tu-pagination progress not-margin v-model="page" :length="20" />
+				<tu-pagination
+					progress
+					dark
+					flat
+					not-margin
+					v-model="page"
+					:length="20"
+							/> -->
 		</div>
 
 		<tu-button @click="enableTabs = !enableTabs">Click Enable Tabs</tu-button>
@@ -812,19 +811,19 @@
 				<tu-tab label="login" name="lo"> Login </tu-tab>
 				<tu-tab label="Disabled" name="di"> Disabled </tu-tab>
 			</tu-tabs>
-			<!--<tu-tabs name="tabs2" type="router" position="left" noTransitions v-model="tabName" :tabs="tabsRouter2" />
-			<tu-tabs position="left" noTransitions v-model="tabName">
-				<tu-tab label="Home" name="ho"> Home </tu-tab>
-				<tu-tab label="Service" name="se"> Service </tu-tab>
-				<tu-tab label="login" name="lo"> Login </tu-tab>
-				<tu-tab label="Disabled" name="di"> Disabled </tu-tab>
-			</tu-tabs>
-			<tu-tabs position="right" noTransitions v-model="tabName">
-				<tu-tab label="Home" name="ho"> Home </tu-tab>
-				<tu-tab label="Service" name="se"> Service </tu-tab>
-				<tu-tab label="login" name="lo"> Login </tu-tab>
-				<tu-tab label="Disabled" name="di"> Disabled </tu-tab>
-			</tu-tabs> -->
+		<!--<tu-tabs name="tabs2" type="router" position="left" noTransitions v-model="tabName" :tabs="tabsRouter2" />
+				<tu-tabs position="left" noTransitions v-model="tabName">
+					<tu-tab label="Home" name="ho"> Home </tu-tab>
+					<tu-tab label="Service" name="se"> Service </tu-tab>
+					<tu-tab label="login" name="lo"> Login </tu-tab>
+					<tu-tab label="Disabled" name="di"> Disabled </tu-tab>
+				</tu-tabs>
+				<tu-tabs position="right" noTransitions v-model="tabName">
+					<tu-tab label="Home" name="ho"> Home </tu-tab>
+					<tu-tab label="Service" name="se"> Service </tu-tab>
+					<tu-tab label="login" name="lo"> Login </tu-tab>
+					<tu-tab label="Disabled" name="di"> Disabled </tu-tab>
+							</tu-tabs> -->
 		</div>
 		<div class="showcase-component">
 			<h4>Progress:</h4>
@@ -862,20 +861,20 @@
 			<button @click="exportTableToPDF">Export to pdf</button>
 			{{ selected }}
 			<div style="height: 400px">
-				<tu-table row-expand multi-select striped size="" persistent-id="one" :draggable="true"
-					v-model="selected" v-model:numPages="numPages" :page="page" :pageSize="5" :data="universities"
-					:columns="columns" :columnSelector="true" @onRowClicked="rowClicked" @onTableBeginLoad="beginLoad"
-					@onTableEndLoad="afterLoad" @onTableConfigUpdated="configUpdate">
-					<!-- <template #thead>
-					<tu-th field="country" sort search> Country </tu-th>
-					<tu-th field="name" sort search :index="1" width="500px"> Name </tu-th>
-					<tu-th field="name" sort search :index="2" width="500px"> Name </tu-th>
-					<tu-th field="name" sort search :index="3" width="500px"> Name </tu-th>
-					<tu-th field="name" sort search :index="4" width="500px"> Name </tu-th>
-					<tu-th field="name" sort search :index="5" width="500px"> Name </tu-th>
-					<tu-th field="web_pages" sort search> Web site </tu-th>
-					<tu-th field="something" sort search> No value </tu-th>
-				</template> -->
+				<tu-table row-expand multi-select striped size="" persistent-id="twne" :draggable="true" v-model="selected"
+					v-bind="srvTableConfig" v-model:numPages="numPages" :page="page" :pageSize="5" :columnSelector="true"
+					@onRowClicked="rowClicked" @onTableBeginLoad="beginLoad" @onTableEndLoad="afterLoad"
+					@onTableConfigUpdated="configUpdate">
+				<!-- <template #thead>
+						<tu-th field="country" sort search> Country </tu-th>
+						<tu-th field="name" sort search :index="1" width="500px"> Name </tu-th>
+						<tu-th field="name" sort search :index="2" width="500px"> Name </tu-th>
+						<tu-th field="name" sort search :index="3" width="500px"> Name </tu-th>
+						<tu-th field="name" sort search :index="4" width="500px"> Name </tu-th>
+						<tu-th field="name" sort search :index="5" width="500px"> Name </tu-th>
+						<tu-th field="web_pages" sort search> Web site </tu-th>
+						<tu-th field="something" sort search> No value </tu-th>
+								</template> -->
 					<template #footer>
 						<tu-pagination not-margin flat v-model="page" :length="numPages" />
 					</template>
@@ -889,7 +888,7 @@
 			<h4>Upload Component:</h4>
 			<hr />
 			<!-- <tu-upload singleUpload :limit="1" /> -->
-			div>
+
 			<div class="showcase-component">
 				<h4>Calendar:</h4>
 				<tu-calendar model="local" :items="items" :categories="Categories" @onClickDay="onClick" />
@@ -905,19 +904,26 @@
 				<h4>Treeview Component:</h4>
 				<hr />
 				<tu-tree-view :checkNode="true" :removeNode="true" :addNode="true" :editNode="true" :filterNode="true"
-					model="local" :expandAll="true" :collapseAll="true" v-model="nodes"
-					v-model:checkedNodes="checkedNodes" :nodes="treeDisplayData">
+					model="local" :expandAll="true" :collapseAll="true" v-model="nodes" v-model:checkedNodes="checkedNodes"
+					:nodes="treeDisplayData">
 					<template v-slot:icon>
 						<tu-icon>file_copy</tu-icon>
 					</template>
 				</tu-tree-view>
 			</div>
 			<div class="showcase-component">
+
 				<h4>History Component:</h4>
 				<hr />
 				<div style="height: 500px;">
 					<tu-history center :events="histEvents"/>
 				</div>
+
+				<h4>Cron Component:</h4>
+				<hr />
+				<tu-cron v-model="cronValue" />
+				<span>{{ cronValue }}</span>
+
 			</div>
 		</div>
 	</div>
@@ -999,6 +1005,7 @@ export default defineComponent({
 		const selectValue2 = ref("1");
 		const selectValue1 = ref("");
 		const page = ref(1);
+
 
 		const histEvents = [
 			{
@@ -1098,6 +1105,81 @@ export default defineComponent({
 				url: "/test"
 			}
 		]
+
+		const cronValue = ref();
+		const customLocale = {
+			"*": {
+				prefix: "todos los",
+				suffix: "",
+				text: "Desconocido",
+				"*": {
+					empty: { text: "todos los {{ field.id }}" },
+					value: { text: "{{ val.text }}" },
+					range: { text: "{{ start.text }}-{{ end.text }}" },
+					everyX: { text: "todos/as {{ every.value }}" }
+				},
+				month: {
+					"*": { prefix: "en" },
+					empty: { text: "todos los meses" },
+					value: { text: "{{ val.alt }}" },
+					range: { text: "{{ start.alt }}-{{ end.alt }}" }
+				},
+				day: {
+					"*": { prefix: "en" },
+					empty: { text: "todos los días" },
+					value: { text: "los días {{ val.alt }}" }
+				},
+				dayOfWeek: {
+					"*": { prefix: "de" },
+					empty: { text: "todos los días de la semana" },
+					value: { text: "los {{ val.alt }}" },
+					range: { text: "{{ start.alt }}-{{ end.alt }}" }
+				},
+				hour: {
+					"*": { prefix: "a" },
+					empty: { text: "todas las horas" },
+					value: { text: "las {{ val.text }}" }
+				},
+				minute: {
+					"*": { prefix: ":" },
+					empty: { text: "todos los minutos" }
+				}
+			},
+			minute: {
+				prefix: "todos los",
+				text: "minutos"
+			},
+			hour: {
+				prefix: "todas las",
+				text: "horas",
+				minute: {
+					"*": {
+						prefix: "a los",
+						suffix: "minutos"
+					},
+					empty: { text: "todos", prefix: "a", suffix: "los minutos" }
+				}
+			},
+			day: {
+				text: "Días"
+			},
+			week: {
+				text: "Semanas"
+			},
+			month: {
+				text: "Meses",
+				dayOfWeek: {
+					"*": { prefix: "y" }
+				}
+			},
+			year: {
+				text: "años",
+				dayOfWeek: {
+					"*": { prefix: "y" }
+				}
+			}
+		}
+
 		const routerTabParams: TuTabsRouterParams = {
 			tabs: [
 				{
@@ -1466,7 +1548,7 @@ export default defineComponent({
 		const editStatic = ref("Some Text");
 		const universities = shallowRef([]);
 		axios
-			.get("http://universities.hipolabs.com/search?country=India")
+			.get("http://universities.hipolabs.com/search?country=Singapore")
 			.then((response) => {
 				const temp = response.data;
 				temp.forEach((value) => {
@@ -1484,6 +1566,37 @@ export default defineComponent({
 				universities.value = temp.slice(0, 8);
 				console.log(universities.value);
 			});
+
+		const srvTableConfig: components.TuTableProps = {
+			columns: [
+				{
+					caption: "name",
+					field: "name",
+					dataType: "string"
+				},
+				{
+					caption: "Country",
+					field: "country",
+					dataType: "string"
+				},
+				{
+					caption: "alpha_two_code",
+					field: "alpha_two_code",
+					dataType: "string"
+				},
+				{
+					caption: "state-province",
+					field: "state-province",
+					dataType: "string"
+				}
+			],
+			size: "",
+			model: "server",
+			serverSideConfig: {
+				ajaxUrl: "http://universities.hipolabs.com/search?country=Singapore",
+				method: "GET"
+			}
+		}
 
 		/*
 		const treeSelectedItems = ref<TuTreeViewItemDefn[]>([]);
@@ -1636,7 +1749,13 @@ export default defineComponent({
 			nodes,
 			routerTabParams,
 			tabsRouter2,
+
 			histEvents
+
+			cronValue,
+			customLocale,
+			srvTableConfig
+
 		};
 	}
 });

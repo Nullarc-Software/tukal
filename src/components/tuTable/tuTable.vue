@@ -325,6 +325,9 @@ export default defineComponent({
 					type: "circles",
 					scale: "1.0"
 				};
+				if (load) {
+					load.close();
+				}
 				load = new TuLoading(attrs);
 			}
 		}
@@ -449,12 +452,12 @@ export default defineComponent({
 			}
 			context.emit("update:tableInstance", table);
 
-			if (table.loading && _.isNil(load)) {
+			if (table.loading && _.isNil(load) && props.model !== "local") {
 				context.emit("onTableBeginLoad");
-				table.refresh();
 				setLoading();
 			}
 
+			table.refresh();
 			isMounted.value = true;
 		});
 

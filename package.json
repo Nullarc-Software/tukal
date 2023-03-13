@@ -1,6 +1,6 @@
 {
 	"name": "tukal-vue",
-	"version": "0.1.105",
+	"version": "0.1.107",
 	"type": "module",
 	"scripts": {
 		"dev": "vite",
@@ -35,7 +35,8 @@
 		"pinia": "^2.0.27",
 		"vue": "^3.2.45",
 		"vue-router": "^4.0.3",
-		"vue3-popper": "^0.1.0"
+		"vue3-popper": "^0.1.0",
+		"mustache": "^4.2.0"
 	},
 	"devDependencies": {
 		"@types/lodash": "^4.14.191",
