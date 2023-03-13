@@ -172,6 +172,34 @@
 			<h3>Cards:</h3>
 			<hr />
 			<tu-card-group>
+				<tu-card type="6">
+					<template #title>
+						<h3>Pot with a plant</h3>
+					</template>
+					<template #content>
+
+					</template>
+					<template #text>
+						<div style="height: 300px;">
+					<tu-history :events="histEvents"/>
+				</div>
+					</template>
+				</tu-card>
+				<tu-card type="6">
+					<template #title>
+						<h3>Pot with a plant</h3>
+					</template>
+					<template #content>
+
+					</template>
+					<template #text>
+						<div style="height: 300px;">
+					<tu-history alternative :events="histEvents"/>
+				</div>
+					</template>
+				</tu-card>
+			</tu-card-group>
+			<tu-card-group>
 				<tu-card type="2" v-for="card in 6" :key="card">
 					<template #title>
 						<h3>Pot with a plant</h3>
@@ -335,8 +363,7 @@
 					javascript frameworks in the world and with a huge community
 					with which you will have all the help and documentation to
 					create and make your project
-
-
+	
 				</div>
 				<tu-pagination not-margin flat v-model="page" :length="numPages" />
 
@@ -885,10 +912,18 @@
 				</tu-tree-view>
 			</div>
 			<div class="showcase-component">
+
+				<h4>History Component:</h4>
+				<hr />
+				<div style="height: 500px;">
+					<tu-history center :events="histEvents"/>
+				</div>
+
 				<h4>Cron Component:</h4>
 				<hr />
 				<tu-cron v-model="cronValue" />
 				<span>{{ cronValue }}</span>
+
 			</div>
 		</div>
 	</div>
@@ -970,6 +1005,107 @@ export default defineComponent({
 		const selectValue2 = ref("1");
 		const selectValue1 = ref("");
 		const page = ref(1);
+
+
+		const histEvents = [
+			{
+				title: "Added New Agent",
+				description: "Lorem ipsum dolor  elit. Sed qui veroes praesentium maiores, sint eos vero sapiente voluptas debitis dicta dolore Lorem ipsum dolor  elit. Sed qui veroes praesentium maiores, sint eos vero",
+				date: "07:50",
+				color: "danger",
+				icon: 'file_copy',
+				url: "https://www.youtube.com/watch?v=ElZfdU54Cp8&ab_channel=ZeeMusicCompany"
+			},
+			{
+				title: "Added New Agent",
+				description: "Lorem ipsum adipisicing elit. Sed qui veroes praesentium maiores, sint eos vero sapiente voluptas debitis dicta dolore.",
+				date: "07:50",
+				color: "success",
+				icon: 'alarm',
+				url: "/test"
+			},
+			{
+				title: "Added New Agent",
+				description: "Lorem ipsum  adipisicing elit. Sed qui veroes praesentium maiores, sint eos vero sapiente voluptas debitis dicta dolore.",
+				date: "07:50",
+				color: "warn",
+				icon: 'anchor',
+				url: "/test"
+			},
+			{
+				title: "Added New Agent",
+				description: "Lorem ipsum dolor  elit. Sed qui veroes praesentium maiores, sint eos vero sapiente voluptas debitis dicta dolore Lorem ipsum dolor  elit. Sed qui veroes praesentium maiores, sint eos vero",
+				date: "07:50",
+				color: "danger",
+				icon: 'file_copy',
+				url: "https://www.youtube.com/watch?v=ElZfdU54Cp8&ab_channel=ZeeMusicCompany"
+			},
+			{
+				title: "Added New Agent",
+				description: "Lorem ipsum adipisicing elit. Sed qui veroes praesentium maiores, sint eos vero sapiente voluptas debitis dicta dolore.",
+				date: "07:50",
+				color: "success",
+				icon: 'alarm',
+				url: "/test"
+			},
+			{
+				title: "Added New Agent",
+				description: "Lorem ipsum  adipisicing elit. Sed qui veroes praesentium maiores, sint eos vero sapiente voluptas debitis dicta dolore.",
+				date: "07:50",
+				color: "warn",
+				icon: 'anchor',
+				url: "/test"
+			},
+			{
+				title: "Added New Agent",
+				description: "Lorem ipsum dolor  elit. Sed qui veroes praesentium maiores, sint eos vero sapiente voluptas debitis dicta dolore Lorem ipsum dolor  elit. Sed qui veroes praesentium maiores, sint eos vero",
+				date: "07:50",
+				color: "danger",
+				icon: 'file_copy',
+				url: "https://www.youtube.com/watch?v=ElZfdU54Cp8&ab_channel=ZeeMusicCompany"
+			},
+			{
+				title: "Added New Agent",
+				description: "Lorem ipsum adipisicing elit. Sed qui veroes praesentium maiores, sint eos vero sapiente voluptas debitis dicta dolore.",
+				date: "07:50",
+				color: "success",
+				icon: 'alarm',
+				url: "/test"
+			},
+			{
+				title: "Added New Agent",
+				description: "Lorem ipsum  adipisicing elit. Sed qui veroes praesentium maiores, sint eos vero sapiente voluptas debitis dicta dolore.",
+				date: "07:50",
+				color: "warn",
+				icon: 'anchor',
+				url: "/test"
+			},
+			{
+				title: "Added New Agent",
+				description: "Lorem ipsum dolor  elit. Sed qui veroes praesentium maiores, sint eos vero sapiente voluptas debitis dicta dolore Lorem ipsum dolor  elit. Sed qui veroes praesentium maiores, sint eos vero",
+				date: "07:50",
+				color: "danger",
+				icon: 'file_copy',
+				url: "https://www.youtube.com/watch?v=ElZfdU54Cp8&ab_channel=ZeeMusicCompany"
+			},
+			{
+				title: "Added New Agent",
+				description: "Lorem ipsum adipisicing elit. Sed qui veroes praesentium maiores, sint eos vero sapiente voluptas debitis dicta dolore.",
+				date: "07:50",
+				color: "success",
+				icon: 'alarm',
+				url: "/test"
+			},
+			{
+				title: "Added New Agent",
+				description: "Lorem ipsum  adipisicing elit. Sed qui veroes praesentium maiores, sint eos vero sapiente voluptas debitis dicta dolore.",
+				date: "07:50",
+				color: "warn",
+				icon: 'anchor',
+				url: "/test"
+			}
+		]
+
 		const cronValue = ref();
 		const customLocale = {
 			"*": {
@@ -1043,6 +1179,7 @@ export default defineComponent({
 				}
 			}
 		}
+
 		const routerTabParams: TuTabsRouterParams = {
 			tabs: [
 				{
@@ -1612,6 +1749,9 @@ export default defineComponent({
 			nodes,
 			routerTabParams,
 			tabsRouter2,
+
+			histEvents
+
 			cronValue,
 			customLocale,
 			srvTableConfig

@@ -60,6 +60,10 @@ export default defineComponent({
 @import "../../style/sass/_mixins";
 @import "../../style/sass/root";
 
+.tu-dark-theme .tu-card {
+	background: rgba(37,38,41) !important;
+}
+
 .tu-card-content {
 	--tu-color: var(--tu-primary);
 
@@ -107,7 +111,7 @@ export default defineComponent({
 			}
 
 			&__text {
-				background: -getColor("background");
+				background: -getColor("background-component");
 				box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, -var("shadow-opacity"));
 				border-radius: 6px 20px 6px 20px;
 				margin-top: -50px;

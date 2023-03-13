@@ -15,6 +15,7 @@ export { default as tuProgress } from "./tuProgress";
 export { default as tuTextArea } from "./tuTextArea";
 export { default as tuCron } from "./tuCron";
 export { TuLoading, tuLoading } from "./tuLoading";
+export { tuInfiniteLoading } from "./tuInfiniteLoading";
 export type { TuLoadingAttributes, TuLoadingTypes } from "./tuLoading";
 
 export { default as tuDivider } from "./tuDivider";
@@ -37,6 +38,8 @@ export { tuUpload } from "./tuUpload";
 export { tuTag } from "./tuTag";
 export * from "./tuTreeView/types";
 export * from "./tuTreeView";
+export { tuHistory } from "./tuHistory";
+export type { TuHistoryEvent, TuHistoryServerModel } from "./tuHistory";
 
 // New Component import
 
