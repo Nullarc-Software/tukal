@@ -104,6 +104,9 @@
 							" v-bind="tr.rowData['expanded'].props" />
 						</template>
 					</tu-tr>
+					<span v-if="table.isTableDataEmpty" class="tu-table__no-data">
+						No Data Found
+					</span>
 				</tbody>
 			</table>
 		</div>
@@ -711,6 +714,14 @@ export default defineComponent({
 				border-radius: 0px 14px 0px 0px;
 			}
 		}
+	}
+
+	&__no-data {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 100vw;
+		margin-top: 20px;
 	}
 }
 

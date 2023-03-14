@@ -149,6 +149,7 @@ export class TuTableStore {
 	public getSelectedRows: ComputedRef<TuTableRow[]>;
 
 	public persistentSettings: TuTableLocal;	
+	public isTableDataEmpty: boolean;
 
 	public getCaptionForField (field: string) {
 
@@ -190,6 +191,7 @@ export class TuTableStore {
 		this.activeSort = ref(0);
 		this.rowCount = ref(0);
 		this.refreshTable = ref(false);
+		this.isTableDataEmpty = false;
 		this.getTableData = () : Promise<boolean> =>  {
 
 			return new Promise(((resolve, reject) => {
@@ -274,33 +276,46 @@ export class TuTableStore {
 							xhrRequest.request.status === 200
 						) {
 							if (xhrRequest.request.responseType === "json") {
-								const obj = JSON.parse(xhrRequest.request.responseText);								
-								this.setTableData(xhrRequest.request.response.data);
-								this.rowCount.value = xhrRequest.request.response.total_rows;
+								const obj = JSON.parse(xhrRequest.request.responseText);
+								if (!_.isNil(xhrRequest.request.responseText) && xhrRequest.request.responseText.length !== 0) {
+									this.setTableData(xhrRequest.request.response.data);
+									this.rowCount.value = xhrRequest.request.response.total_rows;
+								}
+								else 
+									this.isTableDataEmpty = true;						
 							}
 							else if (xhrRequest.request.responseType === "text") {
-								const obj = JSON.parse(xhrRequest.request.responseText);
-								if (Array.isArray(obj)) {
-									this.setTableData(obj);
-									this.rowCount.value = obj.length;
+								if(!_.isNil(xhrRequest.request.responseText) && xhrRequest.request.responseText.length !== 0) {
+									const obj = JSON.parse(xhrRequest.request.responseText);
+									if (Array.isArray(obj)) {
+										this.setTableData(obj);
+										this.rowCount.value = obj.length;
+									}
+									else {
+										this.rowCount.value = obj.total_rows;
+										this.setTableData(obj.data);
+									}
 								}
-								else {
-									this.rowCount.value = obj.total_rows;
-									this.setTableData(obj.data);
-								}
-								
+								else 
+									this.isTableDataEmpty = true;
 							}
 							else {
-								const obj = JSON.parse(xhrRequest.request.responseText);
-								this.rowCount.value = obj.total_rows;
-								if (Array.isArray(obj)) {
-									this.setTableData(obj);
-									this.rowCount.value = obj.length;
-								}
-								else {
+								if(!_.isNil(xhrRequest.request.responseText) && xhrRequest.request.responseText.length !== 0) {
+									const obj = JSON.parse(xhrRequest.request.responseText);
+									if(obj.length === 0)
+										this.isTableDataEmpty = true;
 									this.rowCount.value = obj.total_rows;
-									this.setTableData(obj.data);
+									if (Array.isArray(obj)) {
+										this.setTableData(obj);
+										this.rowCount.value = obj.length;
+									}
+									else {
+										this.rowCount.value = obj.total_rows;
+										this.setTableData(obj.data);
+									}
 								}
+								else 
+									this.isTableDataEmpty = true;
 							}
 							this.dataView.value = this.table.data;
 							this.pageLength.value = Math.ceil(
