@@ -1,18 +1,23 @@
-import { describe, vi, it, expect, beforeEach } from "vitest";
+import { describe, vi, it, expect} from "vitest";
 import { mount } from "@vue/test-utils";
 import { tuButton } from "../src/components/tuButton";
-import  Router  from "vue-router";
+// import  Router  from "vue-router";
+// import { ComponentConstant } from "../src/components/tuComponent/utils.ts";
 
-vi.doMock("../src/components/tuComponent", () => {
-	const ComponentConstants = vi.importActual("../src/components/tuComponent");
-	return {
-		...ComponentConstants,
-		router : Router(() => ({
-			push:vi.fn()
-		}))
-	};
-
-});
+// vi.mock("../src/components/tuComponent/utils.ts", async () => {
+// 	const ComponentConstants = await vi.importActual("../src/components/tuComponent/utils.ts");
+// 	return {
+// 		...ComponentConstants,
+// 		router : Router
+// 	};
+// });
+// vi.mock("../src/components/tuComponent/utils.ts", async (importOriginal) => {
+// 	const mod = await importOriginal();
+// 	return {
+// 		...mod,
+// 		router : Router
+// 	};
+// });
 
 describe("tuButton", () => {
 	it("should trigger and emit event on click", async () => {
@@ -33,14 +38,15 @@ describe("tuButton", () => {
 		});
 		expect(wrapper.find(".tu-button--active-disabled")).toBeTruthy();
 	});
-	it("disabled if activedisabled prop is passed", async () => {
+	it("determine if page is opened via window.open api is called when href prop passed", async () => {
+		vi.spyOn(window, "open");
 		const wrapper = mount(tuButton, {
 			props: {
-				to: "/test"
+				href: "https://www.google.com",
+				blank: true
 			}
 		});
-		let push = vi.fn();
 		await wrapper.find(".tu-button").trigger("click");
-		expect(push).toBeCalled();
+		expect(window.open).toBeCalledWith("https://www.google.com", "_blank");
 	});
 });
