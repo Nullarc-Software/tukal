@@ -347,7 +347,12 @@ export default defineComponent({
 
 		table = new TuTableStore(tableConstructor);
 		table.constructHeaders(props.columns, props.persistentId);
-		if (props.model === "local") table.setTableData(props.data);
+		if (props.model === "local") {
+			if (props.data.length !== 0)
+				table.setTableData(props.data);
+			else
+				table.isTableDataEmpty = true
+		}
 
 		const isMultipleSelected = computed(() => {
 			return _.isArray(props.modelValue);
