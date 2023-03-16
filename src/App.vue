@@ -774,24 +774,31 @@
 		<tu-button @click="enableTabs = !enableTabs">Click Enable Tabs</tu-button>
 		<div class="showcase-component" v-if="enableTabs">
 			<h4>Tabs:</h4>
-			<hr />
-
+			<hr /> 
 			<tu-tabs name="tabs1" type="router" position="top" noTransitions v-model="tabName"
 				:router-mode-params="routerTabParams" />
-			<tu-tabs position="top" noTransitions tabStyle="progress" progressWidth="20" v-model="tabName">
+				<tu-tabs name="tabs1" type="router" position="top" pills noTransitions v-model="tabName"
+				:router-mode-params="routerTabParams" />
+			<!-- <tu-tabs position="top" noTransitions tabStyle="progress" progressWidth="20" v-model="tabName">
 				<tu-tab label="Home" name="ho"> Home </tu-tab>
 				<tu-tab label="Service" name="se"> Service </tu-tab>
 				<tu-tab label="login" name="lo"> Login </tu-tab>
 				<tu-tab label="Disabled" name="di"> Disabled </tu-tab>
-			</tu-tabs>
-		<!--<tu-tabs name="tabs2" type="router" position="left" noTransitions v-model="tabName" :tabs="tabsRouter2" />
+			</tu-tabs> -->
+		<!-- <tu-tabs name="tabs2" position="top" :button="true" noTransitions v-model="tabName" /> -->
+				<tu-tabs position="left" pills noTransitions v-model="tabName">
+					<tu-tab label="Home" name="ho"> Home </tu-tab>
+					<tu-tab label="Service" name="se"> Service </tu-tab>
+					<tu-tab label="login" name="lo"> Login </tu-tab>
+					<tu-tab label="Disabled" name="di"> Disabled </tu-tab>
+				</tu-tabs>
 				<tu-tabs position="left" noTransitions v-model="tabName">
 					<tu-tab label="Home" name="ho"> Home </tu-tab>
 					<tu-tab label="Service" name="se"> Service </tu-tab>
 					<tu-tab label="login" name="lo"> Login </tu-tab>
 					<tu-tab label="Disabled" name="di"> Disabled </tu-tab>
 				</tu-tabs>
-				<tu-tabs position="right" noTransitions v-model="tabName">
+				<!-- <tu-tabs position="right" noTransitions v-model="tabName">
 					<tu-tab label="Home" name="ho"> Home </tu-tab>
 					<tu-tab label="Service" name="se"> Service </tu-tab>
 					<tu-tab label="login" name="lo"> Login </tu-tab>
