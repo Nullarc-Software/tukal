@@ -32,7 +32,7 @@ describe("tuCheckBox", () => {
 		await wrapper.find(".tu-checkbox").trigger("input");
 		expect(wrapper.emitted("update:modelValue")[0]).toEqual([[]]);
 	});
-	it("when indeterminate is true checked should change", async () => {
+	it("when indeterminate is true checked should change on click", async () => {
 		const wrapper = mount(tuCheckBox, {
 			props: {
 				indeterminate: true,
@@ -43,14 +43,6 @@ describe("tuCheckBox", () => {
 		expect(wrapper.emitted("update:checked")[0]).toEqual([false]);
 	});
 	it("indeterminate icon should render on passing the prop true", async () => {
-		const wrapper = mount(tuCheckBox, {
-			props: {
-				indeterminate: true
-			}
-		});
-		expect(wrapper.find("i").text()).toBe("horizontal_rule");
-	});
-	it("icon should render on passing the value as prop", async () => {
 		const wrapper = mount(tuCheckBox, {
 			props: {
 				indeterminate: true
