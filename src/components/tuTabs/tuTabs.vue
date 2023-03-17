@@ -13,7 +13,8 @@
 					class="tu-tabs--li" :class="{
 						[`tu-tabs--li-${child.id}`]: true,
 						[`tu-tabs--li-${child.name}`]: child.name,
-						activeChild: childActive == child.id
+						activeChild: childActive == child.id,
+						['tu-tabs--button-li']: pills && position === 'top'
 					}" @mouseover="hover = true" @mouseout="hover = false">
 					<a :href="type === 'router' ? getALinkHref(child.to) : null" class="tu-tabs--a">
 						<button class="tu-button tu-button--default tu-button--small tu-button__content" v-if="pills && childActive == child.id" :style="styleAlignIcon(child.icon)" :disabled="child.disabled"
@@ -563,7 +564,7 @@ export default defineComponent({
 }
 
 .tu-tabs--li {
-	display: flex;
+	display: block;
 	position: relative;
 
 	button {
@@ -635,8 +636,9 @@ export default defineComponent({
 }
 
 .tu-tabs--button-li {
-	margin-right: -12px;
+	margin-right: 5px;
 }
+
 .tu-tabs-position-top {
 	.tu-tabs--ul {
 		display: flex;
