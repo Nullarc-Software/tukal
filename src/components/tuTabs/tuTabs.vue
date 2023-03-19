@@ -13,10 +13,17 @@
 					class="tu-tabs--li" :class="{
 						[`tu-tabs--li-${child.id}`]: true,
 						[`tu-tabs--li-${child.name}`]: child.name,
-						activeChild: childActive == child.id
+						activeChild: childActive == child.id,
+						['tu-tabs--button-li']: pills && position === 'top'
 					}" @mouseover="hover = true" @mouseout="hover = false">
 					<a :href="type === 'router' ? getALinkHref(child.to) : null" class="tu-tabs--a">
-						<button :style="styleAlignIcon(child.icon)" :disabled="child.disabled" class="tu-tabs--btn"
+						<button class="tu-button tu-button--default tu-button--small tu-button__content" v-if="pills && childActive == child.id" :style="styleAlignIcon(child.icon)" :disabled="child.disabled"
+							 @click="activeChild(child.id)">
+							<tu-icon v-if="child.icon" :icon-pack="child.iconPack" :icon="child.icon" :color="color"
+								class="tu-tabs--btn-icon"></tu-icon>
+							<span class="tu-tabs-button-text" v-if="child.label">{{ child.label }}</span>
+						</button>
+						<button v-else :style="styleAlignIcon(child.icon)" :disabled="child.disabled" class="tu-tabs--btn"
 							type="button" @click="activeChild(child.id)">
 							<tu-icon v-if="child.icon" :icon-pack="child.iconPack" :icon="child.icon" :color="color"
 								class="tu-tabs--btn-icon"></tu-icon>
@@ -62,7 +69,7 @@
 					activeChild: childActive == child.id
 				}" />
 			</div>
-			<span :style="stylex" v-if="tabStyle !== 'progress'" class="line-tu-tabs" />
+			<span :style="stylex" v-if="tabStyle !== 'progress' && !pills" class="line-tu-tabs" />
 		</div>
 
 		<div class="con-slot-tabs" :style="{
@@ -142,6 +149,10 @@ export default defineComponent({
 			type: String
 		},
 		noTransitions: {
+			type: Boolean,
+			default: false
+		},
+		pills: {
 			type: Boolean,
 			default: false
 		},
@@ -624,6 +635,10 @@ export default defineComponent({
 	}
 }
 
+.tu-tabs--button-li {
+	margin-right: 5px;
+}
+
 .tu-tabs-position-top {
 	.tu-tabs--ul {
 		display: flex;
@@ -679,7 +694,6 @@ export default defineComponent({
 			padding-top: 10px !important;
 			padding-bottom: 10px !important;
 			padding-left: 12px !important;
-			padding-right: 8px !important;
 		}
 	}
 }
@@ -751,6 +765,9 @@ export default defineComponent({
 	}
 }
 
+.tu-tabs-button-text {
+	color: white;
+}
 @mixin state($tu-color) {
 
 	.con-ul-tabs {
