@@ -181,8 +181,8 @@
 					</template>
 					<template #text>
 						<div style="height: 300px;">
-					<tu-history :events="histEvents"/>
-				</div>
+							<tu-history :events="histEvents" />
+						</div>
 					</template>
 				</tu-card>
 				<tu-card type="6">
@@ -194,8 +194,8 @@
 					</template>
 					<template #text>
 						<div style="height: 300px;">
-					<tu-history alternative :events="histEvents"/>
-				</div>
+							<tu-history alternative :events="histEvents" />
+						</div>
 					</template>
 				</tu-card>
 			</tu-card-group>
@@ -289,7 +289,7 @@
 						Icon edit
 					</tu-chip>
 				</div>
-						</div> -->
+							</div> -->
 		<div class="showcase-component" style="margin-top: 100px">
 			<h3>Collapse:</h3>
 			<hr />
@@ -363,7 +363,7 @@
 					javascript frameworks in the world and with a huge community
 					with which you will have all the help and documentation to
 					create and make your project
-	
+
 				</div>
 				<tu-pagination not-margin flat v-model="page" :length="numPages" />
 
@@ -795,7 +795,7 @@
 					not-margin
 					v-model="page"
 					:length="20"
-							/> -->
+								/> -->
 		</div>
 
 		<tu-button @click="enableTabs = !enableTabs">Click Enable Tabs</tu-button>
@@ -823,7 +823,7 @@
 					<tu-tab label="Service" name="se"> Service </tu-tab>
 					<tu-tab label="login" name="lo"> Login </tu-tab>
 					<tu-tab label="Disabled" name="di"> Disabled </tu-tab>
-							</tu-tabs> -->
+								</tu-tabs> -->
 		</div>
 		<div class="showcase-component">
 			<h4>Progress:</h4>
@@ -874,7 +874,7 @@
 						<tu-th field="name" sort search :index="5" width="500px"> Name </tu-th>
 						<tu-th field="web_pages" sort search> Web site </tu-th>
 						<tu-th field="something" sort search> No value </tu-th>
-								</template> -->
+									</template> -->
 					<template #footer>
 						<tu-pagination not-margin flat v-model="page" :length="numPages" />
 					</template>
@@ -916,7 +916,7 @@
 				<h4>History Component:</h4>
 				<hr />
 				<div style="height: 500px;">
-					<tu-history center :events="histEvents"/>
+					<tu-history center :events="histEvents" />
 				</div>
 
 				<h4>Cron Component:</h4>
@@ -1750,7 +1750,7 @@ export default defineComponent({
 			routerTabParams,
 			tabsRouter2,
 
-			histEvents
+			histEvents,
 
 			cronValue,
 			customLocale,
