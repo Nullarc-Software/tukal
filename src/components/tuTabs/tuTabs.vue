@@ -17,8 +17,9 @@
 						['tu-tabs--button-li']: pills && position === 'top'
 					}" @mouseover="hover = true" @mouseout="hover = false">
 					<a :href="type === 'router' ? getALinkHref(child.to) : null" class="tu-tabs--a">
-						<button class="tu-button tu-button--default tu-button--small tu-button__content" v-if="pills && childActive == child.id" :style="styleAlignIcon(child.icon)" :disabled="child.disabled"
-							 @click="activeChild(child.id)">
+						<button class="tu-button tu-button--default tu-button--small tu-button__content"
+							v-if="pills && childActive == child.id" :style="styleAlignIcon(child.icon)"
+							:disabled="child.disabled" @click="activeChild(child.id)">
 							<tu-icon v-if="child.icon" :icon-pack="child.iconPack" :icon="child.icon" :color="color"
 								class="tu-tabs--btn-icon"></tu-icon>
 							<span class="tu-tabs-button-text" v-if="child.label">{{ child.label }}</span>
@@ -72,10 +73,7 @@
 			<span :style="stylex" v-if="tabStyle !== 'progress' && !pills" class="line-tu-tabs" />
 		</div>
 
-		<div class="con-slot-tabs" :style="{
-			width: fixedWidth,
-			height: fixedHeight
-		}" :class="{ 'tabs-fixed-height': fixedHeight ? true : false }">
+		<div class="con-slot-tabs" :class="{ 'tabs-fixed-height': fixedHeight ? true : false }">
 			<slot v-if="type === 'normal'" />
 
 			<router-view v-if="type === 'router' && routerModeParams.name !== null"
@@ -508,9 +506,9 @@ export default defineComponent({
 	position: relative;
 
 	.con-slot-tabs {
-		position: relative;
-		display: block;
+		flex-grow: 1;
 		overflow: hidden;
+		display: flex;
 	}
 
 	.con-ul-tabs {
@@ -768,6 +766,7 @@ export default defineComponent({
 .tu-tabs-button-text {
 	color: white;
 }
+
 @mixin state($tu-color) {
 
 	.con-ul-tabs {
