@@ -1,11 +1,12 @@
 <template>
 	<div style="display: flex; flex-direction: column;">
-		<div class="tu-usagebar-parent" @animationstart="startWidthChange()" @animationend="stopWidthChange()"
+		<div class="tu-usagebar-parent" :style="`height:${height}`" @animationstart="startWidthChange()" @animationend="stopWidthChange()"
 			ref="usagebarParent">
 			<tu-popper v-for="(item, index) in orderedItems" :key="index" arrow hover placement="top">
 				<div class="tu-usagebar-children" :style="{
 					...styleItem(item, index),
-					width: item.width
+					width: item.width,
+                    height: height
 				}" />
 				<template #content>
 					<div style="margin: 10px">
@@ -28,22 +29,21 @@
 			</tu-popper>
 		</div>
 		<div style="display: flex; flex-wrap: wrap">
-			<div v-for="(item, index) in orderedItems" :key="index" :style="styleListItem(item, index)"
+			<div v-for="(item, index) in orderedItems" :key="index"
 				class="tu-usagebar-list">
 				<span class="tu-usagebar-dot" :style="styleChip(item.color)"></span>
 				<span class="tu-usagebar-text">{{ item.name }}</span>
 			</div>
 		</div>
-
 	</div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref, watch, PropType, reactive, nextTick } from "vue";
+import { computed, defineComponent, onMounted, ref, Ref, watch, PropType, reactive, nextTick } from "vue";
 import tuComponent from "../tuComponent";
 import { tuPopper, tuPopupMenu, tuPopupItem } from "../tuPopper";
 import * as _color from "../../utils";
-interface progressBarItem {
+export interface usageBarItem {
 	name: String;
 	time: number;
 	color?: string;
@@ -56,19 +56,18 @@ export default defineComponent({
 	},
 	props: {
 		items: {
-			type: Object as PropType<progressBarItem[]>,
+			type: Object as PropType<usageBarItem[]>,
 			default: []
 		},
-		number: {
-			type: Number,
-			default: 0
-		}
+        height: {
+            type: String,
+            default: "20px"
+        }
 	},
 	setup(props) {
-		let orderedItems = reactive([]);
+		let orderedItems= reactive([]);
 		const usagebarParent = ref<HTMLDivElement>();
 		let marginVar = ref(0);
-
 		let tempArr = [];
 		let othersCount = ref(0);
 		let colors = ["#5e64ff",
@@ -83,8 +82,12 @@ export default defineComponent({
 			"#ffc3a0", "#ff6666", "#008000",
 			"#660066", "#8b0000", "#794044"]
 		if (props.items) {
+            let total = 0;
+            for(let i = 0; i < props.items.length; i++) {
+                total = total + props.items[i].time
+            }
 			for (let i = 0; i < props.items.length; i++) {
-				let percentage = (props.items[i].time / props.number) * 100;
+				let percentage = (props.items[i].time / total) * 100;
 				if (percentage <= 5) {
 					othersCount.value++;
 					tempArr.push({
@@ -125,7 +128,6 @@ export default defineComponent({
 		}
 
 		function styleAllItems() {
-			console.log("hi")
 			orderedItems.forEach(item => {
 				item.width = `${(item.percentage / 100) * usagebarParent.value?.clientWidth}px`
 			});
@@ -140,16 +142,11 @@ export default defineComponent({
 				item.color = colors[index % 20];
 				background: colors[index % 20];
 			}
-			let width = orderedItems[index].percentage + "%"
-
 			const widthPx = (orderedItems[index].percentage / 100) * usagebarParent.value?.clientWidth;
-			//console.log(widthPx);
 
 			if (index === 0) {
-				//
 				return {
 					background: background,
-					//		width: `${widthPx}px`,
 					"border-top-left-radius": "5px",
 					"border-bottom-left-radius": "5px"
 				}
@@ -162,21 +159,13 @@ export default defineComponent({
 				if (index === orderedItems.length - 1) {
 					return {
 						background: background,
-						//		width: `${widthPx}px`,
 						"border-top-right-radius": "5px",
 						"border-bottom-right-radius": "5px"
 					}
 				}
 				return {
 					background: background,
-					//width: `${widthPx}px`,
 				}
-			}
-		}
-		const styleListItem = (item, index) => {
-			//let width = (orderedItems[index].percentage + 2) + "%"
-			return {
-				//width: width,
 			}
 		}
 		const styleChip = (color: string) => {
@@ -191,7 +180,6 @@ export default defineComponent({
 		onMounted(() => {
 			if (usagebarParent.value) {
 				watch(() => getWidth.value, () => {
-					console.log("hi");
 					styleAllItems();
 				});
 			}
@@ -213,7 +201,6 @@ export default defineComponent({
 		return {
 			orderedItems,
 			styleItem,
-			styleListItem,
 			styleChip,
 			tempArr,
 			usagebarParent,
@@ -226,24 +213,19 @@ export default defineComponent({
 
 <style scoped lang="scss">
 .tu-usagebar-parent {
-	height: 20px;
 	display: flex;
 	margin: unset;
 	position: relative;
 	animation-name: widthAnim;
 	animation-duration: 1s;
 	animation-fill-mode: both;
-
 }
 
 @keyframes widthAnim {
 	0% {
 		width: 0%;
-
 	}
-
 	100% {
-
 		width: 100%;
 	}
 }
@@ -252,8 +234,6 @@ export default defineComponent({
 	cursor: pointer;
 	height: inherit;
 	display: block;
-	height: 20px !important;
-
 	text-align: end;
 	padding-right: 5px;
 }

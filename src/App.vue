@@ -959,10 +959,9 @@
 				<h4>Usage Bar:</h4>
 				<hr />
 				<div style="width: 500px;">
-					<tuUsageBar :items="barItems" :number="240" />
+					<tuUsageBar height="20px" :items="barItems" :number="240" />
 				</div>
 			</div>
-
 		</div>
 	</div>
 </template>
