@@ -1081,6 +1081,10 @@ export default defineComponent({
 				name: "Cars",
 				time: 1,
 			},
+			{
+				name: "Bikes",
+				time: 1,
+			},
 		]
 
 

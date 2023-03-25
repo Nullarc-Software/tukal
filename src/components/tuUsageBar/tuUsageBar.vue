@@ -1,10 +1,30 @@
 <template>
-    <div style="display:block;">
+    <div style="display:flex; flex-direction:column;">
         <div class="tu-usagebar-parent">
-            <div v-for="(item, index) in orderedItems" :key="index" class="tu-usagebar-children tooltip"
-                :style="styleItem(item, index)"><span v-if="item.name === 'Others'" class="tooltiptext">
-                <div v-for="item in tempArr" :key="item" >{{ item.name  }}</div>
-                </span></div>
+            <tu-popper fitPopperContainer v-for="(item, index) in orderedItems" :key="index" arrow hover>
+                <div class="tu-usagebar-children tooltip" :style="styleItem(item, index)">
+                </div>
+                <template #content>
+                    <tu-popup-menu v-if="item.name !== 'Others'">
+                        <tu-popup-item>
+                            <div class="tu-usagebar-text-parent">
+                                <div class="tu-usagebar-text-title">{{ item.name }}</div>
+                                <div class="tu-usagebar-text-percentage">{{ parseFloat(item.percentage).toFixed(2)
+                                }}</div>
+                            </div>
+                        </tu-popup-item>
+                    </tu-popup-menu>
+                    <tu-popup-menu v-else>
+                        <tu-popup-item v-for="item in tempArr" :key="index">
+                            <div class="tu-usagebar-text-parent">
+                                <span class="tu-usagebar-text-title">{{ item.name }}</span>
+                                <span class="tu-usagebar-text-percentage">{{ parseFloat(item.percentage).toFixed(2)
+                                }}</span>
+                            </div>
+                        </tu-popup-item>
+                    </tu-popup-menu>
+                </template>
+            </tu-popper>
         </div>
         <div v-for="(item, index) in orderedItems" :key="index" :style="styleListItem(item, index)"
             class="tu-usagebar-list">
@@ -41,6 +61,17 @@ export default {
         let marginVar = ref(0);
         let tempArr = ref([]);
         let othersCount = ref(0);
+        let colors = ["#5e64ff",
+            "#28a745",
+            "#feef72",
+            "#98d85b",
+            "#ffa00a",
+            "#ff5858",
+            "#7cd6fd",
+            "#743ee2", "#0000ff", "#003366", "#800000",
+            "#800080", "#00ff00", "#20b2aa", "#f08080",
+            "#ffc3a0", "#ff6666", "#008000",
+            "#660066", "#8b0000", "#794044"]
         if (props.items) {
             for (let i = 0; i < props.items.length; i++) {
                 let percentage = (props.items[i].time / props.number) * 100;
@@ -48,12 +79,14 @@ export default {
                     othersCount.value++;
                     tempArr.value.push({
                         name: props.items[i].name,
+                        color: props.items[i].color,
                         percentage: percentage
                     })
                 }
                 else {
                     orderedItems.value.push({
                         name: props.items[i].name,
+                        color: props.items[i].color,
                         percentage: percentage
                     })
                 }
@@ -71,6 +104,7 @@ export default {
             else if (othersCount.value === 1) {
                 orderedItems.value.push({
                     name: tempArr.value[0].name,
+                    color: tempArr.value[0].color,
                     percentage: tempArr.value[0].percentage
                 })
             }
@@ -82,21 +116,31 @@ export default {
                 background = `rgba(${_color.getColorAsRgb(item.color)})`
             }
             else {
-                const randomColor = Math.floor(Math.random() * 16777215).toString(16);
-                background = "#" + randomColor
-                item.color = background
+                item.color = colors[index % 20];
+                background: colors[index % 20];
             }
             let width = orderedItems.value[index].percentage + "%"
             if (index === 0) {
                 return {
                     background: background,
                     width: width,
+                    "border-top-left-radius": "5px",
+                    "border-bottom-left-radius": "5px"
                 }
             }
             else {
                 let margin = 0;
                 for (let i = 0; i < index; i++) {
                     margin = margin + orderedItems.value[i].percentage
+                }
+                if (index === orderedItems.value.length - 1) {
+                    return {
+                        background: background,
+                        width: width,
+                        marginLeft: margin + "%",
+                        "border-top-right-radius": "5px",
+                        "border-bottom-right-radius": "5px"
+                    }
                 }
                 return {
                     background: background,
@@ -122,13 +166,12 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .tu-usagebar-parent {
     width: 100%;
     height: 20px;
-    border-radius: 5px;
+    border-radius: 10px !important;
     margin: 20px 10px;
-    border: 1px solid white;
     position: relative;
     animation-name: widthAnim;
     animation-duration: 1s;
@@ -172,45 +215,8 @@ export default {
     border-radius: 50%;
     display: inline-block;
 }
-.tooltip .tooltiptext {
-    visibility: hidden;
-    width: 80px;
-    height: 80px;
-    overflow: auto;
-    background-color: black;
-    color: #fff;
-    text-align: center;
-    border-radius: 6px;
-    padding: 5px 0;
-    position: absolute;
-    z-index: 1;
-    bottom: 150%;
-    left: 85%;
-    margin-left: -60px;
-    font-size: 12px;
-    transition: 2s ease-in;
-}
-
-.tooltip .tooltiptext::after {
-    content: "";
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    margin-left: -5px;
-    border-width: 5px;
-    border-style: solid;
-    border-color: black transparent transparent transparent;
-}
-
-.tooltiptext::-webkit-scrollbar {
-		display: none;
-	}
-
-.tooltiptext::-webkit-scrollbar-track {
-		background: #f1f1f1;
-	}
-
-.tooltip:hover .tooltiptext {
-    visibility: visible !important;
+.tu-usagebar-text-parent {
+    display: flex;
+    justify-content: space-between !important;
 }
 </style>
