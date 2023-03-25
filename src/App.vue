@@ -954,6 +954,14 @@
 				<span>{{ cronValue }}</span>
 
 			</div>
+			<div class="showcase-component">
+
+				<h4>Timeline Component:</h4>
+				<hr />
+				<div style="width: 800px">
+					<tu-timeline/>
+				</div>
+			</div>
 		</div>
 	</div>
 </template>
