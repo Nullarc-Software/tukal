@@ -497,6 +497,7 @@ export class TuTableStore {
 		array[j] = temp;
 	}
 
+
 	public constructHeaders (headers: any[], persistentId: string) {
 		if (headers.length === 1 && typeof headers[0].type === "symbol")
 			headers = headers[0].children;
