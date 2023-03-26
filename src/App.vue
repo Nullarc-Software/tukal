@@ -959,7 +959,7 @@
 				<h4>Timeline Component:</h4>
 				<hr />
 				<div style="width: 800px">
-					<tu-timeline/>
+					<tu-timeline :interval="5" :intervalStartTime="9" :intervalEndTime="6" :intervals="intervals"/>
 				</div>
 			</div>
 		</div>
@@ -1042,8 +1042,11 @@ export default defineComponent({
 		const selectValue2 = ref("1");
 		const selectValue1 = ref("");
 		const page = ref(1);
-
-
+		const intervals = ref([1,1,1,0,1,1,1,1,1,1,1,1,0,0,0,0,1,1,1,1,1,0,1,1,1,1,1,0,0,0,0,0,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,0,1,1,1,1,1,1,0,0,1,1,1,1,1,0,1,1,1,1,1,0,0,0,0,0,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,0,0,0,0,0,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,0,0,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,1,1,1,1,1,1,0,1,1,1,1,1,1,0,0,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,11,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1])
+		let func = () => {
+			intervals.value.push(1)
+		}
+		setInterval(func,10000)
 		const histEvents = [
 			{
 				title: "Added New Agent",
@@ -1791,8 +1794,8 @@ export default defineComponent({
 
 			cronValue,
 			customLocale,
-			srvTableConfig
-
+			srvTableConfig,
+			intervals
 		};
 	}
 });
