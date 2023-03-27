@@ -99,9 +99,19 @@ export default defineComponent({
             return x >= min && x <= max;
         }
         let shadeIntervals = (interval) => {
+            if (interval.utc + 1 === props.intervalEndTime) {
+                return {
+                    background: "linear-gradient(to right, #D3D3D3 50%, white 50%)",
+                }
+            }
             if (between(interval.utc, props.intervalStartTime, props.intervalEndTime) && props.intervalEndTime !== interval.utc) {
                 return {
                     background: '#D3D3D3'
+                }
+            }
+            if (interval.utc + 1 === props.intervalStartTime) {
+                return {
+                    background: "linear-gradient(to left, #D3D3D3 50%, white 50%)",
                 }
             }
         }
@@ -118,7 +128,6 @@ export default defineComponent({
                 newProductiveBox.style.marginLeft = 0 + "%"
             }
             else {
-                console.log(lastUnproductiveTime.value)
                 let marginLeft = (((props.interval * lastUnproductiveTime.value)) / 120) * 100
                 newProductiveBox.style.marginLeft = marginLeft + "%"
             }
@@ -132,25 +141,25 @@ export default defineComponent({
         }
         let addProductiveBox = (i = props.intervals.length - 1) => {
             if (props.intervals[i] === 1) {
-                        if (props.intervals[i - 1] === 1) {
-                            let { boxNum } = calculateCurrentBoxNum(i);
-                            let prevBox = calculateCurrentBoxNum(i - 1);
-                            let oldProductiveBox = document.getElementById(`tu-productive-box-${latestProductiveBox.value}`);
-                            let str = oldProductiveBox.style.width
-                            const mynum = Number(str.substring(0, str.length - 1));
-                            oldProductiveBox.style.width = (mynum + ((props.interval / 120) * 100)) + "%"
-                            if (boxNum > prevBox.boxNum) {
-                                createNewProductiveBox(i, true)
-                            }
-                        }
-                        else {
-                            createNewProductiveBox(i)
-                        }
-                        lastUnproductiveTime.value = 0;
+                if (props.intervals[i - 1] === 1) {
+                    let { boxNum } = calculateCurrentBoxNum(i);
+                    let prevBox = calculateCurrentBoxNum(i - 1);
+                    let oldProductiveBox = document.getElementById(`tu-productive-box-${latestProductiveBox.value}`);
+                    let str = oldProductiveBox.style.width
+                    const mynum = Number(str.substring(0, str.length - 1));
+                    oldProductiveBox.style.width = (mynum + ((props.interval / 120) * 100)) + "%"
+                    if (boxNum > prevBox.boxNum) {
+                        createNewProductiveBox(i, true)
                     }
-                    else {
-                        lastUnproductiveTime.value++
-                    }
+                }
+                else {
+                    createNewProductiveBox(i)
+                }
+                lastUnproductiveTime.value = 0;
+            }
+            else {
+                lastUnproductiveTime.value++
+            }
         }
         let addProductiveBoxes = () => {
             if (props.intervals.length > 0) {
@@ -161,12 +170,11 @@ export default defineComponent({
         }
         watch(() => props.intervals, (newValue, oldValue) => {
             addProductiveBox()
-        },{ deep: true });
+        }, { deep: true });
+
         onMounted(() => {
             calculateMarginLeftCurrentTime()
-            console.log("before")
             addProductiveBoxes()
-            console.log("after")
             setInterval(incrementMarginLeftCurrentTime, 60000);
         })
         return { intervals, marginLeftCurrentTime, shadeIntervals }

@@ -959,7 +959,7 @@
 				<h4>Timeline Component:</h4>
 				<hr />
 				<div style="width: 800px">
-					<tu-timeline :interval="5" :intervalStartTime="9" :intervalEndTime="6" :intervals="intervals"/>
+					<tu-timeline :interval="1" :intervalStartTime="9" :intervalEndTime="19" :intervals="intervals"/>
 				</div>
 			</div>
 		</div>
