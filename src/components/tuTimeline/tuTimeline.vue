@@ -85,7 +85,7 @@ export default defineComponent({
         ]
         let latestProductiveBox = ref(0)
         let marginLeftCurrentTime = ref(0);
-        let lastUnproductiveTime = ref(0);
+        let lasProductiveTimeCount = ref(0);
         let calculateMarginLeftCurrentTime = () => {
             let hours = new Date().getHours();
             let minutes = new Date().getMinutes();
@@ -118,17 +118,17 @@ export default defineComponent({
         let calculateCurrentBoxNum = (i: number) => {
             let percentage = (((props.interval * i) + props.interval) / 1440) * 100;
             let boxNum = Math.ceil(percentage / (100 / 12));
-            return { boxNum, percentage }
+            return boxNum
         }
         let createNewProductiveBox = (i: number, bool?: boolean) => {
-            let { boxNum, percentage } = calculateCurrentBoxNum(i);
+            let boxNum = calculateCurrentBoxNum(i);
             let currentBox = document.getElementById(`tu-timeline-box-${boxNum}`);
             let newProductiveBox = document.createElement("div");
             if (bool || i === 0) {
                 newProductiveBox.style.marginLeft = 0 + "%"
             }
             else {
-                let marginLeft = (((props.interval * lastUnproductiveTime.value)) / 120) * 100
+                let marginLeft = (((props.interval * lasProductiveTimeCount.value)) / 120) * 100
                 newProductiveBox.style.marginLeft = marginLeft + "%"
             }
             newProductiveBox.style.width = ((props.interval / 120) * 100) + "%";
@@ -140,25 +140,30 @@ export default defineComponent({
             currentBox.appendChild(newProductiveBox);
         }
         let addProductiveBox = (i = props.intervals.length - 1) => {
+            let boxNum = calculateCurrentBoxNum(i);
+            let prevBox = calculateCurrentBoxNum(i - 1);
+            if (boxNum > prevBox) {
+                lasProductiveTimeCount.value = 0;
+            }
             if (props.intervals[i] === 1) {
                 if (props.intervals[i - 1] === 1) {
-                    let { boxNum } = calculateCurrentBoxNum(i);
-                    let prevBox = calculateCurrentBoxNum(i - 1);
-                    let oldProductiveBox = document.getElementById(`tu-productive-box-${latestProductiveBox.value}`);
-                    let str = oldProductiveBox.style.width
-                    const mynum = Number(str.substring(0, str.length - 1));
-                    oldProductiveBox.style.width = (mynum + ((props.interval / 120) * 100)) + "%"
-                    if (boxNum > prevBox.boxNum) {
+                    if (boxNum > prevBox) {
                         createNewProductiveBox(i, true)
+                    }
+                    else {
+                        let oldProductiveBox = document.getElementById(`tu-productive-box-${latestProductiveBox.value}`);
+                        let str = oldProductiveBox.style.width
+                        const mynum = Number(str.substring(0, str.length - 1));
+                        oldProductiveBox.style.width = (mynum + ((props.interval / 120) * 100)) + "%"
                     }
                 }
                 else {
                     createNewProductiveBox(i)
                 }
-                lastUnproductiveTime.value = 0;
+                lasProductiveTimeCount.value = 0;
             }
             else {
-                lastUnproductiveTime.value++
+                lasProductiveTimeCount.value++
             }
         }
         let addProductiveBoxes = () => {
