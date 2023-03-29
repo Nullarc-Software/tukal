@@ -524,7 +524,7 @@
 				</tu-select-option>
 			</tu-select>
 
-			<tu-select placeholder="" v-model="selectValue1" filter>
+			<tu-select width="550px" placeholder="" v-model="selectValue1" filter>
 				<tu-select-option label="Test" value="1">
 					Test
 				</tu-select-option>
