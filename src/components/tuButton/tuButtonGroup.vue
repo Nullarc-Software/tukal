@@ -45,9 +45,13 @@ export default defineComponent({
 		border: 0px;
 
 		&.tu-button--border {
-			&:before {
-				border-left: 0px;
-				width: 100%;
+
+			&:nth-child(2) {
+				&:before {
+					border-left: 0px;
+					border-right: 0px;
+					width: 100%;
+				}
 			}
 
 			+ .tu-button--border:not(:last-of-type) {
