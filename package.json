@@ -5,7 +5,8 @@
 	"scripts": {
 		"dev": "vite",
 		"build": "vue-tsc --noEmit && vite build",
-		"serve": "vite preview"
+		"serve": "vite preview",
+		"test": "vitest --run --environment jsdom"
 	},
 	"main": "dist/tukal-vue.umd.cjs",
 	"module": "./dist/tukal-vue.js",
@@ -28,15 +29,18 @@
 		"@tiptap/extension-underline": "^2.0.0-beta.204",
 		"@tiptap/starter-kit": "^2.0.0-beta.202",
 		"@tiptap/vue-3": "^2.0.0-beta.202",
+		"flush-promises": "^1.0.2",
+		"jsdom": "^21.1.0",
 		"jspdf": "^2.5.1",
 		"jspdf-autotable": "^3.5.25",
 		"lodash": "^4.17.21",
+		"mustache": "^4.2.0",
 		"path-to-regexp": "^6.2.0",
 		"pinia": "^2.0.27",
+		"vitest": "^0.29.2",
 		"vue": "^3.2.45",
 		"vue-router": "^4.0.3",
-		"vue3-popper": "^0.1.0",
-		"mustache": "^4.2.0"
+		"vue3-popper": "^0.1.0"
 	},
 	"devDependencies": {
 		"@types/lodash": "^4.14.191",
@@ -45,6 +49,7 @@
 		"@typescript-eslint/parser": "^5.44.0",
 		"@vitejs/plugin-vue": "^3.2.0",
 		"@vue/compiler-sfc": "^3.2.45",
+		"@vue/test-utils": "^2.3.1",
 		"axios": "^0.26.0",
 		"eslint": "^8.9.0",
 		"eslint-plugin-vue": "^9.8.0",

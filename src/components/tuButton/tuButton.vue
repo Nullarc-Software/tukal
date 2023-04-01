@@ -111,7 +111,7 @@ export default defineComponent({
 			else if (props.href)
 				window.open(props.href, (props.blank && "_blank") || "_self");
 			// console.log(this.blank && '_self')
-
+	
 			context.emit("click", event);
 		};
 
