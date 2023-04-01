@@ -74,10 +74,11 @@
 			<h3>Button Groups:</h3>
 			<hr />
 			<tu-button-group fixed-height="40px">
-				<tu-button> One </tu-button>
-				<tu-button> Two </tu-button>
-				<tu-button> Three </tu-button>
-				<tu-button> four </tu-button>
+				<tu-button border> One </tu-button>
+				<tu-button border> Two </tu-button>
+				<tu-button border> Three </tu-button>
+				<tu-button border> four </tu-button>
+				<tu-button border> five </tu-button>
 			</tu-button-group>
 			<br />
 			<tu-button-group>
