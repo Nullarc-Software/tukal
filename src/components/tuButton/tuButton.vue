@@ -520,7 +520,10 @@ export default defineComponent({
 		}
 	}
 
-
+	&:focus {
+		color: #fff;
+		background: -getColor("color");
+	}
 
 	&.tu-button--active {
 		background: -getColor("color");

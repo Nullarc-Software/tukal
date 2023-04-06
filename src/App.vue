@@ -448,7 +448,7 @@
 				<tu-input type="number" label="Number" />
 				<tu-input type="url" label="Url" />
 				<tu-input type="time" label="time" />
-				<tu-input type="date" label="Date" />
+				<tu-input width="300px" type="date" label="Date" />
 			</div>
 			<div style="margin: 10px">
 				<tu-input primary state="primary" placeholder="Primary" />

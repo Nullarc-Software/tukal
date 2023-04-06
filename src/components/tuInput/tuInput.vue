@@ -32,7 +32,7 @@
 			<input v-bind="$attrs" :type="type" class="tu-input" :value="modelValue" :class="[
 	{ ['tu-input--has-icon']: !!$slots.icon },
 	{ ['tu-input--has-icon--after']: !!iconAfter }
-]" @input="onInput" @keyup.enter="onEnter" :id="getId" :disabled="editableStaticInternal || disable" />
+]" @input="onInput" @keyup.enter="onEnter" :id="getId" :disabled="editableStaticInternal || disable" :style="{ width: width }" />
 			<label v-if="label" :for="getId" :class="[
 	'tu-input__label',
 	{ 'tu-input__label--hidden': modelValue !== '' }
