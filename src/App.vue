@@ -74,11 +74,11 @@
 			<h3>Button Groups:</h3>
 			<hr />
 			<tu-button-group fixed-height="40px">
-				<tu-button border> One </tu-button>
-				<tu-button border> Two </tu-button>
-				<tu-button border> Three </tu-button>
-				<tu-button border> four </tu-button>
-				<tu-button border> five </tu-button>
+				<tu-button border color="primary"> One </tu-button>
+				<tu-button border color="primary"> Two </tu-button>
+				<tu-button border color="primary" > Three </tu-button>
+				<tu-button border color="primary"> four </tu-button>
+				<tu-button border color="primary"> five </tu-button>
 			</tu-button-group>
 			<br />
 			<tu-button-group>
@@ -290,7 +290,7 @@
 						Icon edit
 					</tu-chip>
 				</div>
-											</div> -->
+												</div> -->
 		<div class="showcase-component" style="margin-top: 100px">
 			<h3>Collapse:</h3>
 			<hr />
@@ -448,7 +448,7 @@
 				<tu-input type="number" label="Number" />
 				<tu-input type="url" label="Url" />
 				<tu-input type="time" label="time" />
-				<tu-input type="date" label="Date" />
+				<tu-input width="300px" type="date" label="Date" />
 			</div>
 			<div style="margin: 10px">
 				<tu-input primary state="primary" placeholder="Primary" />
@@ -796,7 +796,7 @@
 					not-margin
 					v-model="page"
 					:length="20"
-												/> -->
+													/> -->
 		</div>
 
 		<tu-button @click="enableTabs = !enableTabs">Click Enable Tabs</tu-button>
@@ -812,7 +812,7 @@
 				<tu-tab label="Service" name="se"> Service </tu-tab>
 				<tu-tab label="login" name="lo"> Login </tu-tab>
 				<tu-tab label="Disabled" name="di"> Disabled </tu-tab>
-							</tu-tabs> -->
+								</tu-tabs> -->
 			<!-- <tu-tabs name="tabs2" position="top" :button="true" noTransitions v-model="tabName" /> -->
 			<tu-tabs position="left" pills noTransitions v-model="tabName" fixed-height="400px">
 				<tu-tab label="Home" name="ho">
@@ -830,7 +830,7 @@
 						<tu-th field="name" sort search :index="5" width="500px"> Name </tu-th>
 						<tu-th field="web_pages" sort search> Web site </tu-th>
 						<tu-th field="something" sort search> No value </tu-th>
-															</template> -->
+																</template> -->
 						<template #footer>
 							<tu-pagination not-margin flat v-model="page" :length="numPages" />
 						</template>
@@ -852,7 +852,7 @@
 					<tu-tab label="Service" name="se"> Service </tu-tab>
 					<tu-tab label="login" name="lo"> Login </tu-tab>
 					<tu-tab label="Disabled" name="di"> Disabled </tu-tab>
-												</tu-tabs> -->
+													</tu-tabs> -->
 		</div>
 		<div class="showcase-component">
 			<h4>Progress:</h4>
@@ -904,7 +904,7 @@
 						<tu-th field="name" sort search :index="5" width="500px"> Name </tu-th>
 						<tu-th field="web_pages" sort search> Web site </tu-th>
 						<tu-th field="something" sort search> No value </tu-th>
-													</template> -->
+														</template> -->
 					<template #footer>
 						<tu-pagination not-margin flat v-model="page" :length="numPages" />
 					</template>
@@ -941,7 +941,7 @@
 					</template>
 				</tu-tree-view>
 			</div>
-			<div class="showcase-component">
+			<!-- <div class="showcase-component">
 
 				<h4>History Component:</h4>
 				<hr />
@@ -954,6 +954,11 @@
 				<tu-cron v-model="cronValue" />
 				<span>{{ cronValue }}</span>
 
+			</div> -->
+			<div class="showcase-component">
+				<h4>Kanban Board Component:</h4>
+				<hr />
+				<tu-kanban  :items="kanbanItems" :categories="kanbanCategories"/>
 			</div>
 		</div>
 	</div>
@@ -1035,7 +1040,40 @@ export default defineComponent({
 		const selectValue2 = ref("1");
 		const selectValue1 = ref("");
 		const page = ref(1);
+		const kanbanItems = [
+			{
+				name: "VS Code",
+				image: "https://cdn.icon-icons.com/icons2/3053/PNG/512/microsoft_visual_studio_code_macos_bigsur_icon_189957.png",
+				category: "Productive"
+			},
+			{
+				name: "Facebook",
+				image: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAclBMVEX///8AAADx8fGxsbH39/e+vr6KioopKSkoKCj7+/vg4OBAQECNjY0JCQkNDQ1aWlpfX19LS0tGRkbp6enQ0NCDg4OhoaEjIyPb29urq6vm5uaamprDw8MwMDBubm4dHR02NjaVlZVUVFR3d3dmZmYVFRV4y9GXAAAC9klEQVR4nO3dC3LaMBRGYTAmwUB4Q3iEJqFk/1tshnZSaKfgK1+k3+45C2D0zYAsGyFarbQVeb+7GU6mg/3rqP3V00WjU7P3IvFY7WWL3bfXdvl689QjNtVfTUe3UZcdUw+6fPPVm1V3Kks98JItxkG8z15SD71MRWcW6mu3u6lHX6LuY7ivDsL+tIpPX5gvq/nkhet9VaC4cFXZpy3MJw5AZWE28AAKC+fPLkBdYd/Hpyt0A6oKs17ThT6TjLDw6AfUFO4cgZLCtSdQUhh2L18jYeW7CXWh73tUUXhouvDFGagn9J1mBIUdb6Cc0G89Kip0/xTKCYOfbNdFuPUHigkfGi90v1SoCb0XbHrC98YLHZ9daArvMZNqCf1XbGpC51vfX61Ts85yeoz/R3lq1ll3Aa5Sq85a3AM4TK06L3yieR4cjsuHvxtu+qlRF4VNNOPOQumTdrWQO6el0kx5s4Bldy32O31VmC8WH9vUY7ZlX7MprVbKZL51mqQesTWzsF4fwlbABT/1gM1Zhd9TD9icVbhLPWBzXaOwbjOpfVmqteQsk1VYlx3qv0OIUD+ECPVDiFA/hAj1Q4hQP4QI9UOIUD+EdRDm2ZXyjVG4vfZqP4t8OM38+GE0VO4t6ncbfj97tXSIKKxwOkmV4m2JmqcBtqfRhHf4IUWp9tFmG+u3g171om2YQogQ4f8rfESIECFChAgRIkSIECFChAgRIkSIECFChAgRIkSIsHbC5u9UyBIJI24Zqvh/OKFt4gnT7PoaxwN+vk89D8sv1yj6MVhF/u8K6+7L+bVXOxWbd6sm7KC9HkKE+iFEqB9ChPohRKgfQoT6IUSoH0KE+iFEqB9ChPohRKgfQoT6IUSoH0KE+iFEqB9ChPohRKgfQoT6IUSoH0KE+iFEqB9ChPohRKgfQoT6IUSoH0KE+iFEqB9ChPohRKgfQoT6IUSoX/OF1nN46ydc24Cz1OMNaGASRj+a1CHTKbVRD5d1K1vuy/GeZnc+HvgHllpO87YiSVIAAAAASUVORK5CYII=",
+				category: "UnProductive"
+			},
+			{
+				name: "Google Chrome",
+				image: "https://th.bing.com/th/id/OIP.DXnh2NpUdDZrQ2NZAT6_tAHaHa?pid=ImgDet&rs=1",
+				category: "Neutral"
+			},
+			{
+				name: "Instagram",
+				image: "data:image/png;base64,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",
+				category: "UnProductive"
+			},
+			{
+				name: "Adobe XD",
+				image: "data:image/png;base64,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",
+				category: "Productive"
+			},
+			{
+				name: "Firefox",
+				image: "https://blog.mozilla.org/opendesign/files/2018/07/firefox-logo.png",
+				category: "Neutral"
+			}
+		]
 
+		const kanbanCategories = [ "Productive", "Neutral", "UnProductive"]
 
 		const histEvents = [
 			{
@@ -1784,8 +1822,9 @@ export default defineComponent({
 
 			cronValue,
 			customLocale,
-			srvTableConfig
-
+			srvTableConfig,
+			kanbanItems,
+			kanbanCategories
 		};
 	}
 });
