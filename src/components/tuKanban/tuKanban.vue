@@ -1,17 +1,18 @@
 <template>
     <div :key="reRender" class="margin-bottom">
-        <table>
-            <tr>
-                <th v-for="category in categories" class="text-center hori">{{ category }}</th>
-            </tr>
+        <table class="tu-kanban-table__element">
+            <thead class="tu-kanban-table__thead">
+                <th v-for="category in fields" class="text-center tu-kanban-table__th">{{ category.fieldname }}</th>
+            </thead>
             <tr v-for="index in (itemsOfCategories.noOfRows + 1)">
                 <td :draggable="true" @dragstart="startDrag($event, item)" @dragover.prevent @dragenter.prevent
                     v-for="(item, ind) in orderedItems[index - 1]" @drop="onDrop(item, ind)" class="text-center" :class="{
-                        'vert': ind === 1, 'animation-kanban':
+                        'animation-kanban':
                             isDrag === true
                     }">
-                    <div v-if="item.name" class="d-flex justify-content-center align-items-center">
-                        <img v-if="item.image" :src="item.image" class="tu-kanban-img mt-3 ms-3" />
+                    <div v-if="item.name" class="d-flex justify-content-between align-items-center tu-kanban-item">
+                        <img v-if="item.image" :src="item.image" class="tu-kanban-img mt-3 ms-4" />
+                        <tu-icon class="tu-kanban-icon ms-4" v-else-if="item.icon"> {{ item.icon }}</tu-icon>
                         <h5 class="ms-4 "> {{ item.name }}</h5>
                     </div>
                 </td>
@@ -22,7 +23,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType, reactive, ref, watch } from 'vue'
-import { groupBy, sliceIntoChunks, kanbanItems } from "./utils"
+import { groupBy, sliceIntoChunks, kanbanItems, kanbanFields } from "./utils"
 export default defineComponent({
     name: "tuKanban",
     props: {
@@ -34,8 +35,8 @@ export default defineComponent({
             type: String,
             default: "20%"
         },
-        categories: {
-            type: Array<string>,
+        fields: {
+            type: Object as PropType<kanbanFields[]>,
             default: []
         }
     },
@@ -46,14 +47,14 @@ export default defineComponent({
         let dropCategory = ref(null);
         let reRender = ref(0);
         let lastShuffledItem = ref();
-        let itemsOfCategories = ref(groupBy(props.items, 'category', "noOfRows", props.categories));
+        let itemsOfCategories = ref(groupBy(props.items, 'fieldname', "noOfRows", props.fields));
         let orderedItems: any[][] = reactive([]);
         function createARow(k: number, arr: any[]) {
-            for (let i = 0; i < props.categories.length; i++) {
-                if (itemsOfCategories.value[props.categories[i]][k] === undefined)
+            for (let i = 0; i < props.fields.length; i++) {
+                if (itemsOfCategories.value[props.fields[i].fieldname][k] === undefined)
                     arr.push({});
                 else
-                    arr.push(itemsOfCategories.value[props.categories[i]][k]);
+                    arr.push(itemsOfCategories.value[props.fields[i].fieldname][k]);
             }
         }
         function shuffleItems (start: number) {
@@ -61,11 +62,11 @@ export default defineComponent({
                 if(i === orderedItems.length - 1) {
                     orderedItems[i][dragItem.value.categoryId] = {}
                     let count = 0;
-                    for (let j = 0; j < props.categories.length; j++) {
+                    for (let j = 0; j < props.fields.length; j++) {
                         if (Object.keys(orderedItems[i][j]).length === 0)
                             count++;
                     }
-                    if (count === props.categories.length) {
+                    if (count === props.fields.length) {
                         orderedItems.pop();
                     }
                 }
@@ -85,7 +86,7 @@ export default defineComponent({
                 }
                 if (Object.keys(orderedItems[i][dropCategory.value]).length === 0 && !itemPushed) {
                     const newItem = Object.assign({}, dragItem.value);
-                    newItem.category = props.categories[dropCategory.value]
+                    newItem.fieldname = props.fields[dropCategory.value]
                     newItem.categoryId = dropCategory.value
                     orderedItems[i][dropCategory.value] = newItem
                     itemPushed = true
@@ -97,10 +98,10 @@ export default defineComponent({
             }
             if (!itemPushed) {
                 let newRow = [];
-                for (let i = 0; i < props.categories.length; i++) {
+                for (let i = 0; i < props.fields.length; i++) {
                     if (i === dropCategory.value) {
                         const newItem = Object.assign({}, dragItem.value);
-                        newItem.category = props.categories[dropCategory.value]
+                        newItem.fieldname = props.fields[dropCategory.value]
                         newItem.categoryId = dropCategory.value
                         newRow.push(newItem)
                     }
@@ -115,7 +116,7 @@ export default defineComponent({
         for (let i = 0; i < itemsOfCategories.value["noOfRows"]; i++) {
             createARow(i, orderedItems)
         }
-        orderedItems = sliceIntoChunks(orderedItems, props.categories.length)
+        orderedItems = sliceIntoChunks(orderedItems, props.fields.length)
         let startDrag = (evt: DragEvent, item: any) => {
             console.log(item)
             isDrag.value = false;
@@ -132,38 +133,109 @@ export default defineComponent({
                 dropCategory.value = undefined;
             }
         }
-        return { orderedItems, reRender, itemsOfCategories, startDrag, dragIndex, onDrop, dragItem, isDrag }
+        let widthChip = () =>{
+            let width = ( 90 / props.fields.length);
+            return {
+                width: width + "vw"
+            }
+        }
+        return { orderedItems, widthChip, reRender, itemsOfCategories, startDrag, dragIndex, onDrop, dragItem, isDrag }
     },
 })
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+@import "../../style/sass/_mixins";
 td,
 th {
-    width: 20%;
-    height: 50px;
+    height: 45px;
 }
 
 .margin-bottom {
     margin-bottom: 25px;
 }
 
+.tu-kanban-table {
+	&__tbody {
+		background-color: -getColor("background");
+		overflow: auto;
+		position: relative;
+
+		&:empty {
+			display: none;
+			background: #000;
+
+			~.tu-table_not-found {
+				display: table-row-group;
+			}
+		}
+	}
+
+	&__header {
+		width: 100%;
+		padding: 10px;
+		background: -getColor("gray-2");
+		border-radius: 14px 14px 0px 0px;
+
+		&~.tu-table {
+			::v-deep(.tu-kanban-table__th) {
+				&:first-child {
+					border-radius: 0px;
+				}
+
+				&:last-child {
+					border-radius: 0px;
+				}
+			}
+		}
+	}
+
+	&__thead {
+		width: 100%;
+		position: sticky;
+		top: 0;
+		z-index: 2;
+		border-bottom: 1px solid -getColorAlpha("text", 0.2);
+
+		::v-deep(.tu-kanban-table__th) {
+			background: -getColor("gray-2");
+
+			&:first-child {
+				border-radius: 14px 0px 0px 0px;
+			}
+
+			&:last-child {
+				border-radius: 0px 14px 0px 0px;
+			}
+		}
+	}
+}
+
+.tu-kanban-table__element {
+	table-layout: fixed;
+	width: 100%;
+}
+
 td {
     cursor: pointer;
 }
 
-.vert {
-    border-left: 1px solid var(--tu-text);
-    border-right: 1px solid var(--tu-text);
-}
-
-.hori {
-    border-bottom: 1px solid var(--tu-text);
-}
-
 .tu-kanban-img {
-    height: 45px;
-    width: 45px !important;
+    height: 36px;
+    width: 36px !important;
+}
+
+.tu-kanban-item {
+    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.08), 0 6px 20px 0 rgba(0, 0, 0, 0.08);
+    margin: 10px;
+    border-radius: 12px;
+}
+
+.tu-dark-theme { 
+    .tu-kanban-item {
+        background: -getColor("gray-1") !important;
+        box-shadow:  0 6px 30px -6px rgba(255,255, 255, 0.1) !important;
+    }
 }
 
 .text-center {
@@ -174,8 +246,8 @@ td {
     display: flex;
 }
 
-.justify-content-center {
-    justify-content: center;
+.justify-content-around {
+    justify-content: space-around;
 }
 
 .align-items-center {
@@ -183,7 +255,7 @@ td {
 }
 
 .ms-4 {
-    margin-left: 14px;
+    margin-left: 6%;
 }
 
 .animation-kanban {
@@ -199,5 +271,9 @@ td {
     100% {
         transform: scale(1);
     }
+}
+
+.tu-kanban-icon {
+    font-size: 36px !important;
 }
 </style>
