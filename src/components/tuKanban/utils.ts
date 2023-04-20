@@ -1,14 +1,12 @@
 export function groupBy(arr, property, largest, categories) {
 	return arr.reduce(function (memo, x: any) {
-		if (!memo[largest])  memo[largest] = 0; 
 		if (!memo[x[property]]) {
 			memo[x[property]] = [];
 			memo[x[property]].id = findCategoryId(categories, x[property]);
 		}
 		x.categoryId = memo[x[property]].id;
+		x.hidden = false;
 		memo[x[property]].push(x);
-		if (memo[x[property]].length > memo[largest]) 
-			memo[largest] = memo[x[property]].length;
 		return memo;
 	}, {});
 }
@@ -31,7 +29,7 @@ export function sliceIntoChunks(arr: any, chunkSize: number) {
 
 export type kanbanItems = {
 	id: any;
-    name: string;
+    content: string;
     image?: string;
     category: string;
 	icon?: string;
