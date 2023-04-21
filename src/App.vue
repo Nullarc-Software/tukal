@@ -722,10 +722,8 @@
 					<tu-row justify="space-between">
 						<tu-avatar badge-color="danger" badge-position="top-right">
 							<i class="bx bx-bell"></i>
-
 							<template #badge> 28 </template>
 						</tu-avatar>
-
 						<tu-avatar>
 							<img src="/avatars/avatar-5.png" alt="" />
 						</tu-avatar>
@@ -944,7 +942,7 @@
 			<div class="showcase-component">
 				<h4>Kanban Board Component:</h4>
 				<hr />
-				<tu-kanban :items="kanbanItems" :fields="kanbanCategories" />
+				<tu-kanban @onDrag="currentItems" :items="kanbanItems" :fields="kanbanCategories" />
 			</div>
 		</div>
 	</div>
@@ -1026,6 +1024,9 @@ export default defineComponent({
 		const selectValue2 = ref("1");
 		const selectValue1 = ref("");
 		const page = ref(1);
+		const currentItems = (items) => {
+			console.log(items)
+		}
 		const kanbanItems = [
 			{
 				id: 1,
@@ -1828,7 +1829,8 @@ export default defineComponent({
 			customLocale,
 			srvTableConfig,
 			kanbanItems,
-			kanbanCategories
+			kanbanCategories,
+			currentItems
 		};
 	}
 });

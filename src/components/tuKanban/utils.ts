@@ -31,7 +31,7 @@ export type kanbanItems = {
 	id: any;
     content: string;
     image?: string;
-    category: string;
+    fieldname: string;
 	icon?: string;
 }
 
