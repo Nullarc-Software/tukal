@@ -46,9 +46,10 @@ export default defineComponent({
         fields: {
             type: Object as PropType<kanbanFields[]>,
             default: []
-        }
+        },
+        modelValue: {}
     },
-    emits: ["onDrag"],
+    emits: ["onDrag", "update:modelValue"],
     setup(props, context) {
         let isDrag = ref(false)
         let dragItem = ref(null);
@@ -56,7 +57,8 @@ export default defineComponent({
         let dropIndex = ref(null)
         let dropCategory = ref(null);
         let rows = ref(props.fields.length - 1)
-        let currentItems: kanbanItems[] = props.items
+        let copiedObject = JSON.parse(JSON.stringify(props.items));
+        let currentItems: kanbanItems[] = copiedObject
         let itemsOfCategories = reactive({ fields: groupBy(props.items, 'fieldname', "noOfRows", props.fields) });
         let search = ref("");
         function exchangeItems() {
@@ -84,6 +86,7 @@ export default defineComponent({
                 dragItem.value = undefined;
                 dropCategory.value = undefined;
                 context.emit("onDrag", currentItems)
+                context.emit("update:modelValue", currentItems)
             }
         }
         watch(search, () => {
@@ -101,7 +104,7 @@ export default defineComponent({
                                 itemsOfCategories.fields[props.fields[i].fieldname][k + 1] = temp
                             }
                         }
-                        if (j - 1 === 0) {
+                        else if (j - 1 === 0) {
                             let temp = itemsOfCategories.fields[props.fields[i].fieldname][j]
                             itemsOfCategories.fields[props.fields[i].fieldname][j] = itemsOfCategories.fields[props.fields[i].fieldname][j - 1]
                             itemsOfCategories.fields[props.fields[i].fieldname][j - 1] = temp
@@ -199,15 +202,9 @@ td {
 .d-flex {
     display: flex;
 }
-
-.justify-content-around {
-    justify-content: space-around;
-}
-
 .align-items-center {
     align-items: center;
 }
-
 .ms-4 {
     margin-left: 6%;
 }

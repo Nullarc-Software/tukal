@@ -290,7 +290,7 @@
 						Icon edit
 					</tu-chip>
 				</div>
-													</div> -->
+														</div> -->
 		<div class="showcase-component" style="margin-top: 100px">
 			<h3>Collapse:</h3>
 			<hr />
@@ -780,7 +780,7 @@
 					not-margin
 					v-model="page"
 					:length="20"
-														/> -->
+															/> -->
 		</div>
 
 		<tu-button @click="enableTabs = !enableTabs">Click Enable Tabs</tu-button>
@@ -796,7 +796,7 @@
 				<tu-tab label="Service" name="se"> Service </tu-tab>
 				<tu-tab label="login" name="lo"> Login </tu-tab>
 				<tu-tab label="Disabled" name="di"> Disabled </tu-tab>
-									</tu-tabs> -->
+										</tu-tabs> -->
 			<!-- <tu-tabs name="tabs2" position="top" :button="true" noTransitions v-model="tabName" /> -->
 			<tu-tabs position="left" pills noTransitions v-model="tabName" fixed-height="400px">
 				<tu-tab label="Home" name="ho">
@@ -814,7 +814,7 @@
 						<tu-th field="name" sort search :index="5" width="500px"> Name </tu-th>
 						<tu-th field="web_pages" sort search> Web site </tu-th>
 						<tu-th field="something" sort search> No value </tu-th>
-																	</template> -->
+																		</template> -->
 						<template #footer>
 							<tu-pagination not-margin flat v-model="page" :length="numPages" />
 						</template>
@@ -836,7 +836,7 @@
 					<tu-tab label="Service" name="se"> Service </tu-tab>
 					<tu-tab label="login" name="lo"> Login </tu-tab>
 					<tu-tab label="Disabled" name="di"> Disabled </tu-tab>
-														</tu-tabs> -->
+															</tu-tabs> -->
 		</div>
 		<div class="showcase-component">
 			<h4>Progress:</h4>
@@ -888,7 +888,7 @@
 						<tu-th field="name" sort search :index="5" width="500px"> Name </tu-th>
 						<tu-th field="web_pages" sort search> Web site </tu-th>
 						<tu-th field="something" sort search> No value </tu-th>
-															</template> -->
+																</template> -->
 					<template #footer>
 						<tu-pagination not-margin flat v-model="page" :length="numPages" />
 					</template>
@@ -938,11 +938,11 @@
 				<tu-cron v-model="cronValue" />
 				<span>{{ cronValue }}</span>
 
-				</div> -->
+					</div> -->
 			<div class="showcase-component">
 				<h4>Kanban Board Component:</h4>
 				<hr />
-				<tu-kanban @onDrag="currentItems" :items="kanbanItems" :fields="kanbanCategories" />
+				<tu-kanban :items="kanbanItems" v-model="currentItemsRef" :fields="kanbanCategories" />
 			</div>
 		</div>
 	</div>
@@ -958,7 +958,8 @@ import {
 	ref,
 	watch,
 	shallowRef,
-	markRaw
+	markRaw,
+	Ref
 } from "vue";
 import * as components from "./components";
 import { TuNotificationAttributes, TuNotification } from "./components/tuNotifications";
@@ -1024,9 +1025,6 @@ export default defineComponent({
 		const selectValue2 = ref("1");
 		const selectValue1 = ref("");
 		const page = ref(1);
-		const currentItems = (items) => {
-			console.log(items)
-		}
 		const kanbanItems = [
 			{
 				id: 1,
@@ -1064,7 +1062,7 @@ export default defineComponent({
 				fieldname: "Neutral"
 			}
 		]
-
+		const currentItemsRef = ref();
 		const kanbanCategories = [
 			{
 				title: "Productive",
@@ -1830,7 +1828,7 @@ export default defineComponent({
 			srvTableConfig,
 			kanbanItems,
 			kanbanCategories,
-			currentItems
+			currentItemsRef
 		};
 	}
 });
