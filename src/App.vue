@@ -142,23 +142,23 @@
 			<h3>Breadcrumbs:</h3>
 			<hr />
 			<tu-breadcrumb :items="[
-					{
-						title: 'Dashboard',
-						url: 'dashboard'
-					},
-					{
-						title: 'Link 1',
-						url: 'link-1'
-					},
-					{
-						title: 'Link 2',
-						disabled: true
-					},
-					{
-						title: 'Active',
-						active: true
-					}
-				]"></tu-breadcrumb>
+				{
+					title: 'Dashboard',
+					url: 'dashboard'
+				},
+				{
+					title: 'Link 1',
+					url: 'link-1'
+				},
+				{
+					title: 'Link 2',
+					disabled: true
+				},
+				{
+					title: 'Active',
+					active: true
+				}
+			]"></tu-breadcrumb>
 
 			<tu-breadcrumb>
 				<li>
@@ -261,7 +261,7 @@
 				</ul>
 			</div>
 		</div>
-		<!-- <div class="showcase-component">
+	<!-- <div class="showcase-component">
 				<h3>Chips:</h3>
 				<hr />
 				<div class="centerx">
@@ -290,7 +290,7 @@
 						Icon edit
 					</tu-chip>
 				</div>
-														</div> -->
+											</div> -->
 		<div class="showcase-component" style="margin-top: 100px">
 			<h3>Collapse:</h3>
 			<hr />
@@ -722,8 +722,10 @@
 					<tu-row justify="space-between">
 						<tu-avatar badge-color="danger" badge-position="top-right">
 							<i class="bx bx-bell"></i>
+
 							<template #badge> 28 </template>
 						</tu-avatar>
+
 						<tu-avatar>
 							<img src="/avatars/avatar-5.png" alt="" />
 						</tu-avatar>
@@ -786,7 +788,7 @@
 			<h4>Pagination:</h4>
 			<hr />
 
-			<!-- <tu-pagination progress not-margin v-model="page" :length="20" />
+		<!-- <tu-pagination progress not-margin v-model="page" :length="20" />
 				<tu-pagination
 					progress
 					dark
@@ -794,7 +796,7 @@
 					not-margin
 					v-model="page"
 					:length="20"
-															/> -->
+												/> -->
 		</div>
 
 		<tu-button @click="enableTabs = !enableTabs">Click Enable Tabs</tu-button>
@@ -805,12 +807,12 @@
 				:router-mode-params="routerTabParams" />
 			<tu-tabs name="tabs1" type="router" position="top" pills noTransitions v-model="tabName"
 				:router-mode-params="routerTabParams" />
-			<!-- <tu-tabs position="top" noTransitions tabStyle="progress" progressWidth="20" v-model="tabName">
+		<!-- <tu-tabs position="top" noTransitions tabStyle="progress" progressWidth="20" v-model="tabName">
 				<tu-tab label="Home" name="ho"> Home </tu-tab>
 				<tu-tab label="Service" name="se"> Service </tu-tab>
 				<tu-tab label="login" name="lo"> Login </tu-tab>
 				<tu-tab label="Disabled" name="di"> Disabled </tu-tab>
-										</tu-tabs> -->
+							</tu-tabs> -->
 			<!-- <tu-tabs name="tabs2" position="top" :button="true" noTransitions v-model="tabName" /> -->
 			<tu-tabs position="left" pills noTransitions v-model="tabName" fixed-height="400px">
 				<tu-tab label="Home" name="ho">
@@ -819,7 +821,7 @@
 						v-model="selected" v-bind="srvTableConfig" v-model:numPages="numPages" :page="page" :pageSize="5"
 						:columnSelector="true" @onRowClicked="rowClicked" @onTableBeginLoad="beginLoad"
 						@onTableEndLoad="afterLoad" @onTableConfigUpdated="configUpdate">
-						<!-- <template #thead>
+					<!-- <template #thead>
 						<tu-th field="country" sort search> Country </tu-th>
 						<tu-th field="name" sort search :index="1" width="500px"> Name </tu-th>
 						<tu-th field="name" sort search :index="2" width="500px"> Name </tu-th>
@@ -828,7 +830,7 @@
 						<tu-th field="name" sort search :index="5" width="500px"> Name </tu-th>
 						<tu-th field="web_pages" sort search> Web site </tu-th>
 						<tu-th field="something" sort search> No value </tu-th>
-																		</template> -->
+															</template> -->
 						<template #footer>
 							<tu-pagination not-margin flat v-model="page" :length="numPages" />
 						</template>
@@ -845,12 +847,12 @@
 				<tu-tab label="login" name="lo"> Login </tu-tab>
 				<tu-tab label="Disabled" name="di"> Disabled </tu-tab>
 			</tu-tabs>
-			<!-- <tu-tabs position="right" noTransitions v-model="tabName">
+		<!-- <tu-tabs position="right" noTransitions v-model="tabName">
 					<tu-tab label="Home" name="ho"> Home </tu-tab>
 					<tu-tab label="Service" name="se"> Service </tu-tab>
 					<tu-tab label="login" name="lo"> Login </tu-tab>
 					<tu-tab label="Disabled" name="di"> Disabled </tu-tab>
-															</tu-tabs> -->
+												</tu-tabs> -->
 		</div>
 		<div class="showcase-component">
 			<h4>Progress:</h4>
@@ -893,7 +895,7 @@
 					v-bind="srvTableConfig" v-model:numPages="numPages" :page="page" :pageSize="5" :columnSelector="true"
 					@onRowClicked="rowClicked" @onTableBeginLoad="beginLoad" @onTableEndLoad="afterLoad"
 					@onTableConfigUpdated="configUpdate">
-					<!-- <template #thead>
+				<!-- <template #thead>
 						<tu-th field="country" sort search> Country </tu-th>
 						<tu-th field="name" sort search :index="1" width="500px"> Name </tu-th>
 						<tu-th field="name" sort search :index="2" width="500px"> Name </tu-th>
@@ -902,7 +904,7 @@
 						<tu-th field="name" sort search :index="5" width="500px"> Name </tu-th>
 						<tu-th field="web_pages" sort search> Web site </tu-th>
 						<tu-th field="something" sort search> No value </tu-th>
-																</template> -->
+													</template> -->
 					<template #footer>
 						<tu-pagination not-margin flat v-model="page" :length="numPages" />
 					</template>
@@ -939,7 +941,7 @@
 					</template>
 				</tu-tree-view>
 			</div>
-			<!-- <div class="showcase-component">
+			<div class="showcase-component">
 
 				<h4>History Component:</h4>
 				<hr />
@@ -951,8 +953,7 @@
 				<hr />
 				<tu-cron v-model="cronValue" />
 				<span>{{ cronValue }}</span>
-
-					</div> -->
+			</div>
 			<div class="showcase-component">
 				<h4>Kanban Board Component:</h4>
 				<hr />
