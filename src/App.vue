@@ -1044,7 +1044,7 @@ export default defineComponent({
 		const page = ref(1);
 		const intervals = ref([1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,0,0,0,0,1,1,0,1])
 		let func = () => {
-			intervals.value.push(1)
+			intervals.values.push(1)
 		}
 		setInterval(func,10000)
 		const histEvents = [

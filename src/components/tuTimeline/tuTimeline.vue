@@ -1,7 +1,7 @@
 <template>
     <div style="display: flex;flex-direction:column">
         <div style="display: flex">
-            <div class="tu-timeline-text" v-for="interval in intervals" :style="shadeIntervals(interval)"
+            <div class="tu-timeline-text" v-for="interval in intervalTime" :style="shadeIntervals(interval)"
                 :class="{ 'tu-timeline-margin-left': interval.text === '2am' }">{{ interval.text }}</div>
         </div>
         <div class="tu-timeline-parent">
@@ -13,9 +13,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, onMounted, watch } from 'vue'
-import * as _color from "../../utils";
-import { type } from 'os';
-import { Console } from 'console';
+import * as _color from "../../utils";;
 
 export default defineComponent({
     props: {
@@ -37,7 +35,7 @@ export default defineComponent({
         }
     },
     setup(props) {
-        let intervals = [
+        let intervalTime = [
             {
                 text: "2am",
                 utc: 2
@@ -182,7 +180,7 @@ export default defineComponent({
             addProductiveBoxes()
             setInterval(incrementMarginLeftCurrentTime, 60000);
         })
-        return { intervals, marginLeftCurrentTime, shadeIntervals }
+        return { intervalTime, marginLeftCurrentTime, shadeIntervals }
     },
 })
 </script>
