@@ -74,11 +74,11 @@
 			<h3>Button Groups:</h3>
 			<hr />
 			<tu-button-group fixed-height="40px">
-				<tu-button border color="primary"> One </tu-button>
-				<tu-button border color="primary"> Two </tu-button>
-				<tu-button border color="primary"> Three </tu-button>
-				<tu-button border color="primary"> four </tu-button>
-				<tu-button border color="primary"> five </tu-button>
+				<tu-button border> One </tu-button>
+				<tu-button border> Two </tu-button>
+				<tu-button border> Three </tu-button>
+				<tu-button border> four </tu-button>
+				<tu-button border> five </tu-button>
 			</tu-button-group>
 			<br />
 			<tu-button-group>
@@ -142,23 +142,23 @@
 			<h3>Breadcrumbs:</h3>
 			<hr />
 			<tu-breadcrumb :items="[
-				{
-					title: 'Dashboard',
-					url: 'dashboard'
-				},
-				{
-					title: 'Link 1',
-					url: 'link-1'
-				},
-				{
-					title: 'Link 2',
-					disabled: true
-				},
-				{
-					title: 'Active',
-					active: true
-				}
-			]"></tu-breadcrumb>
+					{
+						title: 'Dashboard',
+						url: 'dashboard'
+					},
+					{
+						title: 'Link 1',
+						url: 'link-1'
+					},
+					{
+						title: 'Link 2',
+						disabled: true
+					},
+					{
+						title: 'Active',
+						active: true
+					}
+				]"></tu-breadcrumb>
 
 			<tu-breadcrumb>
 				<li>
@@ -261,7 +261,7 @@
 				</ul>
 			</div>
 		</div>
-	<!-- <div class="showcase-component">
+		<!-- <div class="showcase-component">
 				<h3>Chips:</h3>
 				<hr />
 				<div class="centerx">
@@ -448,7 +448,7 @@
 				<tu-input type="number" label="Number" />
 				<tu-input type="url" label="Url" />
 				<tu-input type="time" label="time" />
-				<tu-input width="300px" type="date" label="Date" />
+				<tu-input type="date" label="Date" />
 			</div>
 			<div style="margin: 10px">
 				<tu-input primary state="primary" placeholder="Primary" />
@@ -752,6 +752,20 @@
 				<template #left>
 					<img src="https://vuesax.com/logos/logo-vuesax-logotipo-vuesax-png-3.png" alt="" />
 				</template>
+				<tu-navbar-group>
+					Docs
+					<template #items>
+						<tu-navbar-item :active="navValue == 'guide'" id="guide">
+							Guide
+						</tu-navbar-item>
+						<tu-navbar-item :active="navValue == 'docs'" id="docs">
+							Documents
+						</tu-navbar-item>
+						<tu-navbar-item :active="navValue == 'components'" id="components">
+							Components
+						</tu-navbar-item>
+					</template>
+				</tu-navbar-group>
 				<tu-navbar-item :active="navValue == 'Github'" id="Github">
 					Github
 				</tu-navbar-item>
@@ -772,7 +786,7 @@
 			<h4>Pagination:</h4>
 			<hr />
 
-		<!-- <tu-pagination progress not-margin v-model="page" :length="20" />
+			<!-- <tu-pagination progress not-margin v-model="page" :length="20" />
 				<tu-pagination
 					progress
 					dark
@@ -791,7 +805,7 @@
 				:router-mode-params="routerTabParams" />
 			<tu-tabs name="tabs1" type="router" position="top" pills noTransitions v-model="tabName"
 				:router-mode-params="routerTabParams" />
-		<!-- <tu-tabs position="top" noTransitions tabStyle="progress" progressWidth="20" v-model="tabName">
+			<!-- <tu-tabs position="top" noTransitions tabStyle="progress" progressWidth="20" v-model="tabName">
 				<tu-tab label="Home" name="ho"> Home </tu-tab>
 				<tu-tab label="Service" name="se"> Service </tu-tab>
 				<tu-tab label="login" name="lo"> Login </tu-tab>
@@ -805,7 +819,7 @@
 						v-model="selected" v-bind="srvTableConfig" v-model:numPages="numPages" :page="page" :pageSize="5"
 						:columnSelector="true" @onRowClicked="rowClicked" @onTableBeginLoad="beginLoad"
 						@onTableEndLoad="afterLoad" @onTableConfigUpdated="configUpdate">
-					<!-- <template #thead>
+						<!-- <template #thead>
 						<tu-th field="country" sort search> Country </tu-th>
 						<tu-th field="name" sort search :index="1" width="500px"> Name </tu-th>
 						<tu-th field="name" sort search :index="2" width="500px"> Name </tu-th>
@@ -831,7 +845,7 @@
 				<tu-tab label="login" name="lo"> Login </tu-tab>
 				<tu-tab label="Disabled" name="di"> Disabled </tu-tab>
 			</tu-tabs>
-		<!-- <tu-tabs position="right" noTransitions v-model="tabName">
+			<!-- <tu-tabs position="right" noTransitions v-model="tabName">
 					<tu-tab label="Home" name="ho"> Home </tu-tab>
 					<tu-tab label="Service" name="se"> Service </tu-tab>
 					<tu-tab label="login" name="lo"> Login </tu-tab>
@@ -879,7 +893,7 @@
 					v-bind="srvTableConfig" v-model:numPages="numPages" :page="page" :pageSize="5" :columnSelector="true"
 					@onRowClicked="rowClicked" @onTableBeginLoad="beginLoad" @onTableEndLoad="afterLoad"
 					@onTableConfigUpdated="configUpdate">
-				<!-- <template #thead>
+					<!-- <template #thead>
 						<tu-th field="country" sort search> Country </tu-th>
 						<tu-th field="name" sort search :index="1" width="500px"> Name </tu-th>
 						<tu-th field="name" sort search :index="2" width="500px"> Name </tu-th>
@@ -925,7 +939,7 @@
 					</template>
 				</tu-tree-view>
 			</div>
-		<!-- <div class="showcase-component">
+			<!-- <div class="showcase-component">
 
 				<h4>History Component:</h4>
 				<hr />
