@@ -959,6 +959,14 @@
 				<hr />
 				<tu-kanban :items="kanbanItems" v-model="currentItemsRef" :fields="kanbanCategories" />
 			</div>
+			<div class="showcase-component">
+
+				<h4>Timeline Component:</h4>
+				<hr />
+				<div style="width: 800px">
+					<tu-timeline :interval="5" :intervalStartTime="9" :intervalEndTime="19" :intervals="intervals"/>
+				</div>
+			</div>
 		</div>
 	</div>
 </template>
@@ -1040,6 +1048,11 @@ export default defineComponent({
 		const selectValue2 = ref("1");
 		const selectValue1 = ref("");
 		const page = ref(1);
+		const intervals = ref([1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,0,0,0,0,1,1,0,1])
+		let func = () => {
+			intervals.values.push(1)
+		}
+		setInterval(func,10000)
 		const kanbanItems = [
 			{
 				id: 1,
@@ -1092,7 +1105,6 @@ export default defineComponent({
 				fieldname: "Neutral"
 			}
 		]
-
 		const histEvents = [
 			{
 				title: "Added New Agent",
@@ -1841,6 +1853,7 @@ export default defineComponent({
 			cronValue,
 			customLocale,
 			srvTableConfig,
+			intervals
 			kanbanItems,
 			kanbanCategories,
 			currentItemsRef
