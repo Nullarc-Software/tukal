@@ -953,7 +953,11 @@
 				<hr />
 				<tu-cron v-model="cronValue" />
 				<span>{{ cronValue }}</span>
-
+			</div>
+			<div class="showcase-component">
+				<h4>Kanban Board Component:</h4>
+				<hr />
+				<tu-kanban :items="kanbanItems" v-model="currentItemsRef" :fields="kanbanCategories" />
 			</div>
 		</div>
 	</div>
@@ -969,7 +973,8 @@ import {
 	ref,
 	watch,
 	shallowRef,
-	markRaw
+	markRaw,
+	Ref
 } from "vue";
 import * as components from "./components";
 import { TuNotificationAttributes, TuNotification } from "./components/tuNotifications";
@@ -1035,7 +1040,58 @@ export default defineComponent({
 		const selectValue2 = ref("1");
 		const selectValue1 = ref("");
 		const page = ref(1);
-
+		const kanbanItems = [
+			{
+				id: 1,
+				content: "VS Code",
+				fieldname: "Productive",
+			},
+			{
+				id: 2,
+				content: "Facebook",
+				image: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAclBMVEX///8AAADx8fGxsbH39/e+vr6KioopKSkoKCj7+/vg4OBAQECNjY0JCQkNDQ1aWlpfX19LS0tGRkbp6enQ0NCDg4OhoaEjIyPb29urq6vm5uaamprDw8MwMDBubm4dHR02NjaVlZVUVFR3d3dmZmYVFRV4y9GXAAAC9klEQVR4nO3dC3LaMBRGYTAmwUB4Q3iEJqFk/1tshnZSaKfgK1+k3+45C2D0zYAsGyFarbQVeb+7GU6mg/3rqP3V00WjU7P3IvFY7WWL3bfXdvl689QjNtVfTUe3UZcdUw+6fPPVm1V3Kks98JItxkG8z15SD71MRWcW6mu3u6lHX6LuY7ivDsL+tIpPX5gvq/nkhet9VaC4cFXZpy3MJw5AZWE28AAKC+fPLkBdYd/Hpyt0A6oKs17ThT6TjLDw6AfUFO4cgZLCtSdQUhh2L18jYeW7CXWh73tUUXhouvDFGagn9J1mBIUdb6Cc0G89Kip0/xTKCYOfbNdFuPUHigkfGi90v1SoCb0XbHrC98YLHZ9daArvMZNqCf1XbGpC51vfX61Ts85yeoz/R3lq1ll3Aa5Sq85a3AM4TK06L3yieR4cjsuHvxtu+qlRF4VNNOPOQumTdrWQO6el0kx5s4Bldy32O31VmC8WH9vUY7ZlX7MprVbKZL51mqQesTWzsF4fwlbABT/1gM1Zhd9TD9icVbhLPWBzXaOwbjOpfVmqteQsk1VYlx3qv0OIUD+ECPVDiFA/hAj1Q4hQP4QI9UOIUD+EdRDm2ZXyjVG4vfZqP4t8OM38+GE0VO4t6ncbfj97tXSIKKxwOkmV4m2JmqcBtqfRhHf4IUWp9tFmG+u3g171om2YQogQ4f8rfESIECFChAgRIkSIECFChAgRIkSIECFChAgRIkSIsHbC5u9UyBIJI24Zqvh/OKFt4gnT7PoaxwN+vk89D8sv1yj6MVhF/u8K6+7L+bVXOxWbd6sm7KC9HkKE+iFEqB9ChPohRKgfQoT6IUSoH0KE+iFEqB9ChPohRKgfQoT6IUSoH0KE+iFEqB9ChPohRKgfQoT6IUSoH0KE+iFEqB9ChPohRKgfQoT6IUSoH0KE+iFEqB9ChPohRKgfQoT6IUSoX/OF1nN46ydc24Cz1OMNaGASRj+a1CHTKbVRD5d1K1vuy/GeZnc+HvgHllpO87YiSVIAAAAASUVORK5CYII=",
+				fieldname: "UnProductive"
+			},
+			{
+				id: 3,
+				content: "Google Chrome",
+				image: "https://th.bing.com/th/id/OIP.DXnh2NpUdDZrQ2NZAT6_tAHaHa?pid=ImgDet&rs=1",
+				fieldname: "Neutral"
+			},
+			{
+				id: 4,
+				content: "Instagram",
+				icon: "alarm",
+				fieldname: "UnProductive"
+			},
+			{
+				id: 5,
+				content: "Adobe XD",
+				icon: "album",
+				fieldname: "Productive"
+			},
+			{
+				id: 6,
+				content: "Firefox",
+				image: "https://blog.mozilla.org/opendesign/files/2018/07/firefox-logo.png",
+				fieldname: "Neutral"
+			}
+		]
+		const currentItemsRef = ref();
+		const kanbanCategories = [
+			{
+				title: "Productive",
+				fieldname: "Productive"
+			},
+			{
+				title: "UnProductive",
+				fieldname: "UnProductive"
+			},
+			{
+				title: "Neutral",
+				fieldname: "Neutral"
+			}
+		]
 
 		const histEvents = [
 			{
@@ -1784,8 +1840,10 @@ export default defineComponent({
 
 			cronValue,
 			customLocale,
-			srvTableConfig
-
+			srvTableConfig,
+			kanbanItems,
+			kanbanCategories,
+			currentItemsRef
 		};
 	}
 });
