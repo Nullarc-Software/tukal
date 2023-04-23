@@ -46,6 +46,7 @@ export type { tuHistory } from "./components/tuHistory";
 export type { TuHistoryEvent, TuHistoryServerModel } from "./components/tuHistory";
 // New Component import
 export { default as tuTimeline } from "./components/tuTimeline";
+import { tuKanban } from "./components/tuKanban";
 
 // layout
 export { default as tuRow } from "./layout/tuRow";

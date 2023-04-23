@@ -507,8 +507,7 @@ export default defineComponent({
 
 	.con-slot-tabs {
 		flex-grow: 1;
-		overflow: hidden;
-		display: flex;
+
 	}
 
 	.con-ul-tabs {
