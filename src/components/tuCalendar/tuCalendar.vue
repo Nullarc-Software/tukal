@@ -2,7 +2,7 @@
 	<div class="tu-calendar">
 		<calendar-view :show-date="showDate" :items="events" :show-times="true" :displayWeekNumbers="true"
 			:categories="eventCategories" @click-date="onClickDay" :displayPeriodUom="periodUOM"
-			@updateItems="updateItems" @deleteItem="deleteItem" :components="components" :class="colorTheme">
+			@updateItems="updateItems" @deleteItem="deleteItem" :components="components" class="theme-default">
 			<template #header="{ headerProps }">
 				<calendar-view-header :header-props="headerProps" @input="setShowDate" @updatePeriod="updatePeriod"
 					@updateTheme="updateTheme" @updateCategory="updateCategory" />
@@ -120,32 +120,28 @@ export default defineComponent({
 		CalendarViewHeader
 	},
 	props: {
-		modelValue: {},
-		items: {
+		modelValue: {}, //v-model prop: it will be having the updated calendar events array
+		items: {  //items prop: array of calendar events
 			type: Object as PropType<Array<ICalendarItem>>,
 			default: []
 		},
-		categories: {
+		categories: {  //categories prop: array of category for a calendar event
 			type: Object as PropType<Array<Category>>,
 			default: []
 		},
-		model: {
+		model: {  //model prop: specifies whether its local or server side model
 			type: String,
 			default: "local"
 		},
-		serverSideConfig: {
+		serverSideConfig: {  //serverSideConfig prop: configuration for server side model
 			type: Object as PropType<TuCalendarServerModel>,
 			default: () => {
 				return {};
 			}
 		},
 		components: {
-			default: null
+			default: null //components prop: custom components for event details dialog
 		},
-		theme: {
-			type: String,
-			default: "theme-default"
-		}
 	},
 	emits: ["onClickDay", "update:modelValue", "categoriesUpdated"],
 	setup(props, context) {
@@ -161,7 +157,6 @@ export default defineComponent({
 		});
 		const periodUOM = ref("month");
 		const allDay = ref(false);
-		const colorTheme: Ref<string> = ref("theme-default");
 		let events;
 		const eventCategories = ref(props.categories);
 		if (props.model === "local") events = ref(props.items);
@@ -259,9 +254,6 @@ export default defineComponent({
 		const updatePeriod = (period: string) => {
 			periodUOM.value = period;
 		};
-		const updateTheme = (theme: string) => {
-			colorTheme.value = theme;
-		};
 		const updateCategory = ([color, name]: [string, string]) => {
 			const newCategory = {
 				name: name,
@@ -312,8 +304,6 @@ export default defineComponent({
 			updateItems,
 			deleteItem,
 			updatePeriod,
-			colorTheme,
-			updateTheme,
 			updateCategory,
 			eventCategories
 			// closeDialog

@@ -91,18 +91,18 @@ export default defineComponent({
 	name: "TuAvatar",
 	extends: tuComponent,
 	props: {
-		badgePosition: { default: null },
-		pointer: { default: false, type: Boolean },
-		circle: { default: false, type: Boolean },
-		square: { default: false, type: Boolean },
-		history: { default: false, type: Boolean },
-		loading: { default: false, type: Boolean },
-		historyGradient: { default: false, type: Boolean },
-		writing: { default: false, type: Boolean },
-		badge: { default: false, type: Boolean },
-		badgeColor: { default: "", type: String },
-		size: { default: "", type: String },
-		text: { default: "", type: String }
+		badgePosition: { default: null },  //badgePosition prop: the position of the prop which are i) top-right ii) top-left iii) bottom-left
+		pointer: { default: false, type: Boolean },  //pointer prop: on hover cursor to be as pointer if boolean true else not
+		circle: { default: false, type: Boolean },  //circle prop: the avatar to be shaped as circle if boolean true else not
+		square: { default: false, type: Boolean },   //square prop: the avatar to be shaped as sqare if boolean true else not
+		history: { default: false, type: Boolean },  //history prop:the avatar to be given special css similar to a button 
+		loading: { default: false, type: Boolean },  //loading prop: the loading animation to be shown if boolean true 
+		historyGradient: { default: false, type: Boolean },  //historyGradient prop: special grading to be given to history style. works only if history prop to be true 
+		writing: { default: false, type: Boolean },  
+		badge: { default: false, type: Boolean }, 
+		badgeColor: { default: "", type: String }, 
+		size: { default: "", type: String },  //size prop: size of the badge possible values are in pixels
+		text: { default: "", type: String }  //text prop: text to be shown in the avatar
 	},
 	setup (props, context) {
 		const textLength = ref(0);

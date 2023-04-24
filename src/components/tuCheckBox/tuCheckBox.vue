@@ -1,20 +1,20 @@
 <template>
 	<div class="tu-checkbox-content" :class="[
-	{ 'tu-checkbox--checked': isChecked },
-	{ 'tu-checkbox--disabled': disabled },
-	{ 'tu-checkbox--loading': loading },
-	{ 'tu-checkbox--label-before': labelBefore },
+		{ 'tu-checkbox--checked': isChecked },
+		{ 'tu-checkbox--disabled': disabled },
+		{ 'tu-checkbox--loading': loading },
+		{ 'tu-checkbox--label-before': labelBefore },
 
-	// colors
-	{
-		[`tu-component--primary`]:
-			!danger && !success && !warn && !dark && !color
-	},
-	{ [`tu-component--danger`]: !!danger },
-	{ [`tu-component--warn`]: !!warn },
-	{ [`tu-component--success`]: !!success },
-	{ [`tu-component--dark`]: !!dark }
-]">
+		// colors
+		{
+			[`tu-component--primary`]:
+				!danger && !success && !warn && !dark && !color
+		},
+		{ [`tu-component--danger`]: !!danger },
+		{ [`tu-component--warn`]: !!warn },
+		{ [`tu-component--success`]: !!success },
+		{ [`tu-component--dark`]: !!dark }
+	]">
 		<div class="tu-checkbox-con">
 			<input class="tu-checkbox" type="checkbox" v-bind="$attrs" :id="`input-${uid}`" v-on="listeners"
 				:checked="checkedForce || isChecked" />
@@ -24,8 +24,7 @@
 				<tu-icon v-else>horizontal_rule</tu-icon>
 			</div>
 		</div>
-		<label v-if="$slots.default" :for="`input-${uid}`"
-			:class="['tu-checkbox-label', { ['lineThrough']: lineThrough }]">
+		<label v-if="$slots.default" :for="`input-${uid}`" :class="['tu-checkbox-label', { ['lineThrough']: lineThrough }]">
 			<slot />
 		</label>
 	</div>
@@ -46,17 +45,17 @@ export default defineComponent({
 		tuIcon
 	},
 	props: {
-		modelValue: { type: [Array, String, Boolean], default: "" },
-		val: { default: "" },
-		notValue: { default: "" },
-		indeterminate: { type: Boolean, default: false },
-		lineThrough: { type: Boolean, default: false },
-		checked: { type: Boolean, default: false },
-		disabled: { type: Boolean, default: false },
-		checkedForce: { type: Boolean, default: false },
-		loading: { type: Boolean, default: false },
-		labelBefore: { type: Boolean, default: false },
-		eventBubble: {
+		modelValue: { type: [Array, String, Boolean], default: "" },  //v-model prop: it will be having the current state of checkbox
+		val: { default: "" }, //val prop: if v-model is an array of strings then val prop indicates the checkbox value. if the val prop string is present in the v-model array then its state will be true
+		notValue: { default: "" },  //notValue prop: if v-model is an array of strings then if the state of the checkbox is true then in the v-model array the value of checkbox will null string instead of the value
+		indeterminate: { type: Boolean, default: false }, //indeterminate prop: it will set the checkbox as indeterminate state that is neither true or false partially checked
+		lineThrough: { type: Boolean, default: false }, //lineThrough prop: it will strike of the checkbox text once checked
+		checked: { type: Boolean, default: false }, //checked prop: it will set the cehckebox to checked state
+		disabled: { type: Boolean, default: false }, //disabled prop: it will disable the checkbox 
+		checkedForce: { type: Boolean, default: false }, //checkedForce prop: it will forcefully set the checkbox to checked state
+		loading: { type: Boolean, default: false }, //loading prop: it will enable loading animation for checkbox
+		labelBefore: { type: Boolean, default: false }, //labelBefore prop: will bring the label to the left and checkbox to the right if boolean is true
+		eventBubble: {  //eventBubble prop: if boolean is true it will emit on Click event
 			type: Boolean,
 			default: false
 		}

@@ -1,11 +1,11 @@
 <template>
 	<transition @before-enter="beforeEnter" @enter="enter" @leave="leave">
 		<div v-if="active" ref="alert" :class="[
-			`con-tu-alert-${color}`,
-			{
-				'con-icon': icon
-			}
-		]" :style="styleAlert" class="con-tu-alert" v-bind="$attrs">
+				`con-tu-alert-${color}`,
+				{
+					'con-icon': icon
+				}
+			]" :style="styleAlert" class="con-tu-alert" v-bind="$attrs">
 			<div v-if="closable" class="con-x tu-alert--close" @click="$emit('update:active', false)">
 				<tu-icon :icon-pack="iconPack" :icon="closeIcon"></tu-icon>
 			</div>
@@ -29,35 +29,35 @@ export default defineComponent({
 	name: "TuAlert",
 
 	props: {
-		active: {
+		active: {                  //active prop: alert message shown if active given true boolean else false
 			type: [Boolean, String],
 			default: true
 		},
-		title: {
+		title: {                  //title prop: title of message to be shown in alert message
 			type: String,
 			default: null
 		},
-		closable: {
+		closable: {               //closable prop: alert message to be closable if boolean is true else not
 			type: Boolean,
 			default: false
 		},
-		color: {
+		color: {                  //color prop: background color of alert message to be set with the prop
 			type: String,
 			default: "primary"
 		},
-		margin: {
+		margin: {                 //margin prop: margin of alert box to be set
 			type: [String, Boolean],
 			default: "10px"
 		},
-		icon: {
+		icon: {                    //icon prop: icon to be shown in the alert box 
 			type: String,
 			default: null
 		},
-		closeIcon: {
+		closeIcon: {                //close icon prop: the icon for close 
 			type: String,
 			default: "close"
 		},
-		iconPack: {
+		iconPack: {                  //iconPack prop: the icon pack to be used for the above icons
 			type: String,
 			default: "material-icons"
 		}

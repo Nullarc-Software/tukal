@@ -39,18 +39,18 @@ import { defineComponent } from "vue";
 export default defineComponent({
 	name: "TuCard",
 	props: {
-		type: {
+		type: {  //type prop: different types of cards which have different styles. the different values are 1,2,3,4,5 and 6
 			default: "1",
 			type: [String, Boolean]
 		},
-		justifyHeader: {
+		justifyHeader: {  //justifyHeader prop: justifies the header to left center or right. the different values are i) flex-end ii) center iii) flex-start
 			type: String,
 			default: "flex-end"
 		},
-		content: { type: Boolean, default: false },
-		fitContent: { type: Boolean, default: false },
-		fillParent: { type: Boolean, default: false },
-		backgroundColor: { type: String, default: "0x00000011" }
+		content: { type: Boolean, default: true }, //content prop: 
+		fitContent: { type: Boolean, default: false }, //fitContent prop: will add padding to the card content
+		fillParent: { type: Boolean, default: false },  //fillParent prop: will fill the width of the parent with the card
+		backgroundColor: { type: String, default: "0x00000011" } //backgroundColor prop: sets the backgroundColor for the card. the value can be rgba or hexadecimal value
 	},
 	setup(props, context) { }
 });

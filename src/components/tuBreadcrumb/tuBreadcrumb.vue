@@ -27,19 +27,19 @@ import { useRoute } from "vue-router";
 export default defineComponent({
 	name: "tuBreadcrumb",
 	props: {
-		items: {
+		items: {  //items prop: the items to be displayed in the breadcrumb
 			type: Array,
 			readOnly: false
 		},
-		separator: {
+		separator: {  //separator prop: the seporator symbol to be used between the items of breadcrumb
 			type: String,
 			default: "/"
 		},
-		color: {
+		color: {  //color prop: color of the text for the items in the breadcrumb
 			type: String,
 			default: "primary"
 		},
-		align: {
+		align: {  //align prop: alignment of the breadcrumb items . the values can be i) left ii) right iii) center
 			type: String,
 			default: "left"
 		}

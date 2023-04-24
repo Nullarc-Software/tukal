@@ -16,7 +16,7 @@ export default defineComponent({
 		colorPicker
 	},
 	props: {
-		modelValue: {
+		modelValue: {  //v-model prop: current color selected 
 			type: String,
 			default: "#59c7f9"
 		}
