@@ -37,18 +37,17 @@ type LoadingType = "default" | "waves" | "corners" | "border" | "points" | "squa
 export default defineComponent({
 	name: "TuLoading",
 	props: {
-		position: { type: String, default: null },
-		text: { type: String, default: null },
-		type: { type: String, default: "default" },
-		color: { type: String, default: null },
-		background: { type: String, default: null },
-		opacity: { type: String, default: null },
-		percent: { type: String, default: null },
-		progress: { type: Number, default: null },
-		fitAnimation: { type: Boolean, default: false },
-		scale: { type: String, default: null },
-		target: {},
-		isVisible: { type: Boolean, default: true }
+		position: { type: String, default: "null" },  //position prop: position of the loader
+		text: { type: String, default: null },  //text prop: loading load text
+		type: { type: String, default: "default" },  //type prop: types of loading animations
+		color: { type: String, default: null },  //color prop: color for loader
+		background: { type: String, default: null },  //background prop: background color for loader
+		opacity: { type: String, default: null },  //opacity prop: opacity for the loader
+		percent: { type: String, default: null }, //percent prop: load percent for the loader
+		progress: { type: Number, default: null },  //progress prop: loading progress for loader
+		scale: { type: String, default: null },  //scale prop: scale of the loader
+		target: {},  //target prop: target for the loader
+		isVisible: { type: Boolean, default: true }  //isVisible prop: loader is visible when boolean is true
 	},
 	setup(props, context) {
 		const instance = getCurrentInstance();
