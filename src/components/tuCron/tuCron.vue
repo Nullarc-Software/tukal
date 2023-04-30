@@ -33,7 +33,7 @@ export default defineComponent({
     CronCore,
     CustomSelect
   },
-  props: {
+  props: {  //cols prop: default state of cron
     cols: {
       type: Object,
       default: () => {
@@ -44,16 +44,16 @@ export default defineComponent({
         }
       }
     },
-    customLocale: {
+    customLocale: {  //customLocale prop: changing the locale for the component
       type: Object,
       default: function (props) {
         return null
       }
     },
-    fields: {
+    fields: {  //fields prop: fields for cron component
       type: Array
     },
-    periods: {
+    periods: {  //periods prop: periods for cron component
       type: Array
     }
   },

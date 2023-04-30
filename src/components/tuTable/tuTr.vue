@@ -37,31 +37,27 @@ export default defineComponent({
 	name: "TuTr",
 	extends: tuComponent,
 	props: {
-		data: {},
+		data: {},  //data prop: data for the tr
 		isSelected: {
 			default: false,
 			type: Boolean
 		},
-		notClickSelected: {
+		notClickSelected: {  //notClickSelected prop: if boolean is true then on clicking the row it will not be selected
 			default: true,
 			type: Boolean
 		},
-		expandHandle: {
+		expandHandle: {  //expandHandle prop: handles the row expand on click
 			default: false,
 			type: Boolean
 		},
-		rowId: {
+		rowId: {  //rowId prop: unique id for tr
 			type: Number
 		},
-		hidden: {
+		expanded: {  //expanded prop: expand for tr enabled
 			type: Boolean,
 			default: false
 		},
-		expanded: {
-			type: Boolean,
-			default: false
-		},
-		invisible: {
+		invisible: {  //invinsible prop: removes border for tr
 			default: false,
 			type: Boolean
 		}

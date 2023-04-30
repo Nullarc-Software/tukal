@@ -24,23 +24,23 @@ export default defineComponent({
 	name: "TuPopupItem",
 	inheritAttrs: false,
 	props: {
-		to: {
+		to: { //to prop: the route that needs to be redirected when popper item is active
 			type: Object,
 			default: null
 		},
-		onClickClose: {
+		onClickClose: {  //onClickClose prop: popper closes only if clicked again and not when clicked away
 			default: false,
 			type: Boolean
 		},
-		disabled: {
+		disabled: {  //disabled prop: disables the popper item
 			default: false,
 			type: Boolean
 		},
-		divider: {
+		divider: { //divider prop: adds a border-top to the popper item
 			default: false,
 			type: Boolean
 		},
-		dividerBottom: {
+		dividerBottom: {  //dividerBottom prop: adds a border-bottom ro the popper item
 			default: false,
 			type: Boolean
 		}

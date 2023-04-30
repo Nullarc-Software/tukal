@@ -44,14 +44,14 @@ export default defineComponent({
 	inheritAttrs: false,
 	extends: tuComponent,
 	props: {
-		modelValue: { type: [Boolean, String], default: "" },
-		val: { default: "" },
-		notValue: { default: "" },
-		loading: { type: Boolean, default: false },
-		square: { type: Boolean, default: false },
-		indeterminate: { type: Boolean, default: false },
-		icon: { type: Boolean, default: false },
-		disabled: { type: Boolean, default: false}
+		modelValue: { type: [Boolean, String], default: "" }, //v-model prop: the current state of switch
+		val: { default: "" },  //val prop: if v-model is an array of strings then val prop indicates the switch value. if the val prop string is present in the v-model array then its state will be true
+		notValue: { default: "" },  //notValue prop: if v-model is an array of strings then if the state of the checkbox is true then in the v-model array the value of switch  will be null string instead of the value
+		loading: { type: Boolean, default: false },  //loading prop: loading animation to be shown if boolean is true
+		square: { type: Boolean, default: false },  //sqaure prop: switch to be square shape if boolean is true
+		indeterminate: { type: Boolean, default: false },  //indeterminate prop: switch to be indeterminate state when boolean is true
+		icon: { type: Boolean, default: false }, //icon prop: switch to be in the form of icon if boolean is true
+		disabled: { type: Boolean, default: false}  //disabled prop: disables the switch if boolean is true
 	},
 	emits: ["change", "update:modelValue"],
 	setup(props, context) {

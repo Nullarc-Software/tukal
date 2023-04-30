@@ -26,14 +26,14 @@ export default {
 		tuSelectOption
 	},
 	props: {
-		disabled: {
+		disabled: {  //disabled prop: disable selectOption group
 			type: Boolean,
 			default: false
 		},
-		value: {
+		value: {  //value prop: value for select option group
 			default: null
 		},
-		text: {
+		text: {  //text prop: text for the select group option
 			default: null
 		}
 	},

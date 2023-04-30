@@ -96,7 +96,7 @@ export default defineComponent({
 		to: { type: [Object, String], default: () => null }, //to prop: on clicking the button the user is taken to new route specified in the prop
 		href: { type: String, default: null }, //href prop: specifies the URL of the page the link goes to when on clicking the button
 		blank: { type: Boolean, default: false }, //blank prop:to open a href link within a brand new tab if boolean is true
-		inline: { type: Boolean, default: false },  //inline
+		inline: { type: Boolean, default: false },
 		width: { type: String, default: null }, //width prop: to specify the width of the button
 		height: { type: String, default: null } //height prop: to specify the height of th ebutton
 	},

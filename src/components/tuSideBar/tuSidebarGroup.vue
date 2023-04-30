@@ -16,7 +16,7 @@ import { defineComponent, inject, nextTick, onMounted, ref, watch } from "vue";
 export default defineComponent({
 	name: "TuSidebarGroup",
 	props: {
-		open: {
+		open: {  //open prop: expands the sidebar group if boolean is true
 			default: false,
 			type: Boolean
 		}

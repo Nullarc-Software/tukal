@@ -16,7 +16,7 @@
 			{ 'tu-notification--loading': loading },
 			{ 'tu-notification--notPadding': notPadding },
 			`tu-notification--${isColor() ? color : null}`,
-			classNotification,
+			,
 			transitionClass
 		]" :style="{
 	['--tu-color']: color ? getColor(color) : '',
@@ -70,102 +70,90 @@ export default defineComponent({
 	name: "TuNotifications",
 	extends: tuComponent,
 	props: {
-		notifId: {
+		notifId: {  //notifId prop: unique id for notification 
 			type: Number,
 			default: 0
 		},
-		position: {
+		position: {  //position prop: position of the notification message. the values are: i) bottom-right ii) bottom-left iii) top-right iv) top-left v) top-center vi) bottom-center
 			type: String,
 			default: "bottom-right"
 		},
-		isVisible: {
-			type: Boolean,
-			default: true
-		},
-		content: {
+		content: {  //content prop: content for the notification message
 			type: Object,
 			default: null
 		},
-		title: {
+		title: {  //title prop: title of the notification message
 			type: String,
 			default: null
 		},
-		text: {
+		text: {  //text ptop: text for the notification message
 			type: String,
 			default: null
 		},
-		color: {
+		color: {  //color prop: background color for the notification message
 			type: String,
 			default: "primary"
 		},
-		border: {
+		border: {  //border prop: adds border for notification message
 			type: String,
 			default: null
 		},
-		icon: {
+		icon: {  //icon prop: adss icon to the notification
 			type: String,
 			default: null
 		},
-		onClickClose: {
+		onClickClose: {  //onClickClose prop: emits when close button is clicked
 			type: Function,
 			default: null
 		},
-		onClick: {
+		onClick: {  //onClick prop: emits when clicked on the notification
 			type: Function,
 			default: null
 		},
-		buttonClose: {
+		buttonClose: {  //buttonClose prop: adds a close button if boolean is true
 			type: Boolean,
 			default: true
 		},
-		flat: {
+		flat: {  //flat prop: adds flat style to the notification message
 			type: Boolean,
 			default: false
 		},
-		onDestroy: {
-			type: Function,
-			default: null
-		},
-		sticky: {
+		sticky: {  //sticky prop: makes the notification message position sticky
+			type: Boolean,
+			default: false
+		}, 
+		square: {  //square prop: makes the notification of the shape of square
 			type: Boolean,
 			default: false
 		},
-		square: {
-			type: Boolean,
-			default: false
-		},
-		width: {
+		width: {  //width prop: width of the notification message is set
 			type: String,
 			default: null
 		},
-		loading: {
+		loading: {  //loading prop: loading animation to be shown
 			type: Boolean,
 			default: false
 		},
-		progressAuto: {
+		progressAuto: { //progressAuto prop: progress bar to be automatically increased
 			type: Boolean,
 			default: false
 		},
-		progress: {
+		progress: {  //progress prop: value to be set in progress bar
 			type: Number,
 			default: 0
 		},
-		duration: {
+		duration: {  //duration prop: duration of the notification message after which it disappears
 			type: Number,
 			default: 5000
 		},
-		notPadding: {
+		notPadding: {  //notPadding prop: removes padding from the notification message
 			type: Object,
 			default: null
 		},
-		clickClose: {
+		clickClose: {  //clickClose prop: emits when notification is closed
 			type: Boolean,
 			default: false
 		},
-		classNotification: {
-			type: String,
-			default: null
-		}
 	},
 	components: {
 		tuIcon,

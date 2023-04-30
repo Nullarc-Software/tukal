@@ -9,16 +9,12 @@ import { defineComponent, provide, ref } from "vue";
 export default defineComponent({
 	name: "TuCollapse",
 	props: {
-		accordion: {
-			default: false,
-			type: Boolean,
-		},
 		type: {
-			default: "default",
+			default: "shadow", //type prop: different type of styles for collapse. different values are i) default ii) border iii) shadow
 			type: String,
 		},
-		openHover: {
-			default: false,
+		openHover: {  //openHover prop: the collapse item to be opened and closed on mousehover and mouseout when boolean is true
+			default: false, 
 			type: Boolean,
 		},
 	},
@@ -43,9 +39,6 @@ export default defineComponent({
 				}
 			}
 		};
-
-		provide("closeAllItems", closeAllItems);
-		provide("accordion", props.accordion);
 		provide("openHover", props.openHover);
 		provide("emitChange", emitChange);
 

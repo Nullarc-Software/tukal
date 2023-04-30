@@ -9,12 +9,13 @@ import {
 } from "../utils";
 const emit = defineEmits(["infinite"]);
 const props = defineProps({
-	top: { type: Boolean, required: false },
-	target: { type: [String, Boolean], required: false },
-	distance: { type: Number, required: false, default: 0 },
-	identifier: { required: false },
-	firstload: { type: Boolean, required: false, default: true },
-	slots: { type: Object, required: false },
+	top: { type: Boolean, required: false }, //top prop: This property is used to set the load direction to top.
+	target: { type: [String, Boolean], required: false },  //target prop: This property is used to specify the scrollable element, it can be any valid css selector If not set it defaults to the window
+	distance: { type: Number, required: false, default: 0 },  //distance prop: The infinite event will be fired if the scroll distance is less than this value.
+	identifier: { required: false },  //identifier prop:  The component will be reset if this property has changed
+	firstload: { type: Boolean, required: false, default: true },  //firstLoad prop: This property is used to specify weither you want the component to handle first load or not
+	slots: { type: Object, required: false },  // slots.complete: override text message display on complete
+											   //slots.error:  override text message display on complete
 });
 let observer = null;
 const infiniteLoading = ref(null);

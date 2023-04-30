@@ -40,53 +40,53 @@ export default defineComponent({
 		tuTreeRow
 	},
 	props: {
-		checkNode: {
+		checkNode: {  //checkNode prop: checkBox to be used in tree component if boolean is true
 			type: Boolean,
 			default: false
 		},
-		filterNode: {
+		filterNode: {  //filterNode prop: search feature to be enabled if boolean is true
 			tye: Boolean,
 			default: false
 		},
-		removeNode: {
+		removeNode: {  //removeNode prop: nodes to be made removabled from the tree when boolean is set to be true
 			type: Boolean,
 			default: false
 		},
-		addNode: {
+		addNode: {  //addNode prop: nodes can be added with to the true if boolean is true
 			type: Boolean,
 			default: false
 		},
-		editNode: {
+		editNode: {  //editNode prop: nodes to be made editable if editNode boolean to be true
 			type: Boolean,
 			default: false
 		},
-		customStyles: {
+		customStyles: {  //customStyles prop: tree style can be customized  with customStyles prop
 			type: Object as PropType<TreeRowCustomStyles>
 		},
-		id: String,
-		nodes: {
+		id: String,  //id prop: id of the tree
+		nodes: {  //nodes prop:  nodes of the tree to be displayed
 			type: Object as PropType<NodeData[]>
 		},
-		model: {
+		model: {  //model prop: model to be set to either local or serevr
 			type: String,
 			default: "local"
 		},
-		serverSideConfig: {
+		serverSideConfig: {  //serverSideConfig prop: server Side configuration for retrieving the nodes and search feature if its enabled
 			type: Object as PropType<TuTreeServerModel>,
 			default: () => {
 				return {};
 			}
 		},
-		expandAll: {
+		expandAll: {  //expandAll prop: expandAll button to be used with the tree to expand all the nodes if boolean is true
 			type: Boolean,
 			default: false
 		},
-		collapseAll: {
+		collapseAll: {  //collapseAll prop: collapseAll button to be used with the tree to expand all the nodes if boolean is true
 			type: Boolean,
 			default: false
 		},
-		modelValue: {},
-		checkedNodes: {}
+		modelValue: {},  //v-model prop: current state of the nodes
+		checkedNodes: {}  //checkedNodes prop: the nodes which are checked to be given as v-model:checkedNodes
 	},
 	emits: [
 		"update:checkedNodes",

@@ -20,8 +20,8 @@ export default defineComponent({
 	name: "TuTag",
 	extends: tuComponent,
 	props: {
-		name: String,
-		value: String,
+		name: String,  //name prop: key of the tag
+		value: String,  //value prop: value of the tag
 	},
 	emits: ["onTagClicked"],
 	setup(props, context) {

@@ -164,22 +164,21 @@ export default defineComponent({
 		tuSelectOption
 	},
 	props: {
-		modelValue: {},
-		multiple: { type: Boolean, default: false },
-		dropdown: { type: Boolean, default: false },
-		inline: { type: Boolean, default: false },
-		filter: { type: Boolean, default: false },
-		addValue: { type: Boolean, default: false },
-		placeholder: { type: String, default: "" },
-		labelPlaceholder: { type: String, default: "" },
-		label: { type: String, default: "" },
-		disabled: { type: Boolean, default: false },
-		collapseChips: { type: Boolean, default: false },
-		loading: { type: Boolean, default: false },
-		state: { type: String, default: null },
-		block: { type: Boolean, default: false },
-		selectItems: { type: Array, default: () => [] },
-		width: { type: String, default: "100%"}
+		modelValue: {},  //v-model prop: current selected value  
+		multiple: { type: Boolean, default: false },  //multiple prop:selects multiple values if boolean is true
+		dropdown: { type: Boolean, default: false },  //dropdown prop: dropdown styles are used if boolean is true
+		inline: { type: Boolean, default: false },  //inline prop: makes the select container display inline
+		filter: { type: Boolean, default: false },  //filter prop: enables filter feature that is search select values
+		addValue: { type: Boolean, default: false },  //addValue prop: 
+		placeholder: { type: String, default: "" },  //placeholder prop: placeholder for select field
+		labelPlaceholder: { type: String, default: "" },  //labelPlaceholder prop: labelPlaceholder for select field
+		label: { type: String, default: "" },  //label prop: label for select field
+		disabled: { type: Boolean, default: false },  //disabled prop: disables the select field
+		collapseChips: { type: Boolean, default: false },  //collapseChips prop: collapses the chips and displays only one value and collapses rest when multiple is set to true
+		loading: { type: Boolean, default: false },  //loading prop: loading animation to be shown when boolean is true
+		state: { type: String, default: null },  //state prop: state of the select field for eg success warn etc. the possible values are i) success ii) danger iii) warn iv) dark v) primary
+		block: { type: Boolean, default: false },  //block prop: takes full width of container if boolean is true
+		width: { type: String, default: "100%"}  //width prop: sets the width of the select field
 	},
 	provide() {
 		return {

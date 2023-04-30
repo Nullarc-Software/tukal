@@ -53,63 +53,55 @@ export default defineComponent({
 	extends: tuComponent,
 	components: { tuIcon, tuButton },
 	props: {
-		modelValue: {
+		modelValue: {  //v-model prop:if boolean is true dialog box will be displayed else not
 			type: Boolean,
 			default: false
 		},
-		loading: {
+		loading: {  //loading prop: loading animation to be show if boolean is true
 			type: Boolean,
 			default: false
 		},
-		fullScreen: {
+		fullScreen: {  //fullScreen prop: dialog to be shown fullscreen if boolean is true
 			type: Boolean,
 			default: false
 		},
-		notClose: {
+		notClose: {  //notClose prop: removes close icon from dialog box if boolean is true
 			type: Boolean,
 			default: false
 		},
-		preventClose: {
+		notPadding: {  //notPadding prop: removes padding for dialog box content if boolean is true
 			type: Boolean,
 			default: false
 		},
-		notPadding: {
+		overflowHidden: {  //overflowHidden prop: overflow: hidden to be applied on body of html 
 			type: Boolean,
 			default: false
 		},
-		overflowHidden: {
+		blur: {  //blue prop: blurs the background of the webpage if boolean is true
 			type: Boolean,
 			default: false
 		},
-		blur: {
+		square: {  //square prop: shape of the dialog box to be square if boolean is true
 			type: Boolean,
 			default: false
 		},
-		square: {
+		autoWidth: {  //autoWidth prop: width of dialog box to be auto if boolean is true
 			type: Boolean,
 			default: false
 		},
-		autoWidth: {
+		scroll: {  //scroll prop: adds a scrollbar to dialog box if boolean is true
 			type: Boolean,
 			default: false
 		},
-		scroll: {
+		notCenter: {  //notCenter prop: aligns the header to left if booleanis true
 			type: Boolean,
 			default: false
 		},
-		notCenter: {
-			type: Boolean,
-			default: false
-		},
-		routerClose: {
-			type: Boolean,
-			default: false
-		},
-		width: {
+		width: {  //width prop: sets the width of the dialog box the values can be in px,vw,% etc ex. 354px
 			type: String,
 			default: null
 		},
-		footerClasses: {
+		footerClasses: {   //footerClasses prop: classes to be binded to the footer of dialog box
 			type: Object,
 			default: null
 		}
@@ -119,7 +111,7 @@ export default defineComponent({
 		const rebound = ref(false);
 
 		const esc = function (evt: any) {
-			if (evt.which === 27 && !props.preventClose) {
+			if (evt.which === 27) {
 				context.emit("update:modelValue", false);
 				context.emit("close");
 			}
@@ -155,12 +147,9 @@ export default defineComponent({
 		);
 
 		const click = function (evt) {
-			if (!evt.target.closest(".tu-dialog") && !props.preventClose) {
+			if (!evt.target.closest(".tu-dialog")) {
 				context.emit("update:modelValue", !props.modelValue);
 				context.emit("close");
-			}
-
-			if (props.preventClose && !evt.target.closest(".tu-dialog")) {
 				rebound.value = true;
 				setTimeout(() => {
 					rebound.value = false;

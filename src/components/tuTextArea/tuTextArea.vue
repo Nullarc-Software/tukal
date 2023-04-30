@@ -39,7 +39,7 @@ export default defineComponent({
 	name: "TuTextarea",
 	extends: tuComponent,
 	props: {
-		maxSize: {
+		maxSize: {  //maxSie prop: max Size of the text area which max width and max height
 			type: Object,
 			default: () => {
 				return {
@@ -48,43 +48,43 @@ export default defineComponent({
 				};
 			}
 		},
-		minWidth: {
+		minWidth: {  //minWidth prop: minimum width of the textarea
 			type: String,
 			default: "200px"
 		},
-		minHeight: {
+		minHeight: {  //minHeight prop: minimum height of the textarea
 			type: String,
 			default: "75px"
 		},
-		minSizeToParent: {
+		minSizeToParent: {  //
 			type: Boolean,
 			default: true
 		},
-		modelValue: {
+		modelValue: {  //v-model prop: current text in the textarea
 			type: [String, Object],
 			default: ""
-		},
-		label: {
+		},  
+		label: {  //label prop: label for the textarea
 			default: null,
 			type: String
 		},
-		color: {
-			default: "primary",
+		color: {  //color prop: border color of textarea field
+			default: "warn",
 			type: String
 		},
-		counter: {
+		counter: {  //counter prop: maximum charaters to be in the textarea
 			default: null,
 			type: [Number, String]
 		},
-		counterDanger: {
-			default: false,
+		counterDanger: {  //counterDanger prop: danger theme to be apllied to textarea on exceeding the counter limit
+			default: true,
 			type: Boolean
 		},
-		height: {
+		height: {  //height prop: height of the textarea
 			default: null,
 			type: String
 		},
-		width: {
+		width: {  //width prop: width of the textarea
 			default: null,
 			type: String
 		}

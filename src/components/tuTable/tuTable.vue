@@ -170,110 +170,86 @@ export default defineComponent({
 		tuPopupItem
 	},
 	props: {
-		modelValue: {},
-		pageSize: {
+		modelValue: {},  //v-model prop: current selected data present in the table
+		pageSize: {  //pageSize prop: no fo rows to be present in one page
 			type: Number,
 			default: 25
 		},
-		page: {
+		page: {  //page prop: current page number for the table
 			type: Number,
 			default: 1
 		},
-		numPages: {
+		numPages: {  //numPages prop: total number of pages present in table
 			type: Number,
 			default: 1
 		},
-		/**
-		 * Enables striped rows on the table
-		 */
-		striped: {
+		striped: {  //striped prop: enables striped row on table
 			default: false,
 			type: Boolean
 		},
-		/**
-		 * Set to true if data is loading. Ignored in Server Side model.
-		 */
-		loading: {
+		loading: {  //loading prop: Set to true if data is loading. Ignored in Server Side model
 			default: false,
 			type: Boolean
 		},
-		/**
-		 * The Size of the table.
-		 * @values fitData, fill, <custom size string>
-		 */
-		size: {
+		size: {  //size prop: The Size of the table values are i) fitData ii) fill iii) custom size string   
 			type: String,
 			default: ""
 		},
-		columnMode: {
-			type: String,
-			default: "fitDataStretch"
-		},
-		/**
-		 * Specifies the model for the table. Server side model will send pagination, sorting and filtering params to the server.
-		 * @values server, local
-		 */
-		model: {
+		model: {  //model prop:  Specifies the model for the table. Server side model will send pagination, sorting and filtering params to the server. values for the prop are server and local
 			type: String,
 			default: "local"
 		},
-		/**
-		 * The Data for the table. ignored in Server Side model. SSM This contains the table data.
-		 */
-		data: {
+		data: {  //data prop:The Data for the table. ignored in Server Side model. SSM This contains the table data.
 			type: Array,
 			default: () => []
 		},
-		columnSelector: {
+		columnSelector: {  //columSelecter prop: enables column selected popper to select only particular columns
 			type: Boolean,
 			default: false
 		},
-		id: {
+		id: {  //id prop: unique id for table
 			type: String,
 			default: () => `tu-table-${TableIdentifierAuto.id++}`
 		},
-		persistentId: {
+		persistentId: {  //persistentId prop: unique persistent id for persisting the table configuration
 			type: String,
 			default: ""
 		},
-		draggable: {
+		draggable: {  //draggable porp: enables the dragging of columns in the table
 			type: Boolean,
 			default: false
 		},
-		multiSelect: {
+		multiSelect: {  //multiSelect prop: selection of multiple data is enabled
 			type: Boolean,
 			default: false
 		},
-		serverSideConfig: {
+		serverSideConfig: {  //serverSideConfif prop: serverSideConfiguration for the server side model
 			type: Object as PropType<TuTableServerModel>,
 			default: () => {
 				return {};
 			}
 		},
-		rowExpand: {
+		rowExpand: {  //rowExpand prop: expands row if boolean is true
 			type: Boolean,
 			default: false
 		},
-		columns: {
+		columns: {  //columns prop: columns for the table
 			type: Object as () => TuHeaderDefn[],
 			default: () => []
 		},
-		tableInstance: {
+		tableInstance: {  //tableinstance prop: table instance for the table
 			type: TuTableStore,
 			default: null
 		},
-		compact: {
+		compact: {  //compact prop: compact style for table is enabled
 			type: Boolean,
 			default: false
 		},
-		/**
-		 * Initial values for all the components in the rows of the table.
-		 */
-		initialComponentValues: {
+		initialComponentValues: {  //initialComponentValues prop: Initial values for all the components in the rows of the table.
 			type: Object as PropType<Array<TuTableInitialComponentValues>>,
 			default: () => []
 		},
-		popperPlacement: {
+		popperPlacement: {  //popperPlacement prop: placement for the column selector popper
 			type: String,
 			default: () => "auto" as PlacementType
 		}

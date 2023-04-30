@@ -31,9 +31,6 @@ export default defineComponent({
 			type: String,
 			default: '',
 		},
-		items: {
-			type: Array,
-		},
 		iconPack: {
 			type: String,
 			default: 'material-icons'

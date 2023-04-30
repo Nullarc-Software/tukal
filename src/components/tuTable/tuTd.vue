@@ -16,27 +16,22 @@ export default defineComponent({
 	name: "TuTd",
 	extends: tuComponent,
 	props: {
-		checkbox: {
+		checkbox: {  //checkbox prop: checkbox is used in the td if boolean is true
 			type: Boolean,
 			default: false
 		},
-		edit: {
+		edit: {  //edit porp: editing of td is enabled
 			type: Boolean,
 			default: false
 		},
-		textWrap: {
+		textWrap: {  //textWrap prop: text for td is wrapped
 			type: Boolean,
 			default: false
 		},
-		expand: {
-			type: Boolean,
-			default: false
-		}
 	},
 	setup(props, context) {
 		const clickHandler = function (event: MouseEvent) {
 			if (props.checkbox || props.edit) (event as any).isInput = true;
-			else if (props.expand) (event as any).isExpand = true;
 			context.emit("tdClick", event);
 		};
 

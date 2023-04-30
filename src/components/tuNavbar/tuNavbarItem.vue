@@ -26,11 +26,11 @@ export default defineComponent({
 	name: "TuNavbarItem",
 	extends: tuComponent,
 	props: {
-		active: { default: false, type: Boolean },
-		to: {},
-		id: {},
-		href: {},
-		target: { default: "_blank" }
+		active: { default: false, type: Boolean },  //active prop: the current active navbar item
+		to: {}, //to prop: the route that needs to be redirected when navbar item is active
+		id: {},  //id porp: id for navbar item
+		href: {},  //href prop: href value for navbar item
+		target: { default: "_blank" }  //target propL target value for href attribute
 	},
 	emits: ["click"],
 	setup(props, context) {

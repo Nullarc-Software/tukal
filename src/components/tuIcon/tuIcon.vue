@@ -32,31 +32,31 @@ export default defineComponent({
 	name: "TuIcon",
 	extends: tuComponent,
 	props: {
-		icon: {
+		icon: {  //icon prop: name of the icon
 			default: null,
 			type: String
 		},
-		iconPack: {
+		iconPack: {  //iconPack prop: the iconPack for the icon
 			default: null,
 			type: String
 		},
-		color: {
+		color: {  //color prop: the color for the icon
 			default: null,
 			type: String
 		},
-		bg: {
+		bg: {  //bg prop: background for the icon
 			default: null,
 			type: String
 		},
-		size: {
+		size: {  //size prop: size of the icon which can be in px,vw,% etc
 			default: null,
 			type: String
 		},
-		round: {
+		round: {  //round prop: icon to be in rounded if boolean is true
 			default: false,
 			type: Boolean
 		},
-		outlined: {
+		outlined: {  //outlined prop: icons to be in outlined style if boolean is true
 			default: false,
 			type: Boolean
 		}

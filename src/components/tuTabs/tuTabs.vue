@@ -126,59 +126,59 @@ export default defineComponent({
 	components: { tuIcon, tuProgress },
 	extends: tuComponent,
 	props: {
-		modelValue: {
+		modelValue: {  //v-model prop: current tab which is displayed
 			default: 0,
 			type: [Number, String]
 		},
-		color: {
+		color: {  //color prop: theme for the tabs
 			default: "primary",
 			type: String
 		},
-		tagColor: {
+		tagColor: {  //tagColor prop: color of the tag
 			default: "primary",
 			type: String
 		},
-		alignment: {
+		alignment: {  //alignment prop: alignment of the tabs the values are i) left ii) right iii) center
 			default: "left",
 			type: String
 		},
-		position: {
+		position: {  //position prop: position of the tabs the values can be i) top ii) bottom  iii) right iv) left
 			default: "top",
 			type: String
 		},
-		noTransitions: {
+		noTransitions: {  //noTransition prop: removes transitions if boolean is true
 			type: Boolean,
 			default: false
 		},
-		pills: {
+		pills: {  //pills prop: the tabs to be in the shape of pills if boolean is true
 			type: Boolean,
 			default: false
 		},
-		headerSize: {
+		headerSize: {  //headerSize prop: header size of the tab
 			type: Number,
 			default: 16
 		},
-		progressWidth: {
+		progressWidth: {  //prgressWidth prop: progress width for the tabs
 			type: String,
 			default: "100%"
 		},
-		tabStyle: {
+		tabStyle: {  //tabStyle prop: tabs to be of different styles the different values are i) default ii) card  iii) progress 
 			type: String,
 			default: "default"
 		},
-		fixedWidth: {
+		fixedWidth: {  //fixedWidth prop: fixed width of tabs
 			type: String,
 			default: null
 		},
-		fixedHeight: {
+		fixedHeight: {  //fixedHHeight prop: fixed height for the tabs
 			type: String,
 			default: null
 		},
-		type: {
+		type: {  //type prop: type of tabs which are basically of two type i) normal  ii) router
 			type: String,
 			default: "normal"
 		},
-		routerModeParams: {
+		routerModeParams: {  //routerModeParams prop: the router objects to be used in the tabs
 			type: Object as PropType<TuTabsRouterParams>,
 			default: () => { }
 		},

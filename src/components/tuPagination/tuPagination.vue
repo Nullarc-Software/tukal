@@ -61,21 +61,21 @@ export default defineComponent({
 		tuIcon
 	},
 	props: {
-		modelValue: { type: Number, default: 1 },
-		infinite: { default: false, type: Boolean },
-		flat: { default: false, type: Boolean },
-		progress: { default: false, type: Boolean },
-		notMargin: { default: false, type: Boolean },
-		buttonsDotted: { default: false, type: Boolean },
-		notArrows: { default: false, type: Boolean },
-		onlyArrows: { default: false, type: Boolean },
-		circle: { default: false, type: Boolean },
-		square: { default: false, type: Boolean },
-		disabled: { default: false, type: Boolean },
-		disabledItems: { default: () => [], type: Array },
-		loadingItems: { default: () => [], type: Array },
-		length: { default: 1, type: Number },
-		max: { default: 9, type: Number },
+		modelValue: { type: Number, default: 1 },  //v-model prop: current page number
+		infinite: { default: false, type: Boolean }, //infinite prop: infinite pages style if boolean is true
+		flat: { default: false, type: Boolean },  //flat prop: flat style for pagination buttons
+		progress: { default: false, type: Boolean },  //progress prop: displays progress bar right below pagination buttons
+		notMargin: { default: false, type: Boolean },  //notMargin prop: removes margin for pagination buttons
+		buttonsDotted: { default: false, type: Boolean },  //buttonsDotted porp: uses dotted buttons instead of normal buttons with numbers
+		notArrows: { default: false, type: Boolean },  //notArrows prop: removes prev and next arrows when boolean is true
+		onlyArrows: { default: false, type: Boolean },  //onlyArrows prop: only prev and next buttons are used
+		circle: { default: false, type: Boolean },  //circle prop: the pagination buttons to be in the shape of circle
+		square: { default: false, type: Boolean },  //sqaure prop: the pagination button sto be in the shape of square
+		disabled: { default: false, type: Boolean },  //disabled prop: disables the pagination if boolean is true
+		disabledItems: { default: () => [], type: Array },  //disabledItems prop: the items which are in the array will be disabled
+		loadingItems: { default: () => [], type: Array },  //loadingItems prop: the items thar in loading state are in the array
+		length: { default: 1, type: Number }, //length prop: the total number of pages
+		max: { default: 9, type: Number },  //max prop: maxinmum number of pages
 		dottedNumber: { default: 5, type: Number }
 	},
 	setup(props, context) {

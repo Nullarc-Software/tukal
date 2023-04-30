@@ -46,16 +46,16 @@ export default defineComponent({
 	name: "TuRadio",
 	extends: tuComponent,
 	props: {
-		modelValue: {
+		modelValue: {  //v-model prop: the current state of radio button
 			type: [Object, String, Number]
 		},
-		val: {
+		val: { //val prop: if v-model is an array of strings then val prop indicates the radio input value. if the val prop string is present in the v-model array then its state will be true
 			type: [Object, String, Number]
 		},
-		name: { type: String, default: null },
-		disabled: { type: Boolean, default: false },
-		loading: { type: Boolean, default: false },
-		labelBefore: { type: Boolean, default: false }
+		name: { type: String, default: null },  //name prop: name for radio inout
+		disabled: { type: Boolean, default: false },  //disabled prop: the radio input is disabled when boolean is true
+		loading: { type: Boolean, default: false },  //loading prop: loading animation to be shown when boolean is true
+		labelBefore: { type: Boolean, default: false }  //labelBefore prop: the label to be placed before radio input
 	},
 	emits: ["update:modelValue"],
 	setup(props, context) {

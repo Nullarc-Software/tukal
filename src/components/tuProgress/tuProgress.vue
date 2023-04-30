@@ -19,19 +19,19 @@ export default defineComponent({
 	name: "TuProgress",
 	extends: tuComponent,
 	props: {
-		height: {
+		height: {  //height prop: height of the progress bar
 			type: [Number, String],
 			default: 5
 		},
-		indeterminate: {
+		indeterminate: {  //indeterminate prop: the progress bar to be in indeterminate state
 			type: Boolean,
 			default: false
 		},
-		percent: {
+		percent: {  //percent prop: percentage of the progress bar
 			type: Number,
 			default: 0
 		},
-		color: {
+		color: {  //color prop: color of the progress bar
 			type: String,
 			default: "primary"
 		}

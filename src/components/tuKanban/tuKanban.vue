@@ -39,15 +39,15 @@ export default defineComponent({
         tuInput
     },
     props: {
-        items: {
+        items: {  //items prop: items to to be shown in the kanban board
             type: Object as PropType<kanbanItems[]>,
             default: []
         },
-        fields: {
+        fields: {  //fields prop: the different fields of the kanban board
             type: Object as PropType<kanbanFields[]>,
             default: []
         },
-        modelValue: {}
+        modelValue: {}  //v-model porp: current kanban items state
     },
     emits: ["onDrag", "update:modelValue"],
     setup(props, context) {

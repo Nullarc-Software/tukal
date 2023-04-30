@@ -34,17 +34,16 @@ export default defineComponent({
 		tuIcon
 	},
 	props: {
-		to: {
+		to: {  //to prop: the route that needs to be redirected when sidebar item is active
 			type: [Object, String],
 			default: null
 		},
-		href: {
+		href: {  //href prop: href value for the sidebar item
 			type: String
 		},
-		target: { default: "_blank" },
-		value: { type: String },
-		id: { type: String },
-		arrow: { type: Boolean }
+		target: { default: "_blank" },  //target prop:  target value for sidebar item
+		id: { type: String },  //id prop: unique id for sidebar item
+		arrow: { type: Boolean }  //arrow prop: arrow icon is to be used if boolean is true
 	},
 	setup(props, context) {
 		const parentValue = inject<any>("parentValue");

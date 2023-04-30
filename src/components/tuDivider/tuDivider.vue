@@ -23,31 +23,31 @@ import _color from "../../utils/color";
 export default defineComponent({
 	name: "TuDivider",
 	props: {
-		color: {
+		color: {  //color prop: color of the divider which can be rgba or hexadecimal value
 			type: String,
 			default: "rgba(0, 0, 0,.1)",
 		},
-		background: {
+		background: {  //background porp: background color for the divider which can be rgba or hexadecimal value
 			type: String,
 			default: "transparent",
 		},
-		icon: {
+		icon: {  //icon prop: icon for divider 
 			default: null,
 			type: String,
 		},
-		borderStyle: {
+		borderStyle: {  //borderStyle prop: borderStyle for the divider
 			default: "solid",
 			type: String,
 		},
-		borderHeight: {
+		borderHeight: {  //borderHeight prop: border height for the divider
 			default: "1px",
 			type: String,
 		},
-		position: {
+		position: {  //position prop: position of divider which can be i) left ii) left-center iii) right-center iv) center v) right.
 			default: "center",
 			type: String,
 		},
-		iconPack: {
+		iconPack: {  //iconPack prop: iconPack for the icon used
 			default: "material-icons",
 			type: String,
 		},

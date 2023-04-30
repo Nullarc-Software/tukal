@@ -178,91 +178,91 @@ export default defineComponent({
 			type: Boolean,
 			default: false
 		},
-		bold: {
+		bold: {  //bold prop: adds bold button to make the text bold
 			type: Boolean,
 			default: false
 		},
-		italics: {
+		italics: {  //italics prop: adds italics button to make the text italic style
 			type: Boolean,
 			default: false
 		},
-		underline: {
+		underline: {  //underline prop: adds underline button to add underline to the text
 			type: Boolean,
 			default: false
 		},
-		strikeThrough: {
+		strikeThrough: {  //strikeThrough prop: adds a button to strike through the text
 			type: Boolean,
 			default: false
 		},
-		code: {
+		code: {  //code prop: adds a button to make the text like code style
+			type: Boolean,
+			default: false
+		}, 
+		heading1: {  //heading1 prop: adds a h1 button to make the text have heading styles
 			type: Boolean,
 			default: false
 		},
-		heading1: {
+		heading2: {  //heading2 prop: adds a h2 button to make the text have heading 2 styles
 			type: Boolean,
 			default: false
 		},
-		heading2: {
+		heading3: {  //heading3 prop: adds a h3 button to make the text have heading 3 styles
 			type: Boolean,
 			default: false
 		},
-		heading3: {
+		heading4: { //heading4 prop: adds a h4 button to make the text have heading 4 styles
 			type: Boolean,
 			default: false
 		},
-		heading4: {
+		heading5: {  //heading5 prop: adds a h5 button to make the text have heading 5 styles
 			type: Boolean,
 			default: false
 		},
-		heading5: {
+		heading6: { //heading6 prop: adds a h6 button to make the text have heading 6 styles
 			type: Boolean,
 			default: false
 		},
-		heading6: {
+		unorderedList: {  //unorderedList prop: adds aunordered list button to create unordered list
 			type: Boolean,
 			default: false
 		},
-		unorderedList: {
+		orderedList: {  //orederedList prop: adds a ordered list button to create a ordered list
 			type: Boolean,
 			default: false
 		},
-		orderedList: {
+		codeBlock: {  //codeBlock prop: adds codeblock button to make the text of codeblock style
 			type: Boolean,
 			default: false
 		},
-		codeBlock: {
+		textAlignment: {  //textAlignment prop: adds a text alignment button to align the text
 			type: Boolean,
 			default: false
 		},
-		textAlignment: {
+		blockQuote: {  //blockQuote prop: adds a blockQuote button to add blockQuote style to the text
 			type: Boolean,
 			default: false
 		},
-		blockQuote: {
+		horizontalRule: {  //horizontalRule prop: adds a horizontal rule button which adds a horizontal line
 			type: Boolean,
 			default: false
 		},
-		horizontalRule: {
+		undo: {  //undo prop: adds a undo button
 			type: Boolean,
 			default: false
 		},
-		undo: {
+		redo: {  //redo prop: adds a redo button
 			type: Boolean,
 			default: false
 		},
-		redo: {
-			type: Boolean,
-			default: false
-		},
-		width: {
+		width: {  //width prop: width of the texteditor to be set
 			type: String,
 			default: "unset"
 		},
-		height: {
+		height: {  //height prop: height of the texteditor to be set
 			type: String,
 			default: "unset"
 		},
-		modelValue: {
+		modelValue: {  //v-model prop: current text of the textEditor as html
 			type: String,
 			default: ""
 		}
@@ -294,7 +294,7 @@ export default defineComponent({
 			});
 
 			if (editor.value.view && editor.value.view.dom) {
-				// editor.value.view.dom.style.width = props.width;
+				editor.value.view.dom.style.width = props.width;
 				editor.value.view.dom.style.height = props.height;
 			}
 		});

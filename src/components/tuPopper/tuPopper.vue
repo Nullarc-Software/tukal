@@ -65,58 +65,43 @@ export default defineComponent({
 		};
 	},
 	props: {
-		/**
-		 * Preferred [placement](https://popper.js.org/docs/v2/constructors/#options)
-		 */
-		placement: {
+		placement: {  //placement prop: Describes the preferred placement of the popper. Modifiers like flip may change the placement of the popper to make it fit better.
 			type: String,
 			default: "auto"
 		},
-		/**
-		 * Customize the [offset](https://popper.js.org/docs/v2/modifiers/offset/) of the popper
-		 */
-		offsetX: {
+		offsetX: {  //offsetX prop: The offset modifier lets you displace a popper element from its reference element in the x direction.
 			type: String,
 			default: "0"
 		},
-		offsetY: {
+		offsetY: { //offsetY prop: The offset modifier lets you displace a popper element from its reference element in the y direction.
 			type: String,
 			default: "12"
 		},
-		/**
-		 * Show the popper on hover
-		 */
-		hover: {
+		hover: {  //hover porp: shows the popper on hover
 			type: Boolean,
 			default: false
 		},
-		timeout: {
+		timeout: {  //timeout prop: timeout for the popper
 			type: Number,
 			default: -1
 		},
-		/**
-		 * Add an arrow to the popper
-		 */
-		arrow: {
+		arrow: {  //arrow porp: adds an arrow to the popper
 			type: Boolean,
 			default: false
 		},
-		/**
-		 * Stop arrow from reaching the edge of the Popper
-		 */
-		arrowPadding: {
+		arrowPadding: {  //arrowPadding prop: Stop arrow from reaching the edge of the Popper
 			type: String,
 			default: "0"
 		},
-		borderRadius: {
+		borderRadius: {  //borderRadius prop: sets the border radius for the popper
 			type: String,
 			default: null
 		},
-		cursorPointer: {
+		cursorPointer: {  //cursorPointer prop: sets the cursor to pointer for the popper container
 			type: Boolean,
 			default: true
 		},
-		fitPopperContainer: {
+		fitPopperContainer: {  //firPopperContainer porp: width of the popper container to be 100% if booleanis true else unset
 			type: Boolean,
 			default: false
 		}

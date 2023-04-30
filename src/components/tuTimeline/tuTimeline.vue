@@ -17,19 +17,19 @@ import * as _color from "../../utils";;
 
 export default defineComponent({
     props: {
-        intervalStartTime: {
+        intervalStartTime: {  //intervalStartTime prop: start time from where to be shaded in the timeline
             type: Number,
             default: 8
         },
-        intervalEndTime: {
+        intervalEndTime: {  //intervalEndTime prop: end tim etill where to be shaded in the timeline
             type: Number,
             default: 18
         },
-        interval: {
+        interval: {  //interval prop: the interval with which the productivity or unproductivity to be displayed ex. for each 5min .
             type: Number,
             default: 5
         },
-        intervals: {
+        intervals: {  //intervals prop: periods of productive and unproductive time 
             type: Array<number>,
             default: []
         }

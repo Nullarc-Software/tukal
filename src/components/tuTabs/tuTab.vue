@@ -25,35 +25,35 @@ export default defineComponent({
 	name: "TuTab",
 	inheritAttrs: false,
 	props: {
-		label: {
+		label: {  //lable prop: label for the tab
 			default: "Label",
 			type: String
 		},
-		name: {
+		name: {  //name prop: name of the teb
 			default: null,
 			type: String
 		},
-		icon: {
+		icon: {  //icon prop: icon for the tab if any
 			default: "",
 			type: String
 		},
-		tag: {
+		tag: {  //tag prop: tag for the tab
 			default: "",
 			type: String
 		},
-		iconPack: {
+		iconPack: {  //iconPack prop: iconPack for the icon  used
 			type: String,
 			default: "material-icons"
 		},
-		disabled: {
+		disabled: {  //disabled prop: disables the tab
 			type: Boolean,
 			default: false
 		},
-		noTransitions: {
+		noTransitions: {  //noTransition prop: removes transitions
 			type: Boolean,
 			default: false
 		},
-		to: {
+		to: {  //to prop: the route that needs to be redirected when y is active
 			type: String,
 			default: null
 		}

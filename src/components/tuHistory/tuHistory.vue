@@ -40,23 +40,23 @@ export default defineComponent({
 		tuInfiniteLoading
 	},
 	props: {
-		events: {
+		events: {  //events prop: the events to be displayed in the timeline
 			type: Object as PropType<Array<TuHistoryEvent>>,
 			default: []
 		},
-		alternative: {
+		alternative: {  //alternative prop: the timeline to be displayed in alternative style if boolean is true
 			type: Boolean,
 			default: false
 		},
-		center: {
+		center: {  //center prop: the timeline to be aligned to center if boolean is true
 			type: Boolean,
 			default: false
 		},
-		model: {
+		model: {  //model prop: the model of the component whether its local or server
 			type: String,
 			default: "local"
 		},
-		serverSideConfig: {
+		serverSideConfig: {  //serverSideConfig prop: the server side configuration for fetching events
 			type: Object as PropType<TuHistoryServerModel>,
 			default: () => {
 				return {};

@@ -46,20 +46,20 @@ export default defineComponent({
 	name: "TuSidebar",
 	extends: tuComponent,
 	props: {
-		value: {},
-		reduce: { default: false, type: Boolean },
-		hoverExpand: { default: false, type: Boolean },
-		open: { default: false, type: Boolean },
-		notLineActive: { default: false, type: Boolean },
-		square: { default: false, type: Boolean },
-		textWhite: { default: false, type: Boolean },
-		notShadow: { default: false, type: Boolean },
-		relative: { default: false, type: Boolean },
-		absolute: { default: false, type: Boolean },
-		right: { default: false, type: Boolean },
-		background: { default: "background", type: String },
-		expanded: { default: false, type: Boolean },
-		fixedExpandWidth: { default: null, type: Number }
+		value: {},  //value prop: current value of the sidebar item that is active
+		reduce: { default: false, type: Boolean },  //reduce prop: reduced size of sidebar to be used
+		hoverExpand: { default: false, type: Boolean },  //hoverExpand prop: expands the sidebar on hover if boolean is true
+		open: { default: false, type: Boolean }, 
+		notLineActive: { default: false, type: Boolean }, //notLineActive prop: removes the active line from the sidebar
+		square: { default: false, type: Boolean },  //square prop: shape of the sidebar to be in the form of square
+		textWhite: { default: false, type: Boolean },  //textWhite prop: the text of sidebar to be white when boolean is true
+		notShadow: { default: false, type: Boolean },  //notShadow prop: removes shadown if boolean is true
+		relative: { default: false, type: Boolean }, //relative prop: position of the sidebar ot be relative
+		absolute: { default: false, type: Boolean },  //absolute prop: position of the sidebar to be absolute
+		right: { default: false, type: Boolean }, //right prop: sidebar to be positioned to the right
+		background: { default: "background", type: String },  //background prop: background of the sidebar to be set
+		expanded: { default: false, type: Boolean }, //expands prop: expands the sidebar to full width if boolean is true
+		fixedExpandWidth: { default: null, type: Number }  //fixedExpandWidth prop: fixed width for the sideabr when expanded
 	},
 	emits: ["update:open", "update:value", "update:expanded"],
 	provide() {

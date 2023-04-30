@@ -30,25 +30,26 @@
 </template>
 <script lang="ts">
 import tuIcon from "../tuIcon/index";
+import { inject } from "vue"
 export default {
 	name: "tuCollapseItem",
 	components: {
 		tuIcon
 	},
 	props: {
-		iconPack: {
+		iconPack: {  //iconPack prop: iconPack for icons
 			type: String,
 			default: "material-icons"
 		},
-		iconArrow: {
+		iconArrow: {  //iconArrow prop: icon for arrow icon 
 			type: String,
 			default: "keyboard_arrow_down"
 		},
-		notArrow: {
+		notArrow: {  //notArrow prop: arrow icon for collapse item to be removed if boolean is true
 			type: Boolean,
 			default: false
 		},
-		disabled: {
+		disabled: {  //disabled prop: disables the collapse item if boolean is true
 			type: Boolean,
 			default: false
 		}
@@ -60,7 +61,8 @@ export default {
 			isOpen: false,
 			styleContent: {
 				maxHeight: "0px"
-			}
+			},
+			openHover: inject("openHover")
 		};
 	},
 	methods: {
@@ -81,9 +83,15 @@ export default {
 			};
 		},
 		mouseover () {
+			if(this.openHover) {
+				this.toggleContent()
+			}
 			if (this.disabled) return;
 		},
 		mouseout () {
+			if(this.openHover) {
+				this.toggleContent()
+			}
 			if (this.disabled) return;
 		}
 	}

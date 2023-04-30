@@ -45,37 +45,27 @@ export default defineComponent({
 	extends: tuComponent,
 	components: { tuIcon, tuInput },
 	props: {
-		/**
-		 * Enables sorting options for the column
-		 */
-		sort: {
+		sort: {  //sort prop :Enables sorting options for the column
 			default: false,
 			type: Boolean
 		},
-		/**
-		 * Enables Searching functionality for the column
-		 */
-		search: {
+		search: {  //search prop: Enables Searching functionality for the column
 			type: Boolean,
 			default: false
 		},
-		/**
-		 * Sets the field to display data from when user Server side model
-		 * @values null, field name (Accepts field nesting by following '.' notation. i.e 'Row.Key' will look for { Row : { Key : "Value here"}})
-		 */
-		field: {
+		field: {  //field prop: Sets the field to display data from when user Server side model. @values null, field name (Accepts field nesting by following '.' notation. i.e 'Row.Key' will look for { Row : { Key : "Value here"}})
 			type: String,
 			default: null
 		},
-		fixed: {
+		fixed: {  //fixed prop: makes the th fixed
 			type: Boolean,
 			default: false
 		},
-		type: {
+		type: {  //type prop: type of header that is whether its a string number or timestamp
 			type: String,
 			default: "string"
 		},
-		index: {
+		index: {  //index porp: index for the table header
 			type: Number,
 			default: null
 		}

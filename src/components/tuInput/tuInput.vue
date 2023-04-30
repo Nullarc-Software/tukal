@@ -74,15 +74,6 @@
 				<div class="tu-input__affects__4" />
 			</div>
 		</div>
-		<div v-if="progress > 0" class="tu-input__progress" :class="[
-	{ 'tu-input__progress--danger': progress < 33 },
-	{
-		'tu-input__progress--warn': progress < 66 && progress > 33
-	},
-	{ 'tu-input__progress--success': progress > 66 }
-]">
-			<div class="tu-input__progress_bar" :style="{ width: `${progress}%` }" />
-		</div>
 		<transition @before-enter="beforeEnter" @enter="enter" @leave="leave">
 			<div v-if="$slots[`message-success`]" class="tu-input__message tu-input__message--success">
 				<slot name="message-success" />
@@ -122,30 +113,28 @@ export default defineComponent({
 		tuIcon
 	},
 	props: {
-		modelValue: { type: [Object, String, Number, Object as any], default: "" },
-		labelPlaceholder: { default: "" },
-		label: { default: "" },
-		block: { type: Boolean, default: false },
-		iconAfter: { type: Boolean, default: false },
-		visiblePassword: { type: Boolean, default: false },
-		loading: { type: Boolean, default: false },
-		state: { type: String, default: null },
-		progress: { type: Number, default: 0 },
-		border: { type: Boolean, default: false },
-		shadow: { type: Boolean, default: false },
-		transparent: { type: Boolean, default: false },
-		textWhite: { type: Boolean, default: false },
-		square: { type: Boolean, default: false },
-		id: { type: String, default: null },
-		placeholder: { type: String, default: null },
-		type: { type: String, default: null },
-		inline: { type: Boolean, default: false },
-		disable: { type: Boolean, default: false },
-		editableStatic: {
+		modelValue: { type: [Object, String, Number, Object as any], default: "" }, //v-model prop: current input value 
+		labelPlaceholder: { default: "" },  //labelPlaceholder prop: labelPlaceholder for input field
+		label: { default: "" },  //label prop: label for input field
+		block: { type: Boolean, default: false }, //block prop: takes full width of container if boolean is true
+		iconAfter: { type: Boolean, default: false },  //iconAfter prop: icon to be shown right of input
+		loading: { type: Boolean, default: false },  //loading prop: loading animation to be shown if boolean is true
+		state: { type: String, default: null },  //state prop: current state of input for eg success. the values are i) success ii) warn iii) danger iv) dark v) primary
+		border: { type: Boolean, default: false },  //border prop: border styling for input field
+		shadow: { type: Boolean, default: false },  //shadow prop: adds shadow for input field
+		transparent: { type: Boolean, default: false },  //transparent prop: make the background of input field transparent
+		textWhite: { type: Boolean, default: false },  //textWhite prop: color of the input value to be white if boolean is true
+		square: { type: Boolean, default: false },  //square prop: input fields to be in the shape of sqaure if boolean is true
+		id: { type: String, default: null },  //id prop: unique id for input
+		placeholder: { type: String, default: null },  //placeholder prop: placeholder for input field
+		type: { type: String, default: null },  //type prop: type for input field
+		inline: { type: Boolean, default: false }, //inline prop: display to be made inline for the input field
+		disable: { type: Boolean, default: false },  //disable prop: disables the input field if boolean is true
+		editableStatic: {  //editableStatic prop: makes the input field editable with a icon on the right if boolean is true
 			type: Boolean,
 			default: false
 		},
-		width: {
+		width: {  //width prop: width for the input field.
 			type: String,
 			default: "unset"
 		}

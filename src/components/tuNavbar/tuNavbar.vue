@@ -82,21 +82,20 @@ export default defineComponent({
 	name: "TuNavbar",
 	extends: tuComponent,
 	props: {
-		fixed: { default: false, type: Boolean },
-		sticky: { default: false, type: Boolean },
-		leftAligned: { default: false, type: Boolean },
-		open: { default: true, type: Boolean },
-		shadow: { default: false, type: Boolean },
-		shadowScroll: { default: false, type: Boolean },
-		hideScroll: { default: false, type: Boolean },
-		textWhite: { default: false, type: Boolean },
-		square: { default: false, type: Boolean },
-		paddingScroll: { default: false, type: Boolean },
-		notLine: { default: false, type: Boolean },
+		fixed: { default: false, type: Boolean },  //fixed prop: fixes the navbar to top
+		sticky: { default: false, type: Boolean },  //sticky prop: sticks the navbar to top 
+		leftAligned: { default: false, type: Boolean },  //leftAligned prop: aligns the nav items to left
+		open: { default: false, type: Boolean },  //open prop: displays navbar only if boolean is true
+		shadow: { default: false, type: Boolean },  //shadow prop: adds shadow style to navbar
+		shadowScroll: { default: false, type: Boolean },  //shadowScroll prop: adds shadow style on scroll
+		hideScroll: { default: false, type: Boolean }, //hideScroll prop: hides the navbar on scroll
+		textWhite: { default: false, type: Boolean },  //textWhite prop: color of the text to be set to white
+		square: { default: false, type: Boolean },  //square prop: shape of the navbar to be set to square
+		paddingScroll: { default: false, type: Boolean },  //paddingScroll prop: adds padding to the navbar on scroll
 		leftCollapsed: { default: false, type: Boolean },
 		centerCollapsed: { default: false, type: Boolean },
 		rightCollapsed: { default: false, type: Boolean },
-		targetScroll: { type: String, default: null },
+		targetScroll: { type: String, default: null },  //targetScroll prop: adds a target value for scroll
 	},
 	provide() {
 		return {

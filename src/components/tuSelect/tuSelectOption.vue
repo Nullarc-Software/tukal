@@ -32,9 +32,9 @@ import tuComponent from "../tuComponent";
 export default defineComponent({
 	name: "TuSelectOption",
 	props: {
-		label: { type: String, default: null },
-		disabled: { type: Boolean, default: false },
-		value: {}
+		label: { type: String, default: null },  //label prop: label for the select option
+		disabled: { type: Boolean, default: false },  //disabled prop: disables the option if boolean is true
+		value: {}  //value prop: value for the select field
 	},
 	components: {
 		tuCheckbox
