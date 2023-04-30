@@ -1,0 +1,14 @@
+tuLoading.vue
+Props
+position prop: position of the loader
+text prop: loading load text
+type prop: types of loading animations
+color prop: color for loader
+background prop: background color for loader
+opacity prop: opacity for the loader
+percent prop: load percent for the loader
+progress prop: loading progress for loader
+scale prop: scale of the loader
+target prop: target for the loader
+isVisible prop: loader is visible when boolean is true
+corners

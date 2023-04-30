@@ -1,0 +1,9 @@
+tuChip.vue
+Props
+closable prop: adds a close icon to the chip if boolean is true
+color prop: background color for the chip
+iconPack prop: the icon pack for the close icon
+closeIcon prop: icon for close
+transparent prop: lowers the opacity of background color
+tuChips.vue
+Props

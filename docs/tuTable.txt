@@ -1,0 +1,66 @@
+tuTable.vue
+Props
+v-model prop: current selected data present in the table
+pageSize prop: no fo rows to be present in one page
+page prop: current page number for the table
+numPages prop: total number of pages present in table
+striped prop: enables striped row on table
+loading prop: Set to true if data is loading. Ignored in Server Side model
+size prop: The Size of the table values are i) fitData ii) fill iii) custom size string
+model prop:  Specifies the model for the table. Server side model will send pagination, sorting and filtering params to the server. values for the prop are server and local
+data prop:The Data for the table. ignored in Server Side model. SSM This contains the table data.
+columSelecter prop: enables column selected popper to select only particular columns
+id prop: unique id for table
+persistentId prop: unique persistent id for persisting the table configuration
+draggable porp: enables the dragging of columns in the table
+multiSelect prop: selection of multiple data is enabled
+serverSideConfif prop: serverSideConfiguration for the server side model
+rowExpand prop: expands row if boolean is true
+columns prop: columns for the table
+tableinstance prop: table instance for the table
+compact prop: compact style for table is enabled
+initialComponentValues prop: Initial values for all the components in the rows of the table.
+popperPlacement prop: placement for the column selector popper
+function showColumnChooser (event: MouseEvent) {
+			if(props.columnSelector) {
+				event.preventDefault();
+				event.stopPropagation();
+				 Check if mouse was within the bounding rectangle of the headers
+				const rect = thead.value.getBoundingClientRect();
+				if (event.clientX > rect.x && event.clientX < rect.right 
+					&& event.clientY > rect.y && event.clientY < rect.bottom) {
+					virtualElement.getBoundingClientRect =  generateGetBoundingClientRect(event.clientX, event.clientY);					
+				}	
+			
+				
+				if (openColumnChooser.value === false)
+					openColumnChooser.value = true;
+			}
+		}
+Force free up mem on next gc call
+box-shadow: 0px 5px 22px 0px rgba(0,0,0, -var(shadow-opacity))
+width: 100%
+tuTableContextMenu.vue
+Props
+tuTd.vue
+Props
+checkbox prop: checkbox is used in the td if boolean is true
+edit porp: editing of td is enabled
+textWrap prop: text for td is wrapped
+tuTh.vue
+Props
+sort prop :Enables sorting options for the column
+search prop: Enables Searching functionality for the column
+field prop: Sets the field to display data from when user Server side model. @values null, field name (Accepts field nesting by following '.' notation. i.e 'Row.Key' will look for { Row : { Key : "Value here"}})
+fixed prop: makes the th fixed
+type prop: type of header that is whether its a string number or timestamp
+index porp: index for the table header
+tuTr.vue
+Props
+data prop: data for the tr
+notClickSelected prop: if boolean is true then on clicking the row it will not be selected
+expandHandle prop: handles the row expand on click
+rowId prop: unique id for tr
+expanded prop: expand for tr enabled
+invinsible prop: removes border for tr
+isSelected.value = true;

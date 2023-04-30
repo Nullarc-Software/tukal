@@ -1,0 +1,9 @@
+tuDivider.vue
+Props
+color prop: color of the divider which can be rgba or hexadecimal value
+background porp: background color for the divider which can be rgba or hexadecimal value
+icon prop: icon for divider
+borderStyle prop: borderStyle for the divider
+borderHeight prop: border height for the divider
+position prop: position of divider which can be i) left ii) left-center iii) right-center iv) center v) right.
+iconPack prop: iconPack for the icon used

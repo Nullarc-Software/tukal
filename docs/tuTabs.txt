@@ -1,0 +1,28 @@
+tuTab.vue
+Props
+lable prop: label for the tab
+name prop: name of the teb
+icon prop: icon for the tab if any
+tag prop: tag for the tab
+iconPack prop: iconPack for the icon  used
+disabled prop: disables the tab
+noTransition prop: removes transitions
+to prop: the route that needs to be redirected when y is active
+tuTabs.vue
+Props
+v-model prop: current tab which is displayed
+color prop: theme for the tabs
+tagColor prop: color of the tag
+alignment prop: alignment of the tabs the values are i) left ii) right iii) center
+position prop: position of the tabs the values can be i) top ii) bottom  iii) right iv) left
+noTransition prop: removes transitions if boolean is true
+pills prop: the tabs to be in the shape of pills if boolean is true
+headerSize prop: header size of the tab
+prgressWidth prop: progress width for the tabs
+tabStyle prop: tabs to be of different styles the different values are i) default ii) card  iii) progress
+fixedWidth prop: fixed width of tabs
+fixedHHeight prop: fixed height for the tabs
+type prop: type of tabs which are basically of two type i) normal  ii) router
+routerModeParams prop: the router objects to be used in the tabs
+This is used only for type=router where on initial page load we have to
+set the active tab based on the current route.

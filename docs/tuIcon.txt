@@ -1,0 +1,9 @@
+tuIcon.vue
+Props
+icon prop: name of the icon
+iconPack prop: the iconPack for the icon
+color prop: the color for the icon
+bg prop: background for the icon
+size prop: size of the icon which can be in px,vw,% etc
+round prop: icon to be in rounded if boolean is true
+outlined prop: icons to be in outlined style if boolean is true

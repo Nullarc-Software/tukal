@@ -1,0 +1,30 @@
+tuSidebar.vue
+Props
+colors
+value prop: current value of the sidebar item that is active
+reduce prop: reduced size of sidebar to be used
+hoverExpand prop: expands the sidebar on hover if boolean is true
+notLineActive prop: removes the active line from the sidebar
+square prop: shape of the sidebar to be in the form of square
+textWhite prop: the text of sidebar to be white when boolean is true
+notShadow prop: removes shadown if boolean is true
+relative prop: position of the sidebar ot be relative
+absolute prop: position of the sidebar to be absolute
+right prop: sidebar to be positioned to the right
+background prop: background of the sidebar to be set
+expands prop: expands the sidebar to full width if boolean is true
+fixedExpandWidth prop: fixed width for the sideabr when expanded
+tuSidebarGroup.vue
+Props
+open prop: expands the sidebar group if boolean is true
+parent.$refs.content.style.height = `${parent.$refs.content.scrollHeight + h -1}px`;
+parent.$refs.content.style.height = `${parent.$refs.content.scrollHeight -h +1}px`;
+tuSidebarItem.vue
+Props
+to prop: the route that needs to be redirected when sidebar item is active
+href prop: href value for the sidebar item
+target prop:  target value for sidebar item
+id prop: unique id for sidebar item
+arrow prop: arrow icon is to be used if boolean is true
+Need to handle route when component mounted not just on route change
+background: -getColor('background', .1) !important

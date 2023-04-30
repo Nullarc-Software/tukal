@@ -1,0 +1,6 @@
+tuTimeline.vue
+Props
+intervalStartTime prop: start time from where to be shaded in the timeline
+intervalEndTime prop: end tim etill where to be shaded in the timeline
+interval prop: the interval with which the productivity or unproductivity to be displayed ex. for each 5min .
+intervals prop: periods of productive and unproductive time

@@ -1,0 +1,5 @@
+tuKanban.vue
+Props
+items prop: items to to be shown in the kanban board
+fields prop: the different fields of the kanban board
+v-model porp: current kanban items state

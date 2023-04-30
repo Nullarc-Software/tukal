@@ -1,0 +1,14 @@
+core.vue
+Props
+customSelect.vue
+Props
+renderlessSelect.vue
+Props
+deselect
+select
+tuCron.vue
+Props
+cols prop: default state of cron
+customLocale prop: changing the locale for the component
+fields prop: fields for cron component
+periods prop: periods for cron component

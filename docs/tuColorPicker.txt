@@ -1,0 +1,3 @@
+tuColorPicker.vue
+Props
+v-model prop: current color selected

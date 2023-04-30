@@ -1,0 +1,33 @@
+tuButton.vue
+Props
+`tu-button--${color.replace('#', '')}`,
+colors
+ripple prop: riplling effect to enabled if boolean is true
+activeDisabled prop: button to be in disabled mode if boolean is true
+flat prop: flat effect to be enabled if boolean is true
+border prop: border style to be enabled if boolean is true
+gradient: gradient style to be enabled if boolean is true
+relief prop: relief style to be enabled if boolean is true
+transparent prop: transparent style to be applied if boolean is true
+shadow prop: shadow style to be enabled if boolean is true
+floating prop: floating style to be enabled if boolean is true
+icon prop: icon to used in the button
+circle prop: button to be shaped as circle if boolean is true
+square prop: button to be shaped as square if boolean is true
+size prop: size of the button which can be following values i) mini ii) small iii) large iv) xl
+loading prop: loading animation to be shown on click if boolean is true
+upload prop: upload animation to be shown if boolean is true
+block prop: the button to take up full width its parent if boolean is true
+animationType prop: the type of animation to be applied to the button the values are i) scale ii) vertical iii) rotate
+animateInactive prop: disables animation if boolean is true
+to prop: on clicking the button the user is taken to new route specified in the prop
+href prop: specifies the URL of the page the link goes to when on clicking the button
+blank prop:to open a href link within a brand new tab if boolean is true
+width prop: to specify the width of the button
+height prop: to specify the height of th ebutton
+console.log(this.blank && '_self')
+Type Button Style
+transform: translate(50%, -50%)
+background: -getColor('color', -var('background-opacity'))
+tuButtonGroup.vue
+Props

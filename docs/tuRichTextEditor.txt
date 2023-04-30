@@ -1,0 +1,31 @@
+tuRichTextEditor.vue
+Props
+bold prop: adds bold button to make the text bold
+italics prop: adds italics button to make the text italic style
+underline prop: adds underline button to add underline to the text
+strikeThrough prop: adds a button to strike through the text
+code prop: adds a button to make the text like code style
+heading1 prop: adds a h1 button to make the text have heading styles
+heading2 prop: adds a h2 button to make the text have heading 2 styles
+heading3 prop: adds a h3 button to make the text have heading 3 styles
+heading4 prop: adds a h4 button to make the text have heading 4 styles
+heading5 prop: adds a h5 button to make the text have heading 5 styles
+heading6 prop: adds a h6 button to make the text have heading 6 styles
+unorderedList prop: adds aunordered list button to create unordered list
+orederedList prop: adds a ordered list button to create a ordered list
+codeBlock prop: adds codeblock button to make the text of codeblock style
+textAlignment prop: adds a text alignment button to align the text
+blockQuote prop: adds a blockQuote button to add blockQuote style to the text
+horizontalRule prop: adds a horizontal rule button which adds a horizontal line
+undo prop: adds a undo button
+redo prop: adds a redo button
+width prop: width of the texteditor to be set
+height prop: height of the texteditor to be set
+v-model prop: current text of the textEditor as html
+HTML
+JSON
+this.$emit('update:modelValue', this.editor.getJSON())
+HTML
+JSON
+const isSame = JSON.stringify(this.editor.getJSON()) === JSON.stringify(value)
+Basic editor styles

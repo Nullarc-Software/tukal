@@ -1,0 +1,4 @@
+tuTag.vue
+Props
+name prop: key of the tag
+value prop: value of the tag

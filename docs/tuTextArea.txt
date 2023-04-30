@@ -1,0 +1,13 @@
+tuTextArea.vue
+Props
+maxSie prop: max Size of the text area which max width and max height
+minWidth prop: minimum width of the textarea
+minHeight prop: minimum height of the textarea
+
+v-model prop: current text in the textarea
+label prop: label for the textarea
+color prop: border color of textarea field
+counter prop: maximum charaters to be in the textarea
+counterDanger prop: danger theme to be apllied to textarea on exceeding the counter limit
+height prop: height of the textarea
+width prop: width of the textarea

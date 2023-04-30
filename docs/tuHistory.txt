@@ -1,0 +1,11 @@
+tuHistory.vue
+Props
+events prop: the events to be displayed in the timeline
+alternative prop: the timeline to be displayed in alternative style if boolean is true
+center prop: the timeline to be aligned to center if boolean is true
+model prop: the model of the component whether its local or server
+serverSideConfig prop: the server side configuration for fetching events
+code for making it normal
+end of that
+making it alternative
+end

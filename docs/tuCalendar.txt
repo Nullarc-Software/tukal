@@ -1,0 +1,87 @@
+CalendarView.vue
+Props
+Props cannot default to computed/method returns, so create defaulted version of this
+property and use it rather than the bare prop (Vue Issue #6013).
+ShowDate, but defaulted to today. Needed both for periodStart below and for the
+"outside of month" class. Any time component passed as part of showDate is discarded.
+Given the showDate, defaulted to today, computes the beginning and end of the period
+that the date falls within.
+For month and year views, the first and last dates displayed in the grid may not
+be the same as the intended period, since the period may not start and stop evenly
+on the starting day of the week.
+Create an array of dates, where each date represents the beginning of a week that
+should be rendered in the view for the current period.
+Cache the names based on current locale and format settings
+Ensure all item properties have suitable default
+Period that today's date sits within
+Creates the HTML to render the date range for the calendar header.
+Dates for UI navigation
+Dates for header display
+Extra information that could be useful to a custom header
+******************************
+UI Events
+******************************
+The day name header needs to know the dow for class assignment, and this value should
+not change based on startingDayOfWeek (i.e., Sunday is always 0). This function
+computes the dow for a given day index.
+******************************
+Date Periods
+******************************
+Returns a date for the current display date moved forward or backward by a given
+number of the current display units. Returns null if said move would result in a
+disallowed display period.
+******************************
+Hover items (#95, #136)
+******************************
+******************************
+Dragging across days (selection)
+******************************
+Push the date where the selection started into dataTransfer. This is not used by this component, but
+a value required in Firefox and possibly other browsers.
+/wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==";
+******************************
+Drag and drop items
+******************************
+Firefox and possibly other browsers require dataTransfer to be set, even if the value is not used. IE11
+requires that the first argument be exactly "text" (not "text/plain", etc.). The calendar item's ID is
+passed, allowing calling applications to receive items dragged outside the component.
+However, we don't use dataTransfer within the component. Instead, we just keep a handled on the item
+currently being dragged. This avoids having to look it up later.
+Reset date selection origin so the onenter events aren't confused
+Allow the calling application to add additional functionality.
+If the user drags an item FROM this calendar TO this calendar, currentDragItem will be initialized to the
+most recent item with a dragStart event. If not, we still emit the event, and the caller will need to
+determine what to do based on the third argument (windowEvent, which gives them access to `dataTransfer`).
+This allows developers to create custom calendars where things can be dragged in from the outside. This
+also allows developers using scoped slots for items to handle the drag and drop themselves.
+Non-null assertion used because the selection origin is pre-checked in all use cases
+User is selecting dates, not items.
+User is selecting dates, not items. No emit.
+User is selecting dates, not items.
+******************************
+Calendar Items
+******************************
+Return a list of items that INCLUDE any portion of a given week.
+Return a list of items that INCLUDE any day within the date range,
+inclusive, sorted so items that start earlier are returned first.
+Return a list of items that CONTAIN the week starting on a day.
+Sorted so the items that start earlier are always shown first.
+Compute the top position of the item based on its assigned row within the given week.
+CalendarViewHeader.vue
+Props
+tuCalendar.vue
+Props
+v-model prop: it will be having the updated calendar events array
+items prop: array of calendar events
+categories prop: array of category for a calendar event
+model prop: specifies whether its local or server side model
+serverSideConfig prop: configuration for server side model
+components prop: custom components for event details dialog
+const closeDialog = () => {
+allDay.value = false;
+newItemStartTime.value = "";
+newItemEndTime.value = "";
+newItemEndDate.value = null;
+newItemTitle.value = null;
+};
+closeDialog

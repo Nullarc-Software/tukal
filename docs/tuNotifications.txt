@@ -1,0 +1,25 @@
+tuNotifications.vue
+Props
+notifId prop: unique id for notification
+position prop: position of the notification message. the values are: i) bottom-right ii) bottom-left iii) top-right iv) top-left v) top-center vi) bottom-center
+content prop: content for the notification message
+title prop: title of the notification message
+text ptop: text for the notification message
+color prop: background color for the notification message
+border prop: adds border for notification message
+icon prop: adss icon to the notification
+onClickClose prop: emits when close button is clicked
+onClick prop: emits when clicked on the notification
+buttonClose prop: adds a close button if boolean is true
+flat prop: adds flat style to the notification message
+sticky prop: makes the notification message position sticky
+square prop: makes the notification of the shape of square
+width prop: width of the notification message is set
+loading prop: loading animation to be shown
+progressAuto prop: progress bar to be automatically increased
+progress prop: value to be set in progress bar
+duration prop: duration of the notification message after which it disappears
+notPadding prop: removes padding from the notification message
+clickClose prop: emits when notification is closed
+transform: translate(0,10px) !important
+box-shadow: inherit

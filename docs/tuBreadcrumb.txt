@@ -1,0 +1,6 @@
+tuBreadcrumb.vue
+Props
+items prop: the items to be displayed in the breadcrumb
+separator prop: the seporator symbol to be used between the items of breadcrumb
+color prop: color of the text for the items in the breadcrumb
+align prop: alignment of the breadcrumb items . the values can be i) left ii) right iii) center

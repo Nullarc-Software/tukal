@@ -1,0 +1,10 @@
+tuAlert.vue
+Props
+active prop: alert message shown if active given true boolean else false
+title prop: title of message to be shown in alert message
+closable prop: alert message to be closable if boolean is true else not
+color prop: background color of alert message to be set with the prop
+margin prop: margin of alert box to be set
+icon prop: icon to be shown in the alert box
+close icon prop: the icon for close
+iconPack prop: the icon pack to be used for the above icons

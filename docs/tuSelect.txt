@@ -1,0 +1,63 @@
+tuSelect.vue
+Props
+colors
+colors
+v-model prop: current selected value
+multiple prop:selects multiple values if boolean is true
+dropdown prop: dropdown styles are used if boolean is true
+inline prop: makes the select container display inline
+filter prop: enables filter feature that is search select values
+addValue prop:
+placeholder prop: placeholder for select field
+labelPlaceholder prop: labelPlaceholder for select field
+label prop: label for select field
+disabled prop: disables the select field
+collapseChips prop: collapses the chips and displays only one value and collapses rest when multiple is set to true
+loading prop: loading animation to be shown when boolean is true
+state prop: state of the select field for eg success warn etc. the possible values are i) success ii) danger iii) warn iv) dark v) primary
+block prop: takes full width of container if boolean is true
+width prop: sets the width of the select field
+Template refs
+computeds
+blur: this.blur,
+getValue();
+set the default value first. Since the list is not rendered to the dom, get it from the default slot.
+border: 2px solid -getColor($color,.5)
+border: 2px solid rgba(-getColor($color), 0)
+box-shadow: 0px 5px 25px -4px rgba(0, 0, 0, -var(shadow-opacity));
+transform: translate(0, -2px);
+border: 2px solid transparent;
+box-shadow: 0px 5px 25px -4px rgba(0, 0, 0, -var(shadow-opacity));
+transform: translate(0, -2px);
+border: 2px solid transparent;
+transform: translate(0, -4px);
+background: -getColor("background");
+box-shadow: 0px 5px 25px -4px rgba(0, 0, 0, -var(shadow-opacity));
+transform: translate(0, -4px);
+transform: translate(-3%, -28px) !important;
+box-shadow: 0px 5px 25px -4px rgba(0, 0, 0, -var(shadow-opacity));
+transform: translate(0, -4px);
+box-shadow: 0px 5px 25px -4px rgba(0, 0, 0, -var(shadow-opacity));
+transform: translate(0, -4px);
+box-shadow: 0px 5px 25px -4px rgba(0, 0, 0, -var(shadow-opacity));
+transform: translate(0, -8px);
+top: 10px
+tuSelectOption.vue
+Props
+label prop: label for the select option
+disabled prop: disables the option if boolean is true
+value prop: value for the select field
+console.log(this.value);
+console.log("added child: " + uid);
+display: none;
+&:last-child
+border-radius: 0px 0px 12px 12px
+tuSelectOptionGroup.vue
+Props
+disabled prop: disable selectOption group
+value prop: value for select option group
+text prop: text for the select group option
+display: none
+visibility: hidden
+opacity: 0
+max-height: 0px

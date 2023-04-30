@@ -1,0 +1,22 @@
+tuPagination.vue
+Props
+v-model prop: current page number
+infinite prop: infinite pages style if boolean is true
+flat prop: flat style for pagination buttons
+progress prop: displays progress bar right below pagination buttons
+notMargin prop: removes margin for pagination buttons
+buttonsDotted porp: uses dotted buttons instead of normal buttons with numbers
+notArrows prop: removes prev and next arrows when boolean is true
+onlyArrows prop: only prev and next buttons are used
+circle prop: the pagination buttons to be in the shape of circle
+sqaure prop: the pagination button sto be in the shape of square
+disabled prop: disables the pagination if boolean is true
+disabledItems prop: the items which are in the array will be disabled
+loadingItems prop: the items thar in loading state are in the array
+length prop: the total number of pages
+max prop: maxinmum number of pages
+if (!(<any>window.vm).$isServer) {
+				if (window.innerWidth < 600) {
+					isMobile = true;
+				}
+			}

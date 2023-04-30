@@ -1,0 +1,19 @@
+tuDialog.vue
+Props
+v-model prop:if boolean is true dialog box will be displayed else not
+loading prop: loading animation to be show if boolean is true
+fullScreen prop: dialog to be shown fullscreen if boolean is true
+notClose prop: removes close icon from dialog box if boolean is true
+notPadding prop: removes padding for dialog box content if boolean is true
+overflowHidden prop: overflow: hidden to be applied on body of html
+blue prop: blurs the background of the webpage if boolean is true
+square prop: shape of the dialog box to be square if boolean is true
+autoWidth prop: width of dialog box to be auto if boolean is true
+scroll prop: adds a scrollbar to dialog box if boolean is true
+notCenter prop: aligns the header to left if booleanis true
+width prop: sets the width of the dialog box the values can be in px,vw,% etc ex. 354px
+footerClasses prop: classes to be binded to the footer of dialog box
+nextTick(() => {
+				const dialog = this.$refs["dialog-content"] as HTMLElement;
+				insertBody(dialog, document.querySelector("#app"));
+			});

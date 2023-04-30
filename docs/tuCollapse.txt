@@ -1,0 +1,10 @@
+tuCollapse.vue
+Props
+type prop: different type of styles for collapse. different values are i) default ii) border iii) shadow
+openHover prop: the collapse item to be opened and closed on mousehover and mouseout when boolean is true
+tuCollapseItem.vue
+Props
+iconPack prop: iconPack for icons
+iconArrow prop: icon for arrow icon
+notArrow prop: arrow icon for collapse item to be removed if boolean is true
+disabled prop: disables the collapse item if boolean is true

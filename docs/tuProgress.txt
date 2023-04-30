@@ -1,0 +1,6 @@
+tuProgress.vue
+Props
+height prop: height of the progress bar
+indeterminate prop: the progress bar to be in indeterminate state
+percent prop: percentage of the progress bar
+color prop: color of the progress bar

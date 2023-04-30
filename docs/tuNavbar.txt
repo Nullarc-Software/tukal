@@ -1,0 +1,23 @@
+tuNavbar.vue
+Props
+colors
+fixed prop: fixes the navbar to top
+sticky prop: sticks the navbar to top
+leftAligned prop: aligns the nav items to left
+open prop: displays navbar only if boolean is true
+shadow prop: adds shadow style to navbar
+shadowScroll prop: adds shadow style on scroll
+hideScroll prop: hides the navbar on scroll
+textWhite prop: color of the text to be set to white
+square prop: shape of the navbar to be set to square
+paddingScroll prop: adds padding to the navbar on scroll
+targetScroll prop: adds a target value for scroll
+tuNavbarGroup.vue
+Props
+tuNavbarItem.vue
+Props
+active prop: the current active navbar item
+to prop: the route that needs to be redirected when navbar item is active
+id porp: id for navbar item
+href prop: href value for navbar item
+target propL target value for href attribute

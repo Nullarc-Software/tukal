@@ -1,0 +1,25 @@
+tuInput.vue
+Props
+colors
+v-model prop: current input value
+labelPlaceholder prop: labelPlaceholder for input field
+label prop: label for input field
+block prop: takes full width of container if boolean is true
+iconAfter prop: icon to be shown right of input
+loading prop: loading animation to be shown if boolean is true
+state prop: current state of input for eg success. the values are i) success ii) warn iii) danger iv) dark v) primary
+border prop: border styling for input field
+shadow prop: adds shadow for input field
+transparent prop: make the background of input field transparent
+textWhite prop: color of the input value to be white if boolean is true
+square prop: input fields to be in the shape of sqaure if boolean is true
+id prop: unique id for input
+placeholder prop: placeholder for input field
+type prop: type for input field
+inline prop: display to be made inline for the input field
+disable prop: disables the input field if boolean is true
+editableStatic prop: makes the input field editable with a icon on the right if boolean is true
+width prop: width for the input field.
+box-shadow: 0px 10px 20px -5px -getColor('color',.3)
+box-shadow: none !important
+pointer-events: none;

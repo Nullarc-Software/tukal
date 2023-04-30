@@ -1,0 +1,25 @@
+tuPopper.vue
+Props
+*
+ * The Popper component.
+placement prop: Describes the preferred placement of the popper. Modifiers like flip may change the placement of the popper to make it fit better.
+offsetX prop: The offset modifier lets you displace a popper element from its reference element in the x direction.
+offsetY prop: The offset modifier lets you displace a popper element from its reference element in the y direction.
+hover porp: shows the popper on hover
+timeout prop: timeout for the popper
+arrow porp: adds an arrow to the popper
+arrowPadding prop: Stop arrow from reaching the edge of the Popper
+borderRadius prop: sets the border radius for the popper
+cursorPointer prop: sets the cursor to pointer for the popper container
+firPopperContainer porp: width of the popper container to be 100% if booleanis true else unset
+tuPopupItem.vue
+Props
+to prop: the route that needs to be redirected when popper item is active
+onClickClose prop: popper closes only if clicked again and not when clicked away
+disabled prop: disables the popper item
+divider prop: adds a border-top to the popper item
+dividerBottom prop: adds a border-bottom ro the popper item
+tuPopupMenu.vue
+Props
+transform: translate(-100%);
+transform: rotate(225deg) translate(-7px);

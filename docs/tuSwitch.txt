@@ -1,0 +1,11 @@
+tuSwitch.vue
+Props
+v-model prop: the current state of switch
+val prop: if v-model is an array of strings then val prop indicates the switch value. if the val prop string is present in the v-model array then its state will be true
+notValue prop: if v-model is an array of strings then if the state of the checkbox is true then in the v-model array the value of switch  will be null string instead of the value
+loading prop: loading animation to be shown if boolean is true
+sqaure prop: switch to be square shape if boolean is true
+indeterminate prop: switch to be indeterminate state when boolean is true
+icon prop: switch to be in the form of icon if boolean is true
+disabled prop: disables the switch if boolean is true
+left: 8px

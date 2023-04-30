@@ -1,0 +1,27 @@
+tuCheckBox.vue
+Props
+colors
+v-model prop: it will be having the current state of checkbox
+val prop: if v-model is an array of strings then val prop indicates the checkbox value. if the val prop string is present in the v-model array then its state will be true
+notValue prop: if v-model is an array of strings then if the state of the checkbox is true then in the v-model array the value of checkbox will null string instead of the value
+indeterminate prop: it will set the checkbox as indeterminate state that is neither true or false partially checked
+lineThrough prop: it will strike of the checkbox text once checked
+checked prop: it will set the cehckebox to checked state
+disabled prop: it will disable the checkbox
+checkedForce prop: it will forcefully set the checkbox to checked state
+loading prop: it will enable loading animation for checkbox
+labelBefore prop: will bring the label to the left and checkbox to the right if boolean is true
+eventBubble prop: if boolean is true it will emit on Click event
+watch(
+			() => props.indeterminate,
+			(val: boolean) => {
+				if (val) context.emit("update:modelValue", true);
+				else context.emit("update:modelValue", false);
+			}
+		);
+...$listeners,
+input: (evt) => {
+toggleValue(evt)
+}
+border: 2px solid transparent
+border: 2px solid -getColor('color') !important

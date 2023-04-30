@@ -1,0 +1,11 @@
+tuCard.vue
+Props
+type prop: different types of cards which have different styles. the different values are 1,2,3,4,5 and 6
+justifyHeader prop: justifies the header to left center or right. the different values are i) flex-end ii) center iii) flex-start
+content prop:
+fitContent prop: will add padding to the card content
+fillParent prop: will fill the width of the parent with the card
+backgroundColor prop: sets the backgroundColor for the card. the value can be rgba or hexadecimal value
+tuCardGroup.vue
+Props
+@import '../../../styles/mixins'
