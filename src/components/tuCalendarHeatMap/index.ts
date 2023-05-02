@@ -8,3 +8,4 @@ if (typeof window !== "undefined" && (<any>window).Vue)
 	tuComponent.install((<any>window).Vue);
 
 export { tuComponent as tuCalendarHeatMap };
+export * from "./Heatmap";

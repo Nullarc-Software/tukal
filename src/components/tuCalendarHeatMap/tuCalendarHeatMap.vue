@@ -191,7 +191,6 @@
 				  legendWrapperTransform      = ref(''),
 				  lo                          = ref<Locale>({} as any),
 				  rangeColor                  = ref<string[]>(props.rangeColor || (props.dark ? Heatmap.DEFAULT_RANGE_COLOR_DARK : Heatmap.DEFAULT_RANGE_COLOR_LIGHT));
-
 			const { values, tooltipUnit, tooltipFormatter, noDataText, max, vertical, locale } = toRefs(props);
 
 			let tippyInstances: Instance[],

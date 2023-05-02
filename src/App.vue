@@ -893,7 +893,7 @@
 			<div class="showcase-component">
 				<h4>Calendar heatmap Component:</h4>
 				<hr />
-				<calendar-heatmap dark-mode :values="calendarData" :end-date="new Date('2021-08-01')"
+				<calendar-heatmap :values="calendarData" :end-date="new Date('2021-08-01')"
 					:style="{ 'max-width': '675px' }" :vertical="false" no-data-text="No Contributions" :locale="{
 						months: ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'],
 						days: ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'],
