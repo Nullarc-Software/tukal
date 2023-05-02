@@ -112,7 +112,7 @@
 
 <script lang="ts">
 	import { defineComponent, nextTick, onBeforeUnmount, onMounted, PropType, ref, toRef, toRefs, watch } from 'vue';
-	import { CalendarItem, Heatmap, Locale, Month, TooltipFormatter, Value } from './Heatmap';
+	import { Activity, Heatmap, Locale, Month, TooltipFormatter, Value } from './Heatmap';
 	import tippy, { createSingleton, CreateSingletonInstance, Instance } from 'tippy.js';
     import tuComponent from "../tuComponent";
 	import 'tippy.js/dist/tippy.css';
@@ -208,7 +208,7 @@
 				}
 			}
 
-			function tooltipOptions(day: CalendarItem) {
+			function tooltipOptions(day: Value | Activity) {
 				if (props.tooltip) {
 					if (day.count !== undefined) {
 						if (props.tooltipFormatter) {

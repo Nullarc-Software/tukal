@@ -40,6 +40,7 @@ export * from "./tuTreeView";
 
 // New Component import
 export { tuCalendarHeatMap } from "./tuCalendarHeatMap";
+export * from "./tuCalendarHeatMap/Heatmap";
 
 // layout
 export { default as tuRow } from "../layout/tuRow";

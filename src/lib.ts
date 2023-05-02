@@ -41,6 +41,7 @@ export { tuTag } from "./components/tuTag";
 
 // New Component import
 export { tuCalendarHeatMap } from "./components/tuCalendarHeatMap";
+export * from "./components/tuCalendarHeatMap/Heatmap";
 
 // layout
 export { default as tuRow } from "./layout/tuRow";
