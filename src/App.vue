@@ -812,7 +812,7 @@
 				<tu-tab label="Service" name="se"> Service </tu-tab>
 				<tu-tab label="login" name="lo"> Login </tu-tab>
 				<tu-tab label="Disabled" name="di"> Disabled </tu-tab>
-									</tu-tabs> -->
+							</tu-tabs> -->
 			<!-- <tu-tabs name="tabs2" position="top" :button="true" noTransitions v-model="tabName" /> -->
 			<tu-tabs position="left" pills noTransitions v-model="tabName" fixed-height="400px">
 				<tu-tab label="Home" name="ho">
@@ -830,7 +830,7 @@
 						<tu-th field="name" sort search :index="5" width="500px"> Name </tu-th>
 						<tu-th field="web_pages" sort search> Web site </tu-th>
 						<tu-th field="something" sort search> No value </tu-th>
-																	</template> -->
+																				</template> -->
 						<template #footer>
 							<tu-pagination not-margin flat v-model="page" :length="numPages" />
 						</template>
@@ -973,6 +973,14 @@
 			</div>
 			<div class="showcase-component">
 
+			</div>
+			<div class="showcase-component">
+
+				<h4>Usage Bar:</h4>
+				<hr />
+				<div style="width: 500px;">
+					<tuUsageBar height="25px" :items="barItems" />
+				</div>
 				<h4>Timeline Component:</h4>
 				<hr />
 				<div style="width: 800px">
@@ -1117,6 +1125,50 @@ export default defineComponent({
 				fieldname: "Neutral"
 			}
 		]
+		const barItems = [
+			{
+				name: "Google Chrome",
+				time: 220,
+			},
+			{
+				name: "VS Code",
+				time: 5,
+			},
+			{
+				name: "Outlook",
+				time: 5,
+			},
+			{
+				name: "Instagram",
+				time: 5,
+			},
+			{
+				name: "Apple",
+				time: 1,
+			},
+			{
+				name: "Windows",
+				time: 1,
+			},
+			{
+				name: "Anime",
+				time: 1,
+			},
+			{
+				name: "Movies",
+				time: 1,
+			},
+			{
+				name: "Cars",
+				time: 1,
+			},
+			{
+				name: "Bikes",
+				time: 1,
+			},
+		]
+
+
 		const histEvents = [
 			{
 				title: "Added New Agent",
@@ -2696,6 +2748,7 @@ export default defineComponent({
 			cronValue,
 			customLocale,
 			srvTableConfig,
+			barItems,
 			intervals,
 			kanbanItems,
 			kanbanCategories,
