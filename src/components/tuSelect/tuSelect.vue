@@ -22,7 +22,7 @@
 				activeOptions: activeOptions,
 				loading: loading
 			}
-		]" v-on="selectListener">
+		]" v-on="selectListener" :style="{ width: width }">
 			<input :readonly="!filter && true" :id="!multiple && uid" class="tu-select__input" ref="input"
 				:value="activeFilter ? textFilter : getValueLabel" :class="[
 					{
@@ -178,7 +178,8 @@ export default defineComponent({
 		loading: { type: Boolean, default: false },
 		state: { type: String, default: null },
 		block: { type: Boolean, default: false },
-		selectItems: { type: Array, default: () => [] }
+		selectItems: { type: Array, default: () => [] },
+		width: { type: String, default: "100%"}
 	},
 	provide() {
 		return {

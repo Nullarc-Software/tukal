@@ -74,10 +74,11 @@
 			<h3>Button Groups:</h3>
 			<hr />
 			<tu-button-group fixed-height="40px">
-				<tu-button> One </tu-button>
-				<tu-button> Two </tu-button>
-				<tu-button> Three </tu-button>
-				<tu-button> four </tu-button>
+				<tu-button border> One </tu-button>
+				<tu-button border> Two </tu-button>
+				<tu-button border> Three </tu-button>
+				<tu-button border> four </tu-button>
+				<tu-button border> five </tu-button>
 			</tu-button-group>
 			<br />
 			<tu-button-group>
@@ -171,6 +172,34 @@
 		<div class="showcase-component">
 			<h3>Cards:</h3>
 			<hr />
+			<tu-card-group>
+				<tu-card type="6">
+					<template #title>
+						<h3>Pot with a plant</h3>
+					</template>
+					<template #content>
+
+					</template>
+					<template #text>
+						<div style="height: 300px;">
+							<tu-history :events="histEvents" />
+						</div>
+					</template>
+				</tu-card>
+				<tu-card type="6">
+					<template #title>
+						<h3>Pot with a plant</h3>
+					</template>
+					<template #content>
+
+					</template>
+					<template #text>
+						<div style="height: 300px;">
+							<tu-history alternative :events="histEvents" />
+						</div>
+					</template>
+				</tu-card>
+			</tu-card-group>
 			<tu-card-group>
 				<tu-card type="2" v-for="card in 6" :key="card">
 					<template #title>
@@ -336,7 +365,6 @@
 					with which you will have all the help and documentation to
 					create and make your project
 
-
 				</div>
 				<tu-pagination not-margin flat v-model="page" :length="numPages" />
 
@@ -497,7 +525,7 @@
 				</tu-select-option>
 			</tu-select>
 
-			<tu-select placeholder="" v-model="selectValue1" filter>
+			<tu-select width="550px" placeholder="" v-model="selectValue1" filter>
 				<tu-select-option label="Test" value="1">
 					Test
 				</tu-select-option>
@@ -775,23 +803,51 @@
 		<div class="showcase-component" v-if="enableTabs">
 			<h4>Tabs:</h4>
 			<hr />
-
 			<tu-tabs name="tabs1" type="router" position="top" noTransitions v-model="tabName"
 				:router-mode-params="routerTabParams" />
-			<tu-tabs position="top" noTransitions tabStyle="progress" progressWidth="20" v-model="tabName">
+			<tu-tabs name="tabs1" type="router" position="top" pills noTransitions v-model="tabName"
+				:router-mode-params="routerTabParams" />
+		<!-- <tu-tabs position="top" noTransitions tabStyle="progress" progressWidth="20" v-model="tabName">
+				<tu-tab label="Home" name="ho"> Home </tu-tab>
+				<tu-tab label="Service" name="se"> Service </tu-tab>
+				<tu-tab label="login" name="lo"> Login </tu-tab>
+				<tu-tab label="Disabled" name="di"> Disabled </tu-tab>
+									</tu-tabs> -->
+			<!-- <tu-tabs name="tabs2" position="top" :button="true" noTransitions v-model="tabName" /> -->
+			<tu-tabs position="left" pills noTransitions v-model="tabName" fixed-height="400px">
+				<tu-tab label="Home" name="ho">
+					<tu-calendar model="local" :items="items" :categories="Categories" @onClickDay="onClick" />
+					<tu-table row-expand multi-select striped size="" persistent-id="twne" :draggable="true"
+						v-model="selected" v-bind="srvTableConfig" v-model:numPages="numPages" :page="page" :pageSize="5"
+						:columnSelector="true" @onRowClicked="rowClicked" @onTableBeginLoad="beginLoad"
+						@onTableEndLoad="afterLoad" @onTableConfigUpdated="configUpdate">
+					<!-- <template #thead>
+						<tu-th field="country" sort search> Country </tu-th>
+						<tu-th field="name" sort search :index="1" width="500px"> Name </tu-th>
+						<tu-th field="name" sort search :index="2" width="500px"> Name </tu-th>
+						<tu-th field="name" sort search :index="3" width="500px"> Name </tu-th>
+						<tu-th field="name" sort search :index="4" width="500px"> Name </tu-th>
+						<tu-th field="name" sort search :index="5" width="500px"> Name </tu-th>
+						<tu-th field="web_pages" sort search> Web site </tu-th>
+						<tu-th field="something" sort search> No value </tu-th>
+																	</template> -->
+						<template #footer>
+							<tu-pagination not-margin flat v-model="page" :length="numPages" />
+						</template>
+					</tu-table>
+
+				</tu-tab>
+				<tu-tab label="Service" name="se"> Service </tu-tab>
+				<tu-tab label="login" name="lo"> Login </tu-tab>
+				<tu-tab label="Disabled" name="di"> Disabled </tu-tab>
+			</tu-tabs>
+			<tu-tabs position="left" fixed-width="600px" noTransitions v-model="tabName">
 				<tu-tab label="Home" name="ho"> Home </tu-tab>
 				<tu-tab label="Service" name="se"> Service </tu-tab>
 				<tu-tab label="login" name="lo"> Login </tu-tab>
 				<tu-tab label="Disabled" name="di"> Disabled </tu-tab>
 			</tu-tabs>
-		<!--<tu-tabs name="tabs2" type="router" position="left" noTransitions v-model="tabName" :tabs="tabsRouter2" />
-				<tu-tabs position="left" noTransitions v-model="tabName">
-					<tu-tab label="Home" name="ho"> Home </tu-tab>
-					<tu-tab label="Service" name="se"> Service </tu-tab>
-					<tu-tab label="login" name="lo"> Login </tu-tab>
-					<tu-tab label="Disabled" name="di"> Disabled </tu-tab>
-				</tu-tabs>
-				<tu-tabs position="right" noTransitions v-model="tabName">
+		<!-- <tu-tabs position="right" noTransitions v-model="tabName">
 					<tu-tab label="Home" name="ho"> Home </tu-tab>
 					<tu-tab label="Service" name="se"> Service </tu-tab>
 					<tu-tab label="login" name="lo"> Login </tu-tab>
@@ -834,6 +890,7 @@
 			<button @click="exportTableToPDF">Export to pdf</button>
 			{{ selected }}
 			<div style="height: 400px">
+
 				<tu-table row-expand multi-select striped size="" persistent-id="twne" :draggable="true" v-model="selected"
 					v-bind="srvTableConfig" v-model:numPages="numPages" :page="page" :pageSize="5" :columnSelector="true"
 					@onRowClicked="rowClicked" @onTableBeginLoad="beginLoad" @onTableEndLoad="afterLoad"
@@ -885,6 +942,13 @@
 				</tu-tree-view>
 			</div>
 			<div class="showcase-component">
+
+				<h4>History Component:</h4>
+				<hr />
+				<div style="height: 500px;">
+					<tu-history center :events="histEvents" />
+				</div>
+
 				<h4>Cron Component:</h4>
 				<hr />
 				<tu-cron v-model="cronValue" />
@@ -902,6 +966,19 @@
 						more: 'Mehr'
 					}" />
 			</div>
+			<div class="showcase-component">
+				<h4>Kanban Board Component:</h4>
+				<hr />
+				<tu-kanban :items="kanbanItems" v-model="currentItemsRef" :fields="kanbanCategories" />
+			</div>
+			<div class="showcase-component">
+
+				<h4>Timeline Component:</h4>
+				<hr />
+				<div style="width: 800px">
+					<tu-timeline :interval="5" :intervalStartTime="9" :intervalEndTime="19" :intervals="intervals" />
+				</div>
+			</div>
 		</div>
 	</div>
 </template>
@@ -916,7 +993,8 @@ import {
 	ref,
 	watch,
 	shallowRef,
-	markRaw
+	markRaw,
+	Ref
 } from "vue";
 import * as components from "./components";
 import { TuNotificationAttributes, TuNotification } from "./components/tuNotifications";
@@ -982,6 +1060,162 @@ export default defineComponent({
 		const selectValue2 = ref("1");
 		const selectValue1 = ref("");
 		const page = ref(1);
+		const intervals = ref([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 1])
+		let func = () => {
+			intervals.value.push(1)
+		}
+		setInterval(func, 10000)
+		const kanbanItems = [
+			{
+				id: 1,
+				content: "VS Code",
+				fieldname: "Productive",
+			},
+			{
+				id: 2,
+				content: "Facebook",
+				image: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAclBMVEX///8AAADx8fGxsbH39/e+vr6KioopKSkoKCj7+/vg4OBAQECNjY0JCQkNDQ1aWlpfX19LS0tGRkbp6enQ0NCDg4OhoaEjIyPb29urq6vm5uaamprDw8MwMDBubm4dHR02NjaVlZVUVFR3d3dmZmYVFRV4y9GXAAAC9klEQVR4nO3dC3LaMBRGYTAmwUB4Q3iEJqFk/1tshnZSaKfgK1+k3+45C2D0zYAsGyFarbQVeb+7GU6mg/3rqP3V00WjU7P3IvFY7WWL3bfXdvl689QjNtVfTUe3UZcdUw+6fPPVm1V3Kks98JItxkG8z15SD71MRWcW6mu3u6lHX6LuY7ivDsL+tIpPX5gvq/nkhet9VaC4cFXZpy3MJw5AZWE28AAKC+fPLkBdYd/Hpyt0A6oKs17ThT6TjLDw6AfUFO4cgZLCtSdQUhh2L18jYeW7CXWh73tUUXhouvDFGagn9J1mBIUdb6Cc0G89Kip0/xTKCYOfbNdFuPUHigkfGi90v1SoCb0XbHrC98YLHZ9daArvMZNqCf1XbGpC51vfX61Ts85yeoz/R3lq1ll3Aa5Sq85a3AM4TK06L3yieR4cjsuHvxtu+qlRF4VNNOPOQumTdrWQO6el0kx5s4Bldy32O31VmC8WH9vUY7ZlX7MprVbKZL51mqQesTWzsF4fwlbABT/1gM1Zhd9TD9icVbhLPWBzXaOwbjOpfVmqteQsk1VYlx3qv0OIUD+ECPVDiFA/hAj1Q4hQP4QI9UOIUD+EdRDm2ZXyjVG4vfZqP4t8OM38+GE0VO4t6ncbfj97tXSIKKxwOkmV4m2JmqcBtqfRhHf4IUWp9tFmG+u3g171om2YQogQ4f8rfESIECFChAgRIkSIECFChAgRIkSIECFChAgRIkSIsHbC5u9UyBIJI24Zqvh/OKFt4gnT7PoaxwN+vk89D8sv1yj6MVhF/u8K6+7L+bVXOxWbd6sm7KC9HkKE+iFEqB9ChPohRKgfQoT6IUSoH0KE+iFEqB9ChPohRKgfQoT6IUSoH0KE+iFEqB9ChPohRKgfQoT6IUSoH0KE+iFEqB9ChPohRKgfQoT6IUSoH0KE+iFEqB9ChPohRKgfQoT6IUSoX/OF1nN46ydc24Cz1OMNaGASRj+a1CHTKbVRD5d1K1vuy/GeZnc+HvgHllpO87YiSVIAAAAASUVORK5CYII=",
+				fieldname: "UnProductive"
+			},
+			{
+				id: 3,
+				content: "Google Chrome",
+				image: "https://th.bing.com/th/id/OIP.DXnh2NpUdDZrQ2NZAT6_tAHaHa?pid=ImgDet&rs=1",
+				fieldname: "Neutral"
+			},
+			{
+				id: 4,
+				content: "Instagram",
+				icon: "alarm",
+				fieldname: "UnProductive"
+			},
+			{
+				id: 5,
+				content: "Adobe XD",
+				icon: "album",
+				fieldname: "Productive"
+			},
+			{
+				id: 6,
+				content: "Firefox",
+				image: "https://blog.mozilla.org/opendesign/files/2018/07/firefox-logo.png",
+				fieldname: "Neutral"
+			}
+		]
+		const currentItemsRef = ref();
+		const kanbanCategories = [
+			{
+				title: "Productive",
+				fieldname: "Productive"
+			},
+			{
+				title: "UnProductive",
+				fieldname: "UnProductive"
+			},
+			{
+				title: "Neutral",
+				fieldname: "Neutral"
+			}
+		]
+		const histEvents = [
+			{
+				title: "Added New Agent",
+				description: "Lorem ipsum dolor  elit. Sed qui veroes praesentium maiores, sint eos vero sapiente voluptas debitis dicta dolore Lorem ipsum dolor  elit. Sed qui veroes praesentium maiores, sint eos vero",
+				date: "07:50",
+				color: "danger",
+				icon: 'file_copy',
+				url: "https://www.youtube.com/watch?v=ElZfdU54Cp8&ab_channel=ZeeMusicCompany"
+			},
+			{
+				title: "Added New Agent",
+				description: "Lorem ipsum adipisicing elit. Sed qui veroes praesentium maiores, sint eos vero sapiente voluptas debitis dicta dolore.",
+				date: "07:50",
+				color: "success",
+				icon: 'alarm',
+				url: "/test"
+			},
+			{
+				title: "Added New Agent",
+				description: "Lorem ipsum  adipisicing elit. Sed qui veroes praesentium maiores, sint eos vero sapiente voluptas debitis dicta dolore.",
+				date: "07:50",
+				color: "warn",
+				icon: 'anchor',
+				url: "/test"
+			},
+			{
+				title: "Added New Agent",
+				description: "Lorem ipsum dolor  elit. Sed qui veroes praesentium maiores, sint eos vero sapiente voluptas debitis dicta dolore Lorem ipsum dolor  elit. Sed qui veroes praesentium maiores, sint eos vero",
+				date: "07:50",
+				color: "danger",
+				icon: 'file_copy',
+				url: "https://www.youtube.com/watch?v=ElZfdU54Cp8&ab_channel=ZeeMusicCompany"
+			},
+			{
+				title: "Added New Agent",
+				description: "Lorem ipsum adipisicing elit. Sed qui veroes praesentium maiores, sint eos vero sapiente voluptas debitis dicta dolore.",
+				date: "07:50",
+				color: "success",
+				icon: 'alarm',
+				url: "/test"
+			},
+			{
+				title: "Added New Agent",
+				description: "Lorem ipsum  adipisicing elit. Sed qui veroes praesentium maiores, sint eos vero sapiente voluptas debitis dicta dolore.",
+				date: "07:50",
+				color: "warn",
+				icon: 'anchor',
+				url: "/test"
+			},
+			{
+				title: "Added New Agent",
+				description: "Lorem ipsum dolor  elit. Sed qui veroes praesentium maiores, sint eos vero sapiente voluptas debitis dicta dolore Lorem ipsum dolor  elit. Sed qui veroes praesentium maiores, sint eos vero",
+				date: "07:50",
+				color: "danger",
+				icon: 'file_copy',
+				url: "https://www.youtube.com/watch?v=ElZfdU54Cp8&ab_channel=ZeeMusicCompany"
+			},
+			{
+				title: "Added New Agent",
+				description: "Lorem ipsum adipisicing elit. Sed qui veroes praesentium maiores, sint eos vero sapiente voluptas debitis dicta dolore.",
+				date: "07:50",
+				color: "success",
+				icon: 'alarm',
+				url: "/test"
+			},
+			{
+				title: "Added New Agent",
+				description: "Lorem ipsum  adipisicing elit. Sed qui veroes praesentium maiores, sint eos vero sapiente voluptas debitis dicta dolore.",
+				date: "07:50",
+				color: "warn",
+				icon: 'anchor',
+				url: "/test"
+			},
+			{
+				title: "Added New Agent",
+				description: "Lorem ipsum dolor  elit. Sed qui veroes praesentium maiores, sint eos vero sapiente voluptas debitis dicta dolore Lorem ipsum dolor  elit. Sed qui veroes praesentium maiores, sint eos vero",
+				date: "07:50",
+				color: "danger",
+				icon: 'file_copy',
+				url: "https://www.youtube.com/watch?v=ElZfdU54Cp8&ab_channel=ZeeMusicCompany"
+			},
+			{
+				title: "Added New Agent",
+				description: "Lorem ipsum adipisicing elit. Sed qui veroes praesentium maiores, sint eos vero sapiente voluptas debitis dicta dolore.",
+				date: "07:50",
+				color: "success",
+				icon: 'alarm',
+				url: "/test"
+			},
+			{
+				title: "Added New Agent",
+				description: "Lorem ipsum  adipisicing elit. Sed qui veroes praesentium maiores, sint eos vero sapiente voluptas debitis dicta dolore.",
+				date: "07:50",
+				color: "warn",
+				icon: 'anchor',
+				url: "/test"
+			}
+		]
+
 		const cronValue = ref();
 		const customLocale = {
 			"*": {
@@ -1055,6 +1289,7 @@ export default defineComponent({
 				}
 			}
 		}
+
 		const routerTabParams: TuTabsRouterParams = {
 			tabs: [
 				{
@@ -2457,10 +2692,14 @@ export default defineComponent({
 			nodes,
 			routerTabParams,
 			tabsRouter2,
+			histEvents,
 			cronValue,
 			customLocale,
 			srvTableConfig,
-			calendarData
+			intervals,
+			kanbanItems,
+			kanbanCategories,
+			currentItemsRef
 		};
 	}
 });

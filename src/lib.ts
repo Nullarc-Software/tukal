@@ -15,7 +15,11 @@ export { default as tuPagination } from "./components/tuPagination";
 export { default as tuBreadcrumb } from "./components/tuBreadcrumb";
 export { default as tuProgress } from "./components/tuProgress";
 export { TuLoading, tuLoading } from "./components/tuLoading";
+
+export { tuInfiniteLoading } from "./components/tuInfiniteLoading";
+
 export { default as tuCron } from "./components/tuCron";
+
 export type { TuLoadingAttributes, TuLoadingTypes } from "./components/tuLoading";
 
 export { default as tuDivider } from "./components/tuDivider";
@@ -39,9 +43,13 @@ export { tuCalendar } from "./components/tuCalendar";
 export type {VirtualElement} from "./components/tuTable";
 export { tuTag } from "./components/tuTag";
 
+export type { tuHistory } from "./components/tuHistory";
+export type { TuHistoryEvent, TuHistoryServerModel } from "./components/tuHistory";
 // New Component import
 export { tuCalendarHeatMap } from "./components/tuCalendarHeatMap";
 export * from "./components/tuCalendarHeatMap/Heatmap";
+export { default as tuTimeline } from "./components/tuTimeline";
+export { tuKanban } from "./components/tuKanban";
 
 // layout
 export { default as tuRow } from "./layout/tuRow";

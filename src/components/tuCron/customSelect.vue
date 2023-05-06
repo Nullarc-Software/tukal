@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
 import RenderlessSelect from './renderlessSelect.vue'
 import tuPopupMenu from "../tuPopper/tuPopupMenu.vue";
 import { tuButton } from "../tuButton";
@@ -44,21 +44,40 @@ export default defineComponent({
 	props: {},
 	emits: ['update:model-value'],
 	setup() {
+
+		const menu = ref(false);
+		function menuEvtListener(evt) {
+			menu.value = false
+			document.removeEventListener('click', this.menuEvtListener)
+		};
+
 		function getChildItems(itemRows) {
 			const items = [];
 			for (const row of itemRows)
 				items.push(...row);
 			return items;
+		};
+
+		function toggleMenu() {
+			menu.value = !menu.value
+			if (menu.value) {
+				setTimeout(() => {
+					document.addEventListener('click', this.menuEvtListener)
+				}, 1)
+			} else {
+				document.removeEventListener('click', this.menuEvtListener)
+			}
 		}
 
 		return {
-			getChildItems
+			getChildItems,
+			toggleMenu
 		}
 	}
 });
 </script>
 
-<style >
+<style scoped>
 .vcron-items {
 	width: 400px;
 }
