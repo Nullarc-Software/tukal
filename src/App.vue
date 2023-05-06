@@ -2699,7 +2699,8 @@ export default defineComponent({
 			intervals,
 			kanbanItems,
 			kanbanCategories,
-			currentItemsRef
+			currentItemsRef,
+			calendarData
 		};
 	}
 });
