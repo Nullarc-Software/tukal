@@ -104,6 +104,9 @@
 							" v-bind="tr.rowData['expanded'].props" />
 						</template>
 					</tu-tr>
+					<span v-if="table.isTableDataEmpty" class="tu-table__no-data">
+						No Data Found
+					</span>
 				</tbody>
 			</table>
 		</div>
@@ -344,7 +347,12 @@ export default defineComponent({
 
 		table = new TuTableStore(tableConstructor);
 		table.constructHeaders(props.columns, props.persistentId);
-		if (props.model === "local") table.setTableData(props.data);
+		if (props.model === "local") {
+			if (props.data.length !== 0)
+				table.setTableData(props.data);
+			else
+				table.isTableDataEmpty = true
+		}
 
 		const isMultipleSelected = computed(() => {
 			return _.isArray(props.modelValue);
@@ -711,6 +719,14 @@ export default defineComponent({
 				border-radius: 0px 14px 0px 0px;
 			}
 		}
+	}
+
+	&__no-data {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 100vw;
+		margin-top: 20px;
 	}
 }
 
