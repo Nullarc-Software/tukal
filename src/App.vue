@@ -1112,7 +1112,8 @@ export default defineComponent({
 				title: "Neutral",
 				fieldname: "Neutral"
 			}
-		]		const barItems = [
+		]
+		const barItems = [
 			{
 				name: "Google Chrome",
 				time: 220,
