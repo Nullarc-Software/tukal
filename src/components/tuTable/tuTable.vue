@@ -723,10 +723,8 @@ export default defineComponent({
 
 	&__no-data {
 		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 100vw;
-		margin-top: 20px;
+		width: 100px;
+		margin: 20px;
 	}
 }
 

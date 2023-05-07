@@ -43,6 +43,8 @@ export { tuHistory } from "./tuHistory";
 export type { TuHistoryEvent, TuHistoryServerModel } from "./tuHistory";
 
 // New Component import
+export { tuCalendarHeatMap } from "./tuCalendarHeatMap";
+export * from "./tuCalendarHeatMap/Heatmap";
 export { default as tuTimeline } from "./tuTimeline";
 export { tuKanban } from "./tuKanban";
 // layout

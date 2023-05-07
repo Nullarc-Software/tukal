@@ -42,12 +42,16 @@ export { tuRichTextEditor } from "./components/tuRichTextEditor";
 export { tuCalendar } from "./components/tuCalendar";
 export type {VirtualElement} from "./components/tuTable";
 export { tuTag } from "./components/tuTag";
+
 export type { tuHistory } from "./components/tuHistory";
 export type { TuHistoryEvent, TuHistoryServerModel } from "./components/tuHistory";
 // New Component import
+export { tuCalendarHeatMap } from "./components/tuCalendarHeatMap";
+export * from "./components/tuCalendarHeatMap/Heatmap";
 export { default as tuUsageBar } from "./components/tuUsageBar";
 export { default as tuTimeline } from "./components/tuTimeline";
 export { tuKanban } from "./components/tuKanban";
+
 // layout
 export { default as tuRow } from "./layout/tuRow";
 export { default as tuCol } from "./layout/tuCol";
