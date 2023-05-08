@@ -1,5 +1,5 @@
 <template>
-    <div class="margin-bottom">
+    <div class="tu-kanban">
         <div class="d-flex justify-content-start">
             <tu-input placeholder="Search" v-model="search" />
         </div>
@@ -16,10 +16,10 @@
                     <div :class="{ 'dragItem': value[ind - 1].id === dragIndex }"
                         v-if="value[ind - 1] && value[ind - 1].content && !value[ind - 1].hidden"
                         class="d-flex align-items-center tu-kanban-item">
-                        <img v-if="value[ind - 1].image" :src="value[ind - 1].image" class="tu-kanban-img mt-3 ms-4" />
-                        <tu-icon class="tu-kanban-icon ms-4" v-else-if="value[ind - 1].icon"> {{ value[ind - 1].icon
+                        <img v-if="value[ind - 1].image" :src="value[ind - 1].image" class="tu-kanban-img mt-3 tu-kanban-ml-4" />
+                        <tu-icon class="tu-kanban-icon tu-kanban-ml-4" v-else-if="value[ind - 1].icon"> {{ value[ind - 1].icon
                         }}</tu-icon>
-                        <h5 class="ms-4 content"> {{ value[ind - 1].content }}</h5>
+                        <h5 class="tu-kanban-ml-4 content"> {{ value[ind - 1].content }}</h5>
                     </div>
                 </td>
             </tr>
@@ -124,15 +124,10 @@ export default defineComponent({
 <style scoped lang="scss">
 @import "../../style/sass/_mixins";
 
-td,
+.tu-kanban td,
 th {
     height: 45px;
 }
-
-.margin-bottom {
-    margin-bottom: 25px;
-}
-
 .tu-kanban-table {
     &__thead {
         width: 100%;
@@ -160,7 +155,7 @@ th {
     width: 100%;
 }
 
-td {
+.tu-kanban td {
     cursor: pointer;
 }
 
@@ -205,7 +200,7 @@ td {
 .align-items-center {
     align-items: center;
 }
-.ms-4 {
+.tu-kanban-ml-4 {
     margin-left: 6%;
 }
 
