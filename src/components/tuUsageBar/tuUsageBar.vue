@@ -173,7 +173,7 @@ export default defineComponent({
 				}
 			}
 		}
-		const styleChip = (color: string): Object => {
+		const styleChip = (color: string) => {
 			let background = `rgba(${_color.getColorAsRgb(color)})`;
 			return {
 				background: background

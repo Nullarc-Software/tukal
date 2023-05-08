@@ -112,7 +112,7 @@
 
 <script lang="ts">
 	import { defineComponent, nextTick, onBeforeUnmount, onMounted, PropType, ref, toRef, toRefs, watch } from 'vue';
-	import { Activity, Heatmap, Locale, Month, TooltipFormatter, Value } from './Heatmap';
+	import { Activity, Heatmap, CalendarItem, Locale, Month, TooltipFormatter, Value } from './Heatmap';
 	import tippy, { createSingleton, CreateSingletonInstance, Instance } from 'tippy.js';
     import tuComponent from "../tuComponent";
 	import 'tippy.js/dist/tippy.css';
@@ -208,7 +208,10 @@
 				}
 			}
 
-			function tooltipOptions(day: Value | Activity) {
+			function tooltipOptions(day: CalendarItem) {
+				if(typeof(day.date) === 'string') {
+					day.date = new Date(`${day.date}`)
+				}
 				if (props.tooltip) {
 					if (day.count !== undefined) {
 						if (props.tooltipFormatter) {
@@ -224,7 +227,7 @@
 				return undefined;
 			}
 
-			function getWeekPosition(index: number) {
+			function getWeekPosition(index: number): string {
 				if (props.vertical) {
 					return `translate(0, ${(SQUARE_SIZE * heatmap.value.weekCount) - ((index + 1) * SQUARE_SIZE)})`;
 				}
@@ -270,7 +273,7 @@
 					: `translate(${w - (SQUARE_SIZE * rc.length) - 30}, ${h - BOTTOM_SECTION_HEIGHT})`;
 			}, { immediate: true });
 
-			watch(locale, l => (lo.value = l ? { ...Heatmap.DEFAULT_LOCALE, ...l } : Heatmap.DEFAULT_LOCALE), { immediate: true });
+			watch(locale, (l: Locale) => (lo.value = l ? { ...Heatmap.DEFAULT_LOCALE, ...l } : Heatmap.DEFAULT_LOCALE), { immediate: true });
 			watch(rangeColor, rc => (legendViewbox.value = `0 0 ${Heatmap.SQUARE_SIZE * (rc.length + 1)} ${Heatmap.SQUARE_SIZE}`), { immediate: true });
 
 			watch(
