@@ -11,7 +11,13 @@ export interface Activity {
 export type Activities = Map<string, Activity>;
 
 
-export type Calendar = Value | Activity[][];
+export interface CalendarItem {
+	date: Date;
+	count?: number;
+	colorIndex: number;
+}
+
+export type Calendar = CalendarItem[][];
 
 export interface Month {
 	value: number;
@@ -26,7 +32,8 @@ export interface Locale {
 	more: string;
 }
 
-export type TooltipFormatter = (item: Value | Activity, unit: string) => string;
+export type TooltipFormatter = (item: CalendarItem, unit: string) => string;
+
 
 export class Heatmap {
 
