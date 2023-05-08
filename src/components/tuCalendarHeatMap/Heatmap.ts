@@ -34,6 +34,7 @@ export interface Locale {
 
 export type TooltipFormatter = (item: CalendarItem, unit: string) => string;
 
+
 export class Heatmap {
 
 	static readonly DEFAULT_RANGE_COLOR_LIGHT = [ "#ebedf0", "#dae2ef", "#c0ddf9", "#73b3f3", "#3886e1", "#17459e" ];

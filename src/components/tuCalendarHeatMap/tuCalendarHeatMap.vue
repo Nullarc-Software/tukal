@@ -228,6 +228,7 @@
 			}
 
 			function getWeekPosition(index: number): string {
+
 				if (props.vertical) {
 					return `translate(0, ${(SQUARE_SIZE * heatmap.value.weekCount) - ((index + 1) * SQUARE_SIZE)})`;
 				}
@@ -274,6 +275,7 @@
 			}, { immediate: true });
 
 			watch(locale, (l: Locale) => (lo.value = l ? { ...Heatmap.DEFAULT_LOCALE, ...l } : Heatmap.DEFAULT_LOCALE), { immediate: true });
+
 			watch(rangeColor, rc => (legendViewbox.value = `0 0 ${Heatmap.SQUARE_SIZE * (rc.length + 1)} ${Heatmap.SQUARE_SIZE}`), { immediate: true });
 
 			watch(
