@@ -16,10 +16,10 @@
                     <div :class="{ 'dragItem': value[ind - 1].id === dragIndex }"
                         v-if="value[ind - 1] && value[ind - 1].content && !value[ind - 1].hidden"
                         class="d-flex align-items-center tu-kanban-item">
-                        <img v-if="value[ind - 1].image" :src="value[ind - 1].image" class="tu-kanban-img mt-3 tu-kanban-ml-4" />
+                        <img v-if="value[ind - 1].image" :src="value[ind - 1].image" class="tu-kanban-img tu-kanban-ml-4" />
                         <tu-icon class="tu-kanban-icon tu-kanban-ml-4" v-else-if="value[ind - 1].icon"> {{ value[ind - 1].icon
                         }}</tu-icon>
-                        <h5 class="tu-kanban-ml-4 content"> {{ value[ind - 1].content }}</h5>
+                        <h5 class="tu-kanban-ml-4"> {{ value[ind - 1].content }}</h5>
                     </div>
                 </td>
             </tr>

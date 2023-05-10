@@ -1,13 +1,13 @@
 <template>
     <div style="display: flex;flex-direction:column">
-        <div style="display: flex">
-            <div class="tu-timeline-text" v-for="interval in intervalTime" :style="shadeIntervals(interval)"
-                :class="{ 'tu-timeline-margin-left': interval.text === '2am' }">{{ interval.text }}</div>
-        </div>
         <div class="tu-timeline-parent">
             <div class="tu-timeline-box" :id="`tu-timeline-box-${index}`" v-for="index in 12" :key="index" />
         </div>
         <div class="tu-timeline-current-time" :style="{ marginLeft: marginLeftCurrentTime + '%' }"></div>
+        <div style="display: flex">
+            <div class="tu-timeline-text" v-for="interval in intervalTime" :style="shadeIntervals(interval)"
+                :class="{ 'tu-timeline-margin-left': interval.text === '2am' }">{{ interval.text }}</div>
+        </div>
     </div>
 </template>
 
@@ -99,17 +99,17 @@ export default defineComponent({
         let shadeIntervals = (interval) => {
             if (interval.utc + 1 === props.intervalEndTime) {
                 return {
-                    background: "linear-gradient(to right, #D3D3D3 50%, white 50%)",
+                    background: "linear-gradient(to right, var(--tu-gray-3) 100%)",
                 }
             }
             if (between(interval.utc, props.intervalStartTime, props.intervalEndTime) && props.intervalEndTime !== interval.utc) {
                 return {
-                    background: '#D3D3D3'
+                    background: 'var(--tu-gray-3)'
                 }
             }
             if (interval.utc + 1 === props.intervalStartTime) {
                 return {
-                    background: "linear-gradient(to left, #D3D3D3 50%, white 50%)",
+                    background: "linear-gradient(to left, var(--tu-gray-3) 100%)",
                 }
             }
         }
@@ -193,8 +193,22 @@ export default defineComponent({
 .tu-timeline-box {
     width: calc(100% / 12);
     height: 100px;
-    border: 0.1px solid gray;
+    border-top: 1px solid var(--tu-text);
+    border-bottom: 1px solid var(--tu-text);
     display: flex;
+}
+
+
+#tu-timeline-box-1 {
+    border-left: 1px solid var(--tu-text);
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
+}
+
+#tu-timeline-box-12 {
+    border-right: 1px solid var(--tu-text);
+    border-top-right-radius: 12px;
+    border-bottom-right-radius: 12px;
 }
 
 .tu-timeline-text {
