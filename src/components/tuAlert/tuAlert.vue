@@ -21,52 +21,74 @@
 </template>
 
 <script lang="ts">
-/**
- * MyComponent description.
- *
- * @component
- * @vue-prop {string} prop1 - Description of prop1.
- * @vue-data {string} data1 - Description of data1.
- * @vue-method
- * myMethod - Description of myMethod.
- */
 import { computed, defineComponent, nextTick, onMounted, ref } from "vue";
 import _color from "../../utils/color";
 import tuIcon from "../tuIcon";
 
 export default defineComponent({
 	name: "TuAlert",
-
 	props: {
-		active: {                  //active prop: alert message shown if active given true boolean else false
+/**
+ * @name active.
+ * @description alert message shown if active given true boolean else false.
+ */
+		active: { 
 			type: [Boolean, String],
 			default: true
 		},
-		title: {                  //title prop: title of message to be shown in alert message
+/**
+ * @name title.
+ * @description title of message to be shown in alert message.
+ */
+		title: {
 			type: String,
 			default: null
 		},
-		closable: {               //closable prop: alert message to be closable if boolean is true else not
+/**
+ * @name closable.
+ * @description alert message to be closable if boolean is true else not.
+ */
+		closable: {
 			type: Boolean,
 			default: false
 		},
-		color: {                  //color prop: background color of alert message to be set with the prop
+/**
+ * @name color.
+ * @description background color of alert message to be set with the prop.
+ */
+		color: {                  //color prop: 
 			type: String,
 			default: "primary"
 		},
-		margin: {                 //margin prop: margin of alert box to be set
+/**
+ * @name margin.
+ * @description margin of alert box to be set.
+ */
+		margin: {
 			type: [String, Boolean],
 			default: "10px"
 		},
-		icon: {                    //icon prop: icon to be shown in the alert box 
+/**
+ * @name icon.
+ * @description icon to be shown in the alert box.
+ */
+		icon: {  
 			type: String,
 			default: null
 		},
-		closeIcon: {                //close icon prop: the icon for close 
+/**
+ * @name closeIcon.
+ * @description icon to be shown in the alert box.
+ */
+		closeIcon: { 
 			type: String,
 			default: "close"
 		},
-		iconPack: {                  //iconPack prop: the icon pack to be used for the above icons
+/**
+ * @name iconPack.
+ * @description the icon pack to be used for the above icons.
+ */
+		iconPack: {
 			type: String,
 			default: "material-icons"
 		}
