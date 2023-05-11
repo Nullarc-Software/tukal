@@ -21,6 +21,15 @@
 </template>
 
 <script lang="ts">
+/**
+ * MyComponent description.
+ *
+ * @component
+ * @vue-prop {string} prop1 - Description of prop1.
+ * @vue-data {string} data1 - Description of data1.
+ * @vue-method
+ * myMethod - Description of myMethod.
+ */
 import { computed, defineComponent, nextTick, onMounted, ref } from "vue";
 import _color from "../../utils/color";
 import tuIcon from "../tuIcon";
