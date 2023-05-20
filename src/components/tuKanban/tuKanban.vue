@@ -7,33 +7,37 @@
             <thead class="tu-kanban-table__thead">
                 <th v-for="field in fields" class="text-center tu-kanban-table__th">{{ field.fieldname }}</th>
             </thead>
-            <tbody>
-            <tr v-for="ind in rows">
-                <td :draggable="true" @dragstart="startDrag($event, value[ind - 1])" @dragover.prevent @dragenter.prevent
-                    v-for="(value, index) in itemsOfCategories.fields" @drop="onDrop(index)" class="text-center" :class="{
-                        'animation-kanban':
-                            isDrag === true && value[ind - 1] && dragIndex === value[ind - 1].id
-                    }">
-                    <div :class="{ 'dragItem': value[ind - 1].id === dragIndex }"
-                        v-if="value[ind - 1] && value[ind - 1].content && !value[ind - 1].hidden"
-                        class="d-flex align-items-center tu-kanban-item">
-                        <img v-if="value[ind - 1].image" :src="value[ind - 1].image" class="tu-kanban-img tu-kanban-ml-4" />
-                        <tu-icon class="tu-kanban-icon tu-kanban-ml-4" v-else-if="value[ind - 1].icon"> {{ value[ind - 1].icon
-                        }}</tu-icon>
-                        <h5 class="tu-kanban-ml-4"> {{ value[ind - 1].content }}</h5>
-                    </div>
-                </td>
-            </tr>
-        </tbody>
+            <tbody id="kanban">
+                <tr v-for="ind in rows">
+                    <td :draggable="true" @dragstart="startDrag($event, value[ind - 1])" @dragover.prevent
+                        @dragenter.prevent v-for="(value, index) in itemsOfCategories.fields" @drop="onDrop(index)"
+                        class="text-center" :class="{
+                            'animation-kanban':
+                                isDrag === true && value[ind - 1] && dragIndex === value[ind - 1].id
+                        }">
+                        <div :class="{ 'dragItem': value[ind - 1].id === dragIndex }"
+                            v-if="value[ind - 1] && value[ind - 1].content && !value[ind - 1].hidden"
+                            class="d-flex align-items-center tu-kanban-item">
+                            <img v-if="value[ind - 1].image" :src="value[ind - 1].image"
+                                class="tu-kanban-img tu-kanban-ml-4" />
+                            <tu-icon class="tu-kanban-icon tu-kanban-ml-4" v-else-if="value[ind - 1].icon"> {{ value[ind -
+                                1].icon
+                            }}</tu-icon>
+                            <h5 class="tu-kanban-ml-4"> {{ value[ind - 1].content }}</h5>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
         </table>
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, reactive, ref, watch, Ref } from 'vue'
+import { defineComponent, PropType, reactive, ref, watch, Ref, onMounted } from 'vue'
 import { groupBy, sliceIntoChunks, kanbanItems, kanbanFields } from "./utils"
-import  tuInput  from "../tuInput";
+import tuInput from "../tuInput";
 import tuIcon from "../tuIcon";
+import { TuLoading, TuLoadingAttributes } from '../tuLoading';
 export default defineComponent({
     name: "tuKanban",
     components: {
@@ -53,6 +57,7 @@ export default defineComponent({
     },
     emits: ["onDrag", "update:modelValue"],
     setup(props, context) {
+        let kanban = ref()
         let isDrag = ref(false)
         let dragItem = ref(null);
         let dragIndex = ref(null);
@@ -67,7 +72,7 @@ export default defineComponent({
             let newArray = itemsOfCategories.fields[dragItem.value.fieldname].filter(obj => obj.id !== dragItem.value.id);
             itemsOfCategories.fields[dragItem.value.fieldname] = newArray;
             let index = currentItems.findIndex(obj => obj.id === dragItem.value.id)
-            currentItems[index].fieldname = dropCategory.value 
+            currentItems[index].fieldname = dropCategory.value
             dragItem.value.fieldname = dropCategory.value
             itemsOfCategories.fields[dropCategory.value].push(dragItem.value)
             if (itemsOfCategories.fields[dropCategory.value].length > rows.value) {
@@ -84,14 +89,28 @@ export default defineComponent({
             isDrag.value = true;
             dropCategory.value = index
             if (dropCategory.value !== dragItem.value.categoryId && dropCategory.value !== undefined && dragItem.value !== undefined) {
-                exchangeItems() 
+                exchangeItems()
                 dragItem.value = undefined;
                 dropCategory.value = undefined;
                 context.emit("onDrag", currentItems)
                 context.emit("update:modelValue", currentItems)
             }
         }
+		// let load: TuLoading = null;
+        // function setLoading() {
+        //     const attrs: TuLoadingAttributes = {
+        //         target: `#kanban`,
+        //         color: "dark",
+        //         type: "circles",
+        //         scale: "1.0"
+        //     };
+        //     if (load) {
+        //         load.close();
+        //     }
+        //     load = new TuLoading(attrs);
+        // }
         watch(search, () => {
+            // setLoading()
             for (let i = 0; i < props.fields.length; i++) {
                 for (let j = 0; j < itemsOfCategories.fields[props.fields[i].fieldname].length; j++) {
                     if (search.value === "") {
@@ -117,21 +136,25 @@ export default defineComponent({
                     }
                 }
             }
+            // load = null
         })
-        return { dropIndex, rows, search, itemsOfCategories, startDrag, dragIndex, onDrop, dragItem, isDrag }
+        return { dropIndex, rows, kanban, search, itemsOfCategories, startDrag, dragIndex, onDrop, dragItem, isDrag }
     },
 })
 </script>
 
 <style scoped lang="scss">
 @import "../../style/sass/_mixins";
+
 .tu-kanban {
     overflow: auto;
 }
+
 .tu-kanban td,
 th {
     height: 45px;
 }
+
 .tu-kanban-table {
     &__thead {
         width: 100%;
@@ -201,9 +224,11 @@ th {
 .d-flex {
     display: flex;
 }
+
 .align-items-center {
     align-items: center;
 }
+
 .tu-kanban-ml-4 {
     margin-left: 6%;
 }
@@ -224,6 +249,5 @@ th {
 }
 
 .tu-kanban-icon {
-    font-size: 36px !important;
-}
-</style>
+    font-size: 24px !important;
+}</style>
