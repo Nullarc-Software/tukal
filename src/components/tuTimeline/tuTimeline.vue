@@ -1,5 +1,5 @@
 <template>
-    <div style="display: flex;flex-direction:column">
+    <div class="tu-timeline" style="display: flex;flex-direction:column">
         <div class="tu-timeline-parent">
             <div class="tu-timeline-box" :id="`tu-timeline-box-${index}`" v-for="index in 12" :key="index" />
         </div>
@@ -190,25 +190,19 @@ export default defineComponent({
     display: flex;
 }
 
+.tu-timeline {
+    border: 2px solid var(--tu-text);
+    border-top-right-radius: 12px;
+    border-bottom-right-radius: 12px;
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
+    padding: 10px;
+}
+
 .tu-timeline-box {
     width: calc(100% / 12);
     height: 100px;
-    border-top: 1px solid var(--tu-text);
-    border-bottom: 1px solid var(--tu-text);
     display: flex;
-}
-
-
-#tu-timeline-box-1 {
-    border-left: 1px solid var(--tu-text);
-    border-top-left-radius: 12px;
-    border-bottom-left-radius: 12px;
-}
-
-#tu-timeline-box-12 {
-    border-right: 1px solid var(--tu-text);
-    border-top-right-radius: 12px;
-    border-bottom-right-radius: 12px;
 }
 
 .tu-timeline-text {

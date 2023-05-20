@@ -164,7 +164,7 @@ th {
 }
 
 .dragItem:active {
-    opacity: 0.4;
+    opacity: 0.3;
 }
 
 .dragItem {
@@ -172,13 +172,13 @@ th {
 }
 
 .tu-kanban-img {
-    height: 36px;
-    width: 36px !important;
+    height: 24px;
+    width: 24px !important;
 }
 
 .tu-kanban-item {
     box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.08), 0 6px 20px 0 rgba(0, 0, 0, 0.08);
-    margin: 10px;
+    margin: 1px;
     border-radius: 12px;
     transition: all 0.5s ease-in-out;
 }
