@@ -7,6 +7,7 @@
             <thead class="tu-kanban-table__thead">
                 <th v-for="field in fields" class="text-center tu-kanban-table__th">{{ field.fieldname }}</th>
             </thead>
+            <tbody>
             <tr v-for="ind in rows">
                 <td :draggable="true" @dragstart="startDrag($event, value[ind - 1])" @dragover.prevent @dragenter.prevent
                     v-for="(value, index) in itemsOfCategories.fields" @drop="onDrop(index)" class="text-center" :class="{
@@ -23,6 +24,7 @@
                     </div>
                 </td>
             </tr>
+        </tbody>
         </table>
     </div>
 </template>
@@ -123,7 +125,9 @@ export default defineComponent({
 
 <style scoped lang="scss">
 @import "../../style/sass/_mixins";
-
+.tu-kanban {
+    overflow: auto;
+}
 .tu-kanban td,
 th {
     height: 45px;

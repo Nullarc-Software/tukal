@@ -969,7 +969,7 @@
 			<div class="showcase-component">
 				<h4>Kanban Board Component:</h4>
 				<hr />
-				<tu-kanban :items="kanbanItems" v-model="currentItemsRef" :fields="kanbanCategories" />
+				<tu-kanban style="height: 300px" :items="kanbanItems" v-model="currentItemsRef" :fields="kanbanCategories" />
 			</div>
 			<div class="showcase-component">
 
