@@ -7,7 +7,7 @@
             <thead class="tu-kanban-table__thead">
                 <th v-for="field in fields" class="text-center tu-kanban-table__th">{{ field.fieldname }}</th>
             </thead>
-            <tbody id="kanban">
+            <tbody :id="`tu-kanban-${id}`" style="position: relative;">
                 <tr v-for="ind in rows">
                     <td :draggable="true" @dragstart="startDrag($event, value[ind - 1])" @dragover.prevent
                         @dragenter.prevent v-for="(value, index) in itemsOfCategories.fields" @drop="onDrop(index)"
@@ -57,6 +57,7 @@ export default defineComponent({
     },
     emits: ["onDrag", "update:modelValue"],
     setup(props, context) {
+        let id = Math.floor(Math.random() * 100);
         let kanban = ref()
         let isDrag = ref(false)
         let dragItem = ref(null);
@@ -96,21 +97,18 @@ export default defineComponent({
                 context.emit("update:modelValue", currentItems)
             }
         }
-		// let load: TuLoading = null;
-        // function setLoading() {
-        //     const attrs: TuLoadingAttributes = {
-        //         target: `#kanban`,
-        //         color: "dark",
-        //         type: "circles",
-        //         scale: "1.0"
-        //     };
-        //     if (load) {
-        //         load.close();
-        //     }
-        //     load = new TuLoading(attrs);
-        // }
+		let load: TuLoading = null;
+        function setLoading() {
+            const attrs: TuLoadingAttributes = {
+                target: `#tu-kanban-${id}`,
+                color: "dark",
+                type: "circles",
+                scale: "1.0"
+            };
+            load = new TuLoading(attrs);
+        }
         watch(search, () => {
-            // setLoading()
+            setLoading()
             for (let i = 0; i < props.fields.length; i++) {
                 for (let j = 0; j < itemsOfCategories.fields[props.fields[i].fieldname].length; j++) {
                     if (search.value === "") {
@@ -136,9 +134,9 @@ export default defineComponent({
                     }
                 }
             }
-            // load = null
+            load.close()
         })
-        return { dropIndex, rows, kanban, search, itemsOfCategories, startDrag, dragIndex, onDrop, dragItem, isDrag }
+        return { dropIndex, rows, id, kanban, search, itemsOfCategories, startDrag, dragIndex, onDrop, dragItem, isDrag }
     },
 })
 </script>
@@ -149,7 +147,13 @@ export default defineComponent({
 .tu-kanban {
     overflow: auto;
 }
-
+.tu-kanban::-webkit-scrollbar-thumb {
+    background: var(--tu-gray-4);
+}
+*::-webkit-scrollbar {
+    width: 6px;
+    height: 6px ;
+}
 .tu-kanban td,
 th {
     height: 45px;
