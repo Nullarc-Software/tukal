@@ -5,19 +5,25 @@
         </div>
         <table class="tu-kanban-table__element">
             <thead class="tu-kanban-table__thead">
-                <th v-for="field in fields" class="text-center tu-kanban-table__th">{{ field.fieldname }}</th>
+                <th v-for="field in fields" class="text-center tu-kanban-table__th">{{ field.fieldname }}
+                    <span class="multiselect-badge"
+                        v-if="selectedItems.length > 0 && selectedItems[0].fieldname === field.fieldname">{{
+                            selectedItems.length }}</span>
+                </th>
             </thead>
             <tbody :id="`tu-kanban-${id}`" style="position: relative;">
                 <tr v-for="ind in rows">
                     <td :draggable="true" @dragstart="startDrag($event, value[ind - 1])" @dragover.prevent
                         @dragenter.prevent v-for="(value, index) in itemsOfCategories.fields" @drop="onDrop(index)"
-                        class="text-center" :class="{
+                        class="text-center" @click="selectItem(value[ind - 1], index)" :class="{
                             'animation-kanban':
                                 isDrag === true && value[ind - 1] && dragIndex === value[ind - 1].id
                         }">
-                        <div :class="{ 'dragItem': value[ind - 1].id === dragIndex }"
+                        <div :class="{ 'dragItem': value[ind - 1].id === dragIndex, 'selectedItem': isSelected(value[ind - 1].id) }"
                             v-if="value[ind - 1] && value[ind - 1].content && !value[ind - 1].hidden"
-                            class="d-flex align-items-center tu-kanban-item">
+                            class="d-flex align-items-center tu-kanban-item" :style="{
+                                height: `${height}`,
+                            }">
                             <img v-if="value[ind - 1].image" :src="value[ind - 1].image"
                                 class="tu-kanban-img tu-kanban-ml-4" />
                             <tu-icon class="tu-kanban-icon tu-kanban-ml-4" v-else-if="value[ind - 1].icon"> {{ value[ind -
@@ -33,10 +39,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, reactive, ref, watch, Ref, onMounted } from 'vue'
+import { defineComponent, PropType, reactive, ref, watch, Ref, onMounted, computed } from 'vue'
 import { groupBy, sliceIntoChunks, kanbanItems, kanbanFields } from "./utils"
 import tuInput from "../tuInput";
 import tuIcon from "../tuIcon";
+import _color from "../../utils/color";
 import { TuLoading, TuLoadingAttributes } from '../tuLoading';
 export default defineComponent({
     name: "tuKanban",
@@ -52,6 +59,14 @@ export default defineComponent({
         fields: {
             type: Object as PropType<kanbanFields[]>,
             default: []
+        },
+        multiselect: {
+            type: Boolean,
+            default: false
+        },
+        height: {
+            type: String,
+            default: "42px"
         },
         modelValue: {}
     },
@@ -69,7 +84,23 @@ export default defineComponent({
         let currentItems: kanbanItems[] = copiedObject
         let itemsOfCategories = reactive({ fields: groupBy(props.items, 'fieldname', "noOfRows", props.fields) });
         let search = ref("");
+        let selectedItems = ref([]);
+        let selectedField = ref(null);
         function exchangeItems() {
+            console.log(selectedItems.value.length)
+            if (props.multiselect && selectedItems.value.length > 0) {
+                for (let i = 0; i < selectedItems.value.length; i++) {
+                    dragItem.value = selectedItems.value[i]
+                    exchange()
+                }
+                selectedItems.value = []
+                selectedField.value = null
+            }
+            else {
+                exchange()
+            }
+        }
+        let exchange = () => {
             let newArray = itemsOfCategories.fields[dragItem.value.fieldname].filter(obj => obj.id !== dragItem.value.id);
             itemsOfCategories.fields[dragItem.value.fieldname] = newArray;
             let index = currentItems.findIndex(obj => obj.id === dragItem.value.id)
@@ -97,7 +128,7 @@ export default defineComponent({
                 context.emit("update:modelValue", currentItems)
             }
         }
-		let load: TuLoading = null;
+        let load: TuLoading = null;
         function setLoading() {
             const attrs: TuLoadingAttributes = {
                 target: `#tu-kanban-${id}`,
@@ -136,7 +167,32 @@ export default defineComponent({
             }
             load.close()
         })
-        return { dropIndex, rows, id, kanban, search, itemsOfCategories, startDrag, dragIndex, onDrop, dragItem, isDrag }
+        let selectItem = (item: any, field: number) => {
+            if (props.multiselect) {
+                if (selectedField.value === null || selectedField.value === field) {
+                    selectedField.value = field
+                    const selectedIndex = selectedItems.value.find(obj => obj.id === item.id);
+                    if (selectedIndex === undefined) {
+                        selectedItems.value.push(item);
+                    } else {
+                        const filteredObjects = selectedItems.value.filter(obj => obj.id !== item.id);
+                        selectedItems.value = filteredObjects
+                        if (selectedItems.value.length === 0) {
+                            selectedField.value = null
+                        }
+                    }
+                }
+                else {
+                    return;
+                }
+            }
+        }
+        const isSelected = computed(() => {
+            return (index) => {
+                return selectedItems.value.find(obj => obj.id === index);
+            };
+        });
+        return { dropIndex, rows, id, kanban, search, itemsOfCategories, startDrag, dragIndex, onDrop, dragItem, isDrag, selectItem, isSelected, selectedItems }
     },
 })
 </script>
@@ -147,16 +203,27 @@ export default defineComponent({
 .tu-kanban {
     overflow: auto;
 }
+
 .tu-kanban::-webkit-scrollbar-thumb {
     background: var(--tu-gray-4);
 }
+
 *::-webkit-scrollbar {
     width: 6px;
-    height: 6px ;
+    height: 6px;
 }
-.tu-kanban td,
-th {
-    height: 45px;
+
+.tu-kanban th {
+    height: 30px;
+}
+
+.tu-kanban td {
+    height: 30px;
+}
+
+.selectedItem {
+    border: 2px solid -getColorAlpha("primary", 1);
+    background: -getColorAlpha("primary", 0.2);
 }
 
 .tu-kanban-table {
@@ -212,8 +279,13 @@ th {
 
 .tu-dark-theme {
     .tu-kanban-item {
-        background: -getColor("gray-1") !important;
+        background: var(--tu-gray-1);
         box-shadow: 0 6px 30px -6px rgba(255, 255, 255, 0.1) !important;
+    }
+
+    .selectedItem {
+        border: 2px solid -getColorAlpha("primary", 1);
+        background: -getColorAlpha("primary", 0.2);
     }
 }
 
@@ -234,7 +306,7 @@ th {
 }
 
 .tu-kanban-ml-4 {
-    margin-left: 6%;
+    margin-left: 10px;
 }
 
 .animation-kanban {
@@ -254,4 +326,18 @@ th {
 
 .tu-kanban-icon {
     font-size: 24px !important;
-}</style>
+}
+
+.multiselect-badge {
+    background: var(--tu-primary);
+    border-radius: 0.8em;
+    color: #ffffff;
+    display: inline-block;
+    font-weight: bold;
+    line-height: 1.4em;
+    margin-left: 5px;
+    text-align: center;
+    width: 1.4em;
+    font-size: small;
+}
+</style>
