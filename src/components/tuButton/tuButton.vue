@@ -2,7 +2,6 @@
 	<button :class="[
 		'tu-button',
 		// `tu-button--${color.replace('#', '')}`,
-		`tu-button--${componentColor}`,
 		`tu-button--size-${size}`,
 		{ [`tu-button--fff`]: color === '#fff' },
 		{ [`tu-button--active`]: !!active },
@@ -19,15 +18,6 @@
 		{ [`inline`]: !!inline },
 
 		// colors
-		{
-			[`tu-button--primary`]:
-				!danger && !success && !warn && !dark && !'color'
-		},
-		{ [`tu-button--danger`]: !!danger },
-		{ [`tu-button--warn`]: !!warn },
-		{ [`tu-button--success`]: !!success },
-		{ [`tu-button--dark`]: !!dark },
-
 		{
 			[`tu-button--default`]:
 				!flat &&
@@ -75,27 +65,29 @@ export default defineComponent({
 	extends: tuComponent,
 	inheritAttrs: false,
 	props: {
+		//ripple prop: riplling effect to enabled if boolean is true
 		ripple: { type: String, default: "" },
+		//activeDisabled prop: button to be in disabled mode if boolean is true
 		activeDisabled: { type: Boolean, default: false },
-		flat: { type: Boolean, default: false },
-		border: { type: Boolean, default: false },
-		gradient: { type: Boolean, default: false },
-		relief: { type: Boolean, default: false },
-		transparent: { type: Boolean, default: false },
-		shadow: { type: Boolean, default: false },
-		floating: { type: Boolean, default: false },
-		icon: { type: Boolean, default: false },
-		circle: { type: Boolean, default: false },
-		square: { type: Boolean, default: false },
-		size: { type: String, default: null },
-		loading: { type: Boolean, default: false },
-		upload: { type: Boolean, default: false },
-		block: { type: Boolean, default: false },
-		animationType: { type: String, default: "" },
-		animateInactive: { type: Boolean, default: false },
-		to: { type: [Object, String], default: () => null },
-		href: { type: String, default: null },
-		blank: { type: Boolean, default: false },
+		flat: { type: Boolean, default: false },  //flat prop: flat effect to be enabled if boolean is true
+		border: { type: Boolean, default: false }, //border prop: border style to be enabled if boolean is true
+		gradient: { type: Boolean, default: false }, //gradient: gradient style to be enabled if boolean is true
+		relief: { type: Boolean, default: false }, //relief prop: relief style to be enabled if boolean is true
+		transparent: { type: Boolean, default: false },  //transparent prop: transparent style to be applied if boolean is true
+		shadow: { type: Boolean, default: false },  //shadow prop: shadow style to be enabled if boolean is true
+		floating: { type: Boolean, default: false }, //floating prop: floating style to be enabled if boolean is true
+		icon: { type: Boolean, default: false },  //icon prop: icon to used in the button
+		circle: { type: Boolean, default: false },  //circle prop: button to be shaped as circle if boolean is true
+		square: { type: Boolean, default: false },  //square prop: button to be shaped as square if boolean is true
+		size: { type: String, default: null }, //size prop: size of the button which can be following values i) mini ii) small iii) large iv) xl
+		loading: { type: Boolean, default: false }, //loading prop: loading animation to be shown on click if boolean is true
+		upload: { type: Boolean, default: false },  //upload prop: upload animation to be shown if boolean is true
+		block: { type: Boolean, default: false }, //block prop: the button to take up full width its parent if boolean is true 
+		animationType: { type: String, default: "scale" }, //animationType prop: the type of animation to be applied to the button the values are i) scale ii) vertical iii) rotate
+		animateInactive: { type: Boolean, default: true }, //animateInactive prop: disables animation if boolean is true
+		to: { type: [Object, String], default: () => null }, //to prop: on clicking the button the user is taken to new route specified in the prop
+		href: { type: String, default: null }, //href prop: specifies the URL of the page the link goes to when on clicking the button
+		blank: { type: Boolean, default: false }, //blank prop:to open a href link within a brand new tab if boolean is true
 		inline: { type: Boolean, default: false },
 		width: { type: String, default: null },
 		height: { type: String, default: null }
@@ -103,7 +95,6 @@ export default defineComponent({
 	emits: ["routeErr", "mouseover", "mouseout", "blur", "click"],
 	setup: function (props, context) {
 		const rippleDir = ref("");
-		const componentColor = null;
 		const button = ref<HTMLButtonElement>();
 
 		const clickButton = function (event) {
@@ -111,7 +102,7 @@ export default defineComponent({
 			else if (props.href)
 				window.open(props.href, (props.blank && "_blank") || "_self");
 			// console.log(this.blank && '_self')
-	
+
 			context.emit("click", event);
 		};
 
@@ -122,15 +113,14 @@ export default defineComponent({
 				if (props.flat) {
 					ripple(
 						event,
-						(componentColor || props.color || "primary") &&
-							!props.active &&
-							document.activeElement !== button.value
-							? "inherit"
-							: null,
+						props.color,
 						props.flat &&
 						!props.active &&
 						document.activeElement !== button.value
 					);
+				}
+				else if (props.border) {
+					ripple(event, props.color, true);
 				}
 				else ripple(event, null, false);
 			}
@@ -457,18 +447,21 @@ export default defineComponent({
 	color: -getColor("color");
 
 	&.tu-button--dark {
-		color: -getColor(text);
+		color: -getColor("text");
 	}
 
 	&:hover {
 		background: -getColorAlpha("color", 0.25);
 	}
 
-
+	&:focus {
+		background: -getColor("color");
+		color: -getColor("light");
+	}
 
 	&.tu-button--active {
 		background: -getColor("color");
-		color: #fff;
+		color: -getColor("light");
 	}
 }
 
@@ -520,11 +513,14 @@ export default defineComponent({
 		}
 	}
 
-
+	&:focus {
+		background: -getColor("color");
+		color: -getColor("light");
+	}
 
 	&.tu-button--active {
 		background: -getColor("color");
-		color: #fff;
+		color: -getColor("light");
 	}
 }
 

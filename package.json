@@ -24,6 +24,8 @@
 	},
 	"dependencies": {
 		"@caohenghu/vue-colorpicker": "^1.2.4",
+		"@nullarc/vuese3-cli": "^1.0.1",
+		"@nullarc/vuese3-markdown-render": "^2.11.3",
 		"@tiptap/extension-character-count": "^2.0.0-beta.202",
 		"@tiptap/extension-text-align": "^2.0.0-beta.204",
 		"@tiptap/extension-underline": "^2.0.0-beta.204",

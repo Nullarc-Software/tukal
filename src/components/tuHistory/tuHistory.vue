@@ -34,7 +34,7 @@ import { serverRequest, TuHistoryEvent, TuHistoryServerModel } from "./utils"
 import { tuInfiniteLoading } from '../tuInfiniteLoading';
 
 export default defineComponent({
-	name: "tuHistory",
+	name: "TuHistory",
 	extends: tuComponent,
 	components: {
 		tuInfiniteLoading
@@ -339,4 +339,5 @@ export default defineComponent({
 .tu-hist-complete-text {
 	display: table;
 	margin: 10px auto;
-}</style>
+}
+</style>
