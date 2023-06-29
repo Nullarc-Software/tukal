@@ -72,11 +72,16 @@ export interface TuTableServerModel {
 	method?: string;
 	ajaxLoadedFn?: Function;
 	ajaxErrorFn?: Function;
+	additionalParams?: {
+		[param: string]: string | Ref<any>
+	},
 }
+
 
 export interface TuTableProps {
 	multiSelect?: boolean;
 	serverSideConfig?: TuTableServerModel;
+	
 	columns: Array<TuHeaderDefn | null>;
 	model: "server" | "local" | string;
 	size?: string;
@@ -337,6 +342,15 @@ export class TuTableStore {
 						size: this.table.pageSize,
 						page: this.table.currentPage
 					};
+
+					if (this.serverModelProps.additionalParams) {
+						for (const [key, value] of Object.entries(this.serverModelProps.additionalParams)) {
+							if (typeof value === "string")
+								props[key] = value;
+							else 
+								props[key] = value.value;
+						}
+					}
 	
 					if (_.isUndefined(this.serverModelProps.method))
 						this.serverModelProps.method = "GET";
