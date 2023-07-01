@@ -1,64 +1,43 @@
 <template>
-	<div
-		v-if="open"
-		class="tu-navbar-content"
-		:style="{
-			['--tu-color']: color ? getColor(color) : '',
-			'z-index': zIndex,
-		}"
-		:class="[
-			{
-				fixed: fixed,
-				sticky: sticky,
-				shadow: shadow,
-				hidden: hidden,
-				shadowActive: shadowActive,
-				textWhite: textWhite,
-				paddingScroll: paddingScroll,
-				paddingScrollActive: paddingScrollActive,
-				tuNavbarSquare: square,
-				leftAligned: leftAligned,
-			},
-			// colors
-			{ [`tu-component--primary`]: !!primary },
-			{ [`tu-component--danger`]: !!danger },
-			{ [`tu-component--warn`]: !!warn },
-			{ [`tu-component--success`]: !!success },
-			{ [`tu-component--dark`]: !!dark },
-			{ [`tu-component--is-color`]: !!isColor },
-		]"
-		ref="navbarContent"
-	>
+	<div v-if="open" class="tu-navbar-content" :style="{
+		['--tu-color']: color ? getColor(color) : '',
+		'z-index': zIndex,
+	}" :class="[
+	{
+		fixed: fixed,
+		sticky: sticky,
+		shadow: shadow,
+		hidden: hidden,
+		shadowActive: shadowActive,
+		textWhite: textWhite,
+		paddingScroll: paddingScroll,
+		paddingScrollActive: paddingScrollActive,
+		tuNavbarSquare: square,
+		leftAligned: leftAligned,
+	},
+	// colors
+	{ [`tu-component--primary`]: !!primary },
+	{ [`tu-component--danger`]: !!danger },
+	{ [`tu-component--warn`]: !!warn },
+	{ [`tu-component--success`]: !!success },
+	{ [`tu-component--dark`]: !!dark },
+	{ [`tu-component--is-color`]: !!isColor },
+]" ref="navbarContent">
 		<div class="tu-navbar">
-			<div
-				v-if="leftCollapsed ? !collapsedForced : true"
-				class="tu-navbar__left"
-				ref="left"
-			>
+			<div v-if="leftCollapsed ? !collapsedForced : true" class="tu-navbar__left" ref="left">
 				<slot name="left" />
 			</div>
-			<div
-				v-if="centerCollapsed ? !collapsedForced : true"
-				class="tu-navbar__center"
-				ref="center"
-			>
+			<div v-if="centerCollapsed ? !collapsedForced : true" class="tu-navbar__center" ref="center">
 				<slot />
 			</div>
-			<div
-				v-if="rightCollapsed ? !collapsedForced : true"
-				class="tu-navbar__right"
-				ref="right"
-			>
+			<div v-if="rightCollapsed ? !collapsedForced : true" class="tu-navbar__right" ref="right">
 				<slot name="right" />
 			</div>
 		</div>
-		<div
-			:class="['tu-navbar__line', { notTransition: lineNotTransition }]"
-			:style="{
-				left: `${leftLine}px`,
-				width: `${widthLine}px`,
-			}"
-		></div>
+		<div :class="['tu-navbar__line', { notTransition: lineNotTransition }]" :style="{
+			left: `${leftLine}px`,
+			width: `${widthLine}px`,
+		}"></div>
 	</div>
 </template>
 
@@ -380,6 +359,7 @@ export default defineComponent({
 		align-items: center;
 		justify-content: flex-start;
 		padding: 5px;
+
 		img {
 			width: 100px;
 		}

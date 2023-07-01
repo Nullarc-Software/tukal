@@ -1,10 +1,5 @@
 <template>
-	<button
-		class="tu-navbar__item"
-		:class="{ active: active || internalActive }"
-		v-on="listeners"
-		ref="item"
-	>
+	<button class="tu-navbar__item" :class="{ active: active || internalActive }" v-on="listeners" ref="item">
 		<slot></slot>
 	</button>
 </template> 
@@ -40,20 +35,20 @@ export default defineComponent({
 		let item = ref<HTMLButtonElement>();
 		let instance = getCurrentInstance();
 		let internalActive = ref(false);
-		let router = ComponentConstants.router;		
+		let router = ComponentConstants.router;
 		let parentName = instance?.parent?.type.name;
 
-		const handleLine = function() {
+		const handleLine = function () {
 			nextTick(() => {
 				if (props.active || internalActive) {
-					
-					if(parentName == "TuNavbarGroup"){						
+
+					if (parentName == "TuNavbarGroup") {
 						const left = instance?.parent?.vnode.el?.offsetLeft;
 						setLeftLine?.call(null, left);
 						const width = instance?.parent?.vnode.el?.offsetWidth;
 						setWidthLine?.call(null, width);
-					}					
-					else{
+					}
+					else {
 						const left = item.value?.offsetLeft;
 						setLeftLine?.call(null, left);
 						const width = item.value?.scrollWidth;
@@ -65,12 +60,12 @@ export default defineComponent({
 
 		watch(() => props.active, (val: boolean) => {
 
-			if(!val)
+			if (!val)
 				internalActive.value = false;
 
 		});
 
-		const handleClick = function() {
+		const handleClick = function () {
 			if (props.to) {
 				router.push(props.to as any);
 			} else if (props.href) {
@@ -78,14 +73,14 @@ export default defineComponent({
 			}
 		};
 
-		const handleActive = function() {			
+		const handleActive = function () {
 			setModel?.call(null, props.id, handleLine);
 			handleLine();
 		};
 
 		const listeners = computed(() => {
 			return {
-				click: function(event) {
+				click: function (event) {
 					context.emit("click", event);
 					internalActive.value = true;
 					handleLine();
@@ -95,37 +90,37 @@ export default defineComponent({
 			};
 		});
 
-		const handleRouteChange = function(){
-			if(router.currentRoute.value.path === props.to){
+		const handleRouteChange = function () {
+			if (router.currentRoute.value.path === props.to) {
 				internalActive.value = true;
 				handleLine();
 			}
 			else
 				internalActive.value = false;
 
-			
+
 		}
 
-		const handleResize = function(){
-			if(internalActive.value)
+		const handleResize = function () {
+			if (internalActive.value)
 				handleLine();
 		}
 
 		onMounted(() => {
-			setTimeout(() => {				
+			setTimeout(() => {
 
 				if (props.active || internalActive.value) {
 					handleLine();
 				}
 			}, 150);
 
-			
+
 		});
 
-		if(router)
-		watch(router.currentRoute, () => {
-			handleRouteChange();
-		})
+		if (router)
+			watch(router.currentRoute, () => {
+				handleRouteChange();
+			})
 
 		return {
 			handleLine,
@@ -144,22 +139,22 @@ export default defineComponent({
 @import "../../style/sass/_mixins";
 
 .tu-navbar__item {
-  padding: 10px 15px;
-  margin: 0px;
-  border: 0px;
-  background: transparent;
-  font-size: 0.85rem;
-  opacity: 0.7;
-  transition: all 0.25s ease, color 0s;
-  font-weight: bold;
-  color: inherit;
+	padding: 10px 15px;
+	margin: 0px;
+	border: 0px;
+	background: transparent;
+	font-size: 0.85rem;
+	opacity: 0.7;
+	transition: all 0.25s ease, color 0s;
+	font-weight: bold;
+	color: inherit;
 
-  &.active {
-    opacity: 1;
-  }
+	&.active {
+		opacity: 1;
+	}
 
-  &:hover {
-    opacity: 1;
-  }
+	&:hover {
+		opacity: 1;
+	}
 }
 </style>

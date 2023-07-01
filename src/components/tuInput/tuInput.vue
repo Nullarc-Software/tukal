@@ -1,7 +1,7 @@
 <template>
 	<div class="tu-input-parent" v-bind="$attrs" :style="{
-	['--tu-color']: color ? getColor(color) : ''
-}" :class="[
+		['--tu-color']: color ? getColor(color) : ''
+	}" :class="[
 	`tu-input-parent--state-${state}`,
 	{ 'tu-input-parent--border': !!border },
 	{ 'tu-input-parent--shadow': !!shadow },
@@ -24,45 +24,45 @@
 	{ [`tu-component-static-editable`]: !!editableStaticInternal }
 ]">
 		<div class="tu-input-content" :class="[
-	{ [`tu-input-content--has-color`]: hasColor },
-	{
-		[`tu-input-content--has-label`]: label || labelPlaceholder
-	}
-]">
+			{ [`tu-input-content--has-color`]: hasColor },
+			{
+				[`tu-input-content--has-label`]: label || labelPlaceholder
+			}
+		]">
 			<input v-bind="$attrs" :type="type" class="tu-input" :value="modelValue" :class="[
-	{ ['tu-input--has-icon']: !!$slots.icon },
-	{ ['tu-input--has-icon--after']: !!iconAfter }
-]" @input="onInput" @keyup.enter="onEnter" :id="getId" :disabled="editableStaticInternal || disable" />
+				{ ['tu-input--has-icon']: !!$slots.icon },
+				{ ['tu-input--has-icon--after']: !!iconAfter }
+			]" @input="onInput" @keyup.enter="onEnter" :id="getId" :disabled="editableStaticInternal || disable" />
 			<label v-if="label" :for="getId" :class="[
-	'tu-input__label',
-	{ 'tu-input__label--hidden': modelValue !== '' }
-]">
+				'tu-input__label',
+				{ 'tu-input__label--hidden': modelValue !== '' }
+			]">
 				{{ placeholder }}
 			</label>
 			<label :for="getId" :class="[
-	'tu-input__label',
-	{ 'tu-input__label--placeholder': labelPlaceholder },
-	{
-		'tu-input__label--hidden':
-			modelValue !== '' ||
-			$attrs.type == 'date' ||
-			$attrs.type == 'time'
-	},
-	{ 'tu-input__label--label': label }
-]">
+				'tu-input__label',
+				{ 'tu-input__label--placeholder': labelPlaceholder },
+				{
+					'tu-input__label--hidden':
+						modelValue !== '' ||
+						$attrs.type == 'date' ||
+						$attrs.type == 'time'
+				},
+				{ 'tu-input__label--label': label }
+			]">
 				{{ label || placeholder || labelPlaceholder }}
 			</label>
 			<span v-if="$slots.icon" class="tu-input__icon" :class="[
-	{ 'tu-input__icon--after': iconAfter },
-	{ 'tu-input__icon--click': !!$attrs['click-icon'] }
-]" @click="iconClick">
+				{ 'tu-input__icon--after': iconAfter },
+				{ 'tu-input__icon--click': !!$attrs['click-icon'] }
+			]" @click="iconClick">
 				<slot name="icon" />
 			</span>
 
 			<span v-if="editableStaticInternal" class="tu-input__icon__editable" :class="[
-	{ 'tu-input__icon--after': true },
-	{ 'tu-input__icon--click': !!$attrs['click-icon'] }
-]">
+				{ 'tu-input__icon--after': true },
+				{ 'tu-input__icon--click': !!$attrs['click-icon'] }
+			]">
 				<tu-icon icon-pack="material-icons" @click="editableStaticInternal = false">mode_edit</tu-icon>
 			</span>
 			<div v-if="editableStaticInternal"></div>
@@ -75,12 +75,12 @@
 			</div>
 		</div>
 		<div v-if="progress > 0" class="tu-input__progress" :class="[
-	{ 'tu-input__progress--danger': progress < 33 },
-	{
-		'tu-input__progress--warn': progress < 66 && progress > 33
-	},
-	{ 'tu-input__progress--success': progress > 66 }
-]">
+			{ 'tu-input__progress--danger': progress < 33 },
+			{
+				'tu-input__progress--warn': progress < 66 && progress > 33
+			},
+			{ 'tu-input__progress--success': progress > 66 }
+		]">
 			<div class="tu-input__progress_bar" :style="{ width: `${progress}%` }" />
 		</div>
 		<transition @before-enter="beforeEnter" @enter="enter" @leave="leave">
@@ -185,7 +185,7 @@ export default defineComponent({
 		};
 
 		const onInput = function (evt) {
-			if(props.type === "number") {
+			if (props.type === "number") {
 				context.emit("update:modelValue", evt.target.valueAsNumber);
 			}
 			else {
@@ -261,11 +261,8 @@ export default defineComponent({
 		justify-content: center;
 	}
 
-	align-self: center;
 	position: relative;
-
 	margin: 5px;
-
 	padding: 5px;
 
 	&.square {

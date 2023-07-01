@@ -27,15 +27,16 @@ export function sliceIntoChunks(arr: any, chunkSize: number) {
 	return res;
 }
 
-export type kanbanItems = {
+export type KanbanItem = {
 	id: any;
     content: string;
     image?: string;
-    fieldname: string;
+    fieldName: string;
 	icon?: string;
+	selected?: boolean
 }
 
-export type kanbanFields = {
+export type KanbanField = {
 	title: string;
-	fieldname: string;
+	fieldName: string;
 }
