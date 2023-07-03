@@ -27,7 +27,7 @@ export function sliceIntoChunks(arr: any, chunkSize: number) {
 	return res;
 }
 
-export type KanbanItem = {
+export type TuKanbanItem = {
 	id: any;
     content: string;
     image?: string;
@@ -36,7 +36,7 @@ export type KanbanItem = {
 	selected?: boolean
 }
 
-export type KanbanField = {
+export type TuKanbanField = {
 	title: string;
 	fieldName: string;
 }

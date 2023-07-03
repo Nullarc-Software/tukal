@@ -33,7 +33,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType, reactive, ref, watch, Ref, onMounted, computed } from 'vue'
-import { groupBy, sliceIntoChunks, KanbanItem, KanbanField } from "./utils"
+import { groupBy, sliceIntoChunks, TuKanbanItem, TuKanbanField } from "./utils"
 import tuInput from "../tuInput";
 import tuIcon from "../tuIcon";
 import _color from "../../utils/color";
@@ -48,11 +48,11 @@ export default defineComponent({
 	},
 	props: {
 		items: {
-			type: Object as PropType<KanbanItem[]>,
+			type: Object as PropType<TuKanbanItem[]>,
 			default: []
 		},
 		fields: {
-			type: Object as PropType<KanbanField[]>,
+			type: Object as PropType<TuKanbanField[]>,
 			default: []
 		},
 		multiSelect: {
@@ -81,7 +81,7 @@ export default defineComponent({
 		let selectedItems = ref([]);
 		let selectedField = ref(null);
 
-		let startDrag = (evt: DragEvent, item: KanbanItem) => {
+		let startDrag = (evt: DragEvent, item: TuKanbanItem) => {
 
 			evt.dataTransfer.effectAllowed = "copyMove";
 			item.selected = true;
@@ -119,14 +119,14 @@ export default defineComponent({
 			}
 			else {
 
-				currentItems.value = _.filter(props.items, (x: KanbanItem) =>
+				currentItems.value = _.filter(props.items, (x: TuKanbanItem) =>
 					x.content.toLowerCase().includes(search.value)
 				)
 			}
 			load.close()
 		});
 
-		let selectItem = (item: KanbanItem) => {
+		let selectItem = (item: TuKanbanItem) => {
 			if (props.multiSelect) {
 				item.selected = !item.selected;
 			}

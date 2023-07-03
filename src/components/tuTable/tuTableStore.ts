@@ -32,8 +32,8 @@ export type TuHeaderDataTypes = "string" | "number" | "boolean" | "timestamp";
 
 export interface TuHeaderDefn{
 	index?: number;
-	minWidth?: number | string;
-	maxWidth?: number | string;
+	minWidth?: number;
+	maxWidth?: number;
 	width?: number | string;
 	field?: string;
 	caption?: string;

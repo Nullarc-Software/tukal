@@ -47,6 +47,8 @@ export { tuCalendarHeatMap } from "./tuCalendarHeatMap";
 export * from "./tuCalendarHeatMap/Heatmap";
 export { default as tuTimeline } from "./tuTimeline";
 export { tuKanban } from "./tuKanban";
+
+export type {TuKanbanItem, TuKanbanField} from "./tuKanban";
 // layout
 export { default as tuRow } from "../layout/tuRow";
 export { default as tuCol } from "../layout/tuCol";

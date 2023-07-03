@@ -1,8 +1,8 @@
 <template>
 	<div class="tu-calendar">
 		<calendar-view :show-date="showDate" :items="events" :show-times="true" :displayWeekNumbers="true"
-			:categories="eventCategories" @click-date="onClickDay" :displayPeriodUom="periodUOM"
-			@updateItems="updateItems" @deleteItem="deleteItem" :components="components" :class="colorTheme">
+			:categories="eventCategories" @click-date="onClickDay" :displayPeriodUom="periodUOM" @updateItems="updateItems"
+			@deleteItem="deleteItem" :components="components" :class="colorTheme">
 			<template #header="{ headerProps }">
 				<calendar-view-header :header-props="headerProps" @input="setShowDate" @updatePeriod="updatePeriod"
 					@updateTheme="updateTheme" @updateCategory="updateCategory" />
@@ -77,8 +77,8 @@
 							</td>
 							<td>
 								<tu-select inline v-model="newItem.Category">
-									<tu-select-option v-for="category in categories" :key="category"
-										:label="category.name" :value="category.name">
+									<tu-select-option v-for="category in categories" :key="category" :label="category.name"
+										:value="category.name">
 										<span class="dot" :style="styleChip(category.color)"></span>
 										{{ category.name }}
 									</tu-select-option>
@@ -108,6 +108,9 @@ import tuComponent from "../tuComponent";
 import { TukalGlobals } from "../tukalGlobals";
 import { XHRRequestWrapper } from "@/utils/apiWrapper";
 import { log } from "console";
+
+import dayjs from "dayjs";
+
 type Category = {
 	name: string;
 	color: string;
@@ -198,25 +201,10 @@ export default defineComponent({
 			xhrRequest.request.send();
 		}
 		const content = ref();
-		const onClickDay = (d: String) => {
-			const convertstring = d.toString();
-			const parts = convertstring.split(" ");
-			const months = {
-				Jan: "01",
-				Feb: "02",
-				Mar: "03",
-				Apr: "04",
-				May: "05",
-				Jun: "06",
-				Jul: "07",
-				Aug: "08",
-				Sep: "09",
-				Oct: "10",
-				Nov: "11",
-				Dec: "12"
-			};
-			const date = parts[3] + "-" + months[parts[1]] + "-" + parts[2];
-			context.emit("onClickDay", date);
+		const onClickDay = (d: Date) => {
+
+			const date = dayjs(d).format("YYYY-MM-DD");
+			context.emit("onClickDay",);
 			newItem.StartDate = date;
 			activateDialog.value = true;
 		};
@@ -281,7 +269,7 @@ export default defineComponent({
 		const styleChip = (categoryColor: string) => {
 			let background;
 			console.log(categoryColor)
-			if(/^(rgb|rgba)/.test(categoryColor)) {
+			if (/^(rgb|rgba)/.test(categoryColor)) {
 				background = categoryColor
 			}
 			else {

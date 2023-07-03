@@ -4,7 +4,7 @@ import { INormalizedCalendarItem } from "./ICalendarItem";
 class CalendarViewState {
 	currentDragItem?: INormalizedCalendarItem = undefined;
 	dateSelectionOrigin?: Date = undefined;
-	currentHoveredItemId: string = "";
+	currentHoveredItemId = "";
 	CalendarMath: object = CalendarMath;
 }
 
