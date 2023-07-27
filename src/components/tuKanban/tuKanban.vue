@@ -8,7 +8,7 @@
 			<div v-for="field in     fields    " class="text-center tu-kanban-category" @dragenter.prevent @dragover.prevent
 				@drop="onDrop($event, field.fieldName)">
 				<div class="tu-kanban-header">
-					{{ field.fieldName }}
+					{{ field.title }}
 					<span class="multiselect-badge"
 						v-if="selectedItems.length > 0 && selectedItems[0].fieldname === field.fieldName">{{
 							selectedItems.length }}</span>

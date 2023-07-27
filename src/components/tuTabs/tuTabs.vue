@@ -426,7 +426,12 @@ export default defineComponent({
 
 			if (props.type === "router") {
 				if (ComponentConstants.router) {
-					const tabMatched = _.findIndex(reactiveData.children, { to: ComponentConstants.router.currentRoute.value.fullPath });
+
+					const tabMatched = _.findIndex(reactiveData.children, child => {
+						const actualPath = _.isNil(props.routerModeParams.baseRoute) === false ? utils.joinPath(props.routerModeParams.baseRoute, child.to) : child.to;
+						return actualPath === ComponentConstants.router.currentRoute.value.fullPath;
+					});
+
 					if (tabMatched !== -1 && reactiveData.childActive !== tabMatched) {
 						activeIndex = tabMatched;
 					}
