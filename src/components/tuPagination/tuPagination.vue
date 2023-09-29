@@ -10,14 +10,7 @@
 		disabled: disabled,
 		notMargin: notMargin
 	},
-	{
-		[`tu-component--primary`]:
-			!danger && !success && !warn && !dark && !color
-	},
-	{ [`tu-component--danger`]: !!danger },
-	{ [`tu-component--warn`]: !!warn },
-	{ [`tu-component--success`]: !!success },
-	{ [`tu-component--dark`]: !!dark }
+	{ [`tu-component--${color}`]: color }
 ]" v-bind="$attrs">
 		<button v-if="!notArrows" class="tu-pagination__arrow prev" :disabled="infinite ? false : val <= 1"
 			@click="prevClicked">

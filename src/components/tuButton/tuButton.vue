@@ -69,25 +69,44 @@ export default defineComponent({
 		ripple: { type: String, default: "" },
 		//activeDisabled prop: button to be in disabled mode if boolean is true
 		activeDisabled: { type: Boolean, default: false },
-		flat: { type: Boolean, default: false },  //flat prop: flat effect to be enabled if boolean is true
-		border: { type: Boolean, default: false }, //border prop: border style to be enabled if boolean is true
-		gradient: { type: Boolean, default: false }, //gradient: gradient style to be enabled if boolean is true
-		relief: { type: Boolean, default: false }, //relief prop: relief style to be enabled if boolean is true
-		transparent: { type: Boolean, default: false },  //transparent prop: transparent style to be applied if boolean is true
-		shadow: { type: Boolean, default: false },  //shadow prop: shadow style to be enabled if boolean is true
-		floating: { type: Boolean, default: false }, //floating prop: floating style to be enabled if boolean is true
-		icon: { type: Boolean, default: false },  //icon prop: icon to used in the button
-		circle: { type: Boolean, default: false },  //circle prop: button to be shaped as circle if boolean is true
-		square: { type: Boolean, default: false },  //square prop: button to be shaped as square if boolean is true
-		size: { type: String, default: null }, //size prop: size of the button which can be following values i) mini ii) small iii) large iv) xl
-		loading: { type: Boolean, default: false }, //loading prop: loading animation to be shown on click if boolean is true
-		upload: { type: Boolean, default: false },  //upload prop: upload animation to be shown if boolean is true
-		block: { type: Boolean, default: false }, //block prop: the button to take up full width its parent if boolean is true 
-		animationType: { type: String, default: "scale" }, //animationType prop: the type of animation to be applied to the button the values are i) scale ii) vertical iii) rotate
-		animateInactive: { type: Boolean, default: true }, //animateInactive prop: disables animation if boolean is true
-		to: { type: [Object, String], default: () => null }, //to prop: on clicking the button the user is taken to new route specified in the prop
-		href: { type: String, default: null }, //href prop: specifies the URL of the page the link goes to when on clicking the button
-		blank: { type: Boolean, default: false }, //blank prop:to open a href link within a brand new tab if boolean is true
+		//flat prop: flat effect to be enabled if boolean is true
+		flat: { type: Boolean, default: false },
+		//border prop: border style to be enabled if boolean is true
+		border: { type: Boolean, default: false },
+		//gradient: gradient style to be enabled if boolean is true
+		gradient: { type: Boolean, default: false },
+		//relief prop: relief style to be enabled if boolean is true
+		relief: { type: Boolean, default: false },
+		//transparent prop: transparent style to be applied if boolean is true
+		transparent: { type: Boolean, default: false },
+		//shadow prop: shadow style to be enabled if boolean is true
+		shadow: { type: Boolean, default: false },
+		//floating prop: floating style to be enabled if boolean is true
+		floating: { type: Boolean, default: false },
+		//icon prop: icon to used in the button
+		icon: { type: Boolean, default: false },
+		//circle prop: button to be shaped as circle if boolean is true
+		circle: { type: Boolean, default: false },
+		//square prop: button to be shaped as square if boolean is true
+		square: { type: Boolean, default: false },
+		//size prop: size of the button which can be following values i) mini ii) small iii) large iv) xl
+		size: { type: String, default: null },
+		//loading prop: loading animation to be shown on click if boolean is true
+		loading: { type: Boolean, default: false },
+		//upload prop: upload animation to be shown if boolean is true
+		upload: { type: Boolean, default: false },
+		//block prop: the button to take up full width its parent if boolean is true 
+		block: { type: Boolean, default: false },
+		//animationType prop: the type of animation to be applied to the button the values are i) scale ii) vertical iii) rotate
+		animationType: { type: String, default: "scale" },
+		//animateInactive prop: disables animation if boolean is true
+		animateInactive: { type: Boolean, default: true },
+		//to prop: on clicking the button the user is taken to new route specified in the prop
+		to: { type: [Object, String], default: () => null },
+		//href prop: specifies the URL of the page the link goes to when on clicking the button
+		href: { type: String, default: null },
+		//blank prop:to open a href link within a brand new tab if boolean is true
+		blank: { type: Boolean, default: false },
 		inline: { type: Boolean, default: false },
 		width: { type: String, default: null },
 		height: { type: String, default: null }
@@ -98,11 +117,10 @@ export default defineComponent({
 		const button = ref<HTMLButtonElement>();
 
 		const clickButton = function (event) {
-			if (props.to) ComponentConstants.router.push(props.to);
+			if (props.to)
+				ComponentConstants.router.push(props.to);
 			else if (props.href)
 				window.open(props.href, (props.blank && "_blank") || "_self");
-			// console.log(this.blank && '_self')
-
 			context.emit("click", event);
 		};
 
@@ -146,16 +164,42 @@ export default defineComponent({
 @import "../../style/sass/_mixins";
 @import "../../style/sass/root";
 
+$tu-button-padding: 8px 12px;
+$tu-button-margin: 5px;
+$tu-button-border-radius: 12px;
+$tu-button-text-color: 255, 255, 255;
+$tu-color-primary: -getColor("color");
+$tu-color-primary-faded: -getColorAlpha("color", 0.15);
+$tu-color-text: -getColor("text");
+
+// Mixin for common button styles
+@mixin tu-button-style($background, $color, $hover-background, $hover-color) {
+	background: $background;
+	color: $color;
+
+	&:hover:not(.tu-button--border, .tu-button--flat),
+	&:focus {
+		background: $hover-background;
+		color: $hover-color;
+	}
+
+	&.tu-button--active {
+		background: $background;
+		color: $hover-color;
+		transform: translate(0, -3px);
+	}
+}
+
 .tu-button {
-	--tu-color-rotate: -var(--tu-primary);
-	--tu-color-darken: -var(--tu-primary);
-	--tu-button-padding: 8px 12px;
-	--tu-button-margin: 5px;
-	--tu-button-border-radius: 12px;
-	--tu-button-text-color: 255, 255, 255;
-	border: 0px;
-	margin: 5px;
-	border-radius: -var(button-border-radius);
+	--tu-color-rotate: -$tu-color-primary;
+	--tu-color-darken: -$tu-color-primary;
+	--tu-button-padding: $tu-button-padding;
+	--tu-button-margin: $tu-button-margin;
+	--tu-button-border-radius: $tu-button-border-radius;
+	--tu-button-text-color: $tu-button-text-color;
+	border: 0;
+	margin: $tu-button-margin;
+	border-radius: $tu-button-border-radius;
 	transition: all 0.25s ease;
 	position: relative;
 	user-select: none;
@@ -164,7 +208,7 @@ export default defineComponent({
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	padding: 0px;
+	padding: $tu-button-padding;
 	outline: none;
 	font-size: 0.8rem;
 	box-sizing: border-box;
@@ -172,378 +216,25 @@ export default defineComponent({
 
 	&.tu-component-dark {
 		&.tu-button--transparent {
-			@if variable-exists("--tu-color") {
-				color: -getColor("color") !important;
-			}
-
-			@else {
-				color: -getColor("text") !important;
-			}
+			color: $tu-color-primary !important;
 		}
 	}
 
-	&--fff {
-		&:focus {
-			color: rgba(30, 30, 30, 1) !important;
-		}
-	}
 
-	&__content {
-		padding: -var(button-padding);
-		width: 100%;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-
-	&--active-disabled {
-		pointer-events: none;
-		opacity: 0.6;
-	}
-
-	&:disabled {
-		pointer-events: none;
-		opacity: 0.35;
-	}
-
-	&.tu-button--animate:not(.tu-button--animate-inactive) {
-		.tu-button__content {
-			i {
-				font-size: 1.15rem;
-			}
-		}
-
-		&:hover {
-			.tu-button__content {
-				transform: translate(-100%);
-			}
-
-			.tu-button__animate {
-				transform: translate(0%);
-			}
-		}
-
-		&.tu-button--animate-vertical {
-			&:hover {
-				.tu-button__content {
-					transform: translate(0, -100%) !important;
-					opacity: 0;
-				}
-
-				.tu-button__animate {
-					transform: translate(0%) !important;
-				}
-			}
-		}
-
-		&.tu-button--animate-scale {
-			&:hover {
-				.tu-button__content {
-					transform: scale(1.4) !important;
-					opacity: 0;
-				}
-
-				.tu-button__animate {
-					opacity: 1;
-					transform: scale(1);
-				}
-			}
-		}
-
-		&.tu-button--animate-rotate {
-			&:hover {
-				.tu-button__content {
-					transform: rotate(180deg) !important;
-					opacity: 0;
-				}
-
-				.tu-button__animate {
-					opacity: 1;
-					transform: rotate(0);
-				}
-			}
-		}
-
-		.tu-button__content {
-			transition: transform 0.25s ease;
-		}
-	}
-
-	&__animate {
-		position: absolute;
-		width: 100%;
-		height: 100%;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		top: 0px;
-		left: 0px;
-		transition: transform 0.25s ease;
-		transform: translate(100%);
-		pointer-events: none;
-
-		&--vertical {
-			transform: translate(0, 100%);
-		}
-
-		&--scale {
-			transform: scale(0.5);
-			opacity: 0;
-		}
-
-		&--rotate {
-			transform: rotate(-180deg);
-			opacity: 0;
-		}
-	}
-
-	&--block {
-		width: 100%;
-		display: block;
-	}
-
-	&--upload {
-		&:after {
-			content: "";
-			position: absolute;
-			width: 100%;
-			height: 100%;
-			background: -getColorAlpha("color", 0.4);
-			top: 0px;
-			left: 0px;
-			z-index: 1200;
-			animation: btnupload 0.7s ease infinite;
-			box-sizing: border-box;
-		}
-	}
-
-	&--loading {
-		pointer-events: none;
-		user-select: none;
-	}
-
-	.tu-button__loading {
-		width: 100%;
-		height: 100%;
-		position: absolute;
-		top: 0px;
-		left: 0px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		background: -getColorAlpha("color", 0.8);
-		border-radius: inherit;
-
-		&:after {
-			content: "";
-			width: 17px;
-			height: 17px;
-			border: 2px dotted rgba(255, 255, 255, 0.6);
-			border-top: 2px solid rgba(255, 255, 255, 0);
-			border-bottom: 2px solid rgba(255, 255, 255, 0);
-			border-right: 2px solid rgba(255, 255, 255, 0);
-			border-radius: 50%;
-			position: absolute;
-			animation: btnload 0.6s linear infinite;
-			box-sizing: border-box;
-		}
-
-		&:before {
-			position: absolute;
-			content: "";
-			width: 17px;
-			height: 17px;
-			border: 2px solid rgb(255, 255, 255);
-			border-top: 2px solid rgba(255, 255, 255, 0);
-			border-bottom: 2px solid rgba(255, 255, 255, 0);
-			border-right: 2px solid rgba(255, 255, 255, 0);
-			border-radius: 50%;
-			animation: btnload 0.6s ease infinite;
-			box-sizing: border-box;
-		}
-	}
-
-	&--size-xl {
-		border-radius: 20px;
-
-		.tu-button__content {
-			padding: 15px 20px;
-			font-size: 1.1rem;
-		}
-	}
-
-	&--size-large {
-		font-size: 1rem;
-		border-radius: 15px;
-
-		.tu-button__content {
-			padding: 10px 15px;
-		}
-	}
-
-	&--size-small {
-		font-size: 0.75rem;
-		border-radius: 9px;
-
-		.tu-button__content {
-			padding: 5px 10px;
-		}
-	}
-
-	&--size-mini {
-		font-size: 0.6rem;
-		border-radius: 7px;
-
-		.tu-button__content {
-			padding: 3px 8px;
-		}
-	}
-
-	&--circle {
-		border-radius: 25px;
-	}
-
-	&--square {
-		border-radius: 0px;
-	}
-
-	&--icon {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-
-		.tu-button__content {
-			padding: 8px 8px;
-		}
-
-		i {
-			font-size: 1.15rem;
-		}
-	}
-}
-
-// Type Button Style
-
-.tu-button--default {
-	@debug "divider offset: #{color}";
-
-	background: -getColor("color");
-	color: white;
-
-	&.tu-button--active {
-		box-shadow: 0px 10px 20px -10px -getColor("color");
-		transform: translate(0, -3px);
-	}
-
-	&:hover,
-	&:focus {
-		box-shadow: 0px 10px 20px -10px -getColor("color");
-		transform: translate(0, -3px);
-	}
-}
-
-.tu-button--flat {
-	background: -getColorAlpha("color", 0.15);
-	color: -getColor("color");
-
-	&.tu-button--dark {
-		color: -getColor("text");
-	}
-
-	&:hover {
-		background: -getColorAlpha("color", 0.25);
-	}
-
-	&:focus {
-		background: -getColor("color");
-		color: -getColor("light");
-	}
-
-	&.tu-button--active {
-		background: -getColor("color");
-		color: -getColor("light");
-	}
-}
-
-.tu-button--floating {
-	background: -getColor("color");
-	color: #fff;
-	box-shadow: 0px 8px 20px -6px -getColor("color");
-	transform: translate(0, -3px);
-
-	&:hover {
-		box-shadow: 0px 8px 20px -6px -getColor("color");
-		transform: translate(0, -6px);
-	}
-
-	&:focus {
-		transform: translate(0, 0px);
-		box-shadow: 0px 0px 0px 0px -getColor("color");
-	}
-
-	&.tu-button--active {
-		transform: translate(0, 0px);
-		box-shadow: 0px 0px 0px 0px -getColor("color");
-	}
-}
-
-.tu-button--border {
-	background: -getColorAlpha("color", 0);
-	color: -getColor("color");
-
-
-	&:before {
-		content: "";
-		border: 2px solid -getColor("color");
-		position: absolute;
-		top: 0px;
-		left: 0px;
-		width: 100%;
-		height: 100%;
-		border-radius: inherit;
-		background: transparent;
-		pointer-events: none;
-		transition: all .15s ease;
-		box-sizing: border-box;
-	}
-
-	&:hover {
-		&:before {
-			border: 2px solid -getColorAlpha("color", 0.5);
-		}
-	}
-
-	&:focus {
-		background: -getColor("color");
-		color: -getColor("light");
-	}
-
-	&.tu-button--active {
-		background: -getColor("color");
-		color: -getColor("light");
-	}
 }
 
 .tu-button--gradient {
-	background: -getColor("color");
-	color: #fff;
+	@include tu-button-style($tu-color-primary, #fff, $tu-color-primary, #fff);
 	overflow: hidden;
-
-	&.tu-button--primary,
-	&.tu-button--success {
-		&::before {
-			filter: hue-rotate(40deg);
-		}
-	}
 
 	&::before {
 		content: "";
 		background: linear-gradient(30deg,
-				-getColor("color") 0%,
-				-getColorAlpha("color-secondary", 0.6) 100%);
+				$tu-color-primary 0%,
+				rgba($tu-color-primary, 0.6) 100%);
 		position: absolute;
-		top: 0px;
-		left: 0px;
+		top: 0;
+		left: 0;
 		width: 100%;
 		height: 100%;
 		border-radius: inherit;
@@ -556,12 +247,10 @@ export default defineComponent({
 
 	&:hover {
 		transform: translate(0, -3px);
-		box-shadow: 0px 10px 20px -10px -getColorAlpha("color", 0.7);
+		box-shadow: 0px 10px 20px -10px rgba($tu-color-primary, 0.7);
 
 		&::before {
 			opacity: 0;
-
-			// transform: translate(50%, -50%)
 		}
 	}
 
@@ -572,8 +261,7 @@ export default defineComponent({
 }
 
 .tu-button--relief {
-	background: -getColor("color");
-	color: #fff;
+	@include tu-button-style($tu-color-primary, #fff, $tu-color-primary, #fff);
 	overflow: hidden;
 	transform: translate(0) scale(1, 1);
 
@@ -590,8 +278,8 @@ export default defineComponent({
 	&::before {
 		content: "";
 		position: absolute;
-		bottom: 0px;
-		left: 0px;
+		bottom: 0;
+		left: 0;
 		width: 100%;
 		height: calc(100% - 3px);
 		border-radius: inherit;
@@ -599,7 +287,7 @@ export default defineComponent({
 		transition: all 0.4s ease;
 		z-index: -1;
 		filter: contrast(2) grayscale(0.4);
-		border-bottom: 3px solid -getColor("color");
+		border-bottom: 3px solid $tu-color-primary;
 		box-sizing: border-box;
 	}
 
@@ -607,11 +295,11 @@ export default defineComponent({
 		transform: translate(0, 1px);
 
 		.tu-button__content {
-			padding-bottom: 6px;
+			padding-bottom: 1px;
 		}
 
 		&::before {
-			border-bottom: 0px solid -getColor("color");
+			border-bottom: 0;
 		}
 	}
 
@@ -623,24 +311,21 @@ export default defineComponent({
 		}
 
 		&::before {
-			border-bottom: 0px solid -getColor("color");
+			border-bottom: 0;
 		}
 	}
 }
 
 .tu-button--transparent {
-	background: transparent;
-	color: -getColor("text");
+	@include tu-button-style(transparent, $tu-color-text, transparent, rgba($tu-color-primary, 0.1));
 	overflow: hidden;
 
 	&::before {
 		content: "";
-		background: -getColorAlpha("color", 0.1);
-
-		// background: -getColor('color', -var('background-opacity'))
+		background: rgba($tu-color-primary, 0.1);
 		position: absolute;
-		bottom: 0px;
-		left: 0px;
+		bottom: 0;
+		left: 0;
 		width: 100%;
 		height: 100%;
 		border-radius: inherit;
@@ -667,7 +352,7 @@ export default defineComponent({
 
 	&.tu-button--active {
 		&::before {
-			background: -getColorAlpha("color", 0.2);
+			background: rgba($tu-color-primary, 0.2);
 			opacity: 1;
 			transform: scale(1);
 		}
@@ -675,44 +360,149 @@ export default defineComponent({
 }
 
 .tu-button--shadow {
-	background: -getColor("background");
-	color: -getColor("text");
+	@include tu-button-style($tu-color-text, transparent, transparent, transparent);
 	overflow: hidden;
-	box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, -var(shadow-opacity));
+	box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
 
 	&:active:not(.tu-button--active) {
 		transform: translate(0, -1px);
-		box-shadow: 0px 5px 15px 0px rgba(0, 0, 0, -var(shadow-opacity)) !important;
+		box-shadow: 0 5px 15px 0 rgba(0, 0, 0, 0) !important;
 	}
 
 	&:hover {
 		transform: translate(0, -3px);
-		box-shadow: 0px 8px 25px 0px rgba(0, 0, 0, -var(shadow-opacity));
+		box-shadow: 0 8px 25px 0 rgba(0, 0, 0, 0);
 	}
 
 	&.tu-button--active {
 		transform: translate(0, -3px);
-		box-shadow: 0px 8px 25px 0px rgba(0, 0, 0, -var(shadow-opacity));
+		box-shadow: 0 8px 25px 0 rgba(0, 0, 0, 0);
 	}
 }
 
-@keyframes btnload {
-	0% {
-		transform: rotate(0deg);
-	}
 
-	100% {
-		transform: rotate(360deg);
+.tu-button--default {
+	@include tu-button-style($tu-color-primary, white, $tu-color-primary, white);
+}
+
+.tu-button--flat {
+	@include tu-button-style($tu-color-primary-faded, $tu-color-primary, $tu-color-primary, white);
+
+	&.tu-button--dark {
+		color: $tu-color-text;
 	}
 }
 
-@keyframes btnupload {
-	0% {
-		transform: translate(0, 110%);
+.tu-button--floating {
+	@include tu-button-style($tu-color-primary, #fff, $tu-color-primary, #fff);
+	box-shadow: 0px 8px 20px -6px $tu-color-primary;
+
+	&:hover {
+		box-shadow: 0px 8px 20px -6px $tu-color-primary;
+		transform: translate(0, -6px);
 	}
 
-	100% {
-		transform: translate(0, -110%);
+	&:focus {
+		transform: translate(0);
+		box-shadow: 0px 0px 0px 0px $tu-color-primary;
+	}
+
+	&.tu-button--active {
+		transform: translate(0);
+		box-shadow: 0px 0px 0px 0px $tu-color-primary;
+	}
+}
+
+.tu-button--border {
+	@include tu-button-style(transparent, $tu-color-primary, $tu-color-primary, #fff);
+
+	&:before {
+		content: "";
+		border: 2px solid $tu-color-primary;
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		border-radius: inherit;
+		background: transparent;
+		pointer-events: none;
+		transition: all 0.15s ease;
+		box-sizing: border-box;
+	}
+
+
+
+	&.tu-button--active {
+		background: -getColor("color");
+		color: -getColor("light");
+	}
+
+	// Add other button variations here...
+}
+
+.tu-button--size-xl {
+	@include tu-button-style($tu-color-primary, white, $tu-color-primary, white);
+	border-radius: 20px;
+
+	.tu-button__content {
+		padding: 15px 20px;
+		font-size: 1.1rem;
+	}
+}
+
+.tu-button--size-large {
+	@include tu-button-style($tu-color-primary, white, $tu-color-primary, white);
+	font-size: 1rem;
+	border-radius: 15px;
+
+	.tu-button__content {
+		padding: 10px 15px;
+	}
+}
+
+.tu-button--size-small {
+	@include tu-button-style($tu-color-primary, white, $tu-color-primary, white);
+	font-size: 0.75rem;
+	border-radius: 9px;
+
+	.tu-button__content {
+		padding: 5px 10px;
+	}
+}
+
+.tu-button--size-mini {
+	@include tu-button-style($tu-color-primary, white, $tu-color-primary, white);
+	font-size: 0.6rem;
+	border-radius: 7px;
+
+	.tu-button__content {
+		padding: 3px 8px;
+	}
+}
+
+.tu-button--circle {
+	@include tu-button-style($tu-color-primary, white, $tu-color-primary, white);
+	border-radius: 25px;
+}
+
+.tu-button--square {
+	@include tu-button-style($tu-color-primary, white, $tu-color-primary, white);
+	border-radius: 0;
+}
+
+.tu-button--icon {
+	@include tu-button-style($tu-color-primary, white, $tu-color-primary, white);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	.tu-button__content {
+		padding: 8px 8px;
+	}
+
+	i {
+		font-size: 1.15rem;
 	}
 }
 </style>

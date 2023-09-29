@@ -1,20 +1,13 @@
 <template>
 	<div class="tu-checkbox-content" :class="[
-	{ 'tu-checkbox--checked': isChecked },
-	{ 'tu-checkbox--disabled': disabled },
-	{ 'tu-checkbox--loading': loading },
-	{ 'tu-checkbox--label-before': labelBefore },
+		{ 'tu-checkbox--checked': isChecked },
+		{ 'tu-checkbox--disabled': disabled },
+		{ 'tu-checkbox--loading': loading },
+		{ 'tu-checkbox--label-before': labelBefore },
 
-	// colors
-	{
-		[`tu-component--primary`]:
-			!danger && !success && !warn && !dark && !color
-	},
-	{ [`tu-component--danger`]: !!danger },
-	{ [`tu-component--warn`]: !!warn },
-	{ [`tu-component--success`]: !!success },
-	{ [`tu-component--dark`]: !!dark }
-]">
+		// colors
+		{ [`tu-component--${color}`]: color },
+	]">
 		<div class="tu-checkbox-con">
 			<input class="tu-checkbox" type="checkbox" v-bind="$attrs" :id="`input-${uid}`" v-on="listeners"
 				:checked="checkedForce || isChecked" />
@@ -24,8 +17,7 @@
 				<tu-icon v-else>horizontal_rule</tu-icon>
 			</div>
 		</div>
-		<label v-if="$slots.default" :for="`input-${uid}`"
-			:class="['tu-checkbox-label', { ['lineThrough']: lineThrough }]">
+		<label v-if="$slots.default" :for="`input-${uid}`" :class="['tu-checkbox-label', { ['lineThrough']: lineThrough }]">
 			<slot />
 		</label>
 	</div>

@@ -1,10 +1,7 @@
 <template>
-	<div
-		class="tu-button-group"
-		:style="{
-			'--tu-bg-height': fixedHeight
-		}"
-	>
+	<div class="tu-button-group" :style="{
+		'--tu-bg-height': fixedHeight
+	}">
 		<slot />
 	</div>
 </template>
@@ -36,27 +33,26 @@ export default defineComponent({
 	margin: 5px;
 
 	.tu-button {
-		margin: 0px;
+		margin: 0;
 		height: var(--tu-bg-height);
 	}
 
 	.tu-button:not(:last-of-type):not(:first-of-type) {
-		border-radius: 0px;
-		border: 0px;
+		border-radius: 0;
+		border: 0;
 
 		&.tu-button--border {
-
 			&:nth-child(2) {
 				&:before {
-					border-left: 0px;
-					border-right: 0px;
+					border-left: 0;
+					border-right: 0;
 					width: 100%;
 				}
 			}
 
-			+ .tu-button--border:not(:last-of-type) {
+			+.tu-button--border:not(:last-of-type) {
 				&:before {
-					border-right: 0px;
+					border-right: 0;
 					width: calc(100%);
 				}
 			}
@@ -64,15 +60,15 @@ export default defineComponent({
 	}
 
 	.tu-button:last-of-type {
-		border-radius: 0px 12px 12px 0px;
+		border-radius: 0 12px 12px 0;
 	}
 
 	.tu-button:first-of-type {
-		border-radius: 12px 0px 0px 12px;
+		border-radius: 12px 0 0 12px;
 	}
 
 	.tu-button:first-of-type:last-of-type {
-		border-radius: 12px 12px 12px 12px;
+		border-radius: 12px;
 	}
 }
 </style>

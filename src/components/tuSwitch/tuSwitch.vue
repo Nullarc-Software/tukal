@@ -9,14 +9,7 @@
 		'tu-switch--indeterminate': indeterminate,
 		'tu-switch--icon': icon,
 	},
-	{
-		[`tu-component--primary`]:
-			!danger && !success && !warn && !dark && !color,
-	},
-	{ [`tu-component--danger`]: !!danger },
-	{ [`tu-component--warn`]: !!warn },
-	{ [`tu-component--success`]: !!success },
-	{ [`tu-component--dark`]: !!dark },
+	{ [`tu-component--${color}`]: color },
 	{ isChecked: !!isChecked },
 ]">
 		<input type="checkbox" v-bind="$attrs" :disabled="disabled" :checked="isChecked" v-on="inputListener"
@@ -51,7 +44,7 @@ export default defineComponent({
 		square: { type: Boolean, default: false },
 		indeterminate: { type: Boolean, default: false },
 		icon: { type: Boolean, default: false },
-		disabled: { type: Boolean, default: false}
+		disabled: { type: Boolean, default: false }
 	},
 	emits: ["change", "update:modelValue"],
 	setup(props, context) {
