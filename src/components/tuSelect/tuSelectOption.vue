@@ -25,7 +25,7 @@ import {
 	ref,
 	watch
 } from "vue";
-import { SelectOptionConstants } from "./index";
+import { SelectOptionConstants } from "./common";
 import tuCheckbox from "../tuCheckBox";
 import tuComponent from "../tuComponent";
 

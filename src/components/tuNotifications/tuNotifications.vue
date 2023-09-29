@@ -1,7 +1,7 @@
 <template>
-	<transition enter-from-class="notification-enter-from" enter-active-class="notification-enter-active"
+	<Transition enter-from-class="notification-enter-from" enter-active-class="notification-enter-active"
 		enter-to-class="notification-enter-to" leave-to-class="notification-leave-to"
-		leave-from-class="notification-leave-from" leave-active-class="notification-leave-active" appear out-in>
+		leave-from-class="notification-leave-from" leave-active-class="notification-leave-active" appear mode="out-in">
 		<div :id="`notification-${notifId}`" ref="notif" :class="[
 			{ 'tu-notification--color': color },
 			{ 'tu-notification--border': border },
@@ -49,7 +49,7 @@
 			<div v-if="loading" class="tu-notification__loading"></div>
 			<div class="tu-notification__progress" :style="{ width: `${internalProgress}%` }"></div>
 		</div>
-	</transition>
+	</Transition>
 </template>
 
 <script lang="ts">

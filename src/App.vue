@@ -261,7 +261,7 @@
 				</ul>
 			</div>
 		</div>
-	<!-- <div class="showcase-component">
+		<!-- <div class="showcase-component">
 				<h3>Chips:</h3>
 				<hr />
 				<div class="centerx">
@@ -788,7 +788,7 @@
 			<h4>Pagination:</h4>
 			<hr />
 
-		<!-- <tu-pagination progress not-margin v-model="page" :length="20" />
+			<!-- <tu-pagination progress not-margin v-model="page" :length="20" />
 				<tu-pagination
 					progress
 					dark
@@ -807,7 +807,7 @@
 				:router-mode-params="routerTabParams" />
 			<tu-tabs name="tabs1" type="router" position="top" pills noTransitions v-model="tabName"
 				:router-mode-params="routerTabParams" />
-		<!-- <tu-tabs position="top" noTransitions tabStyle="progress" progressWidth="20" v-model="tabName">
+			<!-- <tu-tabs position="top" noTransitions tabStyle="progress" progressWidth="20" v-model="tabName">
 				<tu-tab label="Home" name="ho"> Home </tu-tab>
 				<tu-tab label="Service" name="se"> Service </tu-tab>
 				<tu-tab label="login" name="lo"> Login </tu-tab>
@@ -821,7 +821,7 @@
 						v-model="selected" v-bind="srvTableConfig" v-model:numPages="numPages" :page="page" :pageSize="5"
 						:columnSelector="true" @onRowClicked="rowClicked" @onTableBeginLoad="beginLoad"
 						@onTableEndLoad="afterLoad" @onTableConfigUpdated="configUpdate">
-					<!-- <template #thead>
+						<!-- <template #thead>
 						<tu-th field="country" sort search> Country </tu-th>
 						<tu-th field="name" sort search :index="1" width="500px"> Name </tu-th>
 						<tu-th field="name" sort search :index="2" width="500px"> Name </tu-th>
@@ -847,7 +847,7 @@
 				<tu-tab label="login" name="lo"> Login </tu-tab>
 				<tu-tab label="Disabled" name="di"> Disabled </tu-tab>
 			</tu-tabs>
-		<!-- <tu-tabs position="right" noTransitions v-model="tabName">
+			<!-- <tu-tabs position="right" noTransitions v-model="tabName">
 					<tu-tab label="Home" name="ho"> Home </tu-tab>
 					<tu-tab label="Service" name="se"> Service </tu-tab>
 					<tu-tab label="login" name="lo"> Login </tu-tab>
@@ -895,7 +895,7 @@
 					v-bind="srvTableConfig" v-model:numPages="numPages" :page="page" :pageSize="5" :columnSelector="true"
 					@onRowClicked="rowClicked" @onTableBeginLoad="beginLoad" @onTableEndLoad="afterLoad"
 					@onTableConfigUpdated="configUpdate">
-				<!-- <template #thead>
+					<!-- <template #thead>
 						<tu-th field="country" sort search> Country </tu-th>
 						<tu-th field="name" sort search :index="1" width="500px"> Name </tu-th>
 						<tu-th field="name" sort search :index="2" width="500px"> Name </tu-th>
@@ -969,7 +969,7 @@
 			<div class="showcase-component">
 				<h4>Kanban Board Component:</h4>
 				<hr />
-				<tu-kanban :items="kanbanItems" v-model="currentItemsRef" :fields="kanbanCategories" />
+				<tu-kanban :items="kanbanItems" v-model="currentItemsRef" multi-select :fields="kanbanCategories" />
 			</div>
 			<div class="showcase-component">
 
@@ -1077,52 +1077,94 @@ export default defineComponent({
 			{
 				id: 1,
 				content: "VS Code",
-				fieldname: "Productive",
+				fieldName: "Productive",
 			},
 			{
 				id: 2,
 				content: "Facebook",
 				image: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAclBMVEX///8AAADx8fGxsbH39/e+vr6KioopKSkoKCj7+/vg4OBAQECNjY0JCQkNDQ1aWlpfX19LS0tGRkbp6enQ0NCDg4OhoaEjIyPb29urq6vm5uaamprDw8MwMDBubm4dHR02NjaVlZVUVFR3d3dmZmYVFRV4y9GXAAAC9klEQVR4nO3dC3LaMBRGYTAmwUB4Q3iEJqFk/1tshnZSaKfgK1+k3+45C2D0zYAsGyFarbQVeb+7GU6mg/3rqP3V00WjU7P3IvFY7WWL3bfXdvl689QjNtVfTUe3UZcdUw+6fPPVm1V3Kks98JItxkG8z15SD71MRWcW6mu3u6lHX6LuY7ivDsL+tIpPX5gvq/nkhet9VaC4cFXZpy3MJw5AZWE28AAKC+fPLkBdYd/Hpyt0A6oKs17ThT6TjLDw6AfUFO4cgZLCtSdQUhh2L18jYeW7CXWh73tUUXhouvDFGagn9J1mBIUdb6Cc0G89Kip0/xTKCYOfbNdFuPUHigkfGi90v1SoCb0XbHrC98YLHZ9daArvMZNqCf1XbGpC51vfX61Ts85yeoz/R3lq1ll3Aa5Sq85a3AM4TK06L3yieR4cjsuHvxtu+qlRF4VNNOPOQumTdrWQO6el0kx5s4Bldy32O31VmC8WH9vUY7ZlX7MprVbKZL51mqQesTWzsF4fwlbABT/1gM1Zhd9TD9icVbhLPWBzXaOwbjOpfVmqteQsk1VYlx3qv0OIUD+ECPVDiFA/hAj1Q4hQP4QI9UOIUD+EdRDm2ZXyjVG4vfZqP4t8OM38+GE0VO4t6ncbfj97tXSIKKxwOkmV4m2JmqcBtqfRhHf4IUWp9tFmG+u3g171om2YQogQ4f8rfESIECFChAgRIkSIECFChAgRIkSIECFChAgRIkSIsHbC5u9UyBIJI24Zqvh/OKFt4gnT7PoaxwN+vk89D8sv1yj6MVhF/u8K6+7L+bVXOxWbd6sm7KC9HkKE+iFEqB9ChPohRKgfQoT6IUSoH0KE+iFEqB9ChPohRKgfQoT6IUSoH0KE+iFEqB9ChPohRKgfQoT6IUSoH0KE+iFEqB9ChPohRKgfQoT6IUSoH0KE+iFEqB9ChPohRKgfQoT6IUSoX/OF1nN46ydc24Cz1OMNaGASRj+a1CHTKbVRD5d1K1vuy/GeZnc+HvgHllpO87YiSVIAAAAASUVORK5CYII=",
-				fieldname: "UnProductive"
+				fieldName: "UnProductive"
 			},
 			{
 				id: 3,
 				content: "Google Chrome",
 				image: "https://th.bing.com/th/id/OIP.DXnh2NpUdDZrQ2NZAT6_tAHaHa?pid=ImgDet&rs=1",
-				fieldname: "Neutral"
+				fieldName: "Neutral"
 			},
 			{
 				id: 4,
 				content: "Instagram",
 				icon: "alarm",
-				fieldname: "UnProductive"
+				fieldName: "UnProductive"
 			},
 			{
 				id: 5,
 				content: "Adobe XD",
 				icon: "album",
-				fieldname: "Productive"
+				fieldName: "Productive"
 			},
 			{
 				id: 6,
 				content: "Firefox",
 				image: "https://blog.mozilla.org/opendesign/files/2018/07/firefox-logo.png",
-				fieldname: "Neutral"
+				fieldName: "Neutral"
+			},
+			{
+				id: 7,
+				content: "Firefox",
+				image: "https://blog.mozilla.org/opendesign/files/2018/07/firefox-logo.png",
+				fieldName: "Neutral"
+			},
+			{
+				id: 8,
+				content: "Firefox",
+				image: "https://blog.mozilla.org/opendesign/files/2018/07/firefox-logo.png",
+				fieldName: "Neutral"
+			},
+			{
+				id: 9,
+				content: "Firefox",
+				image: "https://blog.mozilla.org/opendesign/files/2018/07/firefox-logo.png",
+				fieldName: "Neutral"
+			},
+			{
+				id: 10,
+				content: "Firefox",
+				image: "https://blog.mozilla.org/opendesign/files/2018/07/firefox-logo.png",
+				fieldName: "Neutral"
+			},
+			{
+				id: 11,
+				content: "Firefox",
+				image: "https://blog.mozilla.org/opendesign/files/2018/07/firefox-logo.png",
+				fieldName: "Neutral"
+			},
+			{
+				id: 12,
+				content: "Firefox",
+				image: "https://blog.mozilla.org/opendesign/files/2018/07/firefox-logo.png",
+				fieldName: "Neutral"
+			},
+			{
+				id: 13,
+				content: "Firefox",
+				image: "https://blog.mozilla.org/opendesign/files/2018/07/firefox-logo.png",
+				fieldName: "Neutral"
 			}
 		]
 		const currentItemsRef = ref();
 		const kanbanCategories = [
 			{
 				title: "Productive",
-				fieldname: "Productive"
+				fieldName: "Productive"
 			},
 			{
 				title: "UnProductive",
-				fieldname: "UnProductive"
+				fieldName: "UnProductive"
 			},
 			{
 				title: "Neutral",
-				fieldname: "Neutral"
+				fieldName: "Neutral"
 			}
 		]
 		const barItems = [
@@ -1803,9 +1845,9 @@ export default defineComponent({
 		}); */
 
 		watch(darkModeActive, (active) => {
-			if (!active) 
+			if (!active)
 				document.body.classList.remove("tu-dark-theme");
-			else 
+			else
 				document.body.classList.add("tu-dark-theme");
 		})
 

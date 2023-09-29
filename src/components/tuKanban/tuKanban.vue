@@ -1,122 +1,142 @@
 <template>
-	<div class="margin-bottom">
-		<div class="d-flex justify-content-start">
-			<tu-input placeholder="Search" v-model="search" />
+	<div class="tu-kanban">
+		<div class="d-flex justify-content-start" style="flex: 0 0 auto">
+			<tu-input label-placeholder="Search" v-model="search" />
 		</div>
-		<table class="tu-kanban-table__element">
-			<thead class="tu-kanban-table__thead">
-				<th v-for="field in fields" class="text-center tu-kanban-table__th">{{ field.fieldname }}</th>
-			</thead>
-			<tr v-for="ind in rows">
-				<td :draggable="true" @dragstart="startDrag($event, value[ind - 1])" @dragover.prevent @dragenter.prevent
-					v-for="(value, index) in itemsOfCategories.fields" @drop="onDrop(index)" class="text-center" :class="{
-						'animation-kanban':
-							isDrag === true && value[ind - 1] && dragIndex === value[ind - 1].id
-					}">
-					<div :class="{ 'dragItem': value[ind - 1].id === dragIndex }"
-						v-if="value[ind - 1] && value[ind - 1].content && !value[ind - 1].hidden"
-						class="d-flex align-items-center tu-kanban-item">
-						<img v-if="value[ind - 1].image" :src="value[ind - 1].image" class="tu-kanban-img mt-3 ms-4" />
-						<tu-icon class="tu-kanban-icon ms-4" v-else-if="value[ind - 1].icon"> {{ value[ind - 1].icon
-						}}</tu-icon>
-						<h5 class="ms-4 content"> {{ value[ind - 1].content }}</h5>
+
+		<div class="tu-kanban-main" :id="`tu-kanban-${id}`">
+			<div v-for="field in     fields    " class="text-center tu-kanban-category" @dragenter.prevent @dragover.prevent
+				@drop="onDrop($event, field.fieldName)">
+				<div class="tu-kanban-header">
+					{{ field.title }}
+					<span class="multiselect-badge"
+						v-if="selectedItems.length > 0 && selectedItems[0].fieldname === field.fieldName">{{
+							selectedItems.length }}</span>
+				</div>
+				<div class="d-flex tu-kanban-category-body">
+					<div style="display: contents;" v-for="item of     currentItems    " :key="item.id">
+						<div class="tu-kanban-item" :class="[
+							{ ['selected-item']: item.selected }
+						]" v-if="item.fieldName === field.fieldName" draggable="true" @dragstart="startDrag($event, item)"
+							@click="selectItem(item)">
+							<img v-if="item.image" :src="item.image" class="tu-kanban-img" />
+							<tu-icon class="tu-kanban-icon" v-else-if="item.icon"> {{ item.icon
+							}}</tu-icon>
+							<span> {{ item.content }}</span>
+						</div>
 					</div>
-				</td>
-			</tr>
-		</table>
+				</div>
+			</div>
+		</div>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, reactive, ref, watch, Ref } from 'vue'
-import { groupBy, sliceIntoChunks, kanbanItems, kanbanFields } from "./utils"
+import { defineComponent, PropType, reactive, ref, watch, Ref, onMounted, computed } from 'vue'
+import { groupBy, sliceIntoChunks, TuKanbanItem, TuKanbanField } from "./utils"
 import tuInput from "../tuInput";
 import tuIcon from "../tuIcon";
+import _color from "../../utils/color";
+import { TuLoading, TuLoadingAttributes } from '../tuLoading';
+import _ from "lodash";
+
 export default defineComponent({
-	name: "TuKanban",
+	name: "tuKanban",
 	components: {
 		tuIcon,
 		tuInput
 	},
 	props: {
-		items: {  //items prop: items to to be shown in the kanban board
-			type: Object as PropType<kanbanItems[]>,
+		items: {
+			type: Object as PropType<TuKanbanItem[]>,
 			default: []
 		},
-		fields: {  //fields prop: the different fields of the kanban board
-			type: Object as PropType<kanbanFields[]>,
+		fields: {
+			type: Object as PropType<TuKanbanField[]>,
 			default: []
 		},
-		modelValue: {}  //v-model porp: current kanban items state
+		multiSelect: {
+			type: Boolean,
+			default: false
+		},
+		height: {
+			type: String,
+			default: "42px"
+		},
+		modelValue: {}
 	},
 	emits: ["onDrag", "update:modelValue"],
 	setup(props, context) {
+		let id = Math.floor(Math.random() * 100);
+		let kanban = ref()
 		let isDrag = ref(false)
 		let dragItem = ref(null);
 		let dragIndex = ref(null);
 		let dropIndex = ref(null)
 		let dropCategory = ref(null);
-		let rows = ref(props.fields.length - 1)
-		let copiedObject = JSON.parse(JSON.stringify(props.items));
-		let currentItems: kanbanItems[] = copiedObject
+		let currentItems = ref(props.items);
+
 		let itemsOfCategories = reactive({ fields: groupBy(props.items, 'fieldname', "noOfRows", props.fields) });
 		let search = ref("");
-		function exchangeItems() {
-			let newArray = itemsOfCategories.fields[dragItem.value.fieldname].filter(obj => obj.id !== dragItem.value.id);
-			itemsOfCategories.fields[dragItem.value.fieldname] = newArray;
-			let index = currentItems.findIndex(obj => obj.id === dragItem.value.id)
-			currentItems[index].fieldname = dropCategory.value
-			dragItem.value.fieldname = dropCategory.value
-			itemsOfCategories.fields[dropCategory.value].push(dragItem.value)
-			if (itemsOfCategories.fields[dropCategory.value].length > rows.value) {
-				rows.value++;
-			}
-		}
-		let startDrag = (evt: DragEvent, item: any) => {
-			isDrag.value = false;
+		let selectedItems = ref([]);
+		let selectedField = ref(null);
+
+		let startDrag = (evt: DragEvent, item: TuKanbanItem) => {
+
 			evt.dataTransfer.effectAllowed = "copyMove";
-			dragItem.value = item
-			dragIndex.value = item.id
+			item.selected = true;
 		}
-		let onDrop = (index: number) => {
-			isDrag.value = true;
-			dropCategory.value = index
-			if (dropCategory.value !== dragItem.value.categoryId && dropCategory.value !== undefined && dragItem.value !== undefined) {
-				exchangeItems()
-				dragItem.value = undefined;
-				dropCategory.value = undefined;
-				context.emit("onDrag", currentItems)
-				context.emit("update:modelValue", currentItems)
-			}
-		}
-		watch(search, () => {
-			for (let i = 0; i < props.fields.length; i++) {
-				for (let j = 0; j < itemsOfCategories.fields[props.fields[i].fieldname].length; j++) {
-					if (search.value === "") {
-						itemsOfCategories.fields[props.fields[i].fieldname][j].hidden = false
-					}
-					else if (itemsOfCategories.fields[props.fields[i].fieldname][j].content.toLowerCase().includes(search.value.toLowerCase())) {
-						itemsOfCategories.fields[props.fields[i].fieldname][j].hidden = false
-						if (j - 1 >= 1) {
-							for (let k = j - 1; k >= 0; k--) {
-								let temp = itemsOfCategories.fields[props.fields[i].fieldname][k]
-								itemsOfCategories.fields[props.fields[i].fieldname][k] = itemsOfCategories.fields[props.fields[i].fieldname][k + 1]
-								itemsOfCategories.fields[props.fields[i].fieldname][k + 1] = temp
-							}
-						}
-						else if (j - 1 === 0) {
-							let temp = itemsOfCategories.fields[props.fields[i].fieldname][j]
-							itemsOfCategories.fields[props.fields[i].fieldname][j] = itemsOfCategories.fields[props.fields[i].fieldname][j - 1]
-							itemsOfCategories.fields[props.fields[i].fieldname][j - 1] = temp
-						}
-					}
-					else {
-						itemsOfCategories.fields[props.fields[i].fieldname][j].hidden = true
-					}
+
+		let onDrop = (evebt: DragEvent, fieldName: string) => {
+
+			_.each(currentItems.value, (item) => {
+				if (item.selected) {
+					item.fieldName = fieldName,
+						item.selected = false;
 				}
+			});
+
+			console.log(props.items);
+			console.log(currentItems.value);
+			context.emit("update:modelValue", props.items)
+
+		}
+		let load: TuLoading = null;
+		function setLoading() {
+			const attrs: TuLoadingAttributes = {
+				target: `#tu-kanban-${id}`,
+				color: "dark",
+				type: "circles",
+				scale: "1.0"
+			};
+			load = new TuLoading(attrs);
+		}
+
+		watch(search, () => {
+			setLoading()
+			if (_.isEmpty(search.value)) {
+				currentItems.value = props.items;
 			}
-		})
-		return { dropIndex, rows, search, itemsOfCategories, startDrag, dragIndex, onDrop, dragItem, isDrag }
+			else {
+
+				currentItems.value = _.filter(props.items, (x: TuKanbanItem) =>
+					x.content.toLowerCase().includes(search.value)
+				)
+			}
+			load.close()
+		});
+
+		let selectItem = (item: TuKanbanItem) => {
+			if (props.multiSelect) {
+				item.selected = !item.selected;
+			}
+		}
+		const isSelected = computed(() => {
+			return (index) => {
+				return selectedItems.value.find(obj => obj.id === index);
+			};
+		});
+		return { dropIndex, id, kanban, search, itemsOfCategories, startDrag, dragIndex, onDrop, dragItem, isDrag, selectItem, isSelected, selectedItems, currentItems }
 	},
 })
 </script>
@@ -124,70 +144,88 @@ export default defineComponent({
 <style scoped lang="scss">
 @import "../../style/sass/_mixins";
 
-td,
-th {
-	height: 45px;
+.tu-kanban {
+	display: flex;
+	flex-direction: column;
+
 }
 
-.margin-bottom {
-	margin-bottom: 25px;
+
+.selected-item {
+	border: 2px solid -getColorAlpha("primary", 1);
+	background-color: -getColorAlpha("primary", 0.1) !important;
 }
 
-.tu-kanban-table {
-	&__thead {
-		width: 100%;
-		position: sticky;
-		top: 0;
-		z-index: 2;
-		border-bottom: 1px solid -getColorAlpha("text", 0.2);
+.tu-kanban-main {
+	display: flex;
+	max-height: 80%;
+}
 
-		::v-deep(.tu-kanban-table__th) {
-			background: -getColor("gray-2");
+.tu-kanban-category {
+	display: flex;
+	flex-direction: column;
+	overflow: auto;
+	min-width: 20%;
+	width: 100%;
 
-			&:first-child {
-				border-radius: 14px 0px 0px 0px;
-			}
 
-			&:last-child {
-				border-radius: 0px 14px 0px 0px;
-			}
+	&:first-of-type {
+		.tu-kanban-header {
+			margin: 0;
+			border-radius: 14px 0px 0px 0px;
 		}
+	}
+
+
+	&:last-of-type {
+		.tu-kanban-header {
+			margin: 0;
+			border-radius: 0px 14px 0px 0px;
+		}
+	}
+
+	.tu-kanban-header {
+		top: 0;
+		width: 100%;
+		background-color: -getColor("gray-2");
+		padding: 10px;
+		font-weight: bold;
+		position: sticky;
+	}
+
+	.tu-kanban-category-body {
+		width: 100%;
+		flex-wrap: wrap;
+
 	}
 }
 
-.tu-kanban-table__element {
-	table-layout: fixed;
-	width: 100%;
-}
-
-td {
-	cursor: pointer;
-}
-
-.dragItem:active {
-	opacity: 0.4;
-}
-
-.dragItem {
-	transition: all 0.5s ease-in-out;
-}
-
 .tu-kanban-img {
-	height: 36px;
-	width: 36px !important;
+	height: 24px;
+	width: 24px !important;
 }
 
 .tu-kanban-item {
-	box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.08), 0 6px 20px 0 rgba(0, 0, 0, 0.08);
-	margin: 10px;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin: 1px;
+	padding: 5px;
 	border-radius: 12px;
-	transition: all 0.5s ease-in-out;
+	box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.08), 0 6px 20px 0 rgba(0, 0, 0, 0.08);
+	transition: all 0.05s ease;
 }
 
 .tu-dark-theme {
 	.tu-kanban-item {
-		background: -getColor("gray-1") !important;
+		background: var(--tu-gray-1);
 		box-shadow: 0 6px 30px -6px rgba(255, 255, 255, 0.1) !important;
+	}
+
+	.selectedItem {
+		border: 2px solid -getColorAlpha("primary", 1);
+		background: -getColorAlpha("primary", 0.2);
 	}
 }
 
@@ -207,26 +245,22 @@ td {
 	align-items: center;
 }
 
-.ms-4 {
-	margin-left: 6%;
-}
 
-.animation-kanban {
-	animation-name: fadeIn;
-	animation-duration: 100ms;
-}
-
-@keyframes fadeIn {
-	0% {
-		transform: scale(0)
-	}
-
-	100% {
-		transform: scale(1);
-	}
-}
 
 .tu-kanban-icon {
-	font-size: 36px !important;
+	font-size: 24px !important;
+}
+
+.multiselect-badge {
+	background: var(--tu-primary);
+	border-radius: 0.8em;
+	color: #ffffff;
+	display: inline-block;
+	font-weight: bold;
+	line-height: 1.4em;
+	margin-left: 5px;
+	text-align: center;
+	width: 1.4em;
+	font-size: small;
 }
 </style>

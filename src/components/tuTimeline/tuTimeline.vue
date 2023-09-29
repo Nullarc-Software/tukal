@@ -1,13 +1,13 @@
 <template>
-	<div style="display: flex;flex-direction:column">
-		<div style="display: flex">
-			<div class="tu-timeline-text" v-for="interval in intervalTime" :style="shadeIntervals(interval)"
-				:class="{ 'tu-timeline-margin-left': interval.text === '2am' }">{{ interval.text }}</div>
-		</div>
+	<div class="tu-timeline" style="display: flex;flex-direction:column">
 		<div class="tu-timeline-parent">
 			<div class="tu-timeline-box" :id="`tu-timeline-box-${index}`" v-for="index in 12" :key="index" />
 		</div>
 		<div class="tu-timeline-current-time" :style="{ marginLeft: marginLeftCurrentTime + '%' }"></div>
+		<div style="display: flex">
+			<div class="tu-timeline-text" v-for="interval in intervalTime" :style="shadeIntervals(interval)"
+				:class="{ 'tu-timeline-margin-left': interval.text === '2am' }">{{ interval.text }}</div>
+		</div>
 	</div>
 </template>
 
@@ -18,19 +18,19 @@ import * as _color from "../../utils";;
 export default defineComponent({
 	name: "TuTimeline",
 	props: {
-		intervalStartTime: {  //intervalStartTime prop: start time from where to be shaded in the timeline
+		intervalStartTime: {
 			type: Number,
 			default: 8
 		},
-		intervalEndTime: {  //intervalEndTime prop: end tim etill where to be shaded in the timeline
+		intervalEndTime: {
 			type: Number,
 			default: 18
 		},
-		interval: {  //interval prop: the interval with which the productivity or unproductivity to be displayed ex. for each 5min .
+		interval: {
 			type: Number,
 			default: 5
 		},
-		intervals: {  //intervals prop: periods of productive and unproductive time 
+		intervals: {
 			type: Array<number>,
 			default: []
 		}
@@ -91,26 +91,24 @@ export default defineComponent({
 			let timeInMinutes = hours * 60 + minutes;
 			marginLeftCurrentTime.value = (timeInMinutes / 1440) * 100;
 		}
-		let incrementMarginLeftCurrentTime = () => {
-			marginLeftCurrentTime.value = marginLeftCurrentTime.value + (1 / 1440)
-		}
+
 		function between(x: number, min: number, max: number) {
 			return x >= min && x <= max;
 		}
 		let shadeIntervals = (interval) => {
 			if (interval.utc + 1 === props.intervalEndTime) {
 				return {
-					background: "linear-gradient(to right, #D3D3D3 50%, white 50%)",
+					background: "linear-gradient(to right, var(--tu-gray-3) 100%)",
 				}
 			}
 			if (between(interval.utc, props.intervalStartTime, props.intervalEndTime) && props.intervalEndTime !== interval.utc) {
 				return {
-					background: '#D3D3D3'
+					background: 'var(--tu-gray-3)'
 				}
 			}
 			if (interval.utc + 1 === props.intervalStartTime) {
 				return {
-					background: "linear-gradient(to left, #D3D3D3 50%, white 50%)",
+					background: "linear-gradient(to left, var(--tu-gray-3) 100%)",
 				}
 			}
 		}
@@ -176,10 +174,24 @@ export default defineComponent({
 			addProductiveBox()
 		}, { deep: true });
 
+
+		const onWindowFocusChange = (e) => {
+
+			if ({ focus: 1, pageshow: 1 }[e.type]) {
+
+				calculateMarginLeftCurrentTime();
+			}
+		};
+
 		onMounted(() => {
 			calculateMarginLeftCurrentTime()
 			addProductiveBoxes()
-			setInterval(incrementMarginLeftCurrentTime, 60000);
+			setInterval(calculateMarginLeftCurrentTime, 60000);
+
+			window.addEventListener('focus', onWindowFocusChange);
+			window.addEventListener('blur', onWindowFocusChange);
+			window.addEventListener('pageshow', onWindowFocusChange);
+			window.addEventListener('pagehide', onWindowFocusChange);
 		})
 		return { intervalTime, marginLeftCurrentTime, shadeIntervals }
 	},
@@ -191,10 +203,18 @@ export default defineComponent({
 	display: flex;
 }
 
+.tu-timeline {
+	border: 2px solid var(--tu-text);
+	border-top-right-radius: 12px;
+	border-bottom-right-radius: 12px;
+	border-top-left-radius: 12px;
+	border-bottom-left-radius: 12px;
+	padding: 10px;
+}
+
 .tu-timeline-box {
 	width: calc(100% / 12);
 	height: 100px;
-	border: 0.1px solid gray;
 	display: flex;
 }
 

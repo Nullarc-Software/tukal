@@ -11,15 +11,14 @@
 					<tu-icon class="icon-sort-2">keyboard_arrow_down</tu-icon>
 				</div>
 			</div>
-			<tu-input v-if="search && type === 'string'" block v-model="colSearch" type="search"
-				@keypress="keyPressed" />
+			<tu-input v-if="search && type === 'string'" block v-model="colSearch" type="search" @keypress="keyPressed" />
 			<div v-if="search && type === 'timestamp'" style="display: inline-flex; flex-direction: column;">
 				<tu-input border type="datetime-local" v-model="startDateTime" label="From" @change="setDateFilter" />
 				<tu-input border type="datetime-local" v-model="endDateTime" label="To" @change="setDateFilter" />
 			</div>
 		</div>
-		<div class="tu-table__th__resizer_right" :class="{ active: headerElement ? true : false }"
-			v-on="resizeListeners" v-if="!fixed"></div>
+		<div class="tu-table__th__resizer_right" :class="{ active: headerElement ? true : false }" v-on="resizeListeners"
+			v-if="!fixed"></div>
 	</th>
 </template>
 

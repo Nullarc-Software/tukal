@@ -51,6 +51,7 @@ export * from "./components/tuCalendarHeatMap/Heatmap";
 export { default as tuUsageBar } from "./components/tuUsageBar";
 export { default as tuTimeline } from "./components/tuTimeline";
 export { tuKanban } from "./components/tuKanban";
+export type {TuKanbanItem, TuKanbanField} from "./components/tuKanban";
 
 // layout
 export { default as tuRow } from "./layout/tuRow";

@@ -1,6 +1,6 @@
 <template>
 	<div v-if="open" class="tu-navbar-content" :style="{
-		['--tu-color']: getColor(color),
+		['--tu-color']: color ? getColor(color) : '',
 		'z-index': zIndex,
 	}" :class="[
 	{
@@ -15,6 +15,13 @@
 		tuNavbarSquare: square,
 		leftAligned: leftAligned,
 	},
+	// colors
+	{ [`tu-component--primary`]: !!primary },
+	{ [`tu-component--danger`]: !!danger },
+	{ [`tu-component--warn`]: !!warn },
+	{ [`tu-component--success`]: !!success },
+	{ [`tu-component--dark`]: !!dark },
+	{ [`tu-component--is-color`]: !!isColor },
 ]" ref="navbarContent">
 		<div class="tu-navbar">
 			<div v-if="leftCollapsed ? !collapsedForced : true" class="tu-navbar__left" ref="left">
@@ -54,27 +61,17 @@ export default defineComponent({
 	name: "TuNavbar",
 	extends: tuComponent,
 	props: {
-		//Fixes the navbar to top
 		fixed: { default: false, type: Boolean },
-		//Sticks the navbar to top 
 		sticky: { default: false, type: Boolean },
-		//Aligns the nav items to left
 		leftAligned: { default: false, type: Boolean },
-		//Displays navbar only if boolean is true
-		open: { default: false, type: Boolean },
-		//Adds shadow style to navbar
+		open: { default: true, type: Boolean },
 		shadow: { default: false, type: Boolean },
-		//Adds shadow style on scroll
 		shadowScroll: { default: false, type: Boolean },
-		//Hides the navbar on scroll
 		hideScroll: { default: false, type: Boolean },
-		//Color of the text to be set to white
 		textWhite: { default: false, type: Boolean },
-		//Shape of the navbar to be set to square
 		square: { default: false, type: Boolean },
-		//Adds padding to the navbar on scroll
 		paddingScroll: { default: false, type: Boolean },
-
+		notLine: { default: false, type: Boolean },
 		leftCollapsed: { default: false, type: Boolean },
 		centerCollapsed: { default: false, type: Boolean },
 		rightCollapsed: { default: false, type: Boolean },

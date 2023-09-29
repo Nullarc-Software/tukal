@@ -32,8 +32,8 @@ export type TuHeaderDataTypes = "string" | "number" | "boolean" | "timestamp";
 
 export interface TuHeaderDefn{
 	index?: number;
-	minWidth?: number | string;
-	maxWidth?: number | string;
+	minWidth?: number;
+	maxWidth?: number;
 	width?: number | string;
 	field?: string;
 	caption?: string;
@@ -347,8 +347,10 @@ export class TuTableStore {
 						for (const [key, value] of Object.entries(this.serverModelProps.additionalParams)) {
 							if (typeof value === "string")
 								props[key] = value;
-							else 
+							else if (typeof value === typeof ref<any>)
 								props[key] = value.value;
+							else if (typeof value === "object")
+								props[key] = value;
 						}
 					}
 	

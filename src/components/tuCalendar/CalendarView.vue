@@ -34,7 +34,7 @@
 				<div v-if="displayWeekNumbers" class="cv-weeknumber">
 					<slot name="weekNumber" :date="weekStart" :numberInYear="periodStartCalendarWeek + weekIndex"
 						:numberInPeriod="weekIndex + 1"><span>{{
-								periodStartCalendarWeek + weekIndex
+							periodStartCalendarWeek + weekIndex
 						}}</span></slot>
 				</div>
 				<div class="cv-weekdays">
@@ -76,47 +76,42 @@
 		CalendarMath.isoYearMonthDay(day)
 		]) ||
 		[])
-]" :aria-grabbed="
-	enableDateSelection ? dayIsSelected(day) : undefined
-" :aria-label="day.getDate().toString()" :aria-selected="dayIsSelected(day)" :aria-dropeffect="
-	enableDragDrop && state.currentDragItem
+]" :aria-grabbed="enableDateSelection ? dayIsSelected(day) : undefined
+	" :aria-label="day.getDate().toString()" :aria-selected="dayIsSelected(day)" :aria-dropeffect="enableDragDrop && state.currentDragItem
 		? 'move'
 		: enableDateSelection &&
 			state.dateSelectionOrigin
 			? 'execute'
 			: 'none'
-" @click="onClickDay(day, $event)" @dragstart="onDragDateStart(day, $event)" @drop.prevent="onDrop(day, $event)"
+		" @click="onClickDay(day, $event)" @dragstart="onDragDateStart(day, $event)" @drop.prevent="onDrop(day, $event)"
 						@dragover.prevent="onDragOver(day, $event)" @dragenter.prevent="onDragEnter(day, $event)"
 						@dragleave.prevent="onDragLeave(day, $event)">
 						<div class="cv-day-number">{{ day.getDate() }}</div>
 						<slot :day="day" name="dayContent" />
-						<span class="tu-count" v-if="
-							getEventsCount(day, weekStart) > 0 &&
+						<span class="tu-count" v-if="getEventsCount(day, weekStart) > 0 &&
 							props.displayPeriodUom === 'month'
-						" @click.stop="getSelectedDayEvents(day, weekStart)">
+							" @click.stop="getSelectedDayEvents(day, weekStart)">
 							+ {{ getEventsCount(day, weekStart) }} more event
 						</span>
 					</div>
 					<template v-for="i in getWeekItems(weekStart)">
 						<slot :value="i" :weekStartDate="weekStart" :top="getItemTop(i)" name="item">
-							<div :key="i.id" :draggable="enableDragDrop" :aria-grabbed="
-								enableDragDrop
-									? i == state.currentDragItem
-									: undefined
-							" :class="i.classes" :title="i.tooltip || i.title" :style="`background: rgba(${_color.getColorAsRgb(
-	getItemCategoryColor(i),
-	0.2
-)});top:${getItemTop(
-	i
-)};border: 2px solid ${getItemBorderColor(i)};`" class="cv-item" @dragstart="onDragItemStart(i, $event)"
+							<div :key="i.id" :draggable="enableDragDrop" :aria-grabbed="enableDragDrop
+								? i == state.currentDragItem
+								: undefined
+								" :class="i.classes" :title="i.tooltip || i.title" :style="`background: rgba(${_color.getColorAsRgb(
+		getItemCategoryColor(i),
+		0.2
+	)});top:${getItemTop(
+		i
+	)};border: 2px solid ${getItemBorderColor(i)};`" class="cv-item" @dragstart="onDragItemStart(i, $event)"
 								@mouseenter="onMouseEnterItem(i, $event)" @mouseleave="onMouseLeaveItem(i, $event)"
 								@click.stop="
-	onClickItem(i, $event);
-openEventDialog(i);
-								" v-if="
-									i.itemRow < 3 ||
-									props.displayPeriodUom === 'week'
-								">
+									onClickItem(i, $event);
+								openEventDialog(i);
+								" v-if="i.itemRow < 3 ||
+	props.displayPeriodUom === 'week'
+	">
 								<span class="event-dot" :style="`background: rgba(${_color.getColorAsRgb(
 									getItemCategoryColor(i),
 									0.9
@@ -132,11 +127,11 @@ openEventDialog(i);
 			<header>
 				<div class="dialog-date">
 					{{
-							selectedDay.getDate() +
-							" " +
-							monthNames[selectedDay.getMonth()] +
-							" " +
-							selectedDay.getFullYear()
+						selectedDay.getDate() +
+						" " +
+						monthNames[selectedDay.getMonth()] +
+						" " +
+						selectedDay.getFullYear()
 					}}
 				</div>
 			</header>
@@ -153,27 +148,27 @@ openEventDialog(i);
 						<div class="event-date">
 							Date:
 							{{
-									event.originalItem.startDate.getDate() +
-									" " +
-									monthNames[
-										event.originalItem.startDate.getMonth()
-									].slice(0, 3) +
-									" " +
-									event.originalItem.startDate.getFullYear() +
-									" " +
-									getFormattedTimeRange(event)[0] +
-									" - "
+								event.originalItem.startDate.getDate() +
+								" " +
+								monthNames[
+									event.originalItem.startDate.getMonth()
+								].slice(0, 3) +
+								" " +
+								event.originalItem.startDate.getFullYear() +
+								" " +
+								getFormattedTimeRange(event)[0] +
+								" - "
 							}}
 							{{
-									event.originalItem.endDate.getDate() +
-									" " +
-									monthNames[
-										event.originalItem.endDate.getMonth()
-									].slice(0, 3) +
-									" " +
-									event.originalItem.endDate.getFullYear() +
-									" " +
-									getFormattedTimeRange(event)[1]
+								event.originalItem.endDate.getDate() +
+								" " +
+								monthNames[
+									event.originalItem.endDate.getMonth()
+								].slice(0, 3) +
+								" " +
+								event.originalItem.endDate.getFullYear() +
+								" " +
+								getFormattedTimeRange(event)[1]
 							}}
 						</div>
 						<div class="event-category">
@@ -194,8 +189,7 @@ openEventDialog(i);
 				</tu-button>
 			</template>
 		</tu-dialog>
-		<tu-dialog width="550px" v-model="selectedEventDIalog" @close="selectedEventClose"
-			v-if="props.components === null">
+		<tu-dialog width="550px" v-model="selectedEventDIalog" @close="selectedEventClose" v-if="props.components === null">
 			<header>
 				<h2 class="dialog-header" v-if="!isEditEvent">
 					{{ selectedEvent.Title }}
@@ -252,8 +246,8 @@ openEventDialog(i);
 							</td>
 							<td>
 								<tu-select inline :disabled="!isEditEvent" v-model="selectedEvent.Category">
-									<tu-select-option v-for="category in categories" :key="category"
-										:label="category.name" :value="category.name">
+									<tu-select-option v-for="category in categories" :key="category" :label="category.name"
+										:value="category.name">
 										<span class="dot" :style="`background: rgba(${_color.getColorAsRgb(
 											category.color,
 											0.6
@@ -272,8 +266,8 @@ openEventDialog(i);
 						Edit
 					</tu-button>
 					<tu-button danger @click="
-	selectedEventDIalog = false;
-confirmationDialog = true;
+						selectedEventDIalog = false;
+					confirmationDialog = true;
 					">
 						delete
 					</tu-button>
@@ -298,11 +292,9 @@ import {
 	computed,
 	reactive,
 	watch,
-	withDefaults,
 	ref,
 	Ref,
-	defineProps,
-	defineEmits
+
 } from "vue";
 import {
 	ICalendarItem,

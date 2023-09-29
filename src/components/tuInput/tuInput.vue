@@ -254,11 +254,8 @@ export default defineComponent({
 		justify-content: center;
 	}
 
-	align-self: center;
 	position: relative;
-
 	margin: 5px;
-
 	padding: 5px;
 
 	&.square {
