@@ -195,6 +195,9 @@ function getColorAsRgb (color: string, alphax = 1) {
 
 const getColor = (color: string, alphax = 1) => {
 	
+	if (color === null || color === undefined) 
+		return "var(--tu-color)";
+	
 
 	const isRGB = /^(rgb|rgba)/.test(color);
 	const isRGBNumbers = /^(0|255|25[0-4]|2[0-4]\d|1\d\d|0?\d?\d),(0|255|25[0-4]|2[0-4]\d|1\d\d|0?\d?\d),(0|255|25[0-4]|2[0-4]\d|1\d\d|0?\d?\d)$/.test(

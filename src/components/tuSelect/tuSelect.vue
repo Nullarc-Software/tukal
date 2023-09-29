@@ -5,14 +5,7 @@
 	{ block: block },
 	{ inline: inline },
 	// colors
-	{
-		[`tu-component--primary`]:
-			!danger && !success && !warn && !dark && !color
-	},
-	{ [`tu-component--danger`]: !!danger },
-	{ [`tu-component--warn`]: !!warn },
-	{ [`tu-component--success`]: !!success },
-	{ [`tu-component--dark`]: !!dark },
+	{ [`tu-component--${color}`]: color },
 	{ [`tu-component--dropdown`]: !!dropdown }
 ]">
 		<div class="tu-select" ref="select" :class="[
@@ -49,8 +42,8 @@
 				<div v-for="item of getChips" :key="item">
 					<component :is="item" />
 				</div>
-				<input v-if="filter" class="tu-select__chips__input" ref="chipsInput" :placeholder="placeholder"
-					:id="uid" :value="textFilter" v-on="chipsFilterListener" />
+				<input v-if="filter" class="tu-select__chips__input" ref="chipsInput" :placeholder="placeholder" :id="uid"
+					:value="textFilter" v-on="chipsFilterListener" />
 			</button>
 			<transition name="tu-select">
 				<div v-if="activeOptions" class="tu-select__options" ref="options" :style="{
@@ -61,25 +54,18 @@
 	},
 	// colors
 	{
-		[`tu-component--primary`]:
-			!danger && !success && !warn && !dark && !color
+		[`tu-component--${color}`]: !color
 	},
-	{ [`tu-component--danger`]: !!danger },
-	{ [`tu-component--warn`]: !!warn },
-	{ [`tu-component--success`]: !!success },
-	{ [`tu-component--dark`]: !!dark },
 	`tu-select__options--state-${state}`
-]" @mouseleave="
-	() => {
-		targetSelect = false;
-		targetSelectInput = false;
-	}
-" @mouseenter="
-	() => {
+]" @mouseleave="() => {
+	targetSelect = false;
+	targetSelectInput = false;
+}
+	" @mouseenter="() => {
 		targetSelect = true;
 		targetSelectInput = true;
 	}
-">
+		">
 					<div class="tu-select__options__content" ref="content">
 						<div v-if="notData" class="tu-select__options__content__not-data">
 							<slot v-if="$slots.notData" name="notData" />
@@ -179,7 +165,7 @@ export default defineComponent({
 		state: { type: String, default: null },
 		block: { type: Boolean, default: false },
 		selectItems: { type: Array, default: () => [] },
-		width: { type: String, default: "100%"}
+		width: { type: String, default: "100%" }
 	},
 	provide() {
 		return {

@@ -22,12 +22,12 @@ const ripple = (evt: any, color: any = "", solid = false) => {
 	const effect = document.createElement("div");
 	if (!color) 
 		setColor("color", "#fff", effectContent);
-  
+	else 
+		setColor("color", color, effectContent);
 
 	effect.className = "tu-ripple";
 	if (solid) 
 		effect.classList.add("tu-ripple--solid");
-	// setColor('color', color || 'primary', effectContent)
   
 	effect.style.transition = `all ${time}s ease`;
 
@@ -37,6 +37,7 @@ const ripple = (evt: any, color: any = "", solid = false) => {
 	effectContent.appendChild(effect);
 
 	el.appendChild(effectContent);
+	//el.classList.add("tu-button--active");
 
 	effect.style.width = `${el.clientWidth * 2.5}px`;
 	effect.style.height = `${el.clientWidth * 2.5}px`;
@@ -53,6 +54,7 @@ const ripple = (evt: any, color: any = "", solid = false) => {
 			effect.style.opacity = "0";
 			setTimeout(() => {
 				el.removeChild(effectContent);
+				
 			}, time * 300);
 		}, (noTime ? 0 : time * 400));
 

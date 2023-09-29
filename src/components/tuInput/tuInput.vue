@@ -12,14 +12,7 @@
 	{ square: square },
 	{ inline: inline },
 	// colors
-	{
-		[`tu-component--primary`]:
-			!danger && !success && !warn && !dark && !color
-	},
-	{ [`tu-component--danger`]: !!danger },
-	{ [`tu-component--warn`]: !!warn },
-	{ [`tu-component--success`]: !!success },
-	{ [`tu-component--dark`]: !!dark },
+	{ [`tu-component--${color}`]: color },
 	{ [`tu-component--is-color`]: !!isColor },
 	{ [`tu-component-static-editable`]: !!editableStaticInternal }
 ]">
@@ -160,12 +153,7 @@ export default defineComponent({
 
 		const hasColor = computed(() => {
 			return (
-				props.color ||
-				props.primary ||
-				props.danger ||
-				props.success ||
-				props.dark ||
-				props.warn
+				props.color
 			);
 		});
 

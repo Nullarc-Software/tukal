@@ -25,7 +25,7 @@ import _color from "../../utils/color";
 import { useRoute } from "vue-router";
 
 export default defineComponent({
-	name: "tuBreadcrumb",
+	name: "TuBreadcrumb",
 	props: {
 		items: {
 			type: Array,

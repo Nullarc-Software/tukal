@@ -1,26 +1,15 @@
 <template>
-	<div
-		:class="{ 'open-item': maxHeight != '0px', disabledx: disabled, 'hover-style': !disabled }"
-		class="tu-collapse-item"
-		@mouseover="mouseover"
-		@mouseout="mouseout"
-	>
+	<div :class="{ 'open-item': maxHeight != '0px', disabledx: disabled, 'hover-style': !disabled }"
+		class="tu-collapse-item" @mouseover="mouseover" @mouseout="mouseout">
 		<header class="tu-collapse-item--header" @click="toggleContent">
 			<slot name="header"></slot>
-			<span
-				v-if="!notArrow"
-				class="icon-header tu-collapse-item--icon-header"
-			>
+			<span v-if="!notArrow" class="icon-header tu-collapse-item--icon-header">
 				<tu-icon :icon-pack="iconPack" :icon="arrow" />
 			</span>
 		</header>
-		
-		<div
-			ref="content"
-			:style="styleContent"
-			class="tu-collapse-item--content"
-		>
-			<hr style="border-top: 1px solid #ffffff55; margin-bottom: 5px"/>
+
+		<div ref="content" :style="styleContent" class="tu-collapse-item--content">
+			<hr style="border-top: 1px solid #ffffff55; margin-bottom: 5px" />
 
 			<div class="con-content--item">
 				<slot />
@@ -30,8 +19,9 @@
 </template>
 <script lang="ts">
 import tuIcon from "../tuIcon/index";
-export default {
-	name: "tuCollapseItem",
+import { defineComponent } from "vue";
+export default defineComponent({
+	name: "TuCollapseItem",
 	components: {
 		tuIcon
 	},
@@ -53,7 +43,7 @@ export default {
 			default: false
 		}
 	},
-	data () {
+	data() {
 		return {
 			maxHeight: "0px",
 			arrow: "keyboard_arrow_down",
@@ -64,7 +54,7 @@ export default {
 		};
 	},
 	methods: {
-		toggleContent () {
+		toggleContent() {
 			if (this.disabled) return;
 			if (this.isOpen) {
 				this.maxHeight = "0px";
@@ -80,49 +70,56 @@ export default {
 				maxHeight: this.maxHeight
 			};
 		},
-		mouseover () {
+		mouseover() {
 			if (this.disabled) return;
 		},
-		mouseout () {
+		mouseout() {
 			if (this.disabled) return;
 		}
 	}
-};
+});
 </script>
 
 <style lang="scss" scoped>
 @import "../../style/sass/_mixins";
+
 .tu-collapse-item {
-	border-bottom: 1px solid rgba(0,0,0,0.04);
+	border-bottom: 1px solid rgba(0, 0, 0, 0.04);
 	cursor: pointer;
 	transition: all 0.25s ease;
+
 	&.open-item {
 		.con-content--item {
 			opacity: 1;
 		}
 	}
+
 	&.disabledx {
 		opacity: --tu-disabled-opacity;
 		cursor: default;
 		pointer-events: none;
 		z-index: 999;
 	}
+
 	&:last-child {
-		border-bottom: 0px solid rgba(0,0,0,0) !important;
+		border-bottom: 0px solid rgba(0, 0, 0, 0) !important;
 	}
 }
+
 .hover-style {
-		&:hover {
+	&:hover {
 		background-color: -getColor("gray-2") !important;
 	}
 }
+
 .tu-collapse-item--header {
 	display: flex;
 	padding: 10px;
 	position: relative;
 	transition: all 0.25s ease;
 }
-.tu-collapse-item--icon-header {	
+
+.tu-collapse-item--icon-header {
 	top: 50%;
 	display: block;
 	transition: all 0.25s ease;
@@ -131,10 +128,12 @@ export default {
 	justify-content: center;
 	border-radius: 5px;
 }
+
 .tu-collapse-item--content {
 	overflow: hidden;
 	transition: all 0.2s ease;
 }
+
 .con-content--item {
 	padding: 10px;
 	padding-top: 0px;

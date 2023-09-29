@@ -6,8 +6,8 @@ tuComponent.install = (vue: any) => {
 	vue.component(tuComponent1.name, tuComponent1);
 };
 
-if (typeof window !== "undefined" && (<any>window).Vue) {
+if (typeof window !== "undefined" && (<any>window).Vue) 
 	tuComponent.install((<any>window).Vue);
-}
+
 
 export { tuComponent as tuButton, tuComponent1 as tuButtonGroup };
