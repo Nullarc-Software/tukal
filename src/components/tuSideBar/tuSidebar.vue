@@ -15,11 +15,7 @@
 		right: right
 	},
 	// colors
-	{ [`tu-component--primary`]: !!primary },
-	{ [`tu-component--danger`]: !!danger },
-	{ [`tu-component--warn`]: !!warn },
-	{ [`tu-component--success`]: !!success },
-	{ [`tu-component--dark`]: !!dark },
+	{ [`tu-component--${color}`]: color },
 	{ [`tu-component--is-color`]: !!isColor }
 ]" v-on="listeners" ref="sidebar" v-bind="$attrs">
 		<div v-if="$slots.logo" class="tu-sidebar__logo">

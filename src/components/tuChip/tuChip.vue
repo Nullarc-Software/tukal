@@ -33,7 +33,7 @@ import { computed, defineComponent } from "vue";
 import * as _color from "../../utils";
 
 export default defineComponent({
-	name: "tuChip",
+	name: "TuChip",
 	props: {
 		item: {
 			type: Boolean

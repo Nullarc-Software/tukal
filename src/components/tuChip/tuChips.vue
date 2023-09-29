@@ -17,7 +17,7 @@
 import { defineComponent } from 'vue'
 import tuChip from './tuChip.vue'
 export default defineComponent({
-	name: 'tuChips',
+	name: 'TuChips',
 	components: {
 		tuChip
 	},

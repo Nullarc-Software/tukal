@@ -12,14 +12,7 @@
 	{ square: square },
 	{ inline: inline },
 	// colors
-	{
-		[`tu-component--primary`]:
-			!danger && !success && !warn && !dark && !color
-	},
-	{ [`tu-component--danger`]: !!danger },
-	{ [`tu-component--warn`]: !!warn },
-	{ [`tu-component--success`]: !!success },
-	{ [`tu-component--dark`]: !!dark },
+	{ [`tu-component--${color}`]: color },
 	{ [`tu-component--is-color`]: !!isColor },
 	{ [`tu-component-static-editable`]: !!editableStaticInternal }
 ]">

@@ -1,58 +1,42 @@
 <template>
-	<div
-		class="tu-avatar-content"
-		v-bind="$attrs"
-		:style="{
-			width: `${size}px`,
-			height: `${size}px`,
-			cursor: pointer && 'pointer',
-			['--tu-getColor']: color ? getColor(color) : ''
-		}"
-		:class="[
-			{
-				history: history,
-				'history--gradient': historyGradient,
-				'tu-avatar-content--circle': circle,
-				'tu-avatar-content--square': square,
-				'tu-avatar-content--hidden': isHidden,
-				'tu-avatar-content--latest': isLatest,
-				'tu-avatar-content--hasIcons': $slots.icons,
-				[`tu-avatar-content--size`]: size
-			},
-			// colors
-			{ [`tu-component--primary`]: !!primary },
-			{ [`tu-component--danger`]: !!danger },
-			{ [`tu-component--warn`]: !!warn },
-			{ [`tu-component--success`]: !!success },
-			{ [`tu-component--dark`]: !!dark },
-			{ [`tu-component--is-getColor`]: !!isColor },
-			...additionalClasses
-		]"
-		ref="avatarContent"
-	>
+	<div class="tu-avatar-content" v-bind="$attrs" :style="{
+		width: `${size}px`,
+		height: `${size}px`,
+		cursor: pointer && 'pointer',
+		['--tu-getColor']: color ? getColor(color) : ''
+	}" :class="[
+	{
+		history: history,
+		'history--gradient': historyGradient,
+		'tu-avatar-content--circle': circle,
+		'tu-avatar-content--square': square,
+		'tu-avatar-content--hidden': isHidden,
+		'tu-avatar-content--latest': isLatest,
+		'tu-avatar-content--hasIcons': $slots.icons,
+		[`tu-avatar-content--size`]: size
+	},
+	// colors
+	{ [`tu-component--${color}`]: color },
+	{ [`tu-component--is-getColor`]: !!isColor },
+	...additionalClasses
+]" ref="avatarContent">
 		<div v-if="loading" class="tu-avatar__loading">
 			<div class="tu-avatar__loading__animate" />
 		</div>
-		<div
-			class="tu-avatar"
-			:class="{
-				[`tu-avatar--letter--${textLength}`]: textLength > 2
-			}"
-		>
+		<div class="tu-avatar" :class="{
+			[`tu-avatar--letter--${textLength}`]: textLength > 2
+		}">
 			<div v-if="text" v-html="getText" />
 			<slot />
 		</div>
-		<div
-			v-if="$slots.badge || badge"
-			:class="[
-				'tu-avatar__badge',
-				{
-					isSlot: $slots.badge,
-					writing: writing
-				},
-				badgePosition
-			]"
-		>
+		<div v-if="$slots.badge || badge" :class="[
+			'tu-avatar__badge',
+			{
+				isSlot: $slots.badge,
+				writing: writing
+			},
+			badgePosition
+		]">
 			<div v-if="writing" class="tu-avatar__points">
 				<div class="tu-avatar__points__point"></div>
 				<div class="tu-avatar__points__point"></div>
@@ -60,12 +44,7 @@
 			</div>
 			<slot v-else name="badge" />
 		</div>
-		<div
-			v-if="isLatest"
-			class="tu-avatar__latest"
-			name="show"
-			:value="avatarsLength"
-		>
+		<div v-if="isLatest" class="tu-avatar__latest" name="show" :value="avatarsLength">
 			{{ `+1` }}
 		</div>
 		<slot v-if="$slots.icons" name="icons" />
@@ -104,7 +83,7 @@ export default defineComponent({
 		size: { default: "", type: String },
 		text: { default: "", type: String }
 	},
-	setup (props, context) {
+	setup(props, context) {
 		const textLength = ref(0);
 		const countPlus = ref(0);
 		const index = ref(0);
@@ -276,12 +255,10 @@ export default defineComponent({
 	&.history {
 		&--gradient {
 			&:after {
-				background-image: linear-gradient(
-					40deg,
-					#f99b4a 0%,
-					#df376b 74%,
-					#c52d91 74%
-				) !important;
+				background-image: linear-gradient(40deg,
+						#f99b4a 0%,
+						#df376b 74%,
+						#c52d91 74%) !important;
 			}
 		}
 

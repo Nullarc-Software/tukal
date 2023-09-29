@@ -6,14 +6,7 @@
 			active: isChecked
 		},
 		// colors
-		{
-			[`tu-component--primary`]:
-				!danger && !success && !warn && !dark && !color
-		},
-		{ [`tu-component--danger`]: !!danger },
-		{ [`tu-component--warn`]: !!warn },
-		{ [`tu-component--success`]: !!success },
-		{ [`tu-component--dark`]: !!dark }
+		{ [`tu-component--${color}`]: color }
 	]">
 		<label v-if="labelBefore" class="tu-radio__label" :for="`${uid}`">
 			<slot />

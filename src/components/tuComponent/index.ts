@@ -1,6 +1,6 @@
-
 import { defineComponent, inject, ref } from "vue";
 import { Router } from "vue-router";
+
 import { getColor, getColorAsRgb } from "../../utils";
 
 class ComponentConstants {
@@ -37,18 +37,13 @@ export default defineComponent({
 		};
 	},
 	props: {
-		color: { type: String, default: null },
-		danger: { type: Boolean, default: false },
-		success: { type: Boolean, default: false },
-		warn: { type: Boolean, default: false },
-		dark: { type: Boolean, default: false },
-		primary: { type: Boolean, default: false },
+		color: { type: String, default: "primary" },
 		active: { type: Boolean, default: false },
 		colorSecondary: {
 			type: String,
 			default: "rgb(130, 207, 23)"
 		},
-		textColor: { type: String, default: null }
+		textColor: { type: String, default: "#fff" }
 	},
 	methods: {
 		isColorDark () {
