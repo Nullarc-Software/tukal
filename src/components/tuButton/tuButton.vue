@@ -228,8 +228,11 @@ $tu-color-text: -getColor("text");
 			color: $tu-color-primary !important;
 		}
 	}
+}
 
-
+.tu-button__content {
+	display: flex;
+	align-items: center;
 }
 
 .tu-button--gradient {
@@ -276,6 +279,7 @@ $tu-color-text: -getColor("text");
 
 	.tu-button__content {
 		transition: all 0.25s ease;
+
 	}
 
 	&.tu-button--icon {
