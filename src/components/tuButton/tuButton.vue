@@ -186,7 +186,6 @@ $tu-color-text: -getColor("text");
 	&.tu-button--active {
 		background: $background;
 		color: $hover-color;
-		transform: translate(0, -3px);
 	}
 
 	&.tu-button--transparent {
@@ -233,6 +232,45 @@ $tu-color-text: -getColor("text");
 .tu-button__content {
 	display: flex;
 	align-items: center;
+}
+
+.tu-button__loading {
+	position: absolute;
+	top: 0;
+	left: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: -getColorAlpha("color", 0.8);
+	border-radius: inherit;
+	width: 100%;
+	height: 100%;
+
+	&:before,
+	&:after {
+		content: "";
+		position: absolute;
+		width: 17px;
+		height: 17px;
+		border-radius: 50%;
+		box-sizing: border-box;
+	}
+
+	&:after {
+		border: 2px dotted rgba(255, 255, 255, 0.6);
+		border-top: 2px solid transparent;
+		border-bottom: 2px solid transparent;
+		border-right: 2px solid transparent;
+		animation: btnload 0.6s linear infinite;
+	}
+
+	&:before {
+		border: 2px solid rgb(255, 255, 255);
+		border-top: 2px solid transparent;
+		border-bottom: 2px solid transparent;
+		border-right: 2px solid transparent;
+		animation: btnload 0.6s ease infinite;
+	}
 }
 
 .tu-button--gradient {
@@ -478,6 +516,8 @@ $tu-color-text: -getColor("text");
 	@include tu-button-style($tu-color-primary, white, $tu-color-primary, white);
 	font-size: 0.75rem;
 	border-radius: 9px;
+	margin: 0;
+	padding: 5px;
 
 	.tu-button__content {
 		padding: 5px 10px;
@@ -488,6 +528,8 @@ $tu-color-text: -getColor("text");
 	@include tu-button-style($tu-color-primary, white, $tu-color-primary, white);
 	font-size: 0.6rem;
 	border-radius: 7px;
+	margin: 0;
+	padding: 2px;
 
 	.tu-button__content {
 		padding: 3px 8px;
@@ -495,7 +537,6 @@ $tu-color-text: -getColor("text");
 }
 
 .tu-button--circle {
-	@include tu-button-style($tu-color-primary, white, $tu-color-primary, white);
 	border-radius: 25px;
 }
 
@@ -505,17 +546,43 @@ $tu-color-text: -getColor("text");
 }
 
 .tu-button--icon {
-	@include tu-button-style($tu-color-primary, white, $tu-color-primary, white);
-	display: flex;
-	align-items: center;
-	justify-content: center;
-
-	.tu-button__content {
-		padding: 8px 8px;
-	}
-
 	i {
 		font-size: 1.15rem;
+	}
+}
+
+.tu-button--upload {
+	&:after {
+		content: "";
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		background: -getColorAlpha("color", 0.6);
+		top: 0px;
+		left: 0px;
+		z-index: 1200;
+		animation: btnupload 0.7s ease infinite;
+		box-sizing: border-box;
+	}
+}
+
+@keyframes btnload {
+	0% {
+		transform: rotate(0deg);
+	}
+
+	100% {
+		transform: rotate(360deg);
+	}
+}
+
+@keyframes btnupload {
+	0% {
+		transform: translate(0, 110%);
+	}
+
+	100% {
+		transform: translate(0, -110%);
 	}
 }
 </style>

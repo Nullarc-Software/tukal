@@ -15,11 +15,9 @@
 				:class="{ 'is-active': editor.isActive('italic') }">
 				<tu-icon size="1rem">format_italic</tu-icon>
 			</tu-button>
-			<tu-button title="Underline" circle border v-if="underline || standard"
-				:active="editor.isActive('underline')" @click="editor.chain().focus().toggleUnderline().run()"
-				:disabled="
-					!editor.can().chain().focus().toggleUnderline().run()
-				" :class="{ 'is-active': editor.isActive('underline') }">
+			<tu-button title="Underline" circle border v-if="underline || standard" :active="editor.isActive('underline')"
+				@click="editor.chain().focus().toggleUnderline().run()" :disabled="!editor.can().chain().focus().toggleUnderline().run()
+					" :class="{ 'is-active': editor.isActive('underline') }">
 				<tu-icon size="1rem">format_underline</tu-icon>
 			</tu-button>
 			<tu-button title="Strike-through" circle border v-if="strikeThrough || standard"
@@ -29,29 +27,29 @@
 				<tu-icon size="1rem">format_strikethrough</tu-icon>
 			</tu-button>
 			<tu-button-group v-if="textAlignment || standard">
-				<tu-button circle border title="Left Align" :active="editor.isActive({ textAlign: 'left' })"
+				<tu-button border title="Left Align" :active="editor.isActive({ textAlign: 'left' })"
 					@click="editor.chain().focus().setTextAlign('left').run()" :class="{
 						'is-active': editor.isActive({ textAlign: 'left' })
 					}">
 					<tu-icon size="1rem">format_align_left</tu-icon>
 				</tu-button>
-				<tu-button circle border title="Center Align" :active="editor.isActive({ textAlign: 'center' })"
+				<tu-button border title="Center Align" :active="editor.isActive({ textAlign: 'center' })"
 					@click="editor.chain().focus().setTextAlign('center').run()" :class="{
 						'is-active': editor.isActive({ textAlign: 'center' })
 					}">
 					<tu-icon size="1rem">format_align_center</tu-icon>
 				</tu-button>
-				<tu-button circle border title="Right Align" :active="editor.isActive({ textAlign: 'right' })"
+				<tu-button border title="Right Align" :active="editor.isActive({ textAlign: 'right' })"
 					@click="editor.chain().focus().setTextAlign('right').run()" :class="{
 						'is-active': editor.isActive({ textAlign: 'right' })
 					}">
 					<tu-icon size="1rem">format_align_right</tu-icon>
 				</tu-button>
-				<tu-button circle border title="Justify" :active="editor.isActive({ textAlign: 'justify' })" @click="
+				<tu-button border title="Justify" :active="editor.isActive({ textAlign: 'justify' })" @click="
 					editor.chain().focus().setTextAlign('justify').run()
-				" :class="{
-	'is-active': editor.isActive({ textAlign: 'justify' })
-}">
+					" :class="{
+		'is-active': editor.isActive({ textAlign: 'justify' })
+	}">
 					<tu-icon size="1rem">format_align_justify</tu-icon>
 				</tu-button>
 			</tu-button-group>
@@ -75,49 +73,49 @@
 			<tu-button class="bold" circle border size="0.5rem" title="Heading 1" v-if="heading1 || standard"
 				:active="editor.isActive('heading', { level: 1 })" @click="
 					editor.chain().focus().toggleHeading({ level: 1 }).run()
-				" :class="{
-	'is-active': editor.isActive('heading', { level: 1 })
-}">
+					" :class="{
+		'is-active': editor.isActive('heading', { level: 1 })
+	}">
 				H1
 			</tu-button>
 			<tu-button class="bold" circle border size="0.5rem" title="Heading 2" v-if="heading2 || standard"
 				:active="editor.isActive('heading', { level: 2 })" @click="
 					editor.chain().focus().toggleHeading({ level: 2 }).run()
-				" :class="{
-	'is-active': editor.isActive('heading', { level: 2 })
-}">
+					" :class="{
+		'is-active': editor.isActive('heading', { level: 2 })
+	}">
 				H2
 			</tu-button>
 			<tu-button class="bold" circle border size="1rem" v-if="heading3" title="Heading 3"
 				:active="editor.isActive('heading', { level: 3 })" @click="
 					editor.chain().focus().toggleHeading({ level: 3 }).run()
-				" :class="{
-	'is-active': editor.isActive('heading', { level: 3 })
-}">
+					" :class="{
+		'is-active': editor.isActive('heading', { level: 3 })
+	}">
 				H3
 			</tu-button>
 			<tu-button class="bold" circle border size="1rem" v-if="heading4" title="Heading 4"
 				:active="editor.isActive('heading', { level: 4 })" @click="
 					editor.chain().focus().toggleHeading({ level: 4 }).run()
-				" :class="{
-	'is-active': editor.isActive('heading', { level: 4 })
-}">
+					" :class="{
+		'is-active': editor.isActive('heading', { level: 4 })
+	}">
 				H4
 			</tu-button>
 			<tu-button class="bold" circle border size="1rem" v-if="heading5" title="Heading 5"
 				:active="editor.isActive('heading', { level: 5 })" @click="
 					editor.chain().focus().toggleHeading({ level: 5 }).run()
-				" :class="{
-	'is-active': editor.isActive('heading', { level: 5 })
-}">
+					" :class="{
+		'is-active': editor.isActive('heading', { level: 5 })
+	}">
 				H5
 			</tu-button>
 			<tu-button class="bold" circle border size="1rem" v-if="heading6" title="Heading 6"
 				:active="editor.isActive('heading', { level: 6 })" @click="
 					editor.chain().focus().toggleHeading({ level: 6 }).run()
-				" :class="{
-	'is-active': editor.isActive('heading', { level: 6 })
-}">
+					" :class="{
+		'is-active': editor.isActive('heading', { level: 6 })
+	}">
 				H6
 			</tu-button>
 			<tu-button circle border title="Unordered List" v-if="unorderedList || standard"
@@ -130,8 +128,8 @@
 				:class="{ 'is-active': editor.isActive('orderedList') }">
 				<tu-icon size="1rem">format_list_numbered</tu-icon>
 			</tu-button>
-			<tu-button circle border size="1rem" v-if="codeBlock" title="Code Block"
-				:active="editor.isActive('codeBlock')" @click="editor.chain().focus().toggleCodeBlock().run()"
+			<tu-button circle border size="1rem" v-if="codeBlock" title="Code Block" :active="editor.isActive('codeBlock')"
+				@click="editor.chain().focus().toggleCodeBlock().run()"
 				:class="{ 'is-active': editor.isActive('codeBlock') }">
 				Code block
 			</tu-button>

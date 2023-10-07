@@ -17,6 +17,9 @@
 			<tu-button type="filled" color="danger" textColor="#000" style="margin-right: 10px">
 				Simple Button
 			</tu-button>
+			<tu-button type="filled" color="primary" style="margin-right: 10px" size="mini">
+				Mini
+			</tu-button>
 			<tu-button type="filled" color="primary" style="margin-right: 10px" size="small">
 				Small
 			</tu-button>
@@ -26,11 +29,12 @@
 			<tu-button type="filled" color="primary" style="margin-right: 10px" size="xl">
 				Xtra Large
 			</tu-button>
-			<tu-button circle type="filled" color="primary" style="margin-right: 10px">
-				<tu-icon>home </tu-icon>
+			<tu-button flat>
+				Home
+				<tu-icon>home</tu-icon>
 			</tu-button>
 			<tu-button circle transparent style="margin-right: 10px">
-				<tu-icon>home </tu-icon>
+				<tu-icon>home</tu-icon>
 			</tu-button>
 			<tu-button square type="filled" color="primary" style="margin-right: 10px">
 				Square Button
@@ -50,7 +54,7 @@
 			<tu-button relief color="primary" style="margin-right: 10px">
 				Relief
 			</tu-button>
-			<tu-button :loading="loading" @click="loading = true" type="filled" color="primary" style="margin-right: 10px">
+			<tu-button :loading="loading" @click="showLoadingBtn" type="filled" color="primary" style="margin-right: 10px">
 				Loading
 			</tu-button>
 			<tu-button upload type="border" color="danger" style="margin-right: 10px">
@@ -77,8 +81,8 @@
 				<tu-button border> One </tu-button>
 				<tu-button border> Two </tu-button>
 				<tu-button border> Three </tu-button>
-				<tu-button border> four </tu-button>
-				<tu-button border> five </tu-button>
+				<tu-button border> Four </tu-button>
+				<tu-button border> Five </tu-button>
 			</tu-button-group>
 			<br />
 			<tu-button-group>
@@ -2728,6 +2732,11 @@ export default defineComponent({
 
 		const enableTabs = ref(false);
 
+		const showLoadingBtn = () => {
+			loading.value = true;
+			setTimeout(() => { loading.value = false; }, 2000)
+		}
+
 		return {
 			// treeSelectedItems,
 			enableTabs,
@@ -2795,7 +2804,8 @@ export default defineComponent({
 			kanbanItems,
 			kanbanCategories,
 			currentItemsRef,
-			calendarData
+			calendarData,
+			showLoadingBtn
 		};
 	}
 });

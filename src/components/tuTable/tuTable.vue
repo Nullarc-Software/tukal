@@ -36,12 +36,11 @@
 					<tu-th v-if="multiSelect" fixed style="width: 50px">
 						<tu-checkbox v-model="selectedAll" :indeterminate="table.isPartiallyChecked.value" />
 					</tu-th>
-					<tu-th v-for="header in table.getTableHeaders.value" :key="header.index" :field="header.field"
-						:style="{
-							width: header.width,
-							minWidth: header.minWidth,
-							maxWidth: header.maxWidth
-						}" @enable-drag-listener="isDraggable = true" @disable-drag-listener="isDraggable = false"
+					<tu-th v-for="header in table.getTableHeaders.value" :key="header.index" :field="header.field" :style="{
+						width: header.width,
+						minWidth: header.minWidth,
+						maxWidth: header.maxWidth
+					}" @enable-drag-listener="isDraggable = true" @disable-drag-listener="isDraggable = false"
 						:draggable="`${isDraggable}`" @dragstart="startDrag($event, header)" @drop="onDrop(header)"
 						@dragover.prevent @dragenter.prevent :class="{
 							'animation-table':
@@ -54,9 +53,9 @@
 				</thead>
 				<tbody :id="`${id}-tbody`" :class="{ 'loading-body': !isLoaded }" class="tu-table__tbody">
 					<slot v-if="$slots.tbody" name="tbody" />
-					<tu-tr v-else v-for="tr in table.dataView.value" :key="tr.index" :data="tr.rowData"
-						:rowId="tr.index" :expanded="expandedAll" :expandHandle="rowExpand"
-						@rowExpanded="tr.expanded = $event" @rowClick="rowListeners.click($event, this, tr.rowData)">
+					<tu-tr v-else v-for="tr in table.dataView.value" :key="tr.index" :data="tr.rowData" :rowId="tr.index"
+						:expanded="expandedAll" :expandHandle="rowExpand" @rowExpanded="tr.expanded = $event"
+						@rowClick="rowListeners.click($event, this, tr.rowData)">
 						<tu-td expand v-if="rowExpand">
 							<tu-icon class="tu-table__tr_expand_handle"
 								:class="{ expanded: tr.expanded }">keyboard_arrow_right</tu-icon>
@@ -72,13 +71,13 @@
 							<span :title="tr.rowData[th.field]" v-if="th.isComponent === false">
 								{{
 									th.valueFormatter
-										? th.valueFormatter(
-											tr.rowData[th.field],
-											tr.rowData
-										)
-										: th.field.indexOf(".") !== -1
-											? getNestedField(tr.rowData, th.field)
-											: tr.rowData[th.field] ?? "undefined"
+									? th.valueFormatter(
+										tr.rowData[th.field],
+										tr.rowData
+									)
+									: th.field.indexOf(".") !== -1
+										? getNestedField(tr.rowData, th.field)
+										: tr.rowData[th.field] ?? "undefined"
 								}}
 							</span>
 							<!--
@@ -89,10 +88,9 @@
 
 								This component will try and bind to the inbuild componentValue Ref first, if a user defined modelValue is defined in the header, that will be used instead
 							-->
-							<component v-else-if="
-								th.isComponent &&
-								tr.componentValues[th.field]
-							" v-model="tr.componentValues[th.field].value" v-bind="th.componentProps" :is="th.component"
+							<component v-else-if="th.isComponent &&
+										tr.componentValues[th.field]
+										" v-model="tr.componentValues[th.field].value" v-bind="th.componentProps" :is="th.component"
 								:rowIndex="tr.index" :rowData="tr.rowData" />
 							<component v-else-if="th.isComponent" v-bind="th.componentProps" :is="th.component"
 								:rowIndex="tr.index" :rowData="tr.rowData" />
@@ -732,7 +730,7 @@ export default defineComponent({
 	display: flex;
 	height: 25px;
 	transform: translateY(15px);
-	background-color: -getColor("gray-4");
+	background-color: -getColor("gray-2");
 	border-top-left-radius: 15px;
 	border-top-right-radius: 15px;
 	justify-content: center;
