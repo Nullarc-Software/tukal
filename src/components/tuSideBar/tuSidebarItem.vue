@@ -72,7 +72,7 @@ export default defineComponent({
 						if (typeof props.to === "string") {
 							return pathRegex
 								.pathToRegexp(route.path)
-								.test(props.to as string);
+								.test(props.to as string) || pathRegex.pathToRegexp(route.path).test(props.href);
 						}
 						else if (props.to && typeof props.to === "object") {
 							if (
@@ -84,7 +84,7 @@ export default defineComponent({
 									.pathToRegexp(
 										router.currentRoute.value.path
 									)
-									.test(props.to.path);
+									.test(props.to.path) || pathRegex.pathToRegexp(router.currentRoute.value.path).test(props.href);
 							}
 						}
 						else return false;
