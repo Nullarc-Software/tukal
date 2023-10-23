@@ -1,9 +1,9 @@
 <template>
 	<div :class="[
-		`tu-tabs-${color}`,
-		`tu-tabs-position-${position}`,
-		`tu-tabs-${tabStyle}`
-	]" class="con-tu-tabs tu-tabs" :style="{
+		`tu-tabs--${color}`,
+		`tu-tabs--position-${position}`,
+		`tu-tabs--${tabStyle}`
+	]" class="tu-tabs" :style="{
 	width: fixedWidth,
 	height: fixedHeight
 }">
@@ -14,13 +14,13 @@
 						[`tu-tabs--li-${child.id}`]: true,
 						[`tu-tabs--li-${child.name}`]: child.name,
 						activeChild: childActive == child.id,
-						['tu-tabs--button-li']: pills && position === 'top'
+						['tu-tabs--button-li']: tabStyle === 'pills' && position === 'top'
 					}" @mouseover="hover = true" @mouseout="hover = false">
 					<a :href="type === 'router' ? getALinkHref(child.to) : null" class="tu-tabs--a">
 						<button class="tu-button tu-button--default tu-button--small tu-button__content"
-							v-if="pills && childActive == child.id" :style="styleAlignIcon(child.icon)"
+							v-if="tabStyle === 'pills' && childActive == child.id" :style="styleAlignIcon(child.icon)"
 							:disabled="child.disabled" @click="activeChild(child.id)">
-							<tu-icon v-if="child.icon" :icon-pack="child.iconPack" :icon="child.icon" :color="color"
+							<tu-icon v-if="child.icon" :icon-pack="child.iconPack" :icon="child.icon"
 								class="tu-tabs--btn-icon"></tu-icon>
 							<span class="tu-tabs-button-text" v-if="child.label">{{ child.label }}</span>
 						</button>
@@ -70,7 +70,7 @@
 					activeChild: childActive == child.id
 				}" />
 			</div>
-			<span :style="stylex" v-if="tabStyle !== 'progress' && !pills" class="line-tu-tabs" />
+			<span :style="stylex" v-if="tabStyle !== 'progress' && tabStyle !== 'pills'" class="line-tu-tabs" />
 		</div>
 
 		<div class="con-slot-tabs" :class="{ 'tabs-fixed-height': fixedHeight ? true : false }">
@@ -150,10 +150,6 @@ export default defineComponent({
 			type: Boolean,
 			default: false
 		},
-		pills: {
-			type: Boolean,
-			default: false
-		},
 		headerSize: {
 			type: Number,
 			default: 16
@@ -229,7 +225,8 @@ export default defineComponent({
 			props.routerModeParams.tabs.forEach(tab => {
 				tab.id = tabIdInstance.value.tabId++;
 				reactiveData.children.push(tab);
-			})
+			});
+
 		}
 
 		const styleTab = (childId) => {
@@ -368,7 +365,10 @@ export default defineComponent({
 					const childWithId = _.find(reactiveData.children, { id: index });
 					if (childWithId) {
 						const targetPath = props.routerModeParams.baseRoute ? utils.joinPath(props.routerModeParams.baseRoute, childWithId.to) : childWithId.to;
-						router.replace(targetPath);
+
+						// Only replace the url if the current path is an exact match, if not, it may be a child route and we shouldn't override it.
+						if (router.currentRoute.value.path.replace(targetPath, "") === "")
+							router.replace(targetPath);
 					}
 				}
 
@@ -429,7 +429,7 @@ export default defineComponent({
 
 					const tabMatched = _.findIndex(reactiveData.children, child => {
 						const actualPath = _.isNil(props.routerModeParams.baseRoute) === false ? utils.joinPath(props.routerModeParams.baseRoute, child.to) : child.to;
-						return actualPath === ComponentConstants.router.currentRoute.value.fullPath;
+						return ComponentConstants.router.currentRoute.value.fullPath.startsWith(actualPath);
 					});
 
 					if (tabMatched !== -1 && reactiveData.childActive !== tabMatched) {
@@ -442,7 +442,9 @@ export default defineComponent({
 							}
 							else {
 								const targetPath = to.fullPath.replace(props.routerModeParams.baseRoute, "");
-								const tabMatched = _.findIndex(reactiveData.children, { to: targetPath });
+								const tabMatched = _.findIndex(reactiveData.children, (x) => {
+									return targetPath.startsWith(x.to);
+								});
 								if (tabMatched !== -1 && reactiveData.childActive !== tabMatched) {
 									setActiveTab(tabMatched);
 								}
@@ -481,6 +483,11 @@ export default defineComponent({
 			}
 		);
 
+		const overallStyles = {
+
+		}
+
+
 		return {
 			...toRefs(reactiveData),
 			ul,
@@ -500,330 +507,313 @@ export default defineComponent({
 </script>
 
 
-<style lang="scss" scoped >
+<style lang="scss" >
 @import "../../style/sass/_mixins";
 
-.con-tu-tabs {
+.tu-tabs {
 	width: 100%;
 	overflow: hidden;
 	display: flex;
 	flex-direction: column;
 	position: relative;
 
-	.con-slot-tabs {
-		flex-grow: 1;
-
-	}
-
-	.con-ul-tabs {
+	&--ul {
+		width: 100%;
+		padding-left: 0;
 		position: relative;
-	}
-}
+		margin-top: 0;
 
-.tu-tabs-card {
-	box-shadow: -var("elevated-1");
-	border-radius: 15px;
-	padding-bottom: 10px;
-}
+		&.ul-tabs-center {
+			justify-content: center;
+		}
 
-.tu-tabs--ul {
-	width: 100%;
-	padding-left: 0px;
-	position: relative;
-	margin-top: 0px;
+		&.ul-tabs-right {
+			justify-content: flex-end;
+		}
 
-	&.ul-tabs-center {
-		justify-content: center;
-	}
+		&.ul-tabs-fixed {
+			justify-content: space-between;
+			flex-wrap: nowrap !important;
 
-	&.ul-tabs-right {
-		justify-content: flex-end;
-	}
-
-	&.ul-tabs-fixed {
-		justify-content: space-between;
-		flex-wrap: nowrap !important;
-
-		li {
-			width: 100%;
+			li {
+				width: 100%;
+			}
 		}
 	}
-}
 
-.line-tu-tabs {
-	width: 100px;
-	height: 2px;
-	display: block;
-	position: absolute;
-	transition: all 0.2s ease;
-	transform: translateZ(0);
-	will-change: left, right;
-}
+	&--li {
+		display: block;
+		position: relative;
 
-.tu-tabs--a {
-	display: contents;
-	color: unset;
-}
-
-.tu-tabs--li {
-	display: block;
-	position: relative;
-
-	button {
-		color: inherit;
-		font-family: inherit;
-
-		&.tu-tabs--btn {
+		button {
+			color: inherit;
+			font-family: inherit;
 			box-sizing: border-box;
 			display: block;
 			position: relative;
 			width: 100%;
 			background: transparent;
-			margin: 0px;
+			margin: 0;
 			padding: 10px;
-			border: 0px;
+			border: 0;
 			cursor: pointer;
 			transition: all 0.2s ease;
 			z-index: 100;
 
-			&:hover {
-				&:not(:disabled) {
-					color: inherit;
-				}
+			&:hover:not(:disabled) {
+				color: inherit;
+			}
+
+			&:disabled {
+				opacity: 0.5;
+				cursor: default !important;
+				pointer-events: none;
 			}
 		}
+	}
 
-		&:disabled {
-			opacity: 0.5;
-			cursor: default !important;
-			pointer-events: none;
+	&--a {
+		display: contents;
+		color: unset;
+	}
+
+	&>.con-ul-tabs>.line-tu-tabs {
+		width: 100px;
+		height: 2px;
+		display: block;
+		position: absolute;
+		transition: all 0.2s ease;
+		transform: translateZ(0);
+		will-change: left, right;
+	}
+
+
+	&--card {
+		box-shadow: -var("elevated-1");
+		border-radius: 15px;
+		padding-bottom: 10px;
+	}
+
+	&>.con-ul-tabs>.ul-tabs>.activeChild {
+		button {
+			&:not(:disabled) {
+				color: inherit;
+			}
+
+			&.tu-tabs--btn {
+				padding-top: 8px;
+				padding-bottom: 12px;
+			}
 		}
 	}
-}
 
-.activeChild {
-	button {
-		&:not(:disabled) {
-			color: inherit;
-		}
-
-		&.tu-tabs--btn {
-			padding-top: 8px;
-			padding-bottom: 12px;
+	&--pills {
+		&>.con-ul-tabs>.ul-tabs>.activeChild>a>button {
+			background: -getColor("color") !important;
+			color: #fff;
 		}
 	}
-}
 
-.tu-tabs--btn-tag {
-	position: absolute;
-	width: 20px;
-	height: 20px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	top: -10px;
-	right: -10px;
-	z-index: 200;
-	border-radius: 3px;
-	border: 0px;
-	background: #fff;
-	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.05);
-	cursor: pointer;
-	z-index: 200;
+	&>.con-ul-tabs>.ul-tabs>li>a>.tu-tabs--btn-tag {
+		position: absolute;
+		width: 20px;
+		height: 20px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		top: -10px;
+		right: -10px;
+		z-index: 200;
+		border-radius: 3px;
+		border: 0;
+		background: #fff;
+		box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.05);
+		cursor: pointer;
+		z-index: 200;
 
-	i {
-		padding-right: 0px !important;
-		font-size: 0.9rem;
+		i {
+			padding-right: 0 !important;
+			font-size: 0.9rem;
+		}
 	}
-}
 
-.tu-tabs--button-li {
-	margin-right: 5px;
-}
+	&>.con-ul-tabs>.ul-tabs>.tu-tabs--button-li {
+		margin-right: 5px;
+	}
 
-.tu-tabs-position-top {
-	.tu-tabs--ul {
+	&--position-top>.con-ul-tabs>.tu-tabs--ul {
 		display: flex;
 		flex-wrap: wrap;
 	}
-}
 
-.tu-tabs-position-bottom {
-	.tu-tabs--ul {
+	&--position-bottom>.con-ul-tabs>.tu-tabs--ul {
 		display: flex;
 		border-top: 1px solid rgba(0, 0, 0, 0.05);
-		border-bottom: 0px !important;
+		border-bottom: 0 !important;
 	}
 
-	.con-ul-tabs {
+	&--position-bottom>.con-ul-tabs {
 		order: 2;
 	}
 
-	.line-tu-tabs {
-		top: 0px;
-	}
-}
-
-.tu-tabs-position-left {
-	display: flex;
-	flex-direction: row !important;
-
-	.con-slot-tabs {
-		margin-left: 15px;
+	&--position-bottom>.con-ul-tabs>.line-tu-tabs {
+		top: 0;
 	}
 
-	.line-tu-tabs {
-		left: auto !important;
-		right: 0px;
-	}
+	&--position-left {
+		display: flex;
+		flex-direction: row !important;
 
-	.con-ul-tabs {
-		float: left;
-		height: 100%;
-		display: block;
-	}
+		&>.con-slot-tabs {
+			margin-left: 15px;
+		}
 
-	.tu-tabs--ul {
-		display: block;
-		width: auto;
-		border-bottom: 0px !important;
-		border-right: 1px solid rgba(0, 0, 0, 0.05);
-		margin: 0px;
-	}
+		&>.con-ul-tabs>.line-tu-tabs {
+			left: auto !important;
+			right: 0;
+		}
 
-	.activeChild {
-		button {
+		>.con-ul-tabs {
+			float: left;
+			height: 100%;
+			display: block;
+			position: relative;
+		}
+
+		>.con-ul-tabs>.tu-tabs--ul {
+			display: block;
+			width: auto;
+			border-bottom: 0 !important;
+			border-right: 1px solid rgba(0, 0, 0, 0.05);
+			margin: 0;
+		}
+
+		&>.con-ul-tabs>.ul-tabs>.activeChild>li>a>button {
 			padding-top: 10px !important;
 			padding-bottom: 10px !important;
 			padding-left: 12px !important;
 		}
 	}
-}
 
-.tu-tabs-position-right {
-	display: flex;
-	flex-direction: row !important;
+	&--position-right {
+		display: flex;
+		flex-direction: row !important;
 
-	.con-slot-tabs {
-		width: 100%;
-		margin-right: 15px;
-	}
+		>.con-slot-tabs {
+			width: 100%;
+			margin-right: 15px;
+		}
 
-	.con-ul-tabs {
-		float: left;
-		height: 100%;
-		display: block;
-		order: 2;
-	}
+		&>.con-ul-tabs>.line-tu-tabs {
+			left: 0 !important;
+			right: auto !important;
+		}
 
-	.tu-tabs--ul {
-		display: block;
-		width: auto;
-		border-bottom: 0px !important;
-		border-left: 1px solid rgba(0, 0, 0, 0.05);
-		margin: 0px;
-	}
+		>.con-ul-tabs {
+			float: left;
+			height: 100%;
+			display: block;
+			order: 2;
+			position: relative;
+		}
 
-	.activeChild {
-		button {
+		&>.con-ul-tabs>.tu-tabs--ul {
+			display: block;
+			width: auto;
+			border-bottom: 0 !important;
+			border-left: 1px solid rgba(0, 0, 0, 0.05);
+			margin: 0;
+		}
+
+		&>.con-ul-tabs>.ul-tabs>.activeChild>li>a>button {
 			padding-top: 10px !important;
 			padding-bottom: 10px !important;
 			padding-left: 8px !important;
 			padding-right: 12px !important;
 		}
-	}
-}
 
-::v-deep(.tu-tabs--content) {
-	padding: 10px;
-}
-
-.tu-tabs-progress {
-	padding: 20px;
-	box-shadow: var(--tu-elevated-6);
-	border-radius: 15px;
-}
-
-.tu-tabs-progress-header {
-	flex-direction: column;
-	display: flex;
-	width: 100%;
-}
-
-.tu-tabs--progress__info {
-	display: flex;
-	align-items: center;
-
-	::v-deep(.tu-tabs-progress__nav) {
-		display: inline-flex;
-		margin-left: auto;
-
-		.tu-tabs-progress__icon {
-			&:hover {
-				background: -getColorAlpha("text", 0.1);
-				border-radius: 20px;
-			}
-		}
-	}
-}
-
-.tu-tabs-button-text {
-	color: white;
-}
-
-@mixin state($tu-color) {
-
-	.con-ul-tabs {
-		button {
-			&:not(:disabled):hover {
-				color: -getColor($tu-color) !important;
-			}
+		&.tu-tabs-progress {
+			padding: 20px;
+			box-shadow: var(--tu-elevated-6);
+			border-radius: 15px;
 		}
 
-		.activeChild {
-			button {
-				color: -getColor($tu-color) !important;
+		>.con-ul-tabs>.tu-tabs-progress-header {
+			flex-direction: column;
+			display: flex;
+			width: 100%;
+
+			>.tu-tabs--progress__info {
+				display: flex;
+				align-items: center;
+
+				::v-deep(.tu-tabs-progress__nav) {
+					display: inline-flex;
+					margin-left: auto;
+
+					.tu-tabs-progress__icon {
+						&:hover {
+							background: -getColorAlpha("text", 0.1);
+							border-radius: 20px;
+						}
+					}
+				}
 			}
 		}
 
 
 	}
 
-	&:not(.tu-tabs-progress) {
+	::v-deep(.tu-tabs--content) {
+		padding: 10px;
+	}
 
-		&:not(.tu-tabs-card) {
+	.tu-tabs-button-text {
+		color: white;
+	}
+
+	@mixin state($tu-color) {
+
+		:not(.tu-tabs-pills) {
+			.con-ul-tabs {
+				button {
+					&:not(:disabled):hover {
+						color: -getColor($tu-color) !important;
+					}
+				}
+			}
+		}
+
+
+		&:not(.tu-tabs-progress):not(.tu-tabs-card) {
 			.line-tu-tabs {
-				background: linear-gradient(30deg,
-						-getColor($tu-color) 0%,
-						-getColorAlpha($tu-color, 0.5) 100%) !important;
-				box-shadow: 0px 0px 8px 0px -getColorAlpha($tu-color, 0.4) !important;
+				background: linear-gradient(30deg, -getColor($tu-color) 0%, -getColorAlpha($tu-color, 0.5) 100%) !important;
+				box-shadow: 0 0 8px 0 -getColorAlpha($tu-color, 0.4) !important;
 			}
 		}
-
-
 	}
 
-}
+	&.tu-tabs {
+		&-success {
+			@include state("success");
+		}
 
-.tu-tabs {
-	&-success {
-		@include state("success");
+		&-danger {
+			@include state("danger");
+		}
+
+		&-warn {
+			@include state("warn");
+		}
+
+		&-dark {
+			@include state("dark");
+		}
+
+		&-primary {
+			@include state("primary");
+		}
 	}
 
-	&-danger {
-		@include state("danger");
-	}
-
-	&-warn {
-		@include state("warn");
-	}
-
-	&-dark {
-		@include state("dark");
-	}
-
-	&-primary {
-		@include state("primary");
-	}
 }
 </style>

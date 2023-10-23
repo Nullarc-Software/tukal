@@ -1,7 +1,7 @@
 <template>
 	<div class="tu-kanban">
 		<div class="d-flex justify-content-start" style="flex: 0 0 auto">
-			<tu-input label-placeholder="Search" v-model="search" />
+			<tu-input placeholder="Search" v-model="search" />
 		</div>
 
 		<div class="tu-kanban-main" :id="`tu-kanban-${id}`">
@@ -63,6 +63,18 @@ export default defineComponent({
 			type: String,
 			default: "42px"
 		},
+		serverSideConfig: {
+			type: Object,
+			default: () => {
+				return {
+					enabled: false,
+					url: "",
+					params: {},
+					method: "GET",
+					headers: {}
+				}
+			}
+		},
 		modelValue: {}
 	},
 	emits: ["onDrag", "update:modelValue"],
@@ -120,7 +132,7 @@ export default defineComponent({
 			else {
 
 				currentItems.value = _.filter(props.items, (x: TuKanbanItem) =>
-					x.content.toLowerCase().includes(search.value)
+					x.content.toLowerCase().includes(search.value.toLowerCase())
 				)
 			}
 			load.close()
@@ -147,7 +159,7 @@ export default defineComponent({
 .tu-kanban {
 	display: flex;
 	flex-direction: column;
-
+	height: 100%;
 }
 
 

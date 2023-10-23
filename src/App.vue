@@ -17,6 +17,12 @@
 			<tu-button type="filled" color="danger" textColor="#000" style="margin-right: 10px">
 				Simple Button
 			</tu-button>
+			<tu-button style="margin-right: 10px">
+				<tu-icon>
+					computer
+				</tu-icon>
+				Simple Button
+			</tu-button>
 			<tu-button type="filled" color="primary" style="margin-right: 10px" size="mini">
 				Mini
 			</tu-button>
@@ -78,7 +84,7 @@
 			<h3>Button Groups:</h3>
 			<hr />
 			<tu-button-group fixed-height="40px">
-				<tu-button border> One </tu-button>
+				<tu-button flat :active="buttonActive" @click="buttonActive = !buttonActive"> One </tu-button>
 				<tu-button border> Two </tu-button>
 				<tu-button border> Three </tu-button>
 				<tu-button border> Four </tu-button>
@@ -807,46 +813,27 @@
 		<div class="showcase-component" v-if="enableTabs">
 			<h4>Tabs:</h4>
 			<hr />
-			<tu-tabs name="tabs1" type="router" position="top" noTransitions v-model="tabName"
-				:router-mode-params="routerTabParams" />
-			<tu-tabs name="tabs1" type="router" position="top" pills noTransitions v-model="tabName"
-				:router-mode-params="routerTabParams" />
-			<!-- <tu-tabs position="top" noTransitions tabStyle="progress" progressWidth="20" v-model="tabName">
-				<tu-tab label="Home" name="ho"> Home </tu-tab>
-				<tu-tab label="Service" name="se"> Service </tu-tab>
-				<tu-tab label="login" name="lo"> Login </tu-tab>
-				<tu-tab label="Disabled" name="di"> Disabled </tu-tab>
-							</tu-tabs> -->
-			<!-- <tu-tabs name="tabs2" position="top" :button="true" noTransitions v-model="tabName" /> -->
-			<tu-tabs position="left" pills noTransitions v-model="tabName" fixed-height="400px">
+			<tu-tabs position="top" tab-style="pills" noTransitions v-model="tabName" fixed-height="400px" :key="'tab1'">
 				<tu-tab label="Home" name="ho">
-					<tu-calendar model="local" :items="items" :categories="Categories" @onClickDay="onClick" />
-					<tu-table row-expand multi-select striped size="" persistent-id="twne" :draggable="true"
-						v-model="selected" v-bind="srvTableConfig" v-model:numPages="numPages" :page="page" :pageSize="5"
-						:columnSelector="true" @onRowClicked="rowClicked" @onTableBeginLoad="beginLoad"
-						@onTableEndLoad="afterLoad" @onTableConfigUpdated="configUpdate">
-						<!-- <template #thead>
-						<tu-th field="country" sort search> Country </tu-th>
-						<tu-th field="name" sort search :index="1" width="500px"> Name </tu-th>
-						<tu-th field="name" sort search :index="2" width="500px"> Name </tu-th>
-						<tu-th field="name" sort search :index="3" width="500px"> Name </tu-th>
-						<tu-th field="name" sort search :index="4" width="500px"> Name </tu-th>
-						<tu-th field="name" sort search :index="5" width="500px"> Name </tu-th>
-						<tu-th field="web_pages" sort search> Web site </tu-th>
-						<tu-th field="something" sort search> No value </tu-th>
-																				</template> -->
-						<template #footer>
-							<tu-pagination not-margin flat v-model="page" :length="numPages" />
-						</template>
-					</tu-table>
+					<tu-tabs name="tabs1" position="top" noTransitions :key="'tab2'">
+						<tu-tab label="Home" name="ho">
+							<tu-calendar model="local" :items="items" :categories="Categories" @onClickDay="onClick" />
+							<tu-table row-expand multi-select striped size="" persistent-id="twne" :draggable="true"
+								v-model="selected" v-bind="srvTableConfig" v-model:numPages="numPages" :page="page"
+								:pageSize="5" :columnSelector="true" @onRowClicked="rowClicked"
+								@onTableBeginLoad="beginLoad" @onTableEndLoad="afterLoad"
+								@onTableConfigUpdated="configUpdate">
 
+								<template #footer>
+									<tu-pagination not-margin flat v-model="page" :length="numPages" />
+								</template>
+							</tu-table>
+						</tu-tab>
+						<tu-tab label="Service" name="se"> Service </tu-tab>
+						<tu-tab label="login" name="lo"> Login </tu-tab>
+						<tu-tab label="Disabled" name="di"> Disabled </tu-tab>
+					</tu-tabs>
 				</tu-tab>
-				<tu-tab label="Service" name="se"> Service </tu-tab>
-				<tu-tab label="login" name="lo"> Login </tu-tab>
-				<tu-tab label="Disabled" name="di"> Disabled </tu-tab>
-			</tu-tabs>
-			<tu-tabs position="left" fixed-width="600px" noTransitions v-model="tabName">
-				<tu-tab label="Home" name="ho"> Home </tu-tab>
 				<tu-tab label="Service" name="se"> Service </tu-tab>
 				<tu-tab label="login" name="lo"> Login </tu-tab>
 				<tu-tab label="Disabled" name="di"> Disabled </tu-tab>
@@ -929,8 +916,8 @@
 			</div>
 			<div class="showcase-component">
 				<h4>Tags:</h4>
-				<tu-tag name="Location" value="Far East" />
-				<tu-tag name="Location" value="Far East" />
+				<tu-tag flat name="Location" value="Far East asdaweqwezxczg" color="success" />
+				<tu-tag flat name="Location" value="Far East" />
 				<tu-tag name="Location" value="Far East" />
 				<tu-tag name="Location" value="Far East" />
 			</div>
@@ -1391,7 +1378,7 @@ export default defineComponent({
 		const routerTabParams: TuTabsRouterParams = {
 			tabs: [
 				{
-
+					icon: "computer",
 					label: "Home",
 					name: "ho1",
 					to: "/test"
@@ -2737,7 +2724,10 @@ export default defineComponent({
 			setTimeout(() => { loading.value = false; }, 2000)
 		}
 
+		const buttonActive = ref(false);
+
 		return {
+			buttonActive,
 			// treeSelectedItems,
 			enableTabs,
 			items,

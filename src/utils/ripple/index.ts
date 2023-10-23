@@ -37,7 +37,7 @@ const ripple = (evt: any, color: any = "", solid = false) => {
 	effectContent.appendChild(effect);
 
 	el.appendChild(effectContent);
-	//el.classList.add("tu-button--active");
+	el.classList.add("ripple-anim");
 
 	effect.style.width = `${el.clientWidth * 2.5}px`;
 	effect.style.height = `${el.clientWidth * 2.5}px`;
@@ -54,7 +54,7 @@ const ripple = (evt: any, color: any = "", solid = false) => {
 			effect.style.opacity = "0";
 			setTimeout(() => {
 				el.removeChild(effectContent);
-				
+				el.classList.remove("ripple-anim");
 			}, time * 300);
 		}, (noTime ? 0 : time * 400));
 

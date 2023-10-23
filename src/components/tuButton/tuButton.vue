@@ -167,7 +167,7 @@ export default defineComponent({
 $tu-button-padding: 8px 12px;
 $tu-button-margin: 5px;
 $tu-button-border-radius: 12px;
-$tu-button-text-color: 255, 255, 255;
+$tu-button-text-color: 255 255 255;
 $tu-color-primary: -getColor("color");
 $tu-color-primary-faded: -getColorAlpha("color", 0.15);
 $tu-color-text: -getColor("text");
@@ -177,10 +177,9 @@ $tu-color-text: -getColor("text");
 	background: $background;
 	color: $color;
 
-	&:hover:not(.tu-button--border, .tu-button--flat),
-	&:focus {
-		background: $hover-background;
-		color: $hover-color;
+	&.ripple-anim {
+		color: rgb($tu-button-text-color);
+
 	}
 
 	&.tu-button--active {
@@ -438,6 +437,11 @@ $tu-color-text: -getColor("text");
 
 .tu-button--flat {
 	@include tu-button-style($tu-color-primary-faded, $tu-color-primary, $tu-color-primary, white);
+
+	&.tu-button--active {
+		background: $tu-color-primary;
+		color: white;
+	}
 
 	&.tu-button--dark {
 		color: $tu-color-text;

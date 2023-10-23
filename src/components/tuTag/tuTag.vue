@@ -1,5 +1,11 @@
 <template>
-	<div class="tu-tag" @click="onTagClicked">
+	<div class="tu-tag" @click="onTagClicked" :style="{
+		['--tu-color']: color ? getColor(color) : '',
+		['--tu-color-rgb']: color ? getColorAsRgb(color) : '',
+		['--tu-text-color']: textColor
+	}" :class="{
+	['tu-tag--flat']: flat
+}">
 		<div class="tu-tag__key">
 			{{ name }}
 		</div>
@@ -20,6 +26,7 @@ export default defineComponent({
 	name: "TuTag",
 	extends: tuComponent,
 	props: {
+		flat: Boolean,
 		name: String,
 		value: String,
 	},
@@ -41,23 +48,25 @@ export default defineComponent({
 
 
 .tu-tag {
-	--tu-tag-text-color: 255, 255, 255;
+	--tu-tag-text-color: #ffffff;
+	--tu-tag-text-color-rgb: 255, 255, 255;
 	display: inline-flex;
-	background: -getColor('primary');
+	background: -getColor('color');
 	color: -getColor("tag-text-color");
-	padding: 5px;
+	padding: 8px;
 	border-radius: 20px;
 	margin-left: 2px;
 	margin-right: 2px;
 	cursor: pointer;
+
+	&.tu-tag--flat {
+		background: -getColorAlpha('color', 0.15);
+		color: -getColor("color");
+	}
 }
 
-.tu-tag__key {
-	color: -getColorAlpha("tag-text-color", 0.9);
-}
 
 .tu-tag__value {
-	color: -getColor("tag-text-color");
 	font-weight: bold;
 }
 

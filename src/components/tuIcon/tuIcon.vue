@@ -1,18 +1,13 @@
 <template>
-	<i
-		:style="iconStyle"
-		:class="[
-			getIconPack,
-			icon,
-			iconClass,
-			getBg,
-			getBgSize,
-			{ round: round },
-			{ outlined: outlined }
-		]"
-		v-bind="$attrs"
-		class="tu-icon notranslate icon-scale unselectable"
-	>
+	<i :style="iconStyle" :class="[
+		getIconPack,
+		icon,
+		iconClass,
+		getBg,
+		getBgSize,
+		{ round: round },
+		{ outlined: outlined }
+	]" v-bind="$attrs" class="tu-icon notranslate icon-scale unselectable">
 		{{
 			getIconPack.includes("material-icons") && icon !== null ? icon : ""
 		}}
@@ -25,7 +20,7 @@ import _color from "../../utils/color";
 import tuComponent, { ComponentConstants } from "../tuComponent";
 
 export class IconPackConstants {
-	public static iconPackGlobal = "fa";
+	public static iconPackGlobal = "material-icons";
 }
 
 export default defineComponent({
@@ -61,7 +56,7 @@ export default defineComponent({
 			type: Boolean
 		}
 	},
-	setup (props, context) {
+	setup(props, context) {
 		let iconPackGlobal: string | null = null;
 		if (iconPackGlobal === null)
 			iconPackGlobal = ComponentConstants.iconPackGlobal;
