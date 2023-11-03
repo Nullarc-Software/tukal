@@ -815,7 +815,7 @@
 			<hr />
 			<tu-tabs position="top" tab-style="pills" noTransitions v-model="tabName" fixed-height="400px" :key="'tab1'">
 				<tu-tab label="Home" name="ho">
-					<tu-tabs name="tabs1" position="top" noTransitions :key="'tab2'">
+					<tu-tabs name="tabs1" position="top" noTransitions :key="'tab2'" tab-style="progress">
 						<tu-tab label="Home" name="ho">
 							<tu-calendar model="local" :items="items" :categories="Categories" @onClickDay="onClick" />
 							<tu-table row-expand multi-select striped size="" persistent-id="twne" :draggable="true"

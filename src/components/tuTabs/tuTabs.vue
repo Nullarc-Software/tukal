@@ -40,23 +40,24 @@
 			<div v-else ref="ul" :class="[`ul-tabs-${alignment}`]" class="ul-tabs tu-tabs--ul">
 				<div class="tu-tabs-progress-header">
 					<div class="tu-tabs--progress__info">
-						<span> </span>
-						<span style="margin-left: 5px">
-							<span :style="{
-								color: `rgb(${getColor(color)})`
-							}">{{ activeIdx + 1 }}
-							</span>
-							<span :style="{
-								color: `rgba(${getColor('text')}, 0.75)`
-							}">
-								of {{ children.length }}
-							</span>
-						</span>
+						<div class="tu-tabs--progress__title">{{ children[activeIdx] ? children[activeIdx].label : "" }}
+						</div>
 						<div class="tu-tabs-progress__nav">
-							<tu-icon class="tu-tabs-progress__icon" style="margin-right: 10px"
-								@click="activeChild(activeIdx - 1)">
+							<tu-icon class="tu-tabs-progress__icon" @click="activeChild(activeIdx - 1)">
 								keyboard_arrow_left</tu-icon>
-							<tu-icon class="tu-tabs-progress__icon" @click="activeChild(activeIdx + 1)">
+							<span style="margin-left: 5px">
+								<span :style="{
+									color: `rgb(${getColor(color)})`
+								}">{{ activeIdx + 1 }}
+								</span>
+								<span :style="{
+									color: `rgba(${getColor('text')}, 0.75)`
+								}">
+									of {{ children.length }}
+								</span>
+							</span>
+							<tu-icon class="tu-tabs-progress__icon" @click="activeChild(activeIdx + 1)"
+								style="margin-left: 10px;">
 								keyboard_arrow_right</tu-icon>
 						</div>
 					</div>
@@ -226,7 +227,6 @@ export default defineComponent({
 				tab.id = tabIdInstance.value.tabId++;
 				reactiveData.children.push(tab);
 			});
-
 		}
 
 		const styleTab = (childId) => {
@@ -321,6 +321,8 @@ export default defineComponent({
 
 		const activeChild = function (index, initialAnimation?) {
 
+			if (index < 0 || index > reactiveData.children.length - 1) return;
+
 			initialAnimation = !!initialAnimation;
 			const elem = ul.value?.getElementsByClassName(
 				`tu-tabs--li-${index}`
@@ -369,11 +371,14 @@ export default defineComponent({
 						// Only replace the url if the current path is an exact match, if not, it may be a child route and we shouldn't override it.
 						if (router.currentRoute.value.path.replace(targetPath, "") === "")
 							router.replace(targetPath);
+						else if (router.currentRoute.value.path.replace(targetPath, "") === router.currentRoute.value.path)
+							router.replace(targetPath);
 					}
 				}
 
 			}
 			reactiveData.childActive = index;
+			activeIdx.value = index;
 			context.emit("update:modelValue", reactiveData.childActive);
 
 			if (props.tabStyle !== "progress")
@@ -421,19 +426,38 @@ export default defineComponent({
 			return finalPath;
 		}
 
+		function findMatchingPath(inputPath: string, pathsToCompare: string[]): { type: string, path: string, index: number } | undefined {
+			// Find exact matches
+			const exactMatch = pathsToCompare.find(path => path === inputPath);
+			if (exactMatch) {
+				return { type: 'exact', path: exactMatch, index: pathsToCompare.indexOf(exactMatch) };
+			}
+
+			// Find prefix matches
+			const prefixMatch = pathsToCompare.find(path =>
+				inputPath.startsWith(path) && (inputPath.charAt(path.length) === '/' || inputPath.length === path.length + 1)
+			);
+			if (prefixMatch) {
+				return { type: 'prefix', path: prefixMatch, index: pathsToCompare.indexOf(prefixMatch) };
+			}
+
+			// No match found
+			return undefined;
+		}
+
 		onMounted(() => {
 			let activeIndex = parseIndex(props.modelValue);
 
 			if (props.type === "router") {
 				if (ComponentConstants.router) {
 
-					const tabMatched = _.findIndex(reactiveData.children, child => {
+					const tabMatched = findMatchingPath(ComponentConstants.router.currentRoute.value.path, reactiveData.children.map(child => {
 						const actualPath = _.isNil(props.routerModeParams.baseRoute) === false ? utils.joinPath(props.routerModeParams.baseRoute, child.to) : child.to;
-						return ComponentConstants.router.currentRoute.value.fullPath.startsWith(actualPath);
-					});
+						return actualPath;
+					}));
 
-					if (tabMatched !== -1 && reactiveData.childActive !== tabMatched) {
-						activeIndex = tabMatched;
+					if (tabMatched && reactiveData.childActive !== tabMatched.index) {
+						activeIndex = tabMatched.index;
 					}
 					routerHook = ComponentConstants.router.afterEach((to, from) => {
 						if (props.routerModeParams?.baseRoute) {
@@ -442,11 +466,9 @@ export default defineComponent({
 							}
 							else {
 								const targetPath = to.fullPath.replace(props.routerModeParams.baseRoute, "");
-								const tabMatched = _.findIndex(reactiveData.children, (x) => {
-									return targetPath.startsWith(x.to);
-								});
-								if (tabMatched !== -1 && reactiveData.childActive !== tabMatched) {
-									setActiveTab(tabMatched);
+								const tabMatched = findMatchingPath(targetPath, reactiveData.children.map(child => child.to));
+								if (tabMatched && reactiveData.childActive !== tabMatched.index) {
+									setActiveTab(tabMatched.index);
 								}
 							}
 						}
@@ -738,30 +760,36 @@ export default defineComponent({
 			border-radius: 15px;
 		}
 
-		>.con-ul-tabs>.tu-tabs-progress-header {
-			flex-direction: column;
-			display: flex;
-			width: 100%;
+	}
 
-			>.tu-tabs--progress__info {
-				display: flex;
+	>.con-ul-tabs>.tu-tabs--ul>.tu-tabs-progress-header {
+		flex-direction: column;
+		display: flex;
+		width: 100%;
+		margin-bottom: 10px;
+
+		>.tu-tabs--progress__info {
+			display: flex;
+			align-items: center;
+			align-self: flex-end;
+
+			&>.tu-tabs--progress__title {
+				margin-right: 10px;
+			}
+
+			&>.tu-tabs-progress__nav {
+				display: inline-flex;
+				margin-left: auto;
 				align-items: center;
 
-				::v-deep(.tu-tabs-progress__nav) {
-					display: inline-flex;
-					margin-left: auto;
-
-					.tu-tabs-progress__icon {
-						&:hover {
-							background: -getColorAlpha("text", 0.1);
-							border-radius: 20px;
-						}
+				.tu-tabs-progress__icon {
+					&:hover {
+						background: -getColorAlpha("text", 0.1);
+						border-radius: 20px;
 					}
 				}
 			}
 		}
-
-
 	}
 
 	::v-deep(.tu-tabs--content) {

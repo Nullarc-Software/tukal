@@ -497,7 +497,6 @@ $tu-color-text: -getColor("text");
 }
 
 .tu-button--size-xl {
-	@include tu-button-style($tu-color-primary, white, $tu-color-primary, white);
 	border-radius: 20px;
 
 	.tu-button__content {
@@ -507,7 +506,6 @@ $tu-color-text: -getColor("text");
 }
 
 .tu-button--size-large {
-	@include tu-button-style($tu-color-primary, white, $tu-color-primary, white);
 	font-size: 1rem;
 	border-radius: 15px;
 
@@ -517,7 +515,6 @@ $tu-color-text: -getColor("text");
 }
 
 .tu-button--size-small {
-	@include tu-button-style($tu-color-primary, white, $tu-color-primary, white);
 	font-size: 0.75rem;
 	border-radius: 9px;
 	margin: 0;
@@ -529,7 +526,6 @@ $tu-color-text: -getColor("text");
 }
 
 .tu-button--size-mini {
-	@include tu-button-style($tu-color-primary, white, $tu-color-primary, white);
 	font-size: 0.6rem;
 	border-radius: 7px;
 	margin: 0;

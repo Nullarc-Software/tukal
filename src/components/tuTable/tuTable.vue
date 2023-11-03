@@ -555,6 +555,7 @@ export default defineComponent({
 
 	footer {
 		padding-top: 10px;
+		padding-bottom: 10px;
 	}
 }
 

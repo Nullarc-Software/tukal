@@ -256,9 +256,8 @@ export default defineComponent({
 				return;
 			});
 
-			if (alreadyExists)
+			if (alreadyExists || (textFilter.value.trim() === ""))
 				return;
-
 			else {
 				addedOptions.value.push({
 					label: textFilter.value.trim(),
