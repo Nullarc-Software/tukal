@@ -168,7 +168,7 @@ export default {
 			"secondary",
 			"success",
 			"danger",
-			"warning",
+			"warn",
 			"dark",
 			"light"
 		];

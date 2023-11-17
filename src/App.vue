@@ -970,7 +970,7 @@
 				<h4>Usage Bar:</h4>
 				<hr />
 				<div style="width: 500px;">
-					<tuUsageBar height="25px" :items="barItems" />
+					<tuUsageBar height="30px" :items="barItems" />
 				</div>
 				<h4>Timeline Component:</h4>
 				<hr />

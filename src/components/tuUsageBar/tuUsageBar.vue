@@ -28,8 +28,10 @@
 				</template>
 			</tu-popper>
 		</div>
-		<div style="display: flex; flex-wrap: wrap">
-			<div v-for="(item, index) in orderedItems" :key="index" class="tu-usagebar-list">
+		<div class="tu-usagebar-items" :style="{
+			'font-size': fontSize
+		}">
+			<div v-for="(item, index) in orderedItems" :key="index" class="tu-usagebar-list-item">
 				<span class="tu-usagebar-dot" :style="styleChip(item.color)"></span>
 				<span class="tu-usagebar-text">{{ item.name }}</span>
 			</div>
@@ -42,17 +44,19 @@ import { computed, defineComponent, onMounted, ref, Ref, watch, PropType, reacti
 import tuComponent from "../tuComponent";
 import { tuPopper, tuPopupMenu, tuPopupItem } from "../tuPopper";
 import * as _color from "../../utils";
-export interface usageBarItem {
+
+export interface UsageBarItem {
 	name: string;
 	time: number;
 	color?: string;
 }
-interface usageBarItemPercentage {
+interface UsageBarItemPercentage {
 	name: string;
 	percentage: number;
 	color?: string;
 	width?: string;
 }
+
 export default defineComponent({
 	name: "TuUsageBar",
 	extends: tuComponent,
@@ -60,32 +64,39 @@ export default defineComponent({
 		tuPopper, tuPopupMenu, tuPopupItem
 	},
 	props: {
+		barColors: {
+			type: Array as PropType<string[]>,
+			default: ["#5e64ff",
+				"#28a745",
+				"#feef72",
+				"#98d85b",
+				"#ffa00a",
+				"#ff5858",
+				"#7cd6fd",
+				"#743ee2", "#0000ff", "#003366", "#800000",
+				"#800080", "#00ff00", "#20b2aa", "#f08080",
+				"#ffc3a0", "#ff6666", "#008000",
+				"#660066", "#8b0000", "#794044"]
+		},
 		items: {
-			type: Object as PropType<usageBarItem[]>,
+			type: Object as PropType<UsageBarItem[]>,
 			default: []
 		},
 		height: {
 			type: String,
 			default: "20px"
+		},
+		fontSize: {
+			type: String,
+			default: "12px"
 		}
 	},
 	setup(props) {
-		let orderedItems = reactive([]) as usageBarItemPercentage[];
+		let orderedItems = reactive([]) as UsageBarItemPercentage[];
 		const usagebarParent = ref<HTMLDivElement>();
-		let marginVar = ref(0);
-		let tempArr = [] as usageBarItemPercentage[];
+		let tempArr = [] as UsageBarItemPercentage[];
 		let othersCount = ref(0);
-		let colors = ["#5e64ff",
-			"#28a745",
-			"#feef72",
-			"#98d85b",
-			"#ffa00a",
-			"#ff5858",
-			"#7cd6fd",
-			"#743ee2", "#0000ff", "#003366", "#800000",
-			"#800080", "#00ff00", "#20b2aa", "#f08080",
-			"#ffc3a0", "#ff6666", "#008000",
-			"#660066", "#8b0000", "#794044"]
+		let colors = props.barColors;
 		if (props.items) {
 			let total = 0;
 			for (let i = 0; i < props.items.length; i++) {
@@ -129,7 +140,7 @@ export default defineComponent({
 					width: ""
 				})
 			}
-			orderedItems.sort((a: usageBarItemPercentage, b: usageBarItemPercentage) => b.percentage - a.percentage);
+			orderedItems.sort((a: UsageBarItemPercentage, b: UsageBarItemPercentage) => b.percentage - a.percentage);
 		}
 
 		function styleAllItems() {
@@ -138,14 +149,14 @@ export default defineComponent({
 			});
 		}
 
-		const styleItem = (item: usageBarItemPercentage, index: number): Object => {
+		const styleItem = (item: UsageBarItemPercentage, index: number): Object => {
 			let background: string;
 			if (item.color) {
 				background = `rgba(${_color.getColorAsRgb(item.color)})`
 			}
 			else {
 				item.color = colors[index % 20];
-				background: colors[index % 20];
+				background = colors[index % 20];
 			}
 			const widthPx = (orderedItems[index].percentage / 100) * usagebarParent.value?.clientWidth;
 
@@ -176,7 +187,10 @@ export default defineComponent({
 		const styleChip = (color: string) => {
 			let background = `rgba(${_color.getColorAsRgb(color)})`;
 			return {
-				background: background
+				background: background,
+				width: props.fontSize,
+				height: props.fontSize,
+				'border-radius': props.fontSize
 			};
 		};
 
@@ -235,11 +249,10 @@ export default defineComponent({
 }
 
 .tu-usagebar-text {
-	font-size: 12px;
 	padding-left: 5px;
 }
 
-.tu-usagebar-list {
+.tu-usagebar-list-item {
 	display: inline-flex;
 	margin-left: 10px;
 	margin-top: 5px;
@@ -261,5 +274,10 @@ export default defineComponent({
 
 .tu-usagebar-text-percentage {
 	padding-left: 5px;
+}
+
+.tu-usagebar-items {
+	display: flex;
+	flex-wrap: wrap
 }
 </style>
