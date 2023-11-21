@@ -17,7 +17,8 @@ export { default as tuCron } from "./tuCron";
 export { TuLoading, tuLoading } from "./tuLoading";
 export { tuInfiniteLoading } from "./tuInfiniteLoading";
 export type { TuLoadingAttributes, TuLoadingTypes } from "./tuLoading";
-export { default as tuUsageBar } from "./tuUsageBar";
+export { tuUsageBar } from "./tuUsageBar";
+export type { UsageBarItem } from "./tuUsageBar";
 
 export { default as tuDivider } from "./tuDivider";
 export { default as tuIcon } from "./tuIcon";

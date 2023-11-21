@@ -1,7 +1,7 @@
 <template>
 	<div style="display: flex; flex-direction: column;">
-		<div class="tu-usagebar-parent" :style="`height:${height}`" @animationstart="startWidthChange()"
-			@animationend="stopWidthChange()" ref="usagebarParent">
+		<div class="tu-usagebar-parent" :style="`height:${height}`" ref="usagebarParent" @animationstart="startWidthChange"
+			@animationend="stopWidthChange">
 			<tu-popper v-for="(item, index) in orderedItems" :key="index" arrow hover placement="top">
 				<div class="tu-usagebar-children" :style="{
 					...styleItem(item, index),
@@ -18,6 +18,7 @@
 							</div>
 						</div>
 						<div v-else>
+							<strong v-if="tempArr.length > 1"> Total : {{ item.percentage.toFixed(2) }}%</strong>
 							<div class="tu-usagebar-text-parent" v-for="item in tempArr" :key="index">
 								<span class="tu-usagebar-text-title">{{ item.name }}: </span>
 								<span class="tu-usagebar-text-percentage">{{ item.percentage.toFixed(2)
@@ -44,12 +45,8 @@ import { computed, defineComponent, onMounted, ref, Ref, watch, PropType, reacti
 import tuComponent from "../tuComponent";
 import { tuPopper, tuPopupMenu, tuPopupItem } from "../tuPopper";
 import * as _color from "../../utils";
+import { UsageBarItem } from "./types";
 
-export interface UsageBarItem {
-	name: string;
-	time: number;
-	color?: string;
-}
 interface UsageBarItemPercentage {
 	name: string;
 	percentage: number;
@@ -92,59 +89,75 @@ export default defineComponent({
 		}
 	},
 	setup(props) {
-		let orderedItems = reactive([]) as UsageBarItemPercentage[];
 		const usagebarParent = ref<HTMLDivElement>();
 		let tempArr = [] as UsageBarItemPercentage[];
 		let othersCount = ref(0);
 		let colors = props.barColors;
-		if (props.items) {
-			let total = 0;
-			for (let i = 0; i < props.items.length; i++) {
-				total = total + props.items[i].time
-			}
-			for (let i = 0; i < props.items.length; i++) {
-				let percentage = (props.items[i].time / total) * 100;
-				if (percentage <= 5) {
-					othersCount.value++;
-					tempArr.push({
-						name: props.items[i].name,
-						color: props.items[i].color,
-						percentage: percentage
-					})
+
+		const orderedItems = ref<UsageBarItemPercentage[]>([]);
+
+		function computeNewItems() {
+			orderedItems.value = [];
+			if (props.items) {
+				let total = 0;
+				tempArr = [];
+				for (let i = 0; i < props.items.length; i++) {
+					total = total + props.items[i].time
 				}
-				else {
-					orderedItems.push({
-						name: props.items[i].name,
-						color: props.items[i].color,
+				for (let i = 0; i < props.items.length; i++) {
+					let percentage = (props.items[i].time / total) * 100;
+					if (percentage <= 5 && percentage >= 1) {
+						othersCount.value++;
+						tempArr.push({
+							name: props.items[i].name,
+							color: props.items[i].color,
+							percentage: percentage
+						})
+					}
+					else {
+						orderedItems.value.push({
+							name: props.items[i].name,
+							color: props.items[i].color,
+							percentage: percentage,
+							width: ""
+						})
+					}
+				}
+
+				orderedItems.value.sort((a: UsageBarItemPercentage, b: UsageBarItemPercentage) => b.percentage - a.percentage);
+				if (othersCount.value > 1) {
+					let percentage = 0;
+					for (let i = 0; i < tempArr.length; i++) {
+						percentage = percentage + tempArr[i].percentage
+					}
+					orderedItems.value.push({
+						name: "Others",
 						percentage: percentage,
+						width: "",
+					});
+				}
+				else if (othersCount.value === 1) {
+					orderedItems.value.push({
+						name: tempArr[0].name,
+						color: tempArr[0].color,
+						percentage: tempArr[0].percentage,
 						width: ""
 					})
 				}
 			}
-			if (othersCount.value > 1) {
-				let percentage = 0;
-				for (let i = 0; i < tempArr.length; i++) {
-					percentage = percentage + tempArr[i].percentage
-				}
-				orderedItems.push({
-					name: "Others",
-					percentage: percentage,
-					width: ""
-				})
-			}
-			else if (othersCount.value === 1) {
-				orderedItems.push({
-					name: tempArr[0].name,
-					color: tempArr[0].color,
-					percentage: tempArr[0].percentage,
-					width: ""
-				})
-			}
-			orderedItems.sort((a: UsageBarItemPercentage, b: UsageBarItemPercentage) => b.percentage - a.percentage);
 		}
 
+		watch(props.items, () => {
+			computeNewItems();
+			if (usagebarParent.value) {
+				usagebarParent.value.getAnimations()[0].play();
+			}
+		});
+
+
+
 		function styleAllItems() {
-			orderedItems.forEach(item => {
+			orderedItems.value.forEach(item => {
 				item.width = `${(item.percentage / 100) * usagebarParent.value?.clientWidth}px`
 			});
 		}
@@ -158,7 +171,7 @@ export default defineComponent({
 				item.color = colors[index % 20];
 				background = colors[index % 20];
 			}
-			const widthPx = (orderedItems[index].percentage / 100) * usagebarParent.value?.clientWidth;
+			const widthPx = (orderedItems.value[index].percentage / 100) * usagebarParent.value?.clientWidth;
 
 			if (index === 0) {
 				return {
@@ -170,9 +183,9 @@ export default defineComponent({
 			else {
 				let margin = 0;
 				for (let i = 0; i < index; i++) {
-					margin = margin + orderedItems[i].percentage
+					margin = margin + orderedItems.value[i].percentage
 				}
-				if (index === orderedItems.length - 1) {
+				if (index === orderedItems.value.length - 1) {
 					return {
 						background: background,
 						"border-top-right-radius": "5px",
@@ -198,7 +211,8 @@ export default defineComponent({
 
 		function startWidthChange() {
 			animationTimeout = setInterval(() => {
-				styleAllItems();
+				if (orderedItems.value.length > 0)
+					styleAllItems();
 			}, 5);
 
 		}
@@ -206,6 +220,10 @@ export default defineComponent({
 		function stopWidthChange() {
 			clearInterval(animationTimeout);
 		}
+
+		onMounted(() => {
+			computeNewItems();
+		})
 
 		return {
 			orderedItems,

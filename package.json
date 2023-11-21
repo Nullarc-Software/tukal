@@ -1,6 +1,6 @@
 {
 	"name": "tukal-vue",
-	"version": "0.1.143",
+	"version": "0.1.147",
 	"type": "module",
 	"scripts": {
 		"dev": "vite",

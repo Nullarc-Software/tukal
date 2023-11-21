@@ -1158,10 +1158,10 @@ export default defineComponent({
 				fieldName: "Neutral"
 			}
 		]
-		const barItems = [
+		const barItems = ref([
 			{
 				name: "Google Chrome",
-				time: 220,
+				time: 10,
 			},
 			{
 				name: "VS Code",
@@ -1199,7 +1199,14 @@ export default defineComponent({
 				name: "Bikes",
 				time: 1,
 			},
-		]
+		])
+
+		setTimeout(() => {
+			barItems.value.push({
+				name: "SomethingElse",
+				time: 10,
+			})
+		}, 5000);
 
 
 		const histEvents = [
