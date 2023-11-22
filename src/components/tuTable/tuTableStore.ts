@@ -270,6 +270,12 @@ export class TuTableStore {
 							this.table.pageSize
 						);
 					}
+
+					if (this.dataView.value.length > 0) 
+						this.isTableDataEmpty = false;
+					else
+						this.isTableDataEmpty = true;
+
 					this.loading.value = false;
 					resolve(true);
 				}
@@ -520,6 +526,11 @@ export class TuTableStore {
 			if (row.componentValues === null)
 				row.componentValues = componentValueObject;
 		});
+
+		//IMPORTANT: When local model is used, we need to trigger refresh of data automatically so that the table is updated.
+		if (this.serverSideModel === false) 
+			this.refresh();
+		
 	}
 
 	private swap (i: number, j: number, array: any[]) {
@@ -619,8 +630,6 @@ export class TuTableStore {
 			}
 			
 		}
-
-		
 	}
 
 	public reOrderTableColumns (indexOne: number, indexTwo: number, persistentId?: string) {

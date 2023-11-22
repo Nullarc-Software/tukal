@@ -939,7 +939,7 @@
 				<div style="height: 500px;">
 					<tu-history center :events="histEvents" />
 				</div>
-
+				beginLoad
 				<h4>Cron Component:</h4>
 				<hr />
 				<tu-cron v-model="cronValue" />
@@ -948,14 +948,17 @@
 			<div class="showcase-component">
 				<h4>Calendar heatmap Component:</h4>
 				<hr />
-				<calendar-heatmap :values="calendarData" :end-date="new Date('2021-08-01')"
-					:style="{ 'max-width': '675px' }" :vertical="false" no-data-text="No Contributions" :locale="{
-						months: ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'],
-						days: ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'],
-						on: 'am',
-						less: 'Weniger',
-						more: 'Mehr'
-					}" />
+				<div style="width: 90%">
+					<calendar-heatmap :values="calendarData" :end-date="new Date('2021-08-01')" :vertical="false"
+						no-data-text="No Contributions" :locale="{
+							months: ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'],
+							days: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+							on: 'am',
+							less: 'Least',
+							more: 'Most'
+						}" round="10" tooltip-unit="%" />
+				</div>
+
 			</div>
 			<div class="showcase-component">
 				<h4>Kanban Board Component:</h4>
@@ -1892,7 +1895,7 @@ export default defineComponent({
 		})
 		const calendarData = [
 			{
-				'date': '2020-11-30T23:00:00Z',
+				'date': '2019-11-30T23:00:00Z',
 				'count': 635
 			},
 			{
