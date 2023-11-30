@@ -1,4 +1,4 @@
-export interface Value {
+export interface TuHeatmapValue {
 	date: Date | string;
 	count: number;
 }
@@ -11,20 +11,20 @@ export interface Activity {
 export type Activities = Map<string, Activity>;
 
 
-export interface CalendarItem {
+export interface TuHeatmapCalendarItem {
 	date: Date;
 	count?: number;
 	colorIndex: number;
 }
 
-export type Calendar = CalendarItem[][];
+export type TuHeatmapCalendar = TuHeatmapCalendarItem[][];
 
-export interface Month {
+export interface TuHeatmapMonth {
 	value: number;
 	index: number;
 }
 
-export interface Locale {
+export interface TuHeatmapLocale {
 	months: string[];
 	days: string[];
 	on: string;
@@ -32,7 +32,7 @@ export interface Locale {
 	more: string;
 }
 
-export type TooltipFormatter = (item: CalendarItem, unit: string) => string;
+export type TuHeatmapTooltipFormatter = (item: TuHeatmapCalendarItem, unit: string) => string;
 
 
 export class Heatmap {
@@ -45,7 +45,7 @@ export class Heatmap {
 	// static readonly DEFAULT_RANGE_COLOR_DARK    = [ '#011526', '#012E40', '#025959', '#02735E', '#038C65' ];
 	// static readonly DEFAULT_RANGE_COLOR_DARK    = [ '#161b22', '#015958', '#008F8C', '#0CABA8', '#0FC2C0' ];
 	// static readonly DEFAULT_RANGE_COLOR_DARK    = [ '#012030', '#13678A', '#45C4B0', '#9AEBA3', '#DAFDBA' ];
-	static readonly DEFAULT_LOCALE: Locale = {
+	static readonly DEFAULT_LOCALE: TuHeatmapLocale = {
 		months: [ "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ],
 		days  : [ "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" ],
 		on    : "on",
@@ -61,19 +61,19 @@ export class Heatmap {
 	endDate: Date;
 	max: number;
 
-	private _values: Value[];
-	private _firstFullWeekOfMonths?: Month[];
+	private _values: TuHeatmapValue[];
+	private _firstFullWeekOfMonths?: TuHeatmapMonth[];
 	private _activities?: Activities;
-	private _calendar?: Calendar;
+	private _calendar?: TuHeatmapCalendar;
 
-	constructor(endDate: Date | string, values: Value[], max?: number) {
+	constructor(endDate: Date | string, values: TuHeatmapValue[], max?: number) {
 		this.endDate   = this.parseDate(endDate);
 		this.max       = max || Math.ceil((Math.max(...values.map(day => day.count)) / 5) * 4);
 		this.startDate = this.shiftDate(endDate, -Heatmap.DAYS_IN_ONE_YEAR);
 		this._values   = values;
 	}
 
-	set values(v: Value[]) {
+	set values(v: TuHeatmapValue[]) {
 		this.max                    = Math.ceil((Math.max(...v.map(day => day.count)) / 5) * 4);
 		this._values                = v;
 		this._firstFullWeekOfMonths = undefined;
@@ -81,7 +81,7 @@ export class Heatmap {
 		this._activities            = undefined;
 	}
 
-	get values(): Value[] {
+	get values(): TuHeatmapValue[] {
 		return this._values;
 	}
 
@@ -123,7 +123,7 @@ export class Heatmap {
 		return this._calendar;
 	}
 
-	get firstFullWeekOfMonths(): Month[] {
+	get firstFullWeekOfMonths(): TuHeatmapMonth[] {
 		if (!this._firstFullWeekOfMonths) {
 			const cal                   = this.calendar;
 			this._firstFullWeekOfMonths = [];

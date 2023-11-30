@@ -996,7 +996,8 @@ import {
 	watch,
 	shallowRef,
 	markRaw,
-	Ref
+	Ref,
+	reactive
 } from "vue";
 import * as components from "./components";
 import { TuNotificationAttributes, TuNotification } from "./components/tuNotifications";
@@ -1893,7 +1894,7 @@ export default defineComponent({
 		watch(checkedNodes, () => {
 			console.log(checkedNodes.value)
 		})
-		const calendarData = [
+		let calendarData = reactive([
 			{
 				'date': '2019-11-30T23:00:00Z',
 				'count': 635
@@ -2725,7 +2726,7 @@ export default defineComponent({
 				'date': '2021-07-29T22:00:00Z',
 				'count': 5737000
 			}
-		];
+		]);
 
 		const enableTabs = ref(false);
 
@@ -2735,6 +2736,33 @@ export default defineComponent({
 		}
 
 		const buttonActive = ref(false);
+
+		setTimeout(() => {
+			calendarData.splice(0, calendarData.length);
+			calendarData.push(...[
+				{
+					'date': '2019-11-30T23:00:00Z',
+					'count': 635
+				},
+				{
+					'date': '2020-12-02T23:00:00Z',
+					'count': 244
+				},
+				{
+					'date': '2020-12-03T23:00:00Z',
+					'count': 672
+				},
+				{
+					'date': '2020-12-04T23:00:00Z',
+					'count': 912
+				},
+				{
+					'date': '2020-12-06T23:00:00Z',
+					'count': 856
+				},
+			]);
+
+		}, 5000)
 
 		return {
 			buttonActive,

@@ -632,7 +632,7 @@ export default defineComponent({
 	&--pills {
 		&>.con-ul-tabs>.ul-tabs>.activeChild>a>button {
 			background: -getColor("color") !important;
-			color: #fff;
+			color: #fff !important;
 		}
 	}
 

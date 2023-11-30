@@ -47,7 +47,7 @@ export type { tuHistory } from "./components/tuHistory";
 export type { TuHistoryEvent, TuHistoryServerModel } from "./components/tuHistory";
 // New Component import
 export { tuCalendarHeatMap } from "./components/tuCalendarHeatMap";
-export * from "./components/tuCalendarHeatMap/Heatmap";
+export type { TuHeatmapValue, TuHeatmapLocale, TuHeatmapTooltipFormatter  } from "./components/tuCalendarHeatMap";
 export { tuUsageBar } from "./components/tuUsageBar";
 export type { UsageBarItem } from "./components/tuUsageBar";
 export { default as tuTimeline } from "./components/tuTimeline";

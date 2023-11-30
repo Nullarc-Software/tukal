@@ -74,7 +74,7 @@
 
 <script lang="ts">
 import { defineComponent, nextTick, onBeforeUnmount, onMounted, PropType, ref, toRef, toRefs, watch } from 'vue';
-import { Activity, Heatmap, CalendarItem, Locale, Month, TooltipFormatter, Value } from './Heatmap';
+import { Activity, Heatmap, TuHeatmapCalendarItem, TuHeatmapLocale, TuHeatmapMonth, TuHeatmapTooltipFormatter, TuHeatmapValue } from './Heatmap';
 import tippy, { createSingleton, CreateSingletonInstance, Instance } from 'tippy.js';
 import tuComponent from "../tuComponent";
 import 'tippy.js/dist/tippy.css';
@@ -95,11 +95,11 @@ export default /*#__PURE__*/defineComponent({
 			default: ["var(--tu-gray-2)", "#195bff1a", "#195bff4d", "#195bff99", "#195bffcc", "#195bff"]
 		},
 		values: {
-			type: Array as PropType<Value[]>,
+			type: Array as PropType<TuHeatmapValue[]>,
 			required: true
 		},
 		locale: {
-			type: Object as PropType<Partial<Locale>>
+			type: Object as PropType<Partial<TuHeatmapLocale>>
 		},
 		tooltip: {
 			type: Boolean,
@@ -110,7 +110,7 @@ export default /*#__PURE__*/defineComponent({
 			default: Heatmap.DEFAULT_TOOLTIP_UNIT
 		},
 		tooltipFormatter: {
-			type: Function as PropType<TooltipFormatter>
+			type: Function as PropType<TuHeatmapTooltipFormatter>
 		},
 		vertical: {
 			type: Boolean,
@@ -151,7 +151,7 @@ export default /*#__PURE__*/defineComponent({
 			daysLabelWrapperTransform = ref(''),
 			monthsLabelWrapperTransform = ref(''),
 			legendWrapperTransform = ref(''),
-			lo = ref<Locale>({} as any),
+			lo = ref<TuHeatmapLocale>({} as any),
 			rangeColor = ref<string[]>(props.rangeColor || (props.dark ? Heatmap.DEFAULT_RANGE_COLOR_DARK : Heatmap.DEFAULT_RANGE_COLOR_LIGHT));
 		const { values, tooltipUnit, tooltipFormatter, noDataText, max, vertical, locale } = toRefs(props);
 
@@ -170,7 +170,7 @@ export default /*#__PURE__*/defineComponent({
 			}
 		}
 
-		function tooltipOptions(day: CalendarItem) {
+		function tooltipOptions(day: TuHeatmapCalendarItem) {
 			if (typeof (day.date) === 'string') {
 				day.date = new Date(`${day.date}`)
 			}
@@ -204,7 +204,7 @@ export default /*#__PURE__*/defineComponent({
 			return `translate(0, ${index * SQUARE_SIZE})`;
 		}
 
-		function getMonthLabelPosition(month: Month) {
+		function getMonthLabelPosition(month: TuHeatmapMonth) {
 			if (props.vertical) {
 				return { x: 3, y: (SQUARE_SIZE * heatmap.value.weekCount) - (SQUARE_SIZE * (month.index)) - (SQUARE_SIZE / 4) };
 			}
@@ -236,7 +236,7 @@ export default /*#__PURE__*/defineComponent({
 				: `translate(${w - (SQUARE_SIZE * rc.length) - 30}, ${h - BOTTOM_SECTION_HEIGHT})`;
 		}, { immediate: true });
 
-		watch(locale, (l: Locale) => (lo.value = l ? { ...Heatmap.DEFAULT_LOCALE, ...l } : Heatmap.DEFAULT_LOCALE), { immediate: true });
+		watch(locale, (l: TuHeatmapLocale) => (lo.value = l ? { ...Heatmap.DEFAULT_LOCALE, ...l } : Heatmap.DEFAULT_LOCALE), { immediate: true });
 
 		watch(rangeColor, rc => (legendViewbox.value = `0 0 ${Heatmap.SQUARE_SIZE * (rc.length + 1)} ${Heatmap.SQUARE_SIZE}`), { immediate: true });
 
