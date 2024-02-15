@@ -17,7 +17,6 @@ export default defineComponent({
 			type: Array,
 			default: function (props) {
 				const items = defaultItems("en")
-				console.log(items)
 
 				return [
 					{ id: 'minute', items: items.minuteItems },
