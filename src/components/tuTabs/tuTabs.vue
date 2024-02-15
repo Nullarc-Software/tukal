@@ -609,6 +609,10 @@ export default defineComponent({
 		will-change: left, right;
 	}
 
+	&>.con-slot-tabs.tabs-fixed-height {
+		flex-grow: 1;
+	}
+
 
 	&--card {
 		box-shadow: -var("elevated-1");

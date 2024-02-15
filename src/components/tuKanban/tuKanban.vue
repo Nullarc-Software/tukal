@@ -5,8 +5,10 @@
 		</div>
 
 		<div class="tu-kanban-main" :id="`tu-kanban-${id}`">
-			<div v-for="field in     fields    " class="text-center tu-kanban-category" @dragenter.prevent @dragover.prevent
-				@drop="onDrop($event, field.fieldName)">
+			<div v-for="field in fields" class="text-center tu-kanban-category" @dragenter.prevent @dragover.prevent
+				@drop="onDrop($event, field.fieldName)"
+				:style="getStyle(field)"
+				>
 				<div class="tu-kanban-header">
 					{{ field.title }}
 					<span class="multiselect-badge"
@@ -124,6 +126,35 @@ export default defineComponent({
 			load = new TuLoading(attrs);
 		}
 
+		function getStyle (field: TuKanbanField) {
+			const index = _.findIndex(props.fields, (x) => x.fieldName === field.fieldName);
+			if (index === 0) {
+				return {
+					"border-left": "1px solid var(--tu-gray-2)",
+    				"border-right": "1px solid var(--tu-gray-2)",
+					"border-bottom": "1px solid var(--tu-gray-2)",
+					"border-top-left-radius": "14px",
+					"border-bottom-left-radius": "14px"
+				}
+			}
+			else if (index === props.fields.length - 1) {
+				return {
+					"border-left": "1px solid var(--tu-gray-2)",
+    				"border-right": "1px solid var(--tu-gray-2)",
+					"border-bottom": "1px solid var(--tu-gray-2)",
+					"border-top-right-radius": "14px",
+					"border-bottom-right-radius": "14px"
+				}
+			}
+			else {
+				return {
+					"border-left": "1px solid var(--tu-gray-2)",
+    				"border-right": "1px solid var(--tu-gray-2)",
+					"border-bottom": "1px solid var(--tu-gray-2)"
+				}
+			}
+		}
+
 		watch(search, () => {
 			setLoading()
 			if (_.isEmpty(search.value)) {
@@ -148,7 +179,7 @@ export default defineComponent({
 				return selectedItems.value.find(obj => obj.id === index);
 			};
 		});
-		return { dropIndex, id, kanban, search, itemsOfCategories, startDrag, dragIndex, onDrop, dragItem, isDrag, selectItem, isSelected, selectedItems, currentItems }
+		return { dropIndex, id, kanban, search, itemsOfCategories, startDrag, dragIndex, onDrop, dragItem, isDrag, selectItem, isSelected, selectedItems, currentItems, getStyle }
 	},
 })
 </script>
@@ -170,7 +201,7 @@ export default defineComponent({
 
 .tu-kanban-main {
 	display: flex;
-	max-height: 80%;
+	height: 100%
 }
 
 .tu-kanban-category {
