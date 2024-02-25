@@ -34,12 +34,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, reactive, ref, watch, Ref, onMounted, computed } from 'vue'
-import { groupBy, sliceIntoChunks, TuKanbanItem, TuKanbanField } from "./utils"
+import { defineComponent, PropType, reactive, ref, watch, Ref, onMounted, computed } from "vue";
+import { groupBy, sliceIntoChunks, TuKanbanItem, TuKanbanField } from "./utils";
 import tuInput from "../tuInput";
 import tuIcon from "../tuIcon";
 import _color from "../../utils/color";
-import { TuLoading, TuLoadingAttributes } from '../tuLoading';
+import { TuLoading, TuLoadingAttributes } from "../tuLoading";
 import _ from "lodash";
 
 export default defineComponent({
@@ -74,7 +74,7 @@ export default defineComponent({
 					params: {},
 					method: "GET",
 					headers: {}
-				}
+				};
 			}
 		},
 		modelValue: {}
@@ -82,15 +82,15 @@ export default defineComponent({
 	emits: ["onDrag", "update:modelValue"],
 	setup(props, context) {
 		let id = Math.floor(Math.random() * 100);
-		let kanban = ref()
-		let isDrag = ref(false)
+		let kanban = ref();
+		let isDrag = ref(false);
 		let dragItem = ref(null);
 		let dragIndex = ref(null);
-		let dropIndex = ref(null)
+		let dropIndex = ref(null);
 		let dropCategory = ref(null);
 		let currentItems = ref(props.items);
 
-		let itemsOfCategories = reactive({ fields: groupBy(props.items, 'fieldname', "noOfRows", props.fields) });
+		let itemsOfCategories = reactive({ fields: groupBy(props.items, "fieldname", "noOfRows", props.fields) });
 		let search = ref("");
 		let selectedItems = ref([]);
 		let selectedField = ref(null);
@@ -99,22 +99,22 @@ export default defineComponent({
 
 			evt.dataTransfer.effectAllowed = "copyMove";
 			item.selected = true;
-		}
+		};
 
 		let onDrop = (evebt: DragEvent, fieldName: string) => {
 
 			_.each(currentItems.value, (item) => {
 				if (item.selected) {
 					item.fieldName = fieldName,
-						item.selected = false;
+					item.selected = false;
 				}
 			});
 
 			console.log(props.items);
 			console.log(currentItems.value);
-			context.emit("update:modelValue", props.items)
+			context.emit("update:modelValue", props.items);
 
-		}
+		};
 		let load: TuLoading = null;
 		function setLoading() {
 			const attrs: TuLoadingAttributes = {
@@ -131,57 +131,57 @@ export default defineComponent({
 			if (index === 0) {
 				return {
 					"border-left": "1px solid var(--tu-gray-2)",
-    				"border-right": "1px solid var(--tu-gray-2)",
+					"border-right": "1px solid var(--tu-gray-2)",
 					"border-bottom": "1px solid var(--tu-gray-2)",
 					"border-top-left-radius": "14px",
 					"border-bottom-left-radius": "14px"
-				}
+				};
 			}
 			else if (index === props.fields.length - 1) {
 				return {
 					"border-left": "1px solid var(--tu-gray-2)",
-    				"border-right": "1px solid var(--tu-gray-2)",
+					"border-right": "1px solid var(--tu-gray-2)",
 					"border-bottom": "1px solid var(--tu-gray-2)",
 					"border-top-right-radius": "14px",
 					"border-bottom-right-radius": "14px"
-				}
+				};
 			}
 			else {
 				return {
 					"border-left": "1px solid var(--tu-gray-2)",
-    				"border-right": "1px solid var(--tu-gray-2)",
+					"border-right": "1px solid var(--tu-gray-2)",
 					"border-bottom": "1px solid var(--tu-gray-2)"
-				}
+				};
 			}
 		}
 
 		watch(search, () => {
-			setLoading()
-			if (_.isEmpty(search.value)) {
+			setLoading();
+			if (_.isEmpty(search.value)) 
 				currentItems.value = props.items;
-			}
+			
 			else {
 
 				currentItems.value = _.filter(props.items, (x: TuKanbanItem) =>
 					x.content.toLowerCase().includes(search.value.toLowerCase())
-				)
+				);
 			}
-			load.close()
+			load.close();
 		});
 
 		let selectItem = (item: TuKanbanItem) => {
-			if (props.multiSelect) {
+			if (props.multiSelect) 
 				item.selected = !item.selected;
-			}
-		}
+			
+		};
 		const isSelected = computed(() => {
 			return (index) => {
 				return selectedItems.value.find(obj => obj.id === index);
 			};
 		});
-		return { dropIndex, id, kanban, search, itemsOfCategories, startDrag, dragIndex, onDrop, dragItem, isDrag, selectItem, isSelected, selectedItems, currentItems, getStyle }
+		return { dropIndex, id, kanban, search, itemsOfCategories, startDrag, dragIndex, onDrop, dragItem, isDrag, selectItem, isSelected, selectedItems, currentItems, getStyle };
 	},
-})
+});
 </script>
 
 <style scoped lang="scss">

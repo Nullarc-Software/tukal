@@ -155,6 +155,7 @@ export default defineComponent({
 		dropdown: { type: Boolean, default: false },
 		inline: { type: Boolean, default: false },
 		filter: { type: Boolean, default: false },
+		dynamicFilter: { type: Boolean, default: false },
 		addValue: { type: Boolean, default: false },
 		placeholder: { type: String, default: "" },
 		labelPlaceholder: { type: String, default: "" },
@@ -225,7 +226,7 @@ export default defineComponent({
 		const targetClose = ref(false);
 		const activeFilter = ref(false);
 		const chipsHovered = ref(false);
-		const textFilter = ref<String>();
+		const textFilter = ref<string>();
 		const childVisibles = ref(0);
 
 		// Template refs
@@ -240,7 +241,7 @@ export default defineComponent({
 		const instance = getCurrentInstance();
 
 		const setHover = function () {
-			let index: number = -1;
+			let index = -1;
 			childOptions.value.forEach((item: any, i: number) => {
 				if (item.value === props.modelValue) index = i;
 			});
@@ -529,6 +530,8 @@ export default defineComponent({
 				// blur: this.blur,
 				input: (evt: any) => {
 					textFilter.value = evt.target.value;
+					if (props.dynamicFilter) 
+						context.emit("filterUpdated", textFilter.value);
 				}
 			};
 		});

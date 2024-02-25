@@ -3,8 +3,8 @@
 		<svg class="vch__wrapper" ref="svg" :viewBox="viewbox">
 			<g class="vch__months__labels__wrapper" :transform="monthsLabelWrapperTransform">
 				<text class="vch__month__label" v-for="(month, index) in heatmap.firstFullWeekOfMonths" :key="index"
-					:x="getMonthLabelPosition(month).x" :y="getMonthLabelPosition(month).y">
-					{{ lo.months[month.value] }}
+					:x="getMonthLabelPosition(month).x" :y="getMonthLabelPosition(month).y" >
+					{{ lo.months[month['value']] }}
 				</text>
 			</g>
 
@@ -73,16 +73,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, nextTick, onBeforeUnmount, onMounted, PropType, ref, toRef, toRefs, watch } from 'vue';
-import { Activity, Heatmap, TuHeatmapCalendarItem, TuHeatmapLocale, TuHeatmapMonth, TuHeatmapTooltipFormatter, TuHeatmapValue } from './Heatmap';
-import tippy, { createSingleton, CreateSingletonInstance, Instance } from 'tippy.js';
+import { defineComponent, nextTick, onBeforeUnmount, onMounted, PropType, ref, toRef, toRefs, watch } from "vue";
+import { Activity, Heatmap, TuHeatmapCalendarItem, TuHeatmapLocale, TuHeatmapMonth, TuHeatmapTooltipFormatter, TuHeatmapValue } from "./Heatmap";
+import tippy, { createSingleton, CreateSingletonInstance, Instance } from "tippy.js";
 import tuComponent from "../tuComponent";
-import 'tippy.js/dist/tippy.css';
-import 'tippy.js/dist/svg-arrow.css';
+import "tippy.js/dist/tippy.css";
+import "tippy.js/dist/svg-arrow.css";
 
 export default /*#__PURE__*/defineComponent({
 	extends: tuComponent,
-	name: 'CalendarHeatmap',
+	name: "CalendarHeatmap",
 	props: {
 		endDate: {
 			required: true
@@ -92,7 +92,7 @@ export default /*#__PURE__*/defineComponent({
 		},
 		rangeColor: {
 			type: Array as PropType<string[]>,
-			default: ["var(--tu-gray-2)", "#195bff1a", "#195bff4d", "#195bff99", "#195bffcc", "#195bff"]
+			default: () => ["var(--tu-gray-2)", "#195bff1a", "#195bff4d", "#195bff99", "#195bffcc", "#195bff"]
 		},
 		values: {
 			type: Array as PropType<TuHeatmapValue[]>,
@@ -129,7 +129,7 @@ export default /*#__PURE__*/defineComponent({
 			default: false
 		}
 	},
-	emits: ['dayClick'],
+	emits: ["dayClick"],
 	setup(props) {
 
 		const SQUARE_BORDER_SIZE = Heatmap.SQUARE_SIZE / 5,
@@ -146,11 +146,11 @@ export default /*#__PURE__*/defineComponent({
 
 			width = ref(0),
 			height = ref(0),
-			viewbox = ref('0 0 0 0'),
-			legendViewbox = ref('0 0 0 0'),
-			daysLabelWrapperTransform = ref(''),
-			monthsLabelWrapperTransform = ref(''),
-			legendWrapperTransform = ref(''),
+			viewbox = ref("0 0 0 0"),
+			legendViewbox = ref("0 0 0 0"),
+			daysLabelWrapperTransform = ref(""),
+			monthsLabelWrapperTransform = ref(""),
+			legendWrapperTransform = ref(""),
 			lo = ref<TuHeatmapLocale>({} as any),
 			rangeColor = ref<string[]>(props.rangeColor || (props.dark ? Heatmap.DEFAULT_RANGE_COLOR_DARK : Heatmap.DEFAULT_RANGE_COLOR_LIGHT));
 		const { values, tooltipUnit, tooltipFormatter, noDataText, max, vertical, locale } = toRefs(props);
@@ -159,55 +159,56 @@ export default /*#__PURE__*/defineComponent({
 			tippySingleton: CreateSingletonInstance;
 
 		function initTippy() {
-			tippyInstances = tippy(Array.from(svg.value!.querySelectorAll('.vch__day__square[data-tippy-content]')));
-			if (tippySingleton) {
+			tippyInstances = tippy(Array.from(svg.value!.querySelectorAll(".vch__day__square[data-tippy-content]")));
+			if (tippySingleton) 
 				tippySingleton.setInstances(tippyInstances);
-			} else {
+			else {
 				tippySingleton = createSingleton(tippyInstances, {
-					moveTransition: 'transform 0.1s ease-out',
+					moveTransition: "transform 0.1s ease-out",
 					allowHTML: true
 				});
 			}
 		}
 
 		function tooltipOptions(day: TuHeatmapCalendarItem) {
-			if (typeof (day.date) === 'string') {
-				day.date = new Date(`${day.date}`)
-			}
+			if (typeof (day.date) === "string") 
+				day.date = new Date(`${day.date}`);
+			
 			if (props.tooltip) {
 				if (day.count !== undefined) {
-					if (props.tooltipFormatter) {
+					if (props.tooltipFormatter) 
 						return props.tooltipFormatter(day, props.tooltipUnit);
-					}
+					
 					return `<b>${day.count} ${props.tooltipUnit}</b> ${lo.value.on} ${lo.value.months[day.date.getMonth()]} ${day.date.getDate()}, ${day.date.getFullYear()}`;
-				} else if (props.noDataText) {
-					return `<b>${props.noDataText}</b> ${lo.value.on} ${lo.value.months[day.date.getMonth()]} ${day.date.getDate()}, ${day.date.getFullYear()}`;
-				} else if (props.noDataText !== false) {
-					return `<b>No ${props.tooltipUnit}</b> ${lo.value.on} ${lo.value.months[day.date.getMonth()]} ${day.date.getDate()}, ${day.date.getFullYear()}`;
 				}
+				else if (props.noDataText) 
+					return `<b>${props.noDataText}</b> ${lo.value.on} ${lo.value.months[day.date.getMonth()]} ${day.date.getDate()}, ${day.date.getFullYear()}`;
+				else if (props.noDataText !== false) 
+					return `<b>No ${props.tooltipUnit}</b> ${lo.value.on} ${lo.value.months[day.date.getMonth()]} ${day.date.getDate()}, ${day.date.getFullYear()}`;
+				
 			}
 			return undefined;
 		}
 
 		function getWeekPosition(index: number): string {
 
-			if (props.vertical) {
+			if (props.vertical) 
 				return `translate(0, ${(SQUARE_SIZE * heatmap.value.weekCount) - ((index + 1) * SQUARE_SIZE)})`;
-			}
+			
 			return `translate(${index * SQUARE_SIZE}, 0)`;
 		}
 
 		function getDayPosition(index: number) {
-			if (props.vertical) {
+			if (props.vertical) 
 				return `translate(${index * SQUARE_SIZE}, 0)`;
-			}
+			
 			return `translate(0, ${index * SQUARE_SIZE})`;
 		}
 
 		function getMonthLabelPosition(month: TuHeatmapMonth) {
-			if (props.vertical) {
+			if (props.vertical) 
 				return { x: 3, y: (SQUARE_SIZE * heatmap.value.weekCount) - (SQUARE_SIZE * (month.index)) - (SQUARE_SIZE / 4) };
-			}
+			
 			return { x: SQUARE_SIZE * month.index, y: SQUARE_SIZE - SQUARE_BORDER_SIZE };
 		}
 
@@ -221,7 +222,8 @@ export default /*#__PURE__*/defineComponent({
 				height.value = TOP_SECTION_HEIGHT + (SQUARE_SIZE * heatmap.value.weekCount) + SQUARE_BORDER_SIZE;
 				daysLabelWrapperTransform.value = `translate(${LEFT_SECTION_WIDTH}, 0)`;
 				monthsLabelWrapperTransform.value = `translate(0, ${TOP_SECTION_HEIGHT})`;
-			} else {
+			}
+			else {
 				width.value = LEFT_SECTION_WIDTH + (SQUARE_SIZE * heatmap.value.weekCount) + SQUARE_BORDER_SIZE;
 				height.value = TOP_SECTION_HEIGHT + (SQUARE_SIZE * Heatmap.DAYS_IN_WEEK);
 				daysLabelWrapperTransform.value = `translate(0, ${TOP_SECTION_HEIGHT})`;

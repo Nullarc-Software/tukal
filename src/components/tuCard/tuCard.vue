@@ -52,7 +52,11 @@ export default defineComponent({
 		fillParent: { type: Boolean, default: false },
 		backgroundColor: { type: String, default: "0x00000011" }
 	},
-	setup(props, context) { }
+	setup(props, context) { 
+		return {
+			
+		};
+	}
 });
 </script>
 

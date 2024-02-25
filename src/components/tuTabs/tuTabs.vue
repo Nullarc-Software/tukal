@@ -317,7 +317,7 @@ export default defineComponent({
 
 			if (props.tabStyle !== "progress")
 				changePositionLine(elem, initialAnimation);
-		}
+		};
 
 		const activeChild = function (index, initialAnimation?) {
 
@@ -429,17 +429,17 @@ export default defineComponent({
 		function findMatchingPath(inputPath: string, pathsToCompare: string[]): { type: string, path: string, index: number } | undefined {
 			// Find exact matches
 			const exactMatch = pathsToCompare.find(path => path === inputPath);
-			if (exactMatch) {
-				return { type: 'exact', path: exactMatch, index: pathsToCompare.indexOf(exactMatch) };
-			}
+			if (exactMatch) 
+				return { type: "exact", path: exactMatch, index: pathsToCompare.indexOf(exactMatch) };
+			
 
 			// Find prefix matches
 			const prefixMatch = pathsToCompare.find(path =>
-				inputPath.startsWith(path) && (inputPath.charAt(path.length) === '/' || inputPath.length === path.length + 1)
+				inputPath.startsWith(path) && (inputPath.charAt(path.length) === "/" || inputPath.length === path.length + 1)
 			);
-			if (prefixMatch) {
-				return { type: 'prefix', path: prefixMatch, index: pathsToCompare.indexOf(prefixMatch) };
-			}
+			if (prefixMatch) 
+				return { type: "prefix", path: prefixMatch, index: pathsToCompare.indexOf(prefixMatch) };
+			
 
 			// No match found
 			return undefined;
@@ -456,29 +456,29 @@ export default defineComponent({
 						return actualPath;
 					}));
 
-					if (tabMatched && reactiveData.childActive !== tabMatched.index) {
+					if (tabMatched && reactiveData.childActive !== tabMatched.index) 
 						activeIndex = tabMatched.index;
-					}
+					
 					routerHook = ComponentConstants.router.afterEach((to, from) => {
 						if (props.routerModeParams?.baseRoute) {
-							if (to.fullPath === props.routerModeParams.baseRoute && !props.routerModeParams.preventAutoRedirect) {
+							if (to.fullPath === props.routerModeParams.baseRoute && !props.routerModeParams.preventAutoRedirect) 
 								activeChild(0, true);
-							}
+							
 							else {
 								const targetPath = to.fullPath.replace(props.routerModeParams.baseRoute, "");
 								const tabMatched = findMatchingPath(targetPath, reactiveData.children.map(child => child.to));
-								if (tabMatched && reactiveData.childActive !== tabMatched.index) {
+								if (tabMatched && reactiveData.childActive !== tabMatched.index) 
 									setActiveTab(tabMatched.index);
-								}
+								
 							}
 						}
 						else {
 							const tabMatched = _.findIndex(reactiveData.children, { to: to.fullPath });
-							if (tabMatched !== -1 && reactiveData.childActive !== tabMatched) {
+							if (tabMatched !== -1 && reactiveData.childActive !== tabMatched) 
 								setActiveTab(tabMatched);
-							}
+							
 						}
-					})
+					});
 
 				}
 			}
@@ -489,10 +489,10 @@ export default defineComponent({
 		});
 
 		onUnmounted(() => {
-			if (routerHook) {
+			if (routerHook) 
 				routerHook();
-			}
-		})
+			
+		});
 
 		watch(
 			() => props.modelValue,
@@ -507,7 +507,7 @@ export default defineComponent({
 
 		const overallStyles = {
 
-		}
+		};
 
 
 		return {

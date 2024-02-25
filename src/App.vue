@@ -1063,11 +1063,11 @@ export default defineComponent({
 		const selectValue2 = ref("1");
 		const selectValue1 = ref("");
 		const page = ref(1);
-		const intervals = ref([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 1])
+		const intervals = ref([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 1]);
 		let func = () => {
-			intervals.value.push(1)
-		}
-		setInterval(func, 10000)
+			intervals.value.push(1);
+		};
+		setInterval(func, 10000);
 		const kanbanItems = [
 			{
 				id: 1,
@@ -1146,7 +1146,7 @@ export default defineComponent({
 				image: "https://blog.mozilla.org/opendesign/files/2018/07/firefox-logo.png",
 				fieldName: "Neutral"
 			}
-		]
+		];
 		const currentItemsRef = ref();
 		const kanbanCategories = [
 			{
@@ -1161,7 +1161,7 @@ export default defineComponent({
 				title: "Neutral",
 				fieldName: "Neutral"
 			}
-		]
+		];
 		const barItems = ref([
 			{
 				name: "Google Chrome",
@@ -1203,13 +1203,13 @@ export default defineComponent({
 				name: "Bikes",
 				time: 1,
 			},
-		])
+		]);
 
 		setTimeout(() => {
 			barItems.value.push({
 				name: "SomethingElse",
 				time: 10,
-			})
+			});
 		}, 5000);
 
 
@@ -1219,7 +1219,7 @@ export default defineComponent({
 				description: "Lorem ipsum dolor  elit. Sed qui veroes praesentium maiores, sint eos vero sapiente voluptas debitis dicta dolore Lorem ipsum dolor  elit. Sed qui veroes praesentium maiores, sint eos vero",
 				date: "07:50",
 				color: "danger",
-				icon: 'file_copy',
+				icon: "file_copy",
 				url: "https://www.youtube.com/watch?v=ElZfdU54Cp8&ab_channel=ZeeMusicCompany"
 			},
 			{
@@ -1227,7 +1227,7 @@ export default defineComponent({
 				description: "Lorem ipsum adipisicing elit. Sed qui veroes praesentium maiores, sint eos vero sapiente voluptas debitis dicta dolore.",
 				date: "07:50",
 				color: "success",
-				icon: 'alarm',
+				icon: "alarm",
 				url: "/test"
 			},
 			{
@@ -1235,7 +1235,7 @@ export default defineComponent({
 				description: "Lorem ipsum  adipisicing elit. Sed qui veroes praesentium maiores, sint eos vero sapiente voluptas debitis dicta dolore.",
 				date: "07:50",
 				color: "warn",
-				icon: 'anchor',
+				icon: "anchor",
 				url: "/test"
 			},
 			{
@@ -1243,7 +1243,7 @@ export default defineComponent({
 				description: "Lorem ipsum dolor  elit. Sed qui veroes praesentium maiores, sint eos vero sapiente voluptas debitis dicta dolore Lorem ipsum dolor  elit. Sed qui veroes praesentium maiores, sint eos vero",
 				date: "07:50",
 				color: "danger",
-				icon: 'file_copy',
+				icon: "file_copy",
 				url: "https://www.youtube.com/watch?v=ElZfdU54Cp8&ab_channel=ZeeMusicCompany"
 			},
 			{
@@ -1251,7 +1251,7 @@ export default defineComponent({
 				description: "Lorem ipsum adipisicing elit. Sed qui veroes praesentium maiores, sint eos vero sapiente voluptas debitis dicta dolore.",
 				date: "07:50",
 				color: "success",
-				icon: 'alarm',
+				icon: "alarm",
 				url: "/test"
 			},
 			{
@@ -1259,7 +1259,7 @@ export default defineComponent({
 				description: "Lorem ipsum  adipisicing elit. Sed qui veroes praesentium maiores, sint eos vero sapiente voluptas debitis dicta dolore.",
 				date: "07:50",
 				color: "warn",
-				icon: 'anchor',
+				icon: "anchor",
 				url: "/test"
 			},
 			{
@@ -1267,7 +1267,7 @@ export default defineComponent({
 				description: "Lorem ipsum dolor  elit. Sed qui veroes praesentium maiores, sint eos vero sapiente voluptas debitis dicta dolore Lorem ipsum dolor  elit. Sed qui veroes praesentium maiores, sint eos vero",
 				date: "07:50",
 				color: "danger",
-				icon: 'file_copy',
+				icon: "file_copy",
 				url: "https://www.youtube.com/watch?v=ElZfdU54Cp8&ab_channel=ZeeMusicCompany"
 			},
 			{
@@ -1275,7 +1275,7 @@ export default defineComponent({
 				description: "Lorem ipsum adipisicing elit. Sed qui veroes praesentium maiores, sint eos vero sapiente voluptas debitis dicta dolore.",
 				date: "07:50",
 				color: "success",
-				icon: 'alarm',
+				icon: "alarm",
 				url: "/test"
 			},
 			{
@@ -1283,7 +1283,7 @@ export default defineComponent({
 				description: "Lorem ipsum  adipisicing elit. Sed qui veroes praesentium maiores, sint eos vero sapiente voluptas debitis dicta dolore.",
 				date: "07:50",
 				color: "warn",
-				icon: 'anchor',
+				icon: "anchor",
 				url: "/test"
 			},
 			{
@@ -1291,7 +1291,7 @@ export default defineComponent({
 				description: "Lorem ipsum dolor  elit. Sed qui veroes praesentium maiores, sint eos vero sapiente voluptas debitis dicta dolore Lorem ipsum dolor  elit. Sed qui veroes praesentium maiores, sint eos vero",
 				date: "07:50",
 				color: "danger",
-				icon: 'file_copy',
+				icon: "file_copy",
 				url: "https://www.youtube.com/watch?v=ElZfdU54Cp8&ab_channel=ZeeMusicCompany"
 			},
 			{
@@ -1299,7 +1299,7 @@ export default defineComponent({
 				description: "Lorem ipsum adipisicing elit. Sed qui veroes praesentium maiores, sint eos vero sapiente voluptas debitis dicta dolore.",
 				date: "07:50",
 				color: "success",
-				icon: 'alarm',
+				icon: "alarm",
 				url: "/test"
 			},
 			{
@@ -1307,10 +1307,10 @@ export default defineComponent({
 				description: "Lorem ipsum  adipisicing elit. Sed qui veroes praesentium maiores, sint eos vero sapiente voluptas debitis dicta dolore.",
 				date: "07:50",
 				color: "warn",
-				icon: 'anchor',
+				icon: "anchor",
 				url: "/test"
 			}
-		]
+		];
 
 		const cronValue = ref();
 		const customLocale = {
@@ -1384,7 +1384,7 @@ export default defineComponent({
 					"*": { prefix: "y" }
 				}
 			}
-		}
+		};
 
 		const routerTabParams: TuTabsRouterParams = {
 			tabs: [
@@ -1401,7 +1401,7 @@ export default defineComponent({
 					to: "/test2"
 				},
 			],
-		}
+		};
 		const tabsRouter2 = [
 			{
 
@@ -1427,7 +1427,7 @@ export default defineComponent({
 				name: "di",
 				to: "/test22"
 			}
-		]
+		];
 		const tabs: TuTabsChildData[] = [
 			{
 				id: 1,
@@ -1439,7 +1439,7 @@ export default defineComponent({
 				label: "Service",
 				name: "sa"
 			}
-		]
+		];
 		const Export: ExportData = new ExportData();
 		const rowClicked = (tr) => {
 			console.log(tr);
@@ -1734,9 +1734,9 @@ export default defineComponent({
 		const numPages = ref(Math.ceil(users.length / 3));
 
 		const generateRandomDOB = (): string => {
-			const random = getRandomDate(new Date('1950-02-12T01:57:45.271Z'), new Date('2022-02-12T01:57:45.271Z'))
+			const random = getRandomDate(new Date("1950-02-12T01:57:45.271Z"), new Date("2022-02-12T01:57:45.271Z"));
 			return random.toISOString();
-		}
+		};
 
 		function getRandomDate(from: Date, to: Date) {
 			const fromTime = from.getTime();
@@ -1802,7 +1802,7 @@ export default defineComponent({
 				ajaxUrl: "http://universities.hipolabs.com/search?country=Singapore",
 				method: "GET"
 			}
-		}
+		};
 
 		/*
 		const treeSelectedItems = ref<TuTreeViewItemDefn[]>([]);
@@ -1851,7 +1851,7 @@ export default defineComponent({
 				document.body.classList.remove("tu-dark-theme");
 			else
 				document.body.classList.add("tu-dark-theme");
-		})
+		});
 
 		const checkedNodes = ref();
 		const nodes = ref();
@@ -1892,839 +1892,839 @@ export default defineComponent({
 		]);
 
 		watch(checkedNodes, () => {
-			console.log(checkedNodes.value)
-		})
+			console.log(checkedNodes.value);
+		});
 		let calendarData = reactive([
 			{
-				'date': '2019-11-30T23:00:00Z',
-				'count': 635
+				"date": "2019-11-30T23:00:00Z",
+				"count": 635
 			},
 			{
-				'date': '2020-12-02T23:00:00Z',
-				'count': 244
+				"date": "2020-12-02T23:00:00Z",
+				"count": 244
 			},
 			{
-				'date': '2020-12-03T23:00:00Z',
-				'count': 672
+				"date": "2020-12-03T23:00:00Z",
+				"count": 672
 			},
 			{
-				'date': '2020-12-04T23:00:00Z',
-				'count': 912
+				"date": "2020-12-04T23:00:00Z",
+				"count": 912
 			},
 			{
-				'date': '2020-12-06T23:00:00Z',
-				'count': 856
+				"date": "2020-12-06T23:00:00Z",
+				"count": 856
 			},
 			{
-				'date': '2020-12-07T23:00:00Z',
-				'count': 273
+				"date": "2020-12-07T23:00:00Z",
+				"count": 273
 			},
 			{
-				'date': '2020-12-08T23:00:00Z',
-				'count': 252
+				"date": "2020-12-08T23:00:00Z",
+				"count": 252
 			},
 			{
-				'date': '2020-12-11T23:00:00Z',
-				'count': 643
+				"date": "2020-12-11T23:00:00Z",
+				"count": 643
 			},
 			{
-				'date': '2020-12-13T23:00:00Z',
-				'count': 423
+				"date": "2020-12-13T23:00:00Z",
+				"count": 423
 			},
 			{
-				'date': '2020-12-14T23:00:00Z',
-				'count': 246
+				"date": "2020-12-14T23:00:00Z",
+				"count": 246
 			},
 			{
-				'date': '2020-12-15T23:00:00Z',
-				'count': 26
+				"date": "2020-12-15T23:00:00Z",
+				"count": 26
 			},
 			{
-				'date': '2020-12-17T23:00:00Z',
-				'count': 372
+				"date": "2020-12-17T23:00:00Z",
+				"count": 372
 			},
 			{
-				'date': '2020-12-18T23:00:00Z',
-				'count': 518
+				"date": "2020-12-18T23:00:00Z",
+				"count": 518
 			},
 			{
-				'date': '2020-12-19T23:00:00Z',
-				'count': 309
+				"date": "2020-12-19T23:00:00Z",
+				"count": 309
 			},
 			{
-				'date': '2020-12-20T23:00:00Z',
-				'count': 677
+				"date": "2020-12-20T23:00:00Z",
+				"count": 677
 			},
 			{
-				'date': '2020-12-21T23:00:00Z',
-				'count': 431
+				"date": "2020-12-21T23:00:00Z",
+				"count": 431
 			},
 			{
-				'date': '2020-12-23T23:00:00Z',
-				'count': 513
+				"date": "2020-12-23T23:00:00Z",
+				"count": 513
 			},
 			{
-				'date': '2020-12-25T23:00:00Z',
-				'count': 748
+				"date": "2020-12-25T23:00:00Z",
+				"count": 748
 			},
 			{
-				'date': '2020-12-26T23:00:00Z',
-				'count': 215
+				"date": "2020-12-26T23:00:00Z",
+				"count": 215
 			},
 			{
-				'date': '2020-12-27T23:00:00Z',
-				'count': 318
+				"date": "2020-12-27T23:00:00Z",
+				"count": 318
 			},
 			{
-				'date': '2020-12-29T23:00:00Z',
-				'count': 457
+				"date": "2020-12-29T23:00:00Z",
+				"count": 457
 
 			},
 			{
-				'date': '2020-12-30T23:00:00Z',
-				'count': 297
+				"date": "2020-12-30T23:00:00Z",
+				"count": 297
 
 			},
 			{
-				'date': '2021-01-01T23:00:00Z',
-				'count': 915
+				"date": "2021-01-01T23:00:00Z",
+				"count": 915
 
 			},
 			{
-				'date': '2021-01-04T23:00:00Z',
-				'count': 385
+				"date": "2021-01-04T23:00:00Z",
+				"count": 385
 
 			},
 			{
-				'date': '2021-01-06T23:00:00Z',
-				'count': 359
+				"date": "2021-01-06T23:00:00Z",
+				"count": 359
 
 			},
 			{
-				'date': '2021-01-07T23:00:00Z',
-				'count': 113
+				"date": "2021-01-07T23:00:00Z",
+				"count": 113
 
 			},
 			{
-				'date': '2021-01-09T23:00:00Z',
-				'count': 228
+				"date": "2021-01-09T23:00:00Z",
+				"count": 228
 
 			},
 			{
-				'date': '2021-01-10T23:00:00Z',
-				'count': 603
+				"date": "2021-01-10T23:00:00Z",
+				"count": 603
 
 			},
 			{
-				'date': '2021-01-14T23:00:00Z',
-				'count': 407
+				"date": "2021-01-14T23:00:00Z",
+				"count": 407
 
 			},
 			{
-				'date': '2021-01-17T23:00:00Z',
-				'count': 478
+				"date": "2021-01-17T23:00:00Z",
+				"count": 478
 
 			},
 			{
-				'date': '2021-01-18T23:00:00Z',
-				'count': 797
+				"date": "2021-01-18T23:00:00Z",
+				"count": 797
 
 			},
 			{
-				'date': '2021-01-19T23:00:00Z',
-				'count': 938
+				"date": "2021-01-19T23:00:00Z",
+				"count": 938
 
 			},
 			{
-				'date': '2021-01-20T23:00:00Z',
-				'count': 139
+				"date": "2021-01-20T23:00:00Z",
+				"count": 139
 
 			},
 			{
-				'date': '2021-01-21T23:00:00Z',
-				'count': 372
+				"date": "2021-01-21T23:00:00Z",
+				"count": 372
 
 			},
 			{
-				'date': '2021-01-23T23:00:00Z',
-				'count': 344
+				"date": "2021-01-23T23:00:00Z",
+				"count": 344
 
 			},
 			{
-				'date': '2021-01-24T23:00:00Z',
-				'count': 294
+				"date": "2021-01-24T23:00:00Z",
+				"count": 294
 
 			},
 			{
-				'date': '2021-01-25T23:00:00Z',
-				'count': 37
+				"date": "2021-01-25T23:00:00Z",
+				"count": 37
 
 			},
 			{
-				'date': '2021-01-26T23:00:00Z',
-				'count': 386
+				"date": "2021-01-26T23:00:00Z",
+				"count": 386
 
 			},
 			{
-				'date': '2021-01-27T23:00:00Z',
-				'count': 40
+				"date": "2021-01-27T23:00:00Z",
+				"count": 40
 
 			},
 			{
-				'date': '2021-01-28T23:00:00Z',
-				'count': 639
+				"date": "2021-01-28T23:00:00Z",
+				"count": 639
 
 			},
 			{
-				'date': '2021-01-29T23:00:00Z',
-				'count': 535
+				"date": "2021-01-29T23:00:00Z",
+				"count": 535
 
 			},
 			{
-				'date': '2021-02-02T23:00:00Z',
-				'count': 550
+				"date": "2021-02-02T23:00:00Z",
+				"count": 550
 
 			},
 			{
-				'date': '2021-02-04T23:00:00Z',
-				'count': 371
+				"date": "2021-02-04T23:00:00Z",
+				"count": 371
 
 			},
 			{
-				'date': '2021-02-05T23:00:00Z',
-				'count': 32
+				"date": "2021-02-05T23:00:00Z",
+				"count": 32
 
 			},
 			{
-				'date': '2021-02-17T23:00:00Z',
-				'count': 386
+				"date": "2021-02-17T23:00:00Z",
+				"count": 386
 			},
 			{
-				'date': '2021-02-18T23:00:00Z',
-				'count': 1413000
+				"date": "2021-02-18T23:00:00Z",
+				"count": 1413000
 
 			},
 			{
-				'date': '2021-02-19T23:00:00Z',
-				'count': 1787000
+				"date": "2021-02-19T23:00:00Z",
+				"count": 1787000
 
 			},
 			{
-				'date': '2021-02-20T23:00:00Z',
-				'count': 1549000
+				"date": "2021-02-20T23:00:00Z",
+				"count": 1549000
 
 			},
 			{
-				'date': '2021-02-22T23:00:00Z',
-				'count': 5563000
+				"date": "2021-02-22T23:00:00Z",
+				"count": 5563000
 
 			},
 			{
-				'date': '2021-02-23T23:00:00Z',
-				'count': 5214000
+				"date": "2021-02-23T23:00:00Z",
+				"count": 5214000
 
 			},
 			{
-				'date': '2021-02-24T23:00:00Z',
-				'count': 3992000
+				"date": "2021-02-24T23:00:00Z",
+				"count": 3992000
 
 			},
 			{
-				'date': '2021-02-25T23:00:00Z',
-				'count': 2204000
+				"date": "2021-02-25T23:00:00Z",
+				"count": 2204000
 
 			},
 			{
-				'date': '2021-02-27T23:00:00Z',
-				'count': 4329000
+				"date": "2021-02-27T23:00:00Z",
+				"count": 4329000
 
 			},
 			{
-				'date': '2021-02-28T23:00:00Z',
-				'count': 3590000
+				"date": "2021-02-28T23:00:00Z",
+				"count": 3590000
 
 			},
 			{
-				'date': '2021-03-01T23:00:00Z',
-				'count': 315000
+				"date": "2021-03-01T23:00:00Z",
+				"count": 315000
 
 			},
 			{
-				'date': '2021-03-02T23:00:00Z',
-				'count': 385000
+				"date": "2021-03-02T23:00:00Z",
+				"count": 385000
 
 			},
 			{
-				'date': '2021-03-04T23:00:00Z',
-				'count': 4273000
+				"date": "2021-03-04T23:00:00Z",
+				"count": 4273000
 
 			},
 			{
-				'date': '2021-03-05T23:00:00Z',
-				'count': 4763000
+				"date": "2021-03-05T23:00:00Z",
+				"count": 4763000
 
 			},
 			{
-				'date': '2021-03-07T23:00:00Z',
-				'count': 2984000
+				"date": "2021-03-07T23:00:00Z",
+				"count": 2984000
 
 			},
 			{
-				'date': '2021-03-09T23:00:00Z',
-				'count': 6558000
+				"date": "2021-03-09T23:00:00Z",
+				"count": 6558000
 
 			},
 			{
-				'date': '2021-03-10T23:00:00Z',
-				'count': 3922000
+				"date": "2021-03-10T23:00:00Z",
+				"count": 3922000
 
 			},
 			{
-				'date': '2021-03-11T23:00:00Z',
-				'count': 6979000
+				"date": "2021-03-11T23:00:00Z",
+				"count": 6979000
 
 			},
 			{
-				'date': '2021-03-12T23:00:00Z',
-				'count': 7999000
+				"date": "2021-03-12T23:00:00Z",
+				"count": 7999000
 
 			},
 			{
-				'date': '2021-03-13T23:00:00Z',
-				'count': 883000
+				"date": "2021-03-13T23:00:00Z",
+				"count": 883000
 
 			},
 			{
-				'date': '2021-03-16T23:00:00Z',
-				'count': 5224000
+				"date": "2021-03-16T23:00:00Z",
+				"count": 5224000
 
 			},
 			{
-				'date': '2021-03-17T23:00:00Z',
-				'count': 379000
+				"date": "2021-03-17T23:00:00Z",
+				"count": 379000
 
 			},
 			{
-				'date': '2021-03-18T23:00:00Z',
-				'count': 3669000
+				"date": "2021-03-18T23:00:00Z",
+				"count": 3669000
 
 			},
 			{
-				'date': '2021-03-19T23:00:00Z',
-				'count': 4101000
+				"date": "2021-03-19T23:00:00Z",
+				"count": 4101000
 
 			},
 			{
-				'date': '2021-03-22T23:00:00Z',
-				'count': 1746000
+				"date": "2021-03-22T23:00:00Z",
+				"count": 1746000
 
 			},
 			{
-				'date': '2021-03-23T23:00:00Z',
-				'count': 7120000
+				"date": "2021-03-23T23:00:00Z",
+				"count": 7120000
 
 			},
 			{
-				'date': '2021-03-24T23:00:00Z',
-				'count': 2358000
+				"date": "2021-03-24T23:00:00Z",
+				"count": 2358000
 
 			},
 			{
-				'date': '2021-03-25T23:00:00Z',
-				'count': 4240000
+				"date": "2021-03-25T23:00:00Z",
+				"count": 4240000
 
 			},
 			{
-				'date': '2021-03-27T23:00:00Z',
-				'count': 4278000
+				"date": "2021-03-27T23:00:00Z",
+				"count": 4278000
 
 			},
 			{
-				'date': '2021-04-07T22:00:00Z',
-				'count': 7784000
+				"date": "2021-04-07T22:00:00Z",
+				"count": 7784000
 
 			},
 			{
-				'date': '2021-04-08T22:00:00Z',
-				'count': 4622000
+				"date": "2021-04-08T22:00:00Z",
+				"count": 4622000
 
 			},
 			{
-				'date': '2021-04-11T22:00:00Z',
-				'count': 1158000
+				"date": "2021-04-11T22:00:00Z",
+				"count": 1158000
 
 			},
 			{
-				'date': '2021-04-12T22:00:00Z',
-				'count': 3611000
+				"date": "2021-04-12T22:00:00Z",
+				"count": 3611000
 
 			},
 			{
-				'date': '2021-04-13T22:00:00Z',
-				'count': 3919999
+				"date": "2021-04-13T22:00:00Z",
+				"count": 3919999
 
 			},
 			{
-				'date': '2021-04-14T22:00:00Z',
-				'count': 2850000
+				"date": "2021-04-14T22:00:00Z",
+				"count": 2850000
 
 			},
 			{
-				'date': '2021-04-15T22:00:00Z',
-				'count': 2162000
+				"date": "2021-04-15T22:00:00Z",
+				"count": 2162000
 
 			},
 			{
-				'date': '2021-04-16T22:00:00Z',
-				'count': 7158999
+				"date": "2021-04-16T22:00:00Z",
+				"count": 7158999
 
 			},
 			{
-				'date': '2021-04-18T22:00:00Z',
-				'count': 1905999
+				"date": "2021-04-18T22:00:00Z",
+				"count": 1905999
 
 			},
 			{
-				'date': '2021-04-20T22:00:00Z',
-				'count': 380000
+				"date": "2021-04-20T22:00:00Z",
+				"count": 380000
 
 			},
 			{
-				'date': '2021-04-21T22:00:00Z',
-				'count': 592000
+				"date": "2021-04-21T22:00:00Z",
+				"count": 592000
 
 			},
 			{
-				'date': '2021-04-22T22:00:00Z',
-				'count': 3765000
+				"date": "2021-04-22T22:00:00Z",
+				"count": 3765000
 
 			},
 			{
-				'date': '2021-04-23T22:00:00Z',
-				'count': 1549000
+				"date": "2021-04-23T22:00:00Z",
+				"count": 1549000
 
 			},
 			{
-				'date': '2021-04-24T22:00:00Z',
-				'count': 824000
+				"date": "2021-04-24T22:00:00Z",
+				"count": 824000
 
 			},
 			{
-				'date': '2021-04-25T22:00:00Z',
-				'count': 249000
+				"date": "2021-04-25T22:00:00Z",
+				"count": 249000
 
 			},
 			{
-				'date': '2021-04-26T22:00:00Z',
-				'count': 1362000
+				"date": "2021-04-26T22:00:00Z",
+				"count": 1362000
 
 			},
 			{
-				'date': '2021-04-27T22:00:00Z',
-				'count': 297000
+				"date": "2021-04-27T22:00:00Z",
+				"count": 297000
 
 			},
 			{
-				'date': '2021-04-28T22:00:00Z',
-				'count': 379000
+				"date": "2021-04-28T22:00:00Z",
+				"count": 379000
 
 			},
 			{
-				'date': '2021-04-29T22:00:00Z',
-				'count': 401000
+				"date": "2021-04-29T22:00:00Z",
+				"count": 401000
 
 			},
 			{
-				'date': '2021-05-01T22:00:00Z',
-				'count': 6083000
+				"date": "2021-05-01T22:00:00Z",
+				"count": 6083000
 
 			},
 			{
-				'date': '2021-05-03T22:00:00Z',
-				'count': 2915000
+				"date": "2021-05-03T22:00:00Z",
+				"count": 2915000
 
 			},
 			{
-				'date': '2021-05-04T22:00:00Z',
-				'count': 24417000
+				"date": "2021-05-04T22:00:00Z",
+				"count": 24417000
 
 			},
 			{
-				'date': '2021-05-05T22:00:00Z',
-				'count': 3289000
+				"date": "2021-05-05T22:00:00Z",
+				"count": 3289000
 
 			},
 			{
-				'date': '2021-05-07T22:00:00Z',
-				'count': 426000
+				"date": "2021-05-07T22:00:00Z",
+				"count": 426000
 
 			},
 			{
-				'date': '2021-05-08T22:00:00Z',
-				'count': 6091000
+				"date": "2021-05-08T22:00:00Z",
+				"count": 6091000
 
 			},
 			{
-				'date': '2021-05-09T22:00:00Z',
-				'count': 2419000
+				"date": "2021-05-09T22:00:00Z",
+				"count": 2419000
 
 			},
 			{
-				'date': '2021-05-11T22:00:00Z',
-				'count': 364000
+				"date": "2021-05-11T22:00:00Z",
+				"count": 364000
 
 			},
 			{
-				'date': '2021-05-13T22:00:00Z',
-				'count': 148000
+				"date": "2021-05-13T22:00:00Z",
+				"count": 148000
 
 			},
 			{
-				'date': '2021-05-14T22:00:00Z',
-				'count': 5131000
+				"date": "2021-05-14T22:00:00Z",
+				"count": 5131000
 
 			},
 			{
-				'date': '2021-05-15T22:00:00Z',
-				'count': 1565000
+				"date": "2021-05-15T22:00:00Z",
+				"count": 1565000
 
 			},
 			{
-				'date': '2021-05-16T22:00:00Z',
-				'count': 431000
+				"date": "2021-05-16T22:00:00Z",
+				"count": 431000
 
 			},
 			{
-				'date': '2021-05-17T22:00:00Z',
-				'count': 3819000
+				"date": "2021-05-17T22:00:00Z",
+				"count": 3819000
 
 			},
 			{
-				'date': '2021-05-18T22:00:00Z',
-				'count': 195000
+				"date": "2021-05-18T22:00:00Z",
+				"count": 195000
 
 			},
 			{
-				'date': '2021-05-19T22:00:00Z',
-				'count': 2099000
+				"date": "2021-05-19T22:00:00Z",
+				"count": 2099000
 
 			},
 			{
-				'date': '2021-05-21T22:00:00Z',
-				'count': 13160999
+				"date": "2021-05-21T22:00:00Z",
+				"count": 13160999
 
 			},
 			{
-				'date': '2021-05-22T22:00:00Z',
-				'count': 3089999
+				"date": "2021-05-22T22:00:00Z",
+				"count": 3089999
 
 			},
 			{
-				'date': '2021-05-23T22:00:00Z',
-				'count': 7820999
+				"date": "2021-05-23T22:00:00Z",
+				"count": 7820999
 
 			},
 			{
-				'date': '2021-05-24T22:00:00Z',
-				'count': 739000
+				"date": "2021-05-24T22:00:00Z",
+				"count": 739000
 
 			},
 			{
-				'date': '2021-05-25T22:00:00Z',
-				'count': 786000
+				"date": "2021-05-25T22:00:00Z",
+				"count": 786000
 
 			},
 			{
-				'date': '2021-05-26T22:00:00Z',
-				'count': 881000
+				"date": "2021-05-26T22:00:00Z",
+				"count": 881000
 
 			},
 			{
-				'date': '2021-05-27T22:00:00Z',
-				'count': 1632000
+				"date": "2021-05-27T22:00:00Z",
+				"count": 1632000
 
 			},
 			{
-				'date': '2021-05-28T22:00:00Z',
-				'count': 3843000
+				"date": "2021-05-28T22:00:00Z",
+				"count": 3843000
 
 			},
 			{
-				'date': '2021-05-29T22:00:00Z',
-				'count': 11635000
+				"date": "2021-05-29T22:00:00Z",
+				"count": 11635000
 
 			},
 			{
-				'date': '2021-05-30T22:00:00Z',
-				'count': 14181999
+				"date": "2021-05-30T22:00:00Z",
+				"count": 14181999
 
 			},
 			{
-				'date': '2021-05-31T22:00:00Z',
-				'count': 5697999
+				"date": "2021-05-31T22:00:00Z",
+				"count": 5697999
 
 			},
 			{
-				'date': '2021-06-01T22:00:00Z',
-				'count': 1285999
+				"date": "2021-06-01T22:00:00Z",
+				"count": 1285999
 
 			},
 			{
-				'date': '2021-06-02T22:00:00Z',
-				'count': 4295000
+				"date": "2021-06-02T22:00:00Z",
+				"count": 4295000
 
 			},
 			{
-				'date': '2021-06-03T22:00:00Z',
-				'count': 9143000
+				"date": "2021-06-03T22:00:00Z",
+				"count": 9143000
 
 			},
 			{
-				'date': '2021-06-04T22:00:00Z',
-				'count': 2208000
+				"date": "2021-06-04T22:00:00Z",
+				"count": 2208000
 
 			},
 			{
-				'date': '2021-06-05T22:00:00Z',
-				'count': 7224999
+				"date": "2021-06-05T22:00:00Z",
+				"count": 7224999
 
 			},
 			{
-				'date': '2021-06-06T22:00:00Z',
-				'count': 6307999
+				"date": "2021-06-06T22:00:00Z",
+				"count": 6307999
 
 			},
 			{
-				'date': '2021-06-07T22:00:00Z',
-				'count': 695000
+				"date": "2021-06-07T22:00:00Z",
+				"count": 695000
 
 			},
 			{
-				'date': '2021-06-08T22:00:00Z',
-				'count': 622000
+				"date": "2021-06-08T22:00:00Z",
+				"count": 622000
 
 			},
 			{
-				'date': '2021-06-09T22:00:00Z',
-				'count': 2483999
+				"date": "2021-06-09T22:00:00Z",
+				"count": 2483999
 
 			},
 			{
-				'date': '2021-06-10T22:00:00Z',
-				'count': 2462000
+				"date": "2021-06-10T22:00:00Z",
+				"count": 2462000
 
 			},
 			{
-				'date': '2021-06-11T22:00:00Z',
-				'count': 5458000
+				"date": "2021-06-11T22:00:00Z",
+				"count": 5458000
 
 			},
 			{
-				'date': '2021-06-13T22:00:00Z',
-				'count': 4365000
+				"date": "2021-06-13T22:00:00Z",
+				"count": 4365000
 
 			},
 			{
-				'date': '2021-06-14T22:00:00Z',
-				'count': 633000
+				"date": "2021-06-14T22:00:00Z",
+				"count": 633000
 
 			},
 			{
-				'date': '2021-06-15T22:00:00Z',
-				'count': 4717000
+				"date": "2021-06-15T22:00:00Z",
+				"count": 4717000
 
 			},
 			{
-				'date': '2021-06-16T22:00:00Z',
-				'count': 5040999
+				"date": "2021-06-16T22:00:00Z",
+				"count": 5040999
 
 			},
 			{
-				'date': '2021-06-17T22:00:00Z',
-				'count': 6640998
+				"date": "2021-06-17T22:00:00Z",
+				"count": 6640998
 
 			},
 			{
-				'date': '2021-06-18T22:00:00Z',
-				'count': 4700000
+				"date": "2021-06-18T22:00:00Z",
+				"count": 4700000
 
 			},
 			{
-				'date': '2021-06-19T22:00:00Z',
-				'count': 5093000
+				"date": "2021-06-19T22:00:00Z",
+				"count": 5093000
 
 			},
 			{
-				'date': '2021-06-20T22:00:00Z',
-				'count': 722000
+				"date": "2021-06-20T22:00:00Z",
+				"count": 722000
 
 			},
 			{
-				'date': '2021-06-21T22:00:00Z',
-				'count': 6051999
+				"date": "2021-06-21T22:00:00Z",
+				"count": 6051999
 
 			},
 			{
-				'date': '2021-06-22T22:00:00Z',
-				'count': 636000
+				"date": "2021-06-22T22:00:00Z",
+				"count": 636000
 
 			},
 			{
-				'date': '2021-06-23T22:00:00Z',
-				'count': 4202000
+				"date": "2021-06-23T22:00:00Z",
+				"count": 4202000
 
 			},
 			{
-				'date': '2021-06-24T22:00:00Z',
-				'count': 5845000
+				"date": "2021-06-24T22:00:00Z",
+				"count": 5845000
 
 			},
 			{
-				'date': '2021-06-25T22:00:00Z',
-				'count': 10937000
+				"date": "2021-06-25T22:00:00Z",
+				"count": 10937000
 
 			},
 			{
-				'date': '2021-06-26T22:00:00Z',
-				'count': 18756000
+				"date": "2021-06-26T22:00:00Z",
+				"count": 18756000
 
 			},
 			{
-				'date': '2021-06-27T22:00:00Z',
-				'count': 422000
+				"date": "2021-06-27T22:00:00Z",
+				"count": 422000
 
 			},
 			{
-				'date': '2021-06-28T22:00:00Z',
-				'count': 6215000
+				"date": "2021-06-28T22:00:00Z",
+				"count": 6215000
 
 			},
 			{
-				'date': '2021-06-30T22:00:00Z',
-				'count': 4984000
+				"date": "2021-06-30T22:00:00Z",
+				"count": 4984000
 
 			},
 			{
-				'date': '2021-07-01T22:00:00Z',
-				'count': 4475000
+				"date": "2021-07-01T22:00:00Z",
+				"count": 4475000
 
 			},
 			{
-				'date': '2021-07-02T22:00:00Z',
-				'count': 282000
+				"date": "2021-07-02T22:00:00Z",
+				"count": 282000
 
 			},
 			{
-				'date': '2021-07-03T22:00:00Z',
-				'count': 3153000
+				"date": "2021-07-03T22:00:00Z",
+				"count": 3153000
 
 			},
 			{
-				'date': '2021-07-04T22:00:00Z',
-				'count': 2066000
+				"date": "2021-07-04T22:00:00Z",
+				"count": 2066000
 
 			},
 			{
-				'date': '2021-07-05T22:00:00Z',
-				'count': 5421000
+				"date": "2021-07-05T22:00:00Z",
+				"count": 5421000
 
 			},
 			{
-				'date': '2021-07-06T22:00:00Z',
-				'count': 330000
+				"date": "2021-07-06T22:00:00Z",
+				"count": 330000
 
 			},
 			{
-				'date': '2021-07-07T22:00:00Z',
-				'count': 274000
+				"date": "2021-07-07T22:00:00Z",
+				"count": 274000
 
 			},
 			{
-				'date': '2021-07-08T22:00:00Z',
-				'count': 6514000
+				"date": "2021-07-08T22:00:00Z",
+				"count": 6514000
 
 			},
 			{
-				'date': '2021-07-09T22:00:00Z',
-				'count': 17034999
+				"date": "2021-07-09T22:00:00Z",
+				"count": 17034999
 
 			},
 			{
-				'date': '2021-07-10T22:00:00Z',
-				'count': 12104000
+				"date": "2021-07-10T22:00:00Z",
+				"count": 12104000
 
 			},
 			{
-				'date': '2021-07-11T22:00:00Z',
-				'count': 3892000
+				"date": "2021-07-11T22:00:00Z",
+				"count": 3892000
 			},
 			{
-				'date': '2021-07-12T22:00:00Z',
-				'count': 1873000
+				"date": "2021-07-12T22:00:00Z",
+				"count": 1873000
 			},
 			{
-				'date': '2021-07-13T22:00:00Z',
-				'count': 1257000
+				"date": "2021-07-13T22:00:00Z",
+				"count": 1257000
 			},
 			{
-				'date': '2021-07-14T22:00:00Z',
-				'count': 3969000
+				"date": "2021-07-14T22:00:00Z",
+				"count": 3969000
 			},
 			{
-				'date': '2021-07-15T22:00:00Z',
-				'count': 5168000
+				"date": "2021-07-15T22:00:00Z",
+				"count": 5168000
 			},
 			{
-				'date': '2021-07-17T22:00:00Z',
-				'count': 3621000
+				"date": "2021-07-17T22:00:00Z",
+				"count": 3621000
 			},
 			{
-				'date': '2021-07-18T22:00:00Z',
-				'count': 4297000
+				"date": "2021-07-18T22:00:00Z",
+				"count": 4297000
 			},
 			{
-				'date': '2021-07-19T22:00:00Z',
-				'count': 5791000
+				"date": "2021-07-19T22:00:00Z",
+				"count": 5791000
 			},
 			{
-				'date': '2021-07-20T22:00:00Z',
-				'count': 7096000
+				"date": "2021-07-20T22:00:00Z",
+				"count": 7096000
 			},
 			{
-				'date': '2021-07-21T22:00:00Z',
-				'count': 6622000
+				"date": "2021-07-21T22:00:00Z",
+				"count": 6622000
 			},
 			{
-				'date': '2021-07-22T22:00:00Z',
-				'count': 9067000
+				"date": "2021-07-22T22:00:00Z",
+				"count": 9067000
 			},
 			{
-				'date': '2021-07-23T22:00:00Z',
-				'count': 8541999
+				"date": "2021-07-23T22:00:00Z",
+				"count": 8541999
 			},
 			{
-				'date': '2021-07-24T22:00:00Z',
-				'count': 7402000
+				"date": "2021-07-24T22:00:00Z",
+				"count": 7402000
 			},
 			{
-				'date': '2021-07-25T22:00:00Z',
-				'count': 268000
+				"date": "2021-07-25T22:00:00Z",
+				"count": 268000
 			},
 			{
-				'date': '2021-07-26T22:00:00Z',
-				'count': 289000
+				"date": "2021-07-26T22:00:00Z",
+				"count": 289000
 			},
 			{
-				'date': '2021-07-27T22:00:00Z',
-				'count': 1112000
+				"date": "2021-07-27T22:00:00Z",
+				"count": 1112000
 			},
 			{
-				'date': '2021-07-28T22:00:00Z',
-				'count': 3543000
+				"date": "2021-07-28T22:00:00Z",
+				"count": 3543000
 			},
 			{
-				'date': '2021-07-29T22:00:00Z',
-				'count': 5737000
+				"date": "2021-07-29T22:00:00Z",
+				"count": 5737000
 			}
 		]);
 
@@ -2732,8 +2732,10 @@ export default defineComponent({
 
 		const showLoadingBtn = () => {
 			loading.value = true;
-			setTimeout(() => { loading.value = false; }, 2000)
-		}
+			setTimeout(() => {
+				loading.value = false; 
+			}, 2000);
+		};
 
 		const buttonActive = ref(false);
 
@@ -2741,28 +2743,28 @@ export default defineComponent({
 			calendarData.splice(0, calendarData.length);
 			calendarData.push(...[
 				{
-					'date': '2019-11-30T23:00:00Z',
-					'count': 635
+					"date": "2019-11-30T23:00:00Z",
+					"count": 635
 				},
 				{
-					'date': '2020-12-02T23:00:00Z',
-					'count': 244
+					"date": "2020-12-02T23:00:00Z",
+					"count": 244
 				},
 				{
-					'date': '2020-12-03T23:00:00Z',
-					'count': 672
+					"date": "2020-12-03T23:00:00Z",
+					"count": 672
 				},
 				{
-					'date': '2020-12-04T23:00:00Z',
-					'count': 912
+					"date": "2020-12-04T23:00:00Z",
+					"count": 912
 				},
 				{
-					'date': '2020-12-06T23:00:00Z',
-					'count': 856
+					"date": "2020-12-06T23:00:00Z",
+					"count": 856
 				},
 			]);
 
-		}, 5000)
+		}, 5000);
 
 		return {
 			buttonActive,
