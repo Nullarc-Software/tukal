@@ -188,12 +188,6 @@ export default defineComponent({
 				transform: scale(1.04);
 			}
 
-			&__content {
-				img {
-					min-width: 200px;
-				}
-			}
-
 			&__text {
 				padding-top: 15px;
 			}
