@@ -20,122 +20,103 @@
 	</transition>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import _ from "lodash";
 import {
 	computed,
-	defineComponent,
-	getCurrentInstance,
 	inject,
 	ref,
-	watch
+	watch,
+	useSlots
 } from "vue";
-import tuComponent from "../tuComponent";
+import { Router } from "vue-router";
 import { TuTableStore } from "./tuTableStore";
 
-export default defineComponent({
-	name: "TuTr",
-	extends: tuComponent,
-	props: {
-		data: {},
-		isSelected: {
-			default: false,
-			type: Boolean
-		},
-		notClickSelected: {
-			default: true,
-			type: Boolean
-		},
-		expandHandle: {
-			default: false,
-			type: Boolean
-		},
-		rowId: {
-			type: Number
-		},
-		hidden: {
-			type: Boolean,
-			default: false
-		},
-		expanded: {
-			type: Boolean,
-			default: false
-		},
-		invisible: {
-			default: false,
-			type: Boolean
-		}
-	},
-	emits: ["rowClick", "selected", "rowExpanded"],
-	setup(props, context) {
-		const expand = ref(false);
-		const instance = getCurrentInstance();
-		const selected = inject<Function>("selected");
-		const tableInstance = inject<TuTableStore>("tableInstance");
-		const instanceExpand = ref<any>(null);
-		const isSelected = ref(false);
-		const isInvisible = ref(props.invisible);
-		const colSpan = ref(0);
-		colSpan.value = tableInstance.headerCount.value;
+interface Props {
+	data?: unknown;
+	isSelected?: boolean;
+	notClickSelected?: boolean;
+	expandHandle?: boolean;
+	rowId?: number;
+	hidden?: boolean;
+	expanded?: boolean;
+	invisible?: boolean;
+	// tuComponent props
+	color?: string;
+	active?: boolean;
+	colorSecondary?: string;
+	textColor?: string;
+}
 
-		const computeSelected = computed(() => {
-			if (isSelected.value) return true;
-			else return props.isSelected;
-		});
+const props = withDefaults(defineProps<Props>(), {
+	isSelected: false,
+	notClickSelected: true,
+	expandHandle: false,
+	hidden: false,
+	expanded: false,
+	invisible: false,
+	color: "primary",
+	active: false,
+	colorSecondary: "rgb(130, 207, 23)",
+	textColor: "#fff"
+});
 
-		function insertAfter(element: any) {
-			if (instance.vnode.el.nextSibling) {
-				instance.vnode.el.parentNode.insertBefore(
-					element,
-					instance.vnode.el.nextSibling
-				);
-			}
-			else
-				instance.vnode.el.parentNode.appendChild(element);
-		}
+const emit = defineEmits<{
+	rowClick: [event: Event];
+	selected: [data: unknown];
+	rowExpanded: [expanded: boolean];
+}>();
 
-		function handleClickHasExpand(expanded?: boolean) {
+const slots = useSlots();
 
-			if (_.isUndefined(expanded) === false)
-				expand.value = expanded;
-			else
-				expand.value = !expand.value;
-			context.emit("rowExpanded", expand.value);
-		}
+// tuComponent functionality
+inject<Router | null>("appRouter", null);
+inject<string | null>("iconPackGlobal", null);
 
-		const rowClick = function (event: Event) {
-			if (context.slots.expand) {
-				if (!props.expandHandle &&
-					!(event as any).isInput &&
-					!(event.currentTarget as HTMLElement).className.includes("isCheck")
-				)
-					handleClickHasExpand();
-				else if (props.expandHandle && (event as any).isExpand)
-					handleClickHasExpand();
-			}
+const expand = ref(false);
+const selected = inject<((data: unknown) => void) | null>("selected");
+const tableInstance = inject<TuTableStore>("tableInstance");
+const instanceExpand = ref<unknown>(null);
+const isSelected = ref(false);
+const isInvisible = ref(props.invisible);
+const colSpan = ref(0);
+if (tableInstance)
+	colSpan.value = tableInstance.headerCount.value;
 
-			if (!props.notClickSelected) {
-				// isSelected.value = true;
-				selected.call(null, props.data);
-				context.emit("selected", props.data);
-			}
+const computeSelected = computed(() => {
+	if (isSelected.value) return true;
+	else return props.isSelected;
+});
 
-			context.emit("rowClick", event);
-		};
+function handleClickHasExpand(expanded?: boolean) {
+	if (_.isUndefined(expanded) === false)
+		expand.value = expanded || false;
+	else
+		expand.value = !expand.value;
+	emit("rowExpanded", expand.value);
+}
 
-		watch(() => props.expanded, () => {
-			handleClickHasExpand(props.expanded);
-		});
-
-		return {
-			rowClick,
-			colSpan,
-			expand,
-			instanceExpand,
-			computeSelected,
-			isInvisible
-		};
+const rowClick = function (event: Event) {
+	if (slots.expand) {
+		if (!props.expandHandle &&
+			!(event as Event & { isInput?: boolean }).isInput &&
+			!(event.currentTarget as HTMLElement).className.includes("isCheck")
+		)
+			handleClickHasExpand();
+		else if (props.expandHandle && (event as Event & { isExpand?: boolean }).isExpand)
+			handleClickHasExpand();
 	}
+
+	if (!props.notClickSelected) {
+		selected?.call(null, props.data);
+		emit("selected", props.data);
+	}
+
+	emit("rowClick", event);
+};
+
+watch(() => props.expanded, () => {
+	handleClickHasExpand(props.expanded);
 });
 </script>
 

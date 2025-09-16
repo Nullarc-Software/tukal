@@ -19,38 +19,26 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref } from "vue";
+<script setup lang="ts">
+import { ref } from "vue";
 import tuIcon from "../tuIcon";
-export default defineComponent({
-	name: "TuCardGroup",
-	components: {
-		tuIcon
-	},
-	setup (props, context) {
-		const cards = ref<HTMLDivElement>();
 
-		const handleClick = function (evt, dir) {
-			if (dir == "left") {
-				cards.value?.scrollTo(
-					cards.value?.scrollLeft - cards.value?.clientWidth,
-					0
-				);
-			}
-			else {
-				cards.value?.scrollTo(
-					cards.value?.scrollLeft + cards.value?.clientWidth,
-					0
-				);
-			}
-		};
+const cards = ref<HTMLDivElement>();
 
-		return {
-			cards,
-			handleClick
-		};
+const handleClick = function (evt: Event, dir: string) {
+	if (dir == "left") {
+		cards.value?.scrollTo(
+			cards.value?.scrollLeft - cards.value?.clientWidth,
+			0
+		);
 	}
-});
+	else {
+		cards.value?.scrollTo(
+			cards.value?.scrollLeft + cards.value?.clientWidth,
+			0
+		);
+	}
+};
 </script>
 
 <style lang="sass">

@@ -8,16 +8,34 @@
 		</div>
 	</div>
 </template>
-<script lang="ts">
-import { defineComponent } from "vue";
-import tuComponent from "../tuComponent";
+<script setup lang="ts">
+import { inject, ref, onMounted } from "vue";
+import { Router } from "vue-router";
+import { getColor } from "../../utils";
 
-export default defineComponent({
-	name: "TuNavbarGroup",
-	extends: tuComponent,
-	setup(props, context) {
-	
-	}
+// tuComponent base props if needed
+interface Props {
+	color?: string;
+	active?: boolean;
+	colorSecondary?: string;
+	textColor?: string;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	color: "primary",
+	active: false,
+	colorSecondary: "rgb(130, 207, 23)",
+	textColor: "#fff"
+});
+
+// tuComponent functionality
+inject<Router | null>("appRouter", null);
+inject<string | null>("iconPackGlobal", null);
+
+const getColorSecondary = ref<string>("");
+
+onMounted(() => {
+	getColorSecondary.value = getColor(props.colorSecondary);
 });
 </script>
 

@@ -33,30 +33,23 @@
 		</div>
 	</div>
 </template>
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
+interface Props {
+	type?: string | boolean;
+	justifyHeader?: string;
+	content?: boolean;
+	fitContent?: boolean;
+	fillParent?: boolean;
+	backgroundColor?: string;
+}
 
-export default defineComponent({
-	name: "TuCard",
-	props: {
-		type: {
-			default: "1",
-			type: [String, Boolean]
-		},
-		justifyHeader: {
-			type: String,
-			default: "flex-end"
-		},
-		content: { type: Boolean, default: false },
-		fitContent: { type: Boolean, default: false },
-		fillParent: { type: Boolean, default: false },
-		backgroundColor: { type: String, default: "0x00000011" }
-	},
-	setup(props, context) { 
-		return {
-			
-		};
-	}
+withDefaults(defineProps<Props>(), {
+	type: "1",
+	justifyHeader: "flex-end",
+	content: false,
+	fitContent: false,
+	fillParent: false,
+	backgroundColor: "0x00000011"
 });
 </script>
 

@@ -18,22 +18,27 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType } from "vue";
+<script setup lang="ts">
+interface Props {
+	w?: string | number;
+	offset?: string | number;
+	order?: number;
+	lg?: string | number;
+	sm?: string | number;
+	xs?: string | number;
+	type?: string;
+	justify?: string;
+}
 
-
-export default defineComponent({
-	name: "TuCol",
-	props: {
-		w: { type: [String, Number], default: "12" },
-		offset: { type: [String, Number], default: "0" },
-		order: { type: Number, default: 0 },
-		lg: { type: [String, Number], default: "0" },
-		sm: { type: [String, Number], default: "0" },
-		xs: { type: [String, Number], default: "0" },
-		type: { type: String, default: "block" },
-		justify: { type: String, default: "flex-start" }
-	}
+withDefaults(defineProps<Props>(), {
+	w: "12",
+	offset: "0",
+	order: 0,
+	lg: "0",
+	sm: "0",
+	xs: "0",
+	type: "block",
+	justify: "flex-start"
 });
 </script>
 

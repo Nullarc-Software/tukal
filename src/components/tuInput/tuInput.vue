@@ -99,124 +99,133 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent, ref, watch } from "vue";
+<script lang="ts" setup>
+import { computed, inject, ref, watch } from "vue";
 import tuIcon from "../tuIcon";
-import tuComponent from "../tuComponent";
+
+interface Props {
+	modelValue?: string | number | object;
+	labelPlaceholder?: string;
+	label?: string;
+	block?: boolean;
+	iconAfter?: boolean;
+	visiblePassword?: boolean;
+	loading?: boolean;
+	state?: string | null;
+	progress?: number;
+	border?: boolean;
+	shadow?: boolean;
+	transparent?: boolean;
+	textWhite?: boolean;
+	square?: boolean;
+	id?: string | null;
+	placeholder?: string | null;
+	type?: string;
+	inline?: boolean;
+	disable?: boolean;
+	editableStatic?: boolean;
+	width?: string;
+	color?: string;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	modelValue: "",
+	labelPlaceholder: "",
+	label: "",
+	block: false,
+	iconAfter: false,
+	visiblePassword: false,
+	loading: false,
+	state: null,
+	progress: 0,
+	border: false,
+	shadow: false,
+	transparent: false,
+	textWhite: false,
+	square: false,
+	id: null,
+	placeholder: null,
+	type: undefined,
+	inline: false,
+	disable: false,
+	editableStatic: false,
+	width: "unset"
+});
+
+const emit = defineEmits<{
+	"update:modelValue": [value: string | number];
+	"click-icon": [value: string];
+	"onEnter": [];
+}>();
+
+// tuComponent functionality
+const getColor = inject<(color: string) => string>("getColor", () => "");
+const isColor = inject<boolean>("isColor", false);
 
 class InputConstants {
 	public static id = 0;
 }
 
-export default defineComponent({
-	name: "TuInput",
-	extends: tuComponent,
-	components: {
-		tuIcon
-	},
-	props: {
-		modelValue: { type: [Object, String, Number, Object as any], default: "" },
-		labelPlaceholder: { default: "" },
-		label: { default: "" },
-		block: { type: Boolean, default: false },
-		iconAfter: { type: Boolean, default: false },
-		visiblePassword: { type: Boolean, default: false },
-		loading: { type: Boolean, default: false },
-		state: { type: String, default: null },
-		progress: { type: Number, default: 0 },
-		border: { type: Boolean, default: false },
-		shadow: { type: Boolean, default: false },
-		transparent: { type: Boolean, default: false },
-		textWhite: { type: Boolean, default: false },
-		square: { type: Boolean, default: false },
-		id: { type: String, default: null },
-		placeholder: { type: String, default: null },
-		type: { type: String, default: null },
-		inline: { type: Boolean, default: false },
-		disable: { type: Boolean, default: false },
-		editableStatic: {
-			type: Boolean,
-			default: false
-		},
-		width: {
-			type: String,
-			default: "unset"
-		}
-	},
-	emits: ["update:modelValue", "click-icon", "onEnter"],
-	setup(props, context) {
-		const getId = computed(() => {
-			return `tu-input--${props.id || ++InputConstants.id}`;
-		});
+// Generate ID outside of computed to avoid side effects
+const inputId = props.id || `input-${++InputConstants.id}`;
 
-		const editableStaticInternal = ref(props.editableStatic);
-
-		const hasColor = computed(() => {
-			return (
-				props.color
-			);
-		});
-
-		const beforeEnter = function (el: any) {
-			el.style.height = 0;
-		};
-
-		const enter = function (el: any, done: any) {
-			const h = el.scrollHeight;
-			el.style.height = h - 1 + "px";
-			done();
-		};
-
-		const leave = function (el: any, done: any) {
-			el.style.minHeight = "0px";
-			el.style.height = "0px";
-		};
-
-		const onInput = function (evt) {
-			if (props.type === "number") {
-				context.emit("update:modelValue", evt.target.valueAsNumber);
-			}
-			else {
-				context.emit("update:modelValue", evt.target.value);
-			}
-		};
-
-		const onEnter = function () {
-			context.emit("onEnter");
-		}
-
-		const iconClick = function (evt) {
-			context.emit("click-icon", evt.target.value);
-		};
-
-		function editable(event: any) {
-			if (!event.target.closest(".tu-input-parent"))
-				editableStaticInternal.value = true;
-		}
-
-		if (props.editableStatic) {
-			watch(editableStaticInternal, (value) => {
-				setTimeout(() => {
-					if (value === false)
-						document.addEventListener("click", editable);
-					else document.removeEventListener("click", editable);
-				}, 200);
-			});
-		}
-
-		return {
-			editableStaticInternal,
-			enter,
-			beforeEnter,
-			leave,
-			onInput,
-			iconClick,
-			hasColor,
-			getId,
-			onEnter
-		};
-	}
+const getId = computed(() => {
+	return `tu-input--${inputId}`;
 });
+
+const editableStaticInternal = ref(props.editableStatic);
+
+const hasColor = computed(() => {
+	return props.color;
+});
+
+const beforeEnter = function (el: Element) {
+	(el as HTMLElement).style.height = "0";
+};
+
+const enter = function (el: Element, done: () => void) {
+	const h = (el as HTMLElement).scrollHeight;
+	(el as HTMLElement).style.height = h - 1 + "px";
+	done();
+};
+
+const leave = function (el: Element) {
+	(el as HTMLElement).style.minHeight = "0px";
+	(el as HTMLElement).style.height = "0px";
+};
+
+const onInput = function (evt: Event) {
+	const target = evt.target as HTMLInputElement;
+	if (props.type === "number")
+		emit("update:modelValue", target.valueAsNumber);
+	else
+		emit("update:modelValue", target.value);
+};
+
+const onEnter = function () {
+	emit("onEnter");
+};
+
+const iconClick = function (evt: Event) {
+	const target = evt.target as HTMLInputElement;
+	emit("click-icon", target.value);
+};
+
+function editable(event: Event) {
+	const target = event.target as Element;
+	if (!target.closest(".tu-input-parent"))
+		editableStaticInternal.value = true;
+}
+
+if (props.editableStatic) {
+	watch(editableStaticInternal, (value) => {
+		setTimeout(() => {
+			if (value === false)
+				document.addEventListener("click", editable);
+			else document.removeEventListener("click", editable);
+		}, 200);
+	});
+}
 </script>
 <style lang="scss" scoped>
 @import "../../style/sass/_mixins";

@@ -24,44 +24,30 @@
 	</div>
 </template>
 
-<script lang="ts">
-import CronCore from './core.vue'
-import { defineComponent } from "vue";
-import CustomSelect from './customSelect.vue'
-export default defineComponent({
-	name: 'VueCronEditor',
-	components: {
-		CronCore,
-		CustomSelect
-	},
-	props: {
-		cols: {
-			type: Object,
-			default: () => {
-				return {
-					minute: 5,
-					hour: 4,
-					day: 4
-				}
-			}
-		},
-		customLocale: {
-			type: Object,
-			default: function (props) {
-				return null
-			}
-		},
-		fields: {
-			type: Array
-		},
-		periods: {
-			type: Array
-		}
-	},
-	setup() {
-	},
-	emits: ['update:model-value', 'error']
+<script setup lang="ts">
+import CronCore from "./core.vue";
+import CustomSelect from "./customSelect.vue";
+
+interface Props {
+	cols?: Record<string, number>;
+	customLocale?: Record<string, unknown> | undefined;
+	fields?: unknown[];
+	periods?: unknown[];
+}
+
+withDefaults(defineProps<Props>(), {
+	cols: () => ({
+		minute: 5,
+		hour: 4,
+		day: 4
+	}),
+	customLocale: undefined
 });
+
+defineEmits<{
+	"update:model-value": [value: unknown];
+	error: [error: unknown];
+}>();
 </script>
 
 <style>

@@ -23,159 +23,161 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent, onMounted, watch } from "vue";
+<script setup lang="ts">
+import { computed, inject, ref, onMounted } from "vue";
 import tuIcon from "../tuIcon";
-
-import tuComponent from "../tuComponent";
+import { Router } from "vue-router";
+import { getColor } from "../../utils";
 
 let uid_ = 0;
 
-export default defineComponent({
-	name: "TuCheckbox",
-	extends: tuComponent,
-	components: {
-		tuIcon
-	},
-	props: {
-		modelValue: { type: [Array, String, Boolean], default: "" },
-		val: { default: "" },
-		notValue: { default: "" },
-		indeterminate: { type: Boolean, default: false },
-		lineThrough: { type: Boolean, default: false },
-		checked: { type: Boolean, default: false },
-		disabled: { type: Boolean, default: false },
-		checkedForce: { type: Boolean, default: false },
-		loading: { type: Boolean, default: false },
-		labelBefore: { type: Boolean, default: false },
-		eventBubble: {
-			type: Boolean,
-			default: false
+interface Props {
+	modelValue?: Array<any> | string | boolean;
+	val?: any;
+	notValue?: any;
+	indeterminate?: boolean;
+	lineThrough?: boolean;
+	checked?: boolean;
+	disabled?: boolean;
+	checkedForce?: boolean;
+	loading?: boolean;
+	labelBefore?: boolean;
+	eventBubble?: boolean;
+	// tuComponent props
+	color?: string;
+	active?: boolean;
+	colorSecondary?: string;
+	textColor?: string;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	modelValue: "",
+	val: "",
+	notValue: "",
+	indeterminate: false,
+	lineThrough: false,
+	checked: false,
+	disabled: false,
+	checkedForce: false,
+	loading: false,
+	labelBefore: false,
+	eventBubble: false,
+	color: "primary",
+	active: false,
+	colorSecondary: "rgb(130, 207, 23)",
+	textColor: "#fff"
+});
+
+const emit = defineEmits<{
+	"update:modelValue": [value: any];
+	change: [value: any];
+	click: [event: Event];
+	blur: [event: EventTarget];
+	"update:checked": [value: boolean];
+}>();
+
+// tuComponent functionality
+inject<Router | null>("appRouter", null);
+inject<string | null>("iconPackGlobal", null);
+
+const getColorSecondary = ref<string>("");
+
+onMounted(() => {
+	getColorSecondary.value = getColor(props.colorSecondary);
+});
+
+const uid = uid_++;
+
+const listeners = computed(() => {
+	return {
+		input: (evt: Event) => {
+			if (typeof props.modelValue === "boolean")
+				emit("update:modelValue", !props.modelValue);
+			else if (
+				typeof props.modelValue === "object" &&
+				props.modelValue !== null
+			) {
+				const array = props.modelValue as Array<any>;
+				const containValue =
+					array.indexOf(props.val) === -1 &&
+					JSON.stringify(array).indexOf(
+						JSON.stringify(props.val)
+					) === -1;
+				let indexVal = 0;
+
+				array.forEach((item: any, index: number) => {
+					if (
+						JSON.stringify(item) ===
+						JSON.stringify(props.val)
+					)
+						indexVal = index;
+				});
+
+				if (containValue) array.push(props.val);
+				else array.splice(indexVal, 1);
+
+				emit("update:modelValue", array);
+			}
+			else {
+				if (props.val !== props.modelValue)
+					emit("update:modelValue", props.val);
+				else {
+					emit(
+						"update:modelValue",
+						props.notValue || null
+					);
+				}
+			}
+
+			emit("update:checked", !props.checked);
+			if (props.eventBubble) emit("click", evt);
+			else {
+				evt.stopPropagation();
+				evt.preventDefault();
+			}
+		},
+		blur: (evt: EventTarget) => {
+			emit("blur", evt);
 		}
-	},
-	emits: ["update:modelValue", "change", "click", "blur", "update:checked"],
-	setup(props, context) {
-		const uid = uid_++;
-		/* watch(
-			() => props.indeterminate,
-			(val: boolean) => {
-				if (val) context.emit("update:modelValue", true);
-				else context.emit("update:modelValue", false);
-			}
-		); */
+	};
+});
 
-		const listeners = computed(() => {
-			return {
-				// ...$listeners,
-				input: (evt: Event) => {
+const isChecked = computed(() => {
+	let checked = false;
 
+	if (props.modelValue) {
+		if (typeof props.modelValue === "boolean")
+			checked = props.modelValue;
+		else if (
+			typeof props.modelValue === "object" &&
+			props.modelValue !== null
+		) {
+			const array = props.modelValue as Array<any>;
+			const containValue =
+				array.indexOf(props.val) === -1 &&
+				JSON.stringify(array).indexOf(
+					JSON.stringify(props.val)
+				) === -1;
+			let indexVal = 0;
 
-					if (typeof props.modelValue === "boolean")
-						context.emit("update:modelValue", !props.modelValue);
-					else if (
-						typeof props.modelValue === "object" &&
-						props.modelValue !== null
-					) {
-						const array = props.modelValue;
-						const containValue =
-							array.indexOf(props.val) === -1 &&
-							JSON.stringify(array).indexOf(
-								JSON.stringify(props.val)
-							) === -1;
-						let indexVal = 0;
+			array.forEach((item: any, index: number) => {
+				if (JSON.stringify(item) === JSON.stringify(props.val))
+					indexVal = index;
+			});
 
-						array.forEach((item: any, index: number) => {
-							if (
-								JSON.stringify(item) ===
-								JSON.stringify(props.val)
-							)
-								indexVal = index;
-						});
-
-						if (containValue) array.push(props.val);
-						else array.splice(indexVal, 1);
-
-						context.emit("update:modelValue", array);
-					}
-					else {
-						if (props.val !== props.modelValue)
-							context.emit("update:modelValue", props.val);
-						else {
-							context.emit(
-								"update:modelValue",
-								props.notValue || null
-							);
-						}
-					}
-
-					context.emit("update:checked", !props.checked);
-					if (props.eventBubble) context.emit("click", evt);
-					else {
-						evt.stopPropagation();
-						evt.preventDefault();
-					}
-				},
-				blur: (evt: EventTarget) => {
-					context.emit("blur", evt);
-				}
-				// input: (evt) => {
-				//   toggleValue(evt)
-				// }
-			};
-		});
-
-		const isChecked = computed(() => {
-			let isChecked = false;
-
-			if (props.modelValue) {
-				if (typeof props.modelValue === "boolean")
-					isChecked = props.modelValue;
-				else if (
-					typeof props.modelValue === "object" &&
-					props.modelValue !== null
-				) {
-					const array = props.modelValue;
-					const containValue =
-						array.indexOf(props.val) === -1 &&
-						JSON.stringify(array).indexOf(
-							JSON.stringify(props.val)
-						) === -1;
-					let indexVal = 0;
-
-					array.forEach((item: any, index: number) => {
-						if (JSON.stringify(item) === JSON.stringify(props.val))
-							indexVal = index;
-					});
-
-					if (containValue) return false;
-					else return true;
-				}
-			}
-			else if (props.checked || props.indeterminate) isChecked = true;
-			else isChecked = false;
-
-			return isChecked;
-		});
-
-		watch(
-			() => props.checked,
-			() => {
-				if (typeof props.modelValue === "boolean")
-					context.emit("update:modelValue", props.checked);
-			}
-		);
-
-		onMounted(() => {
-			if (props.checked && typeof props.modelValue === "boolean")
-				context.emit("update:modelValue", true);
-		});
-
-		return {
-			listeners,
-			isChecked,
-			uid
-		};
+			if (containValue) return false;
+			else return true;
+		}
 	}
+	else if (props.checked || props.indeterminate) checked = true;
+	else checked = false;
+
+	return checked;
+});
+
+onMounted(() => {
+	if (props.checked && typeof props.modelValue === "boolean")
+		emit("update:modelValue", true);
 });
 </script>
 

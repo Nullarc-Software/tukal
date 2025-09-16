@@ -54,108 +54,121 @@
 	</button>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent, ref } from "vue";
-import tuComponent, { ComponentConstants } from "../tuComponent";
-
+<script setup lang="ts">
+import { computed, ref } from "vue";
+import { ComponentConstants } from "../tuComponent";
+import { getColor, getColorAsRgb } from "../../utils";
 import ripple, { rippleCut, rippleReverse } from "../../utils/ripple";
 
-export default defineComponent({
-	name: "TuButton",
-	extends: tuComponent,
-	inheritAttrs: false,
-	props: {
-		//ripple prop: riplling effect to enabled if boolean is true
-		ripple: { type: String, default: "" },
-		//activeDisabled prop: button to be in disabled mode if boolean is true
-		activeDisabled: { type: Boolean, default: false },
-		//flat prop: flat effect to be enabled if boolean is true
-		flat: { type: Boolean, default: false },
-		//border prop: border style to be enabled if boolean is true
-		border: { type: Boolean, default: false },
-		//gradient: gradient style to be enabled if boolean is true
-		gradient: { type: Boolean, default: false },
-		//relief prop: relief style to be enabled if boolean is true
-		relief: { type: Boolean, default: false },
-		//transparent prop: transparent style to be applied if boolean is true
-		transparent: { type: Boolean, default: false },
-		//shadow prop: shadow style to be enabled if boolean is true
-		shadow: { type: Boolean, default: false },
-		//floating prop: floating style to be enabled if boolean is true
-		floating: { type: Boolean, default: false },
-		//icon prop: icon to used in the button
-		icon: { type: Boolean, default: false },
-		//circle prop: button to be shaped as circle if boolean is true
-		circle: { type: Boolean, default: false },
-		//square prop: button to be shaped as square if boolean is true
-		square: { type: Boolean, default: false },
-		//size prop: size of the button which can be following values i) mini ii) small iii) large iv) xl
-		size: { type: String, default: null },
-		//loading prop: loading animation to be shown on click if boolean is true
-		loading: { type: Boolean, default: false },
-		//upload prop: upload animation to be shown if boolean is true
-		upload: { type: Boolean, default: false },
-		//block prop: the button to take up full width its parent if boolean is true 
-		block: { type: Boolean, default: false },
-		//animationType prop: the type of animation to be applied to the button the values are i) scale ii) vertical iii) rotate
-		animationType: { type: String, default: "scale" },
-		//animateInactive prop: disables animation if boolean is true
-		animateInactive: { type: Boolean, default: true },
-		//to prop: on clicking the button the user is taken to new route specified in the prop
-		to: { type: [Object, String], default: () => null },
-		//href prop: specifies the URL of the page the link goes to when on clicking the button
-		href: { type: String, default: null },
-		//blank prop:to open a href link within a brand new tab if boolean is true
-		blank: { type: Boolean, default: false },
-		inline: { type: Boolean, default: false },
-		width: { type: String, default: null },
-		height: { type: String, default: null }
-	},
-	emits: ["routeErr", "mouseover", "mouseout", "blur", "click"],
-	setup: function (props, context) {
-		const rippleDir = ref("");
-		const button = ref<HTMLButtonElement>();
+interface Props {
+	ripple?: string;
+	activeDisabled?: boolean;
+	flat?: boolean;
+	border?: boolean;
+	gradient?: boolean;
+	relief?: boolean;
+	transparent?: boolean;
+	shadow?: boolean;
+	floating?: boolean;
+	icon?: boolean;
+	circle?: boolean;
+	square?: boolean;
+	size?: string | null;
+	loading?: boolean;
+	upload?: boolean;
+	block?: boolean;
+	animationType?: string;
+	animateInactive?: boolean;
+	to?: Record<string, unknown> | string | null;
+	href?: string | null;
+	blank?: boolean;
+	inline?: boolean;
+	width?: string | null;
+	height?: string | null;
+	color?: string;
+	colorSecondary?: string;
+	textColor?: string;
+	active?: boolean;
+}
 
-		const clickButton = function (event) {
-			if (props.to)
-				ComponentConstants.router.push(props.to);
-			else if (props.href)
-				window.open(props.href, (props.blank && "_blank") || "_self");
-			context.emit("click", event);
-		};
+const props = withDefaults(defineProps<Props>(), {
+	ripple: "",
+	activeDisabled: false,
+	flat: false,
+	border: false,
+	gradient: false,
+	relief: false,
+	transparent: false,
+	shadow: false,
+	floating: false,
+	icon: false,
+	circle: false,
+	square: false,
+	size: null,
+	loading: false,
+	upload: false,
+	block: false,
+	animationType: "scale",
+	animateInactive: true,
+	to: null,
+	href: null,
+	blank: false,
+	inline: false,
+	width: null,
+	height: null,
+	color: "primary",
+	colorSecondary: "rgb(130, 207, 23)",
+	textColor: "#fff",
+	active: false
+});
 
-		const mousedown = (event) => {
-			if (rippleDir.value === "reverse") rippleReverse(event);
-			else if (rippleDir.value === "cut") rippleCut(event);
-			else {
-				if (props.flat) {
-					ripple(
-						event,
-						props.color,
-						props.flat &&
-						!props.active &&
-						document.activeElement !== button.value
-					);
-				}
-				else if (props.border) {
-					ripple(event, props.color, true);
-				}
-				else ripple(event, null, false);
-			}
-		};
+const emit = defineEmits<{
+	routeErr: [error: Error];
+	mouseover: [event: MouseEvent];
+	mouseout: [event: MouseEvent];
+	blur: [event: FocusEvent];
+	click: [event: MouseEvent];
+}>();
 
-		const listeners = computed(() => {
-			return {
-				click: (event) => clickButton(event),
-				mousedown: (event) => mousedown(event)
-			};
-		});
+const rippleDir = ref("");
+const button = ref<HTMLButtonElement>();
 
-		return {
-			clickButton,
-			listeners
-		};
+const clickButton = function (event: MouseEvent) {
+	if (props.to)
+		ComponentConstants.router.push(props.to);
+	else if (props.href)
+		window.open(props.href, (props.blank && "_blank") || "_self");
+	emit("click", event);
+};
+
+const mousedown = (event: MouseEvent) => {
+	if (rippleDir.value === "reverse") rippleReverse(event);
+	else if (rippleDir.value === "cut") rippleCut(event);
+	else {
+		if (props.flat) {
+			ripple(
+				event,
+				props.color,
+				props.flat &&
+				!props.active &&
+				document.activeElement !== button.value
+			);
+		}
+		else if (props.border)
+			ripple(event, props.color, true);
+		else ripple(event, null, false);
 	}
+};
+
+const listeners = computed(() => {
+	return {
+		click: (event: MouseEvent) => clickButton(event),
+		mousedown: (event: MouseEvent) => mousedown(event)
+	};
+});
+
+defineOptions({
+	inheritAttrs: false
 });
 </script>
 

@@ -6,7 +6,7 @@
 				'con-icon': icon
 			}
 		]" :style="styleAlert" class="con-tu-alert" v-bind="$attrs">
-			<div v-if="closable" class="con-x tu-alert--close" @click="$emit('update:active', false)">
+			<div v-if="closable" class="con-x tu-alert--close" @click="emit('update:active', false)">
 				<tu-icon :icon-pack="iconPack" :icon="closeIcon"></tu-icon>
 			</div>
 
@@ -20,105 +20,87 @@
 	</transition>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent, nextTick, onMounted, ref } from "vue";
+<script setup lang="ts">
+import { computed, nextTick, onMounted, ref } from "vue";
 import _color from "../../utils/color";
 import tuIcon from "../tuIcon";
 
-export default defineComponent({
-	name: "TuAlert",
+interface Props {
+	active?: boolean | string;
+	title?: string | null;
+	closable?: boolean;
+	color?: string;
+	margin?: string | boolean;
+	icon?: string | null;
+	closeIcon?: string;
+	iconPack?: string;
+}
 
-	props: {
-		active: {
-			type: [Boolean, String],
-			default: true
-		},
-		title: {
-			type: String,
-			default: null
-		},
-		closable: {
-			type: Boolean,
-			default: false
-		},
-		color: {
-			type: String,
-			default: "primary"
-		},
-		margin: {
-			type: [String, Boolean],
-			default: "10px"
-		},
-		icon: {
-			type: String,
-			default: null
-		},
-		closeIcon: {
-			type: String,
-			default: "close"
-		},
-		iconPack: {
-			type: String,
-			default: "material-icons"
-		}
-	},
-	setup(props, context) {
-		const alert = ref<HTMLDivElement>();
+const props = withDefaults(defineProps<Props>(), {
+	active: true,
+	title: null,
+	closable: false,
+	color: "primary",
+	margin: "10px",
+	icon: null,
+	closeIcon: "close",
+	iconPack: "material-icons"
+});
 
-		const styleAlert = computed(() => {
-			return {
-				background: _color.getColor(props.color, 0.15),
-				boxShadow: `0px 0px 25px 0px ${_color.getColor(
-					props.color,
-					0.15
-				)}`,
-				color: _color.getColor(props.color, 1)
-			};
-		});
-		const styleTitle = computed(() => {
-			return {
-				boxShadow: `0px 6px 15px -7px ${_color.getColor(
-					props.color,
-					0.4
-				)}`
-			};
-		});
+const emit = defineEmits<{
+	"update:active": [value: boolean];
+}>();
 
-		const beforeEnter = (el) => {
-			el.style.height = 0;
-			el.style.opacity = 0;
-		};
-		const enter = (el, done) => {
+const alert = ref<HTMLDivElement>();
+
+const styleAlert = computed(() => {
+	return {
+		background: _color.getColor(props.color, 0.15),
+		boxShadow: `0px 0px 25px 0px ${_color.getColor(
+			props.color,
+			0.15
+		)}`,
+		color: _color.getColor(props.color, 1)
+	};
+});
+
+const styleTitle = computed(() => {
+	return {
+		boxShadow: `0px 6px 15px -7px ${_color.getColor(
+			props.color,
+			0.4
+		)}`
+	};
+});
+
+const beforeEnter = (el: Element) => {
+	const element = el as HTMLElement;
+	element.style.height = "0";
+	element.style.opacity = "0";
+};
+
+const enter = (el: Element, done: () => void) => {
+	const h = alert.value?.scrollHeight;
+	if (alert.value && h)
+		alert.value.style.height = h + "px";
+	const element = el as HTMLElement;
+	element.style.opacity = "1";
+	done();
+};
+
+const leave = (el: Element) => {
+	const element = el as HTMLElement;
+	element.style.height = "0px";
+	element.style.opacity = "0";
+};
+
+onMounted(() => {
+	if (alert.value) {
+		nextTick(() => {
 			const h = alert.value?.scrollHeight;
-			(alert.value as any).style.height = h + "px";
-			el.style.opacity = 1;
-			done();
-		};
-		const leave = (el, done) => {
-			el.style.height = 0 + "px";
-			el.style.opacity = 0;
-		};
-
-		onMounted(() => {
-			if (alert.value) {
-				nextTick(() => {
-					const h = alert.value?.scrollHeight;
-					(alert.value as any).style.height = h + "px";
-				});
-			}
+			if (alert.value && h)
+				alert.value.style.height = h + "px";
 		});
-
-		return {
-			alert,
-			styleAlert,
-			styleTitle,
-			beforeEnter,
-			enter,
-			leave
-		};
-	},
-	components: {
-		tuIcon
 	}
 });
 </script>

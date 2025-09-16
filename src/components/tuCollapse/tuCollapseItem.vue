@@ -17,67 +17,55 @@
 		</div>
 	</div>
 </template>
-<script lang="ts">
+<script setup lang="ts">
 import tuIcon from "../tuIcon/index";
-import { defineComponent } from "vue";
-export default defineComponent({
-	name: "TuCollapseItem",
-	components: {
-		tuIcon
-	},
-	props: {
-		iconPack: {
-			type: String,
-			default: "material-icons"
-		},
-		iconArrow: {
-			type: String,
-			default: "keyboard_arrow_down"
-		},
-		notArrow: {
-			type: Boolean,
-			default: false
-		},
-		disabled: {
-			type: Boolean,
-			default: false
-		}
-	},
-	data() {
-		return {
-			maxHeight: "0px",
-			arrow: "keyboard_arrow_down",
-			isOpen: false,
-			styleContent: {
-				maxHeight: "0px"
-			}
-		};
-	},
-	methods: {
-		toggleContent() {
-			if (this.disabled) return;
-			if (this.isOpen) {
-				this.maxHeight = "0px";
-				this.arrow = "keyboard_arrow_down";
-				this.isOpen = false;
-			}
-			else {
-				this.maxHeight = this.$refs.content.scrollHeight + "px";
-				this.arrow = "keyboard_arrow_up";
-				this.isOpen = true;
-			}
-			this.styleContent = {
-				maxHeight: this.maxHeight
-			};
-		},
-		mouseover() {
-			if (this.disabled) return;
-		},
-		mouseout() {
-			if (this.disabled) return;
-		}
-	}
+import { ref, computed } from "vue";
+
+interface Props {
+	iconPack?: string;
+	iconArrow?: string;
+	notArrow?: boolean;
+	disabled?: boolean;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	iconPack: "material-icons",
+	iconArrow: "keyboard_arrow_down",
+	notArrow: false,
+	disabled: false
 });
+
+const content = ref<HTMLElement>();
+const maxHeight = ref("0px");
+const arrow = ref("keyboard_arrow_down");
+const isOpen = ref(false);
+
+const styleContent = computed(() => ({
+	maxHeight: maxHeight.value
+}));
+
+const toggleContent = () => {
+	if (props.disabled) return;
+	
+	if (isOpen.value) {
+		maxHeight.value = "0px";
+		arrow.value = "keyboard_arrow_down";
+		isOpen.value = false;
+	}
+	else {
+		maxHeight.value = content.value?.scrollHeight + "px" || "0px";
+		arrow.value = "keyboard_arrow_up";
+		isOpen.value = true;
+	}
+};
+
+const mouseover = () => {
+	if (props.disabled) return;
+};
+
+const mouseout = () => {
+	if (props.disabled) return;
+};
 </script>
 
 <style lang="scss" scoped>

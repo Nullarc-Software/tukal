@@ -24,57 +24,44 @@
 	</renderless-select>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref } from "vue";
-import RenderlessSelect from './renderlessSelect.vue'
-import tuPopupMenu from "../tuPopper/tuPopupMenu.vue";
+<script setup lang="ts">
+import { ref } from "vue";
+import RenderlessSelect from "./renderlessSelect.vue";
 import { tuButton } from "../tuButton";
-import { tuPopper, tuPopupItem } from "../tuPopper";
+import { tuPopper } from "../tuPopper";
 
-export default defineComponent({
-	inheritAttrs: false,
-	components: {
-		RenderlessSelect,
-		tuPopupMenu,
-		tuButton,
-		tuPopper,
-		tuPopupItem
-	},
-	name: 'CustomSelect',
-	props: {},
-	emits: ['update:model-value'],
-	setup() {
-
-		const menu = ref(false);
-		function menuEvtListener(evt) {
-			menu.value = false
-			document.removeEventListener('click', this.menuEvtListener)
-		};
-
-		function getChildItems(itemRows) {
-			const items = [];
-			for (const row of itemRows)
-				items.push(...row);
-			return items;
-		};
-
-		function toggleMenu() {
-			menu.value = !menu.value
-			if (menu.value) {
-				setTimeout(() => {
-					document.addEventListener('click', this.menuEvtListener)
-				}, 1)
-			} else {
-				document.removeEventListener('click', this.menuEvtListener)
-			}
-		}
-
-		return {
-			getChildItems,
-			toggleMenu
-		}
-	}
+defineOptions({
+	inheritAttrs: false
 });
+
+defineEmits<{
+	"update:model-value": [value: unknown];
+}>();
+
+const menu = ref(false);
+
+function menuEvtListener() {
+	menu.value = false;
+	document.removeEventListener("click", menuEvtListener);
+}
+
+function getChildItems(itemRows: { text?: string }[][]) {
+	const items: { text?: string }[] = [];
+	for (const row of itemRows)
+		items.push(...row);
+	return items;
+}
+
+function toggleMenu() {
+	menu.value = !menu.value;
+	if (menu.value) {
+		setTimeout(() => {
+			document.addEventListener("click", menuEvtListener);
+		}, 1);
+	}
+	else
+		document.removeEventListener("click", menuEvtListener);
+}
 </script>
 
 <style scoped>

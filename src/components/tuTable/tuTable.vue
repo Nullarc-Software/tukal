@@ -114,13 +114,13 @@
 	</div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import {
 	computed,
-	defineComponent,
 	onBeforeUnmount,
 	onMounted,
 	PropType,
+	provide,
 	reactive,
 	ref,
 	watch
@@ -154,150 +154,70 @@ import { PlacementType } from "../tuPopper/tuPopper.vue";
 if (typeof window !== "undefined" && (window as any).VueInstance)
 	contextMenuComponent.install((window as any).VueInstance);
 
-export default defineComponent({
-	name: "TuTable",
-	extends: tuComponent,
-	components: {
-		tuTh,
-		tuTr,
-		tuTd,
-		tuIcon,
-		tuCheckbox,
-		tuPopper,
-		tuPopupMenu,
-		tuPopupItem
-	},
-	props: {
-		modelValue: {},
-		pageSize: {
-			type: Number,
-			default: 25
-		},
-		page: {
-			type: Number,
-			default: 1
-		},
-		numPages: {
-			type: Number,
-			default: 1
-		},
-		/**
-		 * Enables striped rows on the table
-		 */
-		striped: {
-			default: false,
-			type: Boolean
-		},
-		/**
-		 * Set to true if data is loading. Ignored in Server Side model.
-		 */
-		loading: {
-			default: false,
-			type: Boolean
-		},
-		/**
-		 * The Size of the table.
-		 * @values fitData, fill, <custom size string>
-		 */
-		size: {
-			type: String,
-			default: ""
-		},
-		columnMode: {
-			type: String,
-			default: "fitDataStretch"
-		},
-		/**
-		 * Specifies the model for the table. Server side model will send pagination, sorting and filtering params to the server.
-		 * @values server, local
-		 */
-		model: {
-			type: String,
-			default: "local"
-		},
-		/**
-		 * The Data for the table. ignored in Server Side model. SSM This contains the table data.
-		 */
-		data: {
-			type: Array,
-			default: () => []
-		},
-		columnSelector: {
-			type: Boolean,
-			default: false
-		},
-		id: {
-			type: String,
-			default: () => `tu-table-${TableIdentifierAuto.id++}`
-		},
-		persistentId: {
-			type: String,
-			default: ""
-		},
-		draggable: {
-			type: Boolean,
-			default: false
-		},
-		multiSelect: {
-			type: Boolean,
-			default: false
-		},
-		serverSideConfig: {
-			type: Object as PropType<TuTableServerModel>,
-			default: () => {
-				return {};
-			}
-		},
-		rowExpand: {
-			type: Boolean,
-			default: false
-		},
-		columns: {
-			type: Object as () => TuHeaderDefn[],
-			default: () => []
-		},
-		tableInstance: {
-			type: TuTableStore,
-			default: null
-		},
-		compact: {
-			type: Boolean,
-			default: false
-		},
-		/**
-		 * Initial values for all the components in the rows of the table.
-		 */
-		initialComponentValues: {
-			type: Object as PropType<Array<TuTableInitialComponentValues>>,
-			default: () => []
-		},
-		popperPlacement: {
-			type: String,
-			default: () => "auto" as PlacementType
-		}
+interface Props {
+	modelValue?: any;
+	pageSize?: number;
+	page?: number;
+	numPages?: number;
+	striped?: boolean;
+	loading?: boolean;
+	size?: string;
+	columnMode?: string;
+	model?: string;
+	data?: any[];
+	columnSelector?: boolean;
+	id?: string;
+	persistentId?: string;
+	draggable?: boolean;
+	multiSelect?: boolean;
+	serverSideConfig?: TuTableServerModel;
+	rowExpand?: boolean;
+	columns?: TuHeaderDefn[];
+	tableInstance?: TuTableStore | null;
+	compact?: boolean;
+	initialComponentValues?: TuTableInitialComponentValues[];
+	popperPlacement?: PlacementType;
+}
 
-	},
-	emits: [
-		"update:modelValue",
-		"update:numPages",
-		"update:data",
-		"update:tableInstance",
-		"onRowClicked",
-		"onTableBeginLoad",
-		"onTableEndLoad",
-		"onCellClicked",
-		"onTableConfigUpdated"
-	],
-	provide() {
-		return {
-			selected: (data) => {
-				this.selected(data);
-			},
-			tableInstance: this.table,
-			tableId: this.id
-		};
-	},
-	setup(props, context) {
+const props = withDefaults(defineProps<Props>(), {
+	pageSize: 25,
+	page: 1,
+	numPages: 1,
+	striped: false,
+	loading: false,
+	size: "",
+	columnMode: "fitDataStretch",
+	model: "local",
+	data: () => [],
+	columnSelector: false,
+	id: () => `tu-table-${TableIdentifierAuto.id++}`,
+	persistentId: "",
+	draggable: false,
+	multiSelect: false,
+	serverSideConfig: () => ({}),
+	rowExpand: false,
+	columns: () => [],
+	tableInstance: null,
+	compact: false,
+	initialComponentValues: () => [],
+	popperPlacement: () => "auto" as PlacementType
+});
+
+const emit = defineEmits<{
+	"update:modelValue": [value: any];
+	"update:numPages": [value: number];
+	"update:data": [value: any[]];
+	"update:tableInstance": [value: TuTableStore];
+	"onRowClicked": [value: any];
+	"onTableBeginLoad": [value: any];
+	"onTableEndLoad": [value: any];
+	"onCellClicked": [value: any];
+	"onTableConfigUpdated": [value: any];
+}>();
+
+defineOptions({
+	name: "TuTable"
+});
 		const colspan = ref(0);
 		const thead = ref<HTMLHeadElement>();
 		const tableElement = ref<HTMLTableElement>();
@@ -345,6 +265,14 @@ export default defineComponent({
 
 		table = new TuTableStore(tableConstructor);
 		table.constructHeaders(props.columns, props.persistentId);
+		
+		// Provide values for child components
+		provide("selected", (data: any) => {
+			selected(data);
+		});
+		provide("tableInstance", table);
+		provide("tableId", props.id);
+		
 		if (props.model === "local") {
 			if (props.data.length !== 0)
 				table.setTableData(props.data);
@@ -529,18 +457,14 @@ export default defineComponent({
 			openColumnChooser,
 			startDrag,
 			onDrop,
-			isDrag,
-			dragIndex,
-			dropIndex,
-			isDraggable,
-			isLoaded,
-			virtualElement
-		};
-	}
-});
-</script>
-
-<style lang="scss" scoped>
+		isDrag,
+		dragIndex,
+		dropIndex,
+		isDraggable,
+		isLoaded,
+		virtualElement
+	};
+</script><style lang="scss" scoped>
 @import "../../style/sass/_mixins";
 
 
@@ -738,3 +662,4 @@ export default defineComponent({
 	width: 75px;
 }
 </style>
+

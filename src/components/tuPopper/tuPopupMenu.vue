@@ -12,55 +12,45 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { insertBody } from "@/utils";
+<script setup lang="ts">
 import {
-	defineComponent,
 	getCurrentInstance,
 	onBeforeUnmount,
 	onMounted,
 	reactive,
 	ref,
 	toRefs,
-	inject
+	inject,
+	ComponentInternalInstance
 } from "vue";
 
-export default defineComponent({
-	name: "TuPopupMenu",
-	components: {
+const emit = defineEmits<{
+	remove: [instance: ComponentInternalInstance | null];
+	shown: [instance: ComponentInternalInstance | null];
+}>();
 
-	},
-	emits: ["remove", "shown"],
-	setup(props, context) {
-		const data = reactive({
-			dropdownVisible: false,
-			leftAfter: 20,
-			rightx: true,
-			tuDropRight: false,
-			widthx: 0,
-			tuCustomContent: false
-		});
-
-		const dropOptions = ref<HTMLDivElement>();
-		const instance = getCurrentInstance();
-		const borderRadius = inject<string>("borderRadius");
-
-		onBeforeUnmount(() => {
-			context.emit("remove", instance);
-		});
-
-		onMounted(() => {
-			context.emit("shown", instance);
-		});
-
-		return {
-			...toRefs(data),
-			insertBody,
-			dropOptions,
-			borderRadius
-		};
-	}
+const data = reactive({
+	dropdownVisible: false,
+	leftAfter: 20,
+	rightx: true,
+	tuDropRight: false,
+	widthx: 0,
+	tuCustomContent: false
 });
+
+const dropOptions = ref<HTMLDivElement>();
+const instance = getCurrentInstance();
+const borderRadius = inject<string>("borderRadius");
+
+onBeforeUnmount(() => {
+	emit("remove", instance);
+});
+
+onMounted(() => {
+	emit("shown", instance);
+});
+
+const { dropdownVisible, leftAfter, rightx, tuDropRight, widthx, tuCustomContent } = toRefs(data);
 </script>
 
 <style lang="scss" scoped>

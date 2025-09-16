@@ -29,107 +29,132 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent } from "vue";
-import tuComponent from "../tuComponent";
-export default defineComponent({
-	name: "TuSwitch",
-	inheritAttrs: false,
-	extends: tuComponent,
-	props: {
-		modelValue: { type: [Boolean, String], default: "" },
-		val: { default: "" },
-		notValue: { default: "" },
-		loading: { type: Boolean, default: false },
-		square: { type: Boolean, default: false },
-		indeterminate: { type: Boolean, default: false },
-		icon: { type: Boolean, default: false },
-		disabled: { type: Boolean, default: false }
-	},
-	emits: ["change", "update:modelValue"],
-	setup(props, context) {
-		const isChecked = computed(() => {
-			let isChecked = false;
+<script setup lang="ts">
+import { computed, inject, ref, onMounted } from "vue";
+import { Router } from "vue-router";
+import { getColor } from "../../utils";
 
-			if (props.modelValue) {
-				if (typeof props.modelValue === "boolean")
-					isChecked = props.modelValue;
-				else if (
-					typeof props.modelValue === "object" &&
-					props.modelValue !== null
-				) {
-					const array = props.modelValue as Array<any>;
-					const containValue =
-						array.indexOf(props.val) === -1 &&
-						JSON.stringify(array).indexOf(
-							JSON.stringify(props.val)
-						) === -1;
-					let indexVal = 0;
+interface Props {
+	modelValue?: boolean | string | Array<any>;
+	val?: any;
+	notValue?: any;
+	loading?: boolean;
+	square?: boolean;
+	indeterminate?: boolean;
+	icon?: boolean;
+	disabled?: boolean;
+	// tuComponent props
+	color?: string;
+	active?: boolean;
+	colorSecondary?: string;
+	textColor?: string;
+}
 
-					array.forEach((item: any, index: number) => {
-						if (JSON.stringify(item) === JSON.stringify(props.val))
-							indexVal = index;
-					});
+const props = withDefaults(defineProps<Props>(), {
+	modelValue: "",
+	val: "",
+	notValue: "",
+	loading: false,
+	square: false,
+	indeterminate: false,
+	icon: false,
+	disabled: false,
+	color: "primary",
+	active: false,
+	colorSecondary: "rgb(130, 207, 23)",
+	textColor: "#fff"
+});
 
-					if (containValue) return false;
-					else return true;
+const emit = defineEmits<{
+	change: [evt: any];
+	"update:modelValue": [value: any];
+}>();
+
+// tuComponent functionality
+inject<Router | null>("appRouter", null);
+inject<string | null>("iconPackGlobal", null);
+
+const getColorSecondary = ref<string>("");
+
+onMounted(() => {
+	getColorSecondary.value = getColor(props.colorSecondary || "rgb(130, 207, 23)");
+});
+
+const isChecked = computed(() => {
+	let checked = false;
+
+	if (props.modelValue) {
+		if (typeof props.modelValue === "boolean")
+			checked = props.modelValue;
+		else if (
+			typeof props.modelValue === "object" &&
+			props.modelValue !== null
+		) {
+			const array = props.modelValue as Array<any>;
+			const containValue =
+				array.indexOf(props.val) === -1 &&
+				JSON.stringify(array).indexOf(
+					JSON.stringify(props.val)
+				) === -1;
+			let indexVal = 0;
+
+			array.forEach((item: any, index: number) => {
+				if (JSON.stringify(item) === JSON.stringify(props.val))
+					indexVal = index;
+			});
+
+			if (containValue) return false;
+			else return true;
+		}
+	}
+	else checked = false;
+
+	return checked;
+});
+
+const inputListener = computed(() => {
+	return {
+		input: (evt: any) => {
+			if (typeof props.modelValue === "boolean")
+				emit("update:modelValue", !props.modelValue);
+			else if (
+				typeof props.modelValue === "object" &&
+				props.modelValue !== null
+			) {
+				const array = props.modelValue as Array<any>;
+				const containValue =
+					array.indexOf(props.val) === -1 &&
+					JSON.stringify(array).indexOf(
+						JSON.stringify(props.val)
+					) === -1;
+				let indexVal = 0;
+
+				array.forEach((item: any, index: number) => {
+					if (
+						JSON.stringify(item) ==
+						JSON.stringify(props.val)
+					)
+						indexVal = index;
+				});
+
+				if (containValue) array.push(props.val);
+				else array.splice(indexVal, 1);
+
+				emit("update:modelValue", array);
+			}
+			else {
+				if (props.val !== props.modelValue)
+					emit("update:modelValue", props.val);
+				else {
+					emit(
+						"update:modelValue",
+						props.notValue || null
+					);
 				}
 			}
-			else isChecked = false;
-
-			return isChecked;
-		});
-
-		const inputListener = computed(() => {
-			return {
-				input: (evt: any) => {
-					if (typeof props.modelValue === "boolean")
-						context.emit("update:modelValue", !props.modelValue);
-					else if (
-						typeof props.modelValue === "object" &&
-						props.modelValue !== null
-					) {
-						const array = props.modelValue as Array<any>;
-						const containValue =
-							array.indexOf(props.val) === -1 &&
-							JSON.stringify(array).indexOf(
-								JSON.stringify(props.val)
-							) === -1;
-						let indexVal = 0;
-
-						array.forEach((item: any, index: number) => {
-							if (
-								JSON.stringify(item) ==
-								JSON.stringify(props.val)
-							)
-								indexVal = index;
-						});
-
-						if (containValue) array.push(props.val);
-						else array.splice(indexVal, 1);
-
-						context.emit("update:modelValue", array);
-					}
-					else {
-						if (props.val !== props.modelValue)
-							context.emit("update:modelValue", props.val);
-						else {
-							context.emit(
-								"update:modelValue",
-								props.notValue || null
-							);
-						}
-					}
-					context.emit("change", evt);
-				}
-			};
-		});
-
-		return {
-			isChecked,
-			inputListener
-		};
-	}
+			emit("change", evt);
+		}
+	};
 });
 </script>
 

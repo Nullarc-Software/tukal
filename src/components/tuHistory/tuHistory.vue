@@ -25,149 +25,149 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent, onMounted, PropType, ref, watch } from 'vue';
-import tuComponent from '../tuComponent';
+<script setup lang="ts">
+import { ref, inject, watchEffect } from "vue";
+import { Router } from "vue-router";
 import * as _color from "../../utils";
-import { useRouter } from 'vue-router';
-import { serverRequest, TuHistoryEvent, TuHistoryServerModel } from "./utils"
-import { tuInfiniteLoading } from '../tuInfiniteLoading';
+import { useRouter } from "vue-router";
+import { serverRequest, TuHistoryEvent, TuHistoryServerModel } from "./utils";
+import { tuInfiniteLoading } from "../tuInfiniteLoading";
 
-export default defineComponent({
-	name: "TuHistory",
-	extends: tuComponent,
-	components: {
-		tuInfiniteLoading
-	},
-	props: {
-		events: {
-			type: Object as PropType<Array<TuHistoryEvent>>,
-			default: []
-		},
-		alternative: {
-			type: Boolean,
-			default: false
-		},
-		center: {
-			type: Boolean,
-			default: false
-		},
-		model: {
-			type: String,
-			default: "local"
-		},
-		serverSideConfig: {
-			type: Object as PropType<TuHistoryServerModel>,
-			default: () => {
-				return {};
-			}
-		},
-	},
-	setup(props, context) {
-		const router = useRouter();
-		const histEvents = ref([]);
-		const currentPage = ref(1);
-		const scroll = ref();
-		const lineHeight = ref()
-		if (props.model === "local") {
-			histEvents.value = props.events
-		}
-		const categoryColor = (ev: TuHistoryEvent) => {
-			let background: string;
-			if (ev.color) {
-				background = `rgba(${_color.getColorAsRgb(ev.color, 0.1)})`;
-			}
-			else {
-				background = 'var(--tu-gray-2)'
-			}
-			if (props.alternative) {
-				return {
-					width: 'calc(50% - 40px)',
-					background: background
-				}
-			}
-			else {
-				return {
-					maxWidth: '100%',
-					width: 'auto',
-					background: background
-				}
-			}
-		}
-		const categoryColorIcon = (ev: TuHistoryEvent, index: number) => {
-			let color: string, height: string, width: string, left: string, right: string;
-			height = '20px !important'
-			width = '20px !important'
-			if (!props.alternative) {
-				left = '-30px'
-			}
-			else {
-				if (index % 2 === 0) {
-					right = '-50px !important'
-				}
-				else {
-					left = "-50px !important"
-				}
-			}
-			if (!ev.icon) {
-				return {
-					background: 'var(--tu-gray-4)',
-					height: height,
-					width: width,
-					right: right,
-					left: left
-				}
-			}
-			else if (ev.color) {
-				color = `rgba(${_color.getColorAsRgb(ev.color, 0.9)})`;
-			}
-			else {
-				color = 'var(--tu-text)'
-			}
-			return {
-				color: color,
-			}
-		}
-		const centerStyle = () => {
-			if (props.center) {
-				return {
-					margin: 'auto',
-					width: '50vw',
-				}
-			}
-			else {
-				return {
-					margin: '40px auto',
-				}
-			}
-		}
-		const redirect = (ev: TuHistoryEvent) => {
-			if (ev.url) {
-				router.replace(ev.url);
-			}
-		}
-		const load = async $state => {
-			console.log("loading")
-			serverRequest(props.serverSideConfig, `?page=${currentPage.value}`).then((data: TuHistoryEvent[]) => {
-				if (data.length > 0) {
-					for (let i = 0; i < data.length; i++) {
-						histEvents.value.push(data[i]);
-					}
-					$state.loaded();
-					let val = (scroll.value.offSetHeight).toString()
-					console.log(scroll.value.clientHeight)
-					lineHeight.value = val as string + "px !important"
-				}
-				else {
-					$state.complete();
-				}
-			});
-			currentPage.value++;
-			console.log(currentPage.value)
+interface Props {
+	events?: TuHistoryEvent[];
+	alternative?: boolean;
+	center?: boolean;
+	model?: string;
+	serverSideConfig?: TuHistoryServerModel;
+	// tuComponent props
+	color?: string;
+	active?: boolean;
+	colorSecondary?: string;
+	textColor?: string;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	events: () => [],
+	alternative: false,
+	center: false,
+	model: "local",
+	serverSideConfig: () => ({}),
+	color: "primary",
+	active: false,
+	colorSecondary: "rgb(130, 207, 23)",
+	textColor: "#fff"
+});
+
+// tuComponent functionality
+inject<Router | null>("appRouter", null);
+inject<string | null>("iconPackGlobal", null);
+
+const router = useRouter();
+const histEvents = ref<TuHistoryEvent[]>([]);
+const currentPage = ref(1);
+const scroll = ref();
+const lineHeight = ref();
+
+watchEffect(() => {
+	if (props.model === "local")
+		histEvents.value = props.events;
+});
+
+const categoryColor = (ev: TuHistoryEvent) => {
+	let background: string;
+	if (ev.color)
+		background = `rgba(${_color.getColorAsRgb(ev.color, 0.1)})`;
+	else
+		background = "var(--tu-gray-2)";
+	if (props.alternative) {
+		return {
+			width: "calc(50% - 40px)",
+			background: background
 		};
-		return { categoryColor, categoryColorIcon, centerStyle, redirect, histEvents, load, scroll, lineHeight }
 	}
-})
+	else {
+		return {
+			maxWidth: "100%",
+			width: "auto",
+			background: background
+		};
+	}
+};
+
+const categoryColorIcon = (ev: TuHistoryEvent, index: number) => {
+	let color: string, height: string, width: string, left: string, right: string;
+	height = '20px !important'
+	width = '20px !important'
+	if (!props.alternative) {
+		left = '-30px'
+	}
+	else {
+		if (index % 2 === 0) {
+			right = '-50px !important'
+		}
+		else {
+			left = "-50px !important"
+		}
+	}
+	if (!ev.icon) {
+		return {
+			background: 'var(--tu-gray-4)',
+			height: height,
+			width: width,
+			right: right,
+			left: left
+		}
+	}
+	else if (ev.color) {
+		color = `rgba(${_color.getColorAsRgb(ev.color, 0.9)})`;
+	}
+	else {
+		color = 'var(--tu-text)'
+	}
+	return {
+		color: color,
+	}
+}
+
+const centerStyle = () => {
+	if (props.center) {
+		return {
+			margin: 'auto',
+			width: '50vw',
+		}
+	}
+	else {
+		return {
+			margin: '40px auto',
+		}
+	}
+}
+
+const redirect = (ev: TuHistoryEvent) => {
+	if (ev.url) {
+		router.replace(ev.url);
+	}
+}
+
+const load = async ($state: any) => {
+	console.log("loading")
+	serverRequest(props.serverSideConfig, `?page=${currentPage.value}`).then((data: TuHistoryEvent[]) => {
+		if (data.length > 0) {
+			for (let i = 0; i < data.length; i++) {
+				histEvents.value.push(data[i]);
+			}
+			$state.loaded();
+			let val = (scroll.value.offSetHeight).toString()
+			console.log(scroll.value.clientHeight)
+			lineHeight.value = val as string + "px !important"
+		}
+		else {
+			$state.complete();
+		}
+	});
+	currentPage.value++;
+	console.log(currentPage.value)
+};
 </script>
 
 <style scoped lang="scss">

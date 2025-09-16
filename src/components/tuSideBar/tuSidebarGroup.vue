@@ -10,77 +10,65 @@
 		</transition>
 	</div>
 </template>
-<script lang="ts">
-import { defineComponent, inject, nextTick, onMounted, ref, watch } from "vue";
+<script lang="ts" setup>
+import { inject, nextTick, onMounted, provide, ref, watch } from "vue";
 
-export default defineComponent({
-	name: "TuSidebarGroup",
-	props: {
-		open: {
-			default: false,
-			type: Boolean
-		}
-	},
-	setup(props, context) {
-		const group = ref(true);
-		const openState = ref(false);
-		const sidebarGroup = ref<HTMLDivElement>();
-		const content = ref<HTMLDivElement>();
-		const parentValue = inject<any>("parentValue");
-		const parentHandleClickItem = inject<Function>("handleClickItem");
+interface Props {
+	open?: boolean;
+}
 
-		const handleClickItem = function (id: string) {
-			parentHandleClickItem?.call(null, id);
-		};
-
-		const beforeEnter = function (el: any) {
-			el.style.height = 0;
-		};
-
-		const enter = function (el: any, done: any) {
-			const h = el.scrollHeight;
-			el.style.height = h - 1 + "px";
-			done();
-		};
-
-		const leave = function (el: any, done: any) {
-			el.style.minHeight = "0px";
-			el.style.height = "0px";
-		};
-
-		onMounted(() => {
-			if (sidebarGroup.value?.querySelector(".active") || props.open)
-				openState.value = true;
-		});
-
-		watch(
-			() => props.open,
-			(val: boolean) => {
-				nextTick(() => {
-					const h = content.value?.scrollHeight;
-					if (group.value) {
-						if (val) {
-							// parent.$refs.content.style.height = `${parent.$refs.content.scrollHeight + h -1}px`;
-						}
-						else {
-							// parent.$refs.content.style.height = `${parent.$refs.content.scrollHeight -h +1}px`;
-						}
-					}
-				});
-			}
-		);
-
-		return {
-			handleClickItem,
-			leave,
-			enter,
-			beforeEnter,
-			parentValue,
-			group,
-			openState
-		};
-	}
+const props = withDefaults(defineProps<Props>(), {
+	open: false
 });
+
+const group = ref(true);
+const openState = ref(false);
+const sidebarGroup = ref<HTMLDivElement>();
+const content = ref<HTMLDivElement>();
+const parentHandleClickItem = inject<((id: string) => void) | undefined>("handleClickItem");
+
+const handleClickItem = function (id: string) {
+	parentHandleClickItem?.(id);
+};
+
+// Provide for child components
+provide("handleClickItem", handleClickItem);
+
+const beforeEnter = function (el: Element) {
+	(el as HTMLElement).style.height = "0";
+};
+
+const enter = function (el: Element, done: () => void) {
+	const h = (el as HTMLElement).scrollHeight;
+	(el as HTMLElement).style.height = h - 1 + "px";
+	done();
+};
+
+const leave = function (el: Element) {
+	(el as HTMLElement).style.minHeight = "0px";
+	(el as HTMLElement).style.height = "0px";
+};
+
+onMounted(() => {
+	if (sidebarGroup.value?.querySelector(".active") || props.open)
+		openState.value = true;
+});
+
+watch(
+	() => props.open,
+	(val: boolean) => {
+		nextTick(() => {
+			if (group.value) {
+				if (val) {
+					// parent.$refs.content.style.height = `${parent.$refs.content.scrollHeight + h -1}px`;
+				}
+				else {
+					// parent.$refs.content.style.height = `${parent.$refs.content.scrollHeight -h +1}px`;
+				}
+			}
+		});
+	}
+);
 </script>
 
 <style lang="scss">

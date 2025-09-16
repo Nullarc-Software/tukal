@@ -8,17 +8,19 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType } from "vue";
+<script setup lang="ts">
+interface Props {
+	w?: number;
+	justify?: string;
+	align?: string;
+	direction?: "unset" | "column" | "column-reverse" | "row" | "row-reverse";
+}
 
-export default defineComponent({
-	name: "TuRow",
-	props: {
-		w: { type: Number, default: 12 },
-		justify: { type: String, default: "flex-start" },
-		align: { type: String, default: "flex-start" },
-		direction: { type: String as PropType<"unset" | "column" | "column-reverse" | "row" | "row-reverse">, default: "row" }
-	}
+withDefaults(defineProps<Props>(), {
+	w: 12,
+	justify: "flex-start",
+	align: "flex-start",
+	direction: "row"
 });
 </script>
 

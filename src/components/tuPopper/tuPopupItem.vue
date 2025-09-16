@@ -16,58 +16,41 @@
 	</li>
 </template>
 
-<script lang="ts">
-import { defineComponent, inject, ref, watch, PropType } from "vue";
+<script setup lang="ts">
+import { inject, ref } from "vue";
 import _color from "../../utils/color";
-import { TuLoadingTypes } from "../tuLoading";
-export default defineComponent({
-	name: "TuPopupItem",
-	inheritAttrs: false,
-	props: {
-		to: {
-			type: Object,
-			default: null
-		},
-		onClickClose: {
-			default: false,
-			type: Boolean
-		},
-		disabled: {
-			default: false,
-			type: Boolean
-		},
-		divider: {
-			default: false,
-			type: Boolean
-		},
-		dividerBottom: {
-			default: false,
-			type: Boolean
-		}
-	},
-	setup(props, context) {
-		const hoverx = ref(false);
-		const tuDropDownItem = ref(true);
-		const color = ref("");
-		const closeParent = inject<Function>("closeParent");
 
-		const giveColor = function (opacity = 1) {
-			return _color.rColor(color.value, opacity);
-		};
-
-		const clickClose = function () {
-			if (props.onClickClose) closeParent?.call(null);
-		};
-
-		return {
-			clickClose,
-			hoverx,
-			tuDropDownItem,
-			color,
-			giveColor
-		};
-	}
+defineOptions({
+	inheritAttrs: false
 });
+
+interface Props {
+	to?: object | null;
+	onClickClose?: boolean;
+	disabled?: boolean;
+	divider?: boolean;
+	dividerBottom?: boolean;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	to: null,
+	onClickClose: false,
+	disabled: false,
+	divider: false,
+	dividerBottom: false
+});
+
+const hoverx = ref(false);
+const color = ref("");
+const closeParent = inject<() => void>("closeParent");
+
+const giveColor = function (opacity = 1) {
+	return _color.rColor(color.value, opacity);
+};
+
+const clickClose = function () {
+	if (props.onClickClose) closeParent?.call(null);
+};
 </script>
 
 <style lang="scss" scoped>

@@ -1,6 +1,6 @@
 <template>
 	<div class="con-upload">
-		<view-upload v-if="viewActive" :src="viewSrc" />
+		<view-upload v-if="viewActive" :src="viewSrc || undefined" />
 
 		<div class="con-img-upload">
 			<!-- <transition-group v-for="(img,index) in getFilesFilter" :key="index" name="upload"> -->
@@ -14,21 +14,21 @@
 					</i>
 				</button>
 				<button v-if="showUploadButton" :class="{
-					'on-progress': img.percent,
-					'ready-progress': img.percent >= 100
+					'on-progress': img.percent || 0,
+					'ready-progress': (img.percent || 0) >= 100
 				}" :style="{
-	height: `${img.percent}%`
+	height: `${img.percent || 0}%`
 }" class="btn-upload-file" @click="upload(index)">
 					<i translate="no" class="material-icons notranslate">
 						{{
-								img.percent >= 100
+								(img.percent || 0) >= 100
 									? img.error
 										? "report_problem"
 										: "cloud_done"
 									: "cloud_upload"
 						}}
 					</i>
-					<span>{{ img.percent }} %</span>
+					<span>{{ img.percent || 0 }} %</span>
 				</button>
 				<img v-if="img.src" :style="{
 					maxWidth: img.orientation == 'h' ? '100%' : 'none',
@@ -76,290 +76,261 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent, ref, watch } from "vue";
-import tuComponent from "../tuComponent";
+<script setup lang="ts">
+import { computed, ref, watch } from "vue";
 import viewUpload from "./tuViewUpload.vue";
-export default defineComponent({
-	name: "TuUpload",
-	extends: tuComponent,
-	components: {
-		viewUpload
-	},
-	props: {
-		fileName: {
-			default: null,
-			type: String
-		},
-		text: {
-			default: "Upload File",
-			type: String
-		},
-		textMax: {
-			default: "Maximum of files reached",
-			type: String
-		},
-		limit: {
-			default: null,
-			type: [Number, String]
-		},
-		action: {
-			default: null,
-			type: String
-		},
-		headers: {
-			default: null,
-			type: Object
-		},
-		data: {
-			default: null,
-			type: Object
-		},
-		automatic: {
-			default: false,
-			type: Boolean
-		},
-		showUploadButton: {
-			default: true,
-			type: Boolean
-		},
-		singleUpload: {
-			default: false,
-			type: Boolean
-		}
-	},
-	setup(props, context) {
-		const viewActive = ref(false);
-		const viewSrc = ref(null);
-		const srcs = ref([]);
-		const filesx = ref([]);
-		const percent = ref(0);
-		const itemRemove = ref([]);
-		const fileInput = ref<HTMLInputElement>();
-		let lastTap = 0;
 
-		const getFilesFilter = computed(() => {
-			const files = srcs.value.filter((item) => {
-				return !item.remove;
-			});
-			return files;
-		});
+interface FileItem {
+	src?: string | null;
+	name?: string;
+	type?: string;
+	orientation?: string;
+	percent?: number | null;
+	error?: boolean;
+	remove?: boolean | null;
+	success?: boolean;
+}
 
-		const postFiles = computed(() => {
-			let postFiles = Array.prototype.slice.call(filesx.value);
-			postFiles = postFiles.filter((item) => {
-				return (
-					!Object.prototype.hasOwnProperty.call(item, "remove") &&
-					!Object.prototype.hasOwnProperty.call(item, "success")
-				);
-			});
-			return postFiles.length;
-		});
+interface Props {
+	fileName?: string | null;
+	text?: string;
+	textMax?: string;
+	limit?: number | string | null;
+	action?: string | null;
+	headers?: Record<string, string> | null;
+	data?: Record<string, string> | null;
+	automatic?: boolean;
+	showUploadButton?: boolean;
+	singleUpload?: boolean;
+}
 
-		const viewImage = function (src, evt) {
-			let timeout;
-			const eventx =
-				"ontouchstart" in window ||
-					(window.Touch && document instanceof window.Touch)
-					? "touchstart"
-					: "click";
-			if (eventx === "click") {
+const props = withDefaults(defineProps<Props>(), {
+	fileName: null,
+	text: "Upload File",
+	textMax: "Maximum of files reached",
+	limit: null,
+	action: null,
+	headers: null,
+	data: null,
+	automatic: false,
+	showUploadButton: true,
+	singleUpload: false
+});
+
+const emit = defineEmits<{
+	"update:vsFile": [value: string];
+	"on-delete": [file: File];
+	"change": [value: string, files: File[]];
+	"on-error": [error: Event];
+	"on-success": [event: Event];
+}>();
+
+const viewActive = ref(false);
+const viewSrc = ref<string | null>(null);
+const srcs = ref<FileItem[]>([]);
+const filesx = ref<File[]>([]);
+const percent = ref(0);
+const itemRemove = ref<number[]>([]);
+const fileInput = ref<HTMLInputElement>();
+let lastTap = 0;
+
+const getFilesFilter = computed(() => {
+	const files = srcs.value.filter((item) => {
+		return !item.remove;
+	});
+	return files;
+});
+
+const viewImage = function (src: string, evt: Event) {
+	let timeout: ReturnType<typeof setTimeout> | undefined;
+	const eventx =
+		"ontouchstart" in window ||
+			(window.Touch && document instanceof window.Touch)
+			? "touchstart"
+			: "click";
+	if (eventx === "click") {
+		viewActive.value = true;
+		viewSrc.value = src;
+	}
+	else {
+		if (evt.type === "touchend") {
+			const currentTime = new Date().getTime();
+			const tapLength = currentTime - lastTap;
+			if (timeout) clearTimeout(timeout);
+			if (tapLength < 500 && tapLength > 0) {
 				viewActive.value = true;
 				viewSrc.value = src;
+				evt.preventDefault();
 			}
-			else {
-				if (evt.type === "touchend") {
-					const currentTime = new Date().getTime();
-					const tapLength = currentTime - lastTap;
-					clearTimeout(timeout);
-					if (tapLength < 500 && tapLength > 0) {
-						viewActive.value = true;
-						viewSrc.value = src;
-						event.preventDefault();
-					}
-					lastTap = currentTime;
+			lastTap = currentTime;
+		}
+	}
+};
+
+const removeFile = function (index: number) {
+	itemRemove.value.push(index);
+	emit("on-delete", filesx.value[index]);
+	setTimeout(() => {
+		if (filesx.value[index])
+			(filesx.value[index] as File & { remove: boolean }).remove = true;
+	}, 301);
+};
+
+const getFiles = (e: Event) => {
+	const target = e.target as HTMLInputElement;
+	emit("update:vsFile", target.value);
+	
+	function uploadImage(e: ProgressEvent<FileReader>) {
+		let orientation = "h";
+		const image = new Image();
+		image.src = e.target?.result as string;
+		image.onload = function () {
+			if (image.width > image.height) orientation = "w";
+			switchImage(image, orientation);
+		};
+	}
+	
+	function switchImage(image: HTMLImageElement, orientation: string) {
+		srcs.value.push({
+			src: image.src,
+			orientation: orientation,
+			percent: null,
+			error: false,
+			remove: null
+		});
+	}
+
+	const files = target.files;
+	let count = srcs.value.length - itemRemove.value.length;
+	if (files) {
+		for (const file in files) {
+			if (Object.prototype.hasOwnProperty.call(files, file)) {
+				if (props.limit) {
+					count++;
+					if (count > Number(props.limit)) break;
 				}
-			}
-		};
-
-		const removeFile = function (index) {
-			itemRemove.value.push(index);
-			context.emit("on-delete", filesx.value[index]);
-			setTimeout(() => {
-				filesx.value[index].remove = true;
-			}, 301);
-		};
-
-		const getFiles = (e) => {
-			context.emit("update:vsFile", e.target.value);
-			const _this = this;
-			function uploadImage(e) {
-				let orientation = "h";
-				const image = new Image();
-				image.src = e.target.result;
-				image.onload = function () {
-					if (image.width > image.height) orientation = "w";
-
-					switchImage(image, orientation);
-				};
-			}
-			function switchImage(image, orientation) {
-				srcs.value.push({
-					src: image.src,
-					orientation: orientation,
-
-					percent: null,
-					error: false,
-					remove: null
-				});
-			}
-
-			const files = e.target.files;
-			let count = srcs.value.length - itemRemove.value.length;
-			for (const file in files) {
-				if (Object.prototype.hasOwnProperty.call(files, file)) {
-					if (props.limit) {
-						count++;
-						if (count > Number(props.limit)) break;
-					}
-					const reader = new FileReader();
-					const filex = files[file];
-					if (/image.*/.test(filex.type)) {
-						filesx.value.push(filex);
-						reader.onload = uploadImage;
-						reader.readAsDataURL(filex);
-					}
-					else if (/video.*/.test(filex.type)) {
-						filesx.value.push(filex);
-						srcs.value.push({
-							src: null,
-							name: filex.name,
-							type: "video",
-							percent: null,
-							error: false,
-							remove: null
-						});
-					}
-					else {
-						filesx.value.push(filex);
-						srcs.value.push({
-							src: null,
-							name: filex.name,
-							percent: null,
-							error: false,
-							remove: null
-						});
-					}
-					context.emit("change", e.target.value, filesx.value);
+				const reader = new FileReader();
+				const filex = files[file];
+				if (/image.*/.test(filex.type)) {
+					filesx.value.push(filex);
+					reader.onload = uploadImage;
+					reader.readAsDataURL(filex);
 				}
-			}
-			const input = fileInput.value;
-			input.type = "text";
-			input.type = "file";
-			if (props.automatic) upload("all");
-		};
-
-		const upload = function (index) {
-			const formData = new FormData();
-			let postFiles = Array.prototype.slice.call(filesx.value);
-			if (typeof index === "number") postFiles = [postFiles[index]];
-			else if (index === "all") {
-				postFiles = postFiles.filter((item) => {
-					return (
-						!Object.prototype.hasOwnProperty.call(item, "remove") &&
-						!Object.prototype.hasOwnProperty.call(item, "success")
-					);
-				});
-			}
-			const data = props.data || {};
-			for (const key in data) formData.append(key, data[key]);
-
-			if (props.singleUpload) {
-				postFiles.forEach((filex) => {
-					const formData = new FormData();
-					for (const key in data) formData.append(key, data[key]);
-
-					formData.append(props.fileName, filex, filex.name);
-					uploadx(index, formData);
-				});
-			}
-			else {
-				postFiles.forEach((filex) => {
-					formData.append(props.fileName, filex, filex.name);
-				});
-				uploadx(index, formData);
-			}
-		};
-
-		const uploadx = (index, formData) => {
-			const self = this;
-			const xhr = new XMLHttpRequest();
-			xhr.onerror = function error(e) {
-				context.emit("on-error", e);
-				if (typeof index === "number") srcs.value[index].error = true;
-			};
-			xhr.onload = function onload(e) {
-				if (xhr.status < 200 || xhr.status >= 300) {
-					context.emit("on-error", e);
-					if (typeof index === "number")
-						srcs.value[index].error = true;
+				else if (/video.*/.test(filex.type)) {
+					filesx.value.push(filex);
+					srcs.value.push({
+						src: null,
+						name: filex.name,
+						type: "video",
+						percent: null,
+						error: false,
+						remove: null
+					});
 				}
 				else {
-					filesx.value.forEach(function (loaded) {
-						loaded.success = true;
+					filesx.value.push(filex);
+					srcs.value.push({
+						src: null,
+						name: filex.name,
+						percent: null,
+						error: false,
+						remove: null
 					});
-					context.emit("on-success", e);
 				}
-			};
-			if (xhr.upload) {
-				xhr.upload.onprogress = function progress(e) {
-					if (e.total > 0) {
-						let percent = (e.loaded / e.total) * 100;
-						if (typeof index === "number")
-							srcs.value[index].percent = Math.trunc(percent);
-						else percent = Math.trunc(percent);
-					}
-				};
+				emit("change", target.value, filesx.value);
 			}
-			xhr.withCredentials = true;
-			xhr.open("POST", props.action, true);
-			const headers = props.headers || {};
-			for (const head in headers) {
-				if (
-					Object.prototype.hasOwnProperty.call(headers, head) &&
-					headers[head] !== null
-				)
-					xhr.setRequestHeader(head, headers[head]);
-			}
-			xhr.send(formData);
-		};
+		}
+	}
+	
+	const input = fileInput.value;
+	if (input) {
+		input.type = "text";
+		input.type = "file";
+	}
+	if (props.automatic) upload("all");
+};
 
-		watch(percent, () => {
-			if (percent.value >= 100) {
-				srcs.value.forEach((file) => {
-					file.percent = 100;
-				});
-				setTimeout(() => {
-					percent.value = 0;
-				}, 1000);
-			}
+const upload = function (index: number | string) {
+	const formData = new FormData();
+	let postFiles = Array.prototype.slice.call(filesx.value);
+	if (typeof index === "number") postFiles = [postFiles[index]];
+	else if (index === "all") {
+		postFiles = postFiles.filter((item) => {
+			return (
+				!Object.prototype.hasOwnProperty.call(item, "remove") &&
+				!Object.prototype.hasOwnProperty.call(item, "success")
+			);
 		});
+	}
+	const data = props.data || {};
+	for (const key in data) formData.append(key, data[key]);
 
-		return {
-			viewSrc,
-			viewActive,
-			srcs,
-			filesx,
-			fileInput,
-			uploadx,
-			upload,
-			percent,
-			itemRemove,
-			getFiles,
-			getFilesFilter,
-			removeFile,
-			viewImage
+	if (props.singleUpload) {
+		postFiles.forEach((filex) => {
+			const formData = new FormData();
+			for (const key in data) formData.append(key, data[key]);
+			formData.append(props.fileName || "file", filex, filex.name);
+			uploadx(index, formData);
+		});
+	}
+	else {
+		postFiles.forEach((filex) => {
+			formData.append(props.fileName || "file", filex, filex.name);
+		});
+		uploadx(index, formData);
+	}
+};
+
+const uploadx = (index: number | string, formData: FormData) => {
+	const xhr = new XMLHttpRequest();
+	xhr.onerror = function error(e) {
+		emit("on-error", e);
+		if (typeof index === "number") srcs.value[index].error = true;
+	};
+	xhr.onload = function onload(e) {
+		if (xhr.status < 200 || xhr.status >= 300) {
+			emit("on-error", e);
+			if (typeof index === "number")
+				srcs.value[index].error = true;
+		}
+		else {
+			filesx.value.forEach(function (loaded) {
+				(loaded as File & { success: boolean }).success = true;
+			});
+			emit("on-success", e);
+		}
+	};
+	if (xhr.upload) {
+		xhr.upload.onprogress = function progress(e) {
+			if (e.total > 0) {
+				let percent = (e.loaded / e.total) * 100;
+				if (typeof index === "number")
+					srcs.value[index].percent = Math.trunc(percent);
+				else percent = Math.trunc(percent);
+			}
 		};
+	}
+	xhr.withCredentials = true;
+	xhr.open("POST", props.action || "", true);
+	const headers = props.headers || {};
+	for (const head in headers) {
+		if (
+			Object.prototype.hasOwnProperty.call(headers, head) &&
+			headers[head] !== null
+		)
+			xhr.setRequestHeader(head, headers[head]);
+	}
+	xhr.send(formData);
+};
+
+watch(percent, () => {
+	if (percent.value >= 100) {
+		srcs.value.forEach((file) => {
+			file.percent = 100;
+		});
+		setTimeout(() => {
+			percent.value = 0;
+		}, 1000);
 	}
 });
 </script>

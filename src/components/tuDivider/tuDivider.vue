@@ -16,147 +16,116 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent } from 'vue';
+<script setup lang="ts">
+import { computed } from "vue";
 import _color from "../../utils/color";
 
-export default defineComponent({
-	name: "TuDivider",
-	props: {
-		color: {
-			type: String,
-			default: "rgba(0, 0, 0,.1)",
-		},
-		background: {
-			type: String,
-			default: "transparent",
-		},
-		icon: {
-			default: null,
-			type: String,
-		},
-		borderStyle: {
-			default: "solid",
-			type: String,
-		},
-		borderHeight: {
-			default: "1px",
-			type: String,
-		},
-		position: {
-			default: "center",
-			type: String,
-		},
-		iconPack: {
-			default: "material-icons",
-			type: String,
-		},
-	},
-	setup(props, context) {
+interface Props {
+	color?: string;
+	background?: string;
+	icon?: string | null;
+	borderStyle?: string;
+	borderHeight?: string;
+	position?: string;
+	iconPack?: string;
+}
 
-		const getWidthAfter = computed(() => {
-			let widthx = "100%";
-			if (props.position == "left") {
-				widthx = "0%";
-			} else if (props.position == "left-center") {
-				widthx = "25%";
-			} else if (props.position == "right-center") {
-				widthx = "75%";
-			} else if (props.position == "right") {
-				widthx = "100%";
-			}
-			return widthx;
-		});
+const props = withDefaults(defineProps<Props>(), {
+	color: "rgba(0, 0, 0,.1)",
+	background: "transparent",
+	icon: null,
+	borderStyle: "solid",
+	borderHeight: "1px",
+	position: "center",
+	iconPack: "material-icons"
+});
 
-		const getWidthBefore = computed(() => {
-			let widthx = "100%";
-			if (props.position == "left") {
-				widthx = "100%";
-			} else if (props.position == "left-center") {
-				widthx = "75%";
-			} else if (props.position == "right-center") {
-				widthx = "25%";
-			} else if (props.position == "right") {
-				widthx = "0%";
-			}
-			return widthx;
-		});
+const getWidthAfter = computed(() => {
+	let widthx = "100%";
+	if (props.position === "left")
+		widthx = "0%";
+	else if (props.position === "left-center")
+		widthx = "25%";
+	else if (props.position === "right-center")
+		widthx = "75%";
+	else if (props.position === "right")
+		widthx = "100%";
+	return widthx;
+});
 
-		const borderColor = computed(() => {
-			if (!_color.isColor(props.color)) {
-				return _color.getColor(props.color);
-			}
-		});
+const getWidthBefore = computed(() => {
+	let widthx = "100%";
+	if (props.position === "left")
+		widthx = "100%";
+	else if (props.position === "left-center")
+		widthx = "75%";
+	else if (props.position === "right-center")
+		widthx = "25%";
+	else if (props.position === "right")
+		widthx = "0%";
+	return widthx;
+});
 
-		const afterStyle = computed(() => {
-			const classes = {
-				width: getWidthAfter.value,
-				"border-top-width": props.borderHeight,
-				["border-top-style" as any]: props.borderStyle,
-			};
-			if (!_color.isColor(props.color)) {
-				classes["border-top-color"] = borderColor;
-			}
-			return classes;
-		});
+const borderColor = computed(() => {
+	if (!_color.isColor(props.color))
+		return _color.getColor(props.color);
+	return "";
+});
 
-		const beforeStyle = computed(() => {
-			const classes = {
-				width: getWidthBefore.value,
-				"border-top-width": props.borderHeight,
-				["border-top-style" as any]: props.borderStyle,
-			};
-			if (!_color.isColor(props.color)) {
-				classes["border-top-color"] = borderColor;
-			}
-			return classes;
-		});
+const afterStyle = computed(() => {
+	const classes: Record<string, string> = {
+		width: getWidthAfter.value,
+		"border-top-width": props.borderHeight,
+		"border-top-style": props.borderStyle,
+	};
+	if (!_color.isColor(props.color))
+		classes["border-top-color"] = borderColor;
+	return classes;
+});
 
-		const borderClass = computed(() => {
-			const classes = {};
-			let borderColor = _color.isColor(props.color) ? props.color : "default";
-			classes[`tu-divider-border-${borderColor}`] = true;
-			return classes;
-		});
-		const textColor = computed(() => {
-			if (!_color.isColor(props.color)) {
-				return _color.getColor(
-					props.color !== "rgba(0, 0, 0,.1)" ? props.color : ""
-				);
-			}
-		});
+const beforeStyle = computed(() => {
+	const classes: Record<string, any> = {
+		width: getWidthBefore.value,
+		"border-top-width": props.borderHeight,
+		"border-top-style": props.borderStyle,
+	};
+	if (!_color.isColor(props.color))
+		classes["border-top-color"] = borderColor;
+	return classes;
+});
 
-		const backgroundColor = computed(() => {
-			if (!_color.isColor(props.background)) {
-				return _color.getColor(props.background);
-			}
-		});
+const borderClass = computed(() => {
+	const classes = {};
+	let borderColor = _color.isColor(props.color) ? props.color : "default";
+	classes[`tu-divider-border-${borderColor}`] = true;
+	return classes;
+});
 
-		const textAndBackgroundClass = computed(() => {
-			const classes = {};
-
-			let textColor = _color.isColor(props.color) ? props.color : "default";
-			classes[`tu-divider-text-${textColor}`] = true;
-
-			let backgroundColor = _color.isColor(props.background)
-				? props.background
-				: "default";
-			classes[`tu-divider-background-${backgroundColor}`] = true;
-
-			return classes;
-		});
-
-		return {
-			getWidthAfter,
-			backgroundColor,
-			textAndBackgroundClass,
-			textColor,
-			borderClass,
-			beforeStyle,
-			getWidthBefore,
-			afterStyle
-		}
-
+const textColor = computed(() => {
+	if (!_color.isColor(props.color)) {
+		return _color.getColor(
+			props.color !== "rgba(0, 0, 0,.1)" ? props.color : ""
+		);
 	}
+});
+
+const backgroundColor = computed(() => {
+	if (!_color.isColor(props.background)) {
+		return _color.getColor(props.background);
+	}
+});
+
+const textAndBackgroundClass = computed(() => {
+	const classes = {};
+
+	let textColor = _color.isColor(props.color) ? props.color : "default";
+	classes[`tu-divider-text-${textColor}`] = true;
+
+	let backgroundColor = _color.isColor(props.background)
+		? props.background
+		: "default";
+	classes[`tu-divider-background-${backgroundColor}`] = true;
+
+	return classes;
 });
 </script>

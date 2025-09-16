@@ -117,83 +117,66 @@
 		</div>
 	</li>
 </template>
-<script lang="ts">
-import { defineComponent, PropType, reactive, ref, Ref, nextTick, onMounted } from "vue";
+<script setup lang="ts">
+import { reactive, ref, Ref, nextTick, inject } from "vue";
 import {
 	NodeData,
 	TreeRowCustomStyles,
 	TuTreeServerModel
 } from "./interface";
 import { recCallNodes, serverRequest } from "./helper";
-import tuComponent from "@/components/tuComponent";
-export default defineComponent({
-	name: "TuTreeRow",
-	extends: tuComponent,
-	props: {
-		root: {},
-		isCheckNode: {
-			type: Boolean,
-			default: false
-		},
-		icon: {
-			type: String,
-			default: "file_copy"
-		},
-		isRemoveNode: {
-			type: Boolean,
-			default: false
-		},
-		isAddNode: {
-			type: Boolean,
-			default: false
-		},
-		isEditNode: {
-			type: Boolean,
-			default: false
-		},
-		customStyles: {
-			type: Object as PropType<TreeRowCustomStyles>
-		},
-		search: {
-			type: Boolean,
-			default: false
-		},
-		node: Object as PropType<NodeData>,
-		model: {
-			type: String,
-			default: "local"
-		},
-		serverSideConfig: {
-			type: Object as PropType<TuTreeServerModel>,
-			default: () => {
-				return {};
-			}
-		},
-		keyWord: {
-			type: String,
-			default: null
-		},
-		parentNode: Object as PropType<NodeData>,
-		depth: Number
-	},
-	emits: [
-		"emitNodeAdded",
-		"emitNodeExpanded",
-		"emitNodeSelected",
-		"emitNodeDeleted",
-		"emitParentNode",
-		"emitNodeChecked",
-		"emitNodeEdited"
-	],
-	setup(props, context) {
-		const currentNode: Ref<NodeData> = ref(props.node);
-		//const currentNodeIsPartiallyChecked = ref(false);
-		const currentParentNode: Ref<NodeData> = ref(props.parentNode);
-		const currentNodeCheckState = ref(currentNode.value.state.checked);
-		const parentNodeIsPartialState: Ref<boolean> = ref(false);
-		const itemRefs = ref(null);
-		const editSelected = ref(false);
-		const loading = ref(false);
+
+interface Props {
+	root?: unknown;
+	isCheckNode?: boolean;
+	icon?: string;
+	isRemoveNode?: boolean;
+	isAddNode?: boolean;
+	isEditNode?: boolean;
+	customStyles?: TreeRowCustomStyles;
+	search?: boolean;
+	node?: NodeData;
+	model?: string;
+	serverSideConfig?: TuTreeServerModel;
+	keyWord?: string;
+	parentNode?: NodeData;
+	depth?: number;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	isCheckNode: false,
+	icon: "file_copy",
+	isRemoveNode: false,
+	isAddNode: false,
+	isEditNode: false,
+	search: false,
+	model: "local",
+	serverSideConfig: () => ({}),
+	keyWord: null
+});
+
+const emit = defineEmits<{
+	emitNodeAdded: [node: NodeData];
+	emitNodeExpanded: [node: NodeData, state: boolean];
+	emitNodeSelected: [node: NodeData];
+	emitNodeDeleted: [node: NodeData, isSingleNode?: boolean];
+	emitParentNode: [node: NodeData];
+	emitNodeChecked: [node: NodeData, state: boolean];
+	emitNodeEdited: [node: NodeData];
+}>();
+
+// Inject tuComponent functionality
+const $tukal = inject("$tukal");
+const $utils = inject("$utils");
+
+const currentNode: Ref<NodeData> = ref(props.node);
+//const currentNodeIsPartiallyChecked = ref(false);
+const currentParentNode: Ref<NodeData> = ref(props.parentNode);
+const currentNodeCheckState = ref(currentNode.value?.state?.checked);
+const parentNodeIsPartialState: Ref<boolean> = ref(false);
+const itemRefs = ref(null);
+const editSelected = ref(false);
+const loading = ref(false);
 		const styles: TreeRowCustomStyles = reactive({
 			row: {
 				style: {
@@ -271,17 +254,17 @@ export default defineComponent({
 
 		// Redirect the event toward the Tree component
 		function emitNodeSelected(nodeSelected: NodeData) {
-			context.emit("emitNodeSelected", nodeSelected);
+			emit("emitNodeSelected", nodeSelected);
 		}
 		// Redirect the event toward the Tree component
 		function emitNodeExpanded(node: NodeData, state: boolean) {
-			context.emit("emitNodeExpanded", node, state);
+			emit("emitNodeExpanded", node, state);
 		}
 		function onNodeAdded(node: NodeData) {
-			context.emit("emitNodeAdded", node);
+			emit("emitNodeAdded", node);
 		}
 		function emitNodeDeleted(node: NodeData, isSingleNode?: boolean) {
-			context.emit("emitNodeDeleted", node, isSingleNode);
+			emit("emitNodeDeleted", node, isSingleNode);
 		}
 		const expandNode = (server?: boolean) => {
 			currentNode.value.state.expanded =
@@ -439,34 +422,8 @@ export default defineComponent({
 			context.emit("emitNodeChecked");
 		}
 		const onNodeEdited = () => {
-			context.emit("emitNodeEdited");
+			emit("emitNodeEdited");
 		}
-		return {
-			styles,
-			toggleCheckState,
-			toggleSelected,
-			emitNodeExpanded,
-			emitNodeSelected,
-			emitNodeDeleted,
-			onNodeAdded,
-			currentNode,
-			addNode,
-			removeNode,
-			expandNode,
-			parentNodeIsPartialState,
-			onParentNodeEmit,
-			itemRefs,
-			currentNodeCheckState,
-			getHeight,
-			editNode,
-			editSelected,
-			focusOut,
-			onNodeChecked,
-			onNodeEdited,
-			loading
-		};
-	}
-});
 </script>
 <style lang="scss" scoped>
 @import "../../../style/sass/_mixins.scss";

@@ -4,37 +4,51 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref } from "vue";
+<script setup lang="ts">
+import { ref, inject, onMounted } from "vue";
 import colorPicker from "@caohenghu/vue-colorpicker";
-import tuComponent from "../tuComponent"
+import { Router } from "vue-router";
+import { getColor } from "../../utils";
 
-export default defineComponent({
-	name: "TuColorPicker",
-	extends: tuComponent,
-	components: {
-		colorPicker
-	},
-	props: {
-		modelValue: {
-			type: String,
-			default: "#59c7f9"
-		}
-	},
-	emits: ["update:modelValue"],
-	setup(props, context) {
-		const color = ref("#59c7f9");
-		const changeColor = (color) => {
-			const {
-				rgba
-			} = color;
-			const { r, g, b, a } = rgba;
-			color.value = `rgba(${r},${g},${b},${a})`;
-			context.emit("update:modelValue", color.value);
-		};
-		return { changeColor, color };
-	}
+interface Props {
+	modelValue?: string;
+	// tuComponent props
+	color?: string;
+	active?: boolean;
+	colorSecondary?: string;
+	textColor?: string;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	modelValue: "#59c7f9",
+	color: "primary",
+	active: false,
+	colorSecondary: "rgb(130, 207, 23)",
+	textColor: "#fff"
 });
+
+const emit = defineEmits<{
+	"update:modelValue": [value: string];
+}>();
+
+// tuComponent functionality
+inject<Router | null>("appRouter", null);
+inject<string | null>("iconPackGlobal", null);
+
+const getColorSecondary = ref<string>("");
+
+onMounted(() => {
+	getColorSecondary.value = getColor(props.colorSecondary);
+});
+
+const color = ref("#59c7f9");
+
+const changeColor = (colorData: any) => {
+	const { rgba } = colorData;
+	const { r, g, b, a } = rgba;
+	color.value = `rgba(${r},${g},${b},${a})`;
+	emit("update:modelValue", color.value);
+};
 </script>
 
 <style lang="scss">

@@ -8,43 +8,46 @@
 	</td>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-import tuComponent from "../tuComponent";
+<script setup lang="ts">
+import { inject } from "vue";
+import { Router } from "vue-router";
 
-export default defineComponent({
-	name: "TuTd",
-	extends: tuComponent,
-	props: {
-		checkbox: {
-			type: Boolean,
-			default: false
-		},
-		edit: {
-			type: Boolean,
-			default: false
-		},
-		textWrap: {
-			type: Boolean,
-			default: false
-		},
-		expand: {
-			type: Boolean,
-			default: false
-		}
-	},
-	setup(props, context) {
-		const clickHandler = function (event: MouseEvent) {
-			if (props.checkbox || props.edit) (event as any).isInput = true;
-			else if (props.expand) (event as any).isExpand = true;
-			context.emit("tdClick", event);
-		};
+interface Props {
+	checkbox?: boolean;
+	edit?: boolean;
+	textWrap?: boolean;
+	expand?: boolean;
+	// tuComponent props
+	color?: string;
+	active?: boolean;
+	colorSecondary?: string;
+	textColor?: string;
+}
 
-		return {
-			clickHandler
-		};
-	}
+const props = withDefaults(defineProps<Props>(), {
+	checkbox: false,
+	edit: false,
+	textWrap: false,
+	expand: false,
+	color: "primary",
+	active: false,
+	colorSecondary: "rgb(130, 207, 23)",
+	textColor: "#fff"
 });
+
+const emit = defineEmits<{
+	tdClick: [event: MouseEvent];
+}>();
+
+// tuComponent functionality
+inject<Router | null>("appRouter", null);
+inject<string | null>("iconPackGlobal", null);
+
+const clickHandler = function (event: MouseEvent) {
+	if (props.checkbox || props.edit) (event as MouseEvent & { isInput: boolean }).isInput = true;
+	else if (props.expand) (event as MouseEvent & { isExpand: boolean }).isExpand = true;
+	emit("tdClick", event);
+};
 </script>
 
 <style lang="scss" scoped>

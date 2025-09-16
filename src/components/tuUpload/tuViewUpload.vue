@@ -5,31 +5,33 @@
 		</div>
 	</transition>
 </template>
-<script lang="ts">
+<script setup lang="ts">
+import { ref, onMounted } from "vue";
 import * as utils from "../../utils";
-export default {
-	name: "ViewUpload",
-	props: {
-		active: {
-			default: false,
-			type: Boolean
-		},
-		src: {
-			default: null,
-			type: String
-		}
-	},
-	mounted () {
-		utils.insertBody(this.$refs.view);
-	},
-	upload () {
-		utils.insertBody(this.$refs.view);
-	},
-	methods: {
-		closeView (evt) {
-			if (evt.target.tagName !== "IMG") this.$parent.viewActive = false;
-		}
-	}
+
+interface Props {
+	active?: boolean;
+	src?: string;
+}
+
+withDefaults(defineProps<Props>(), {
+	active: false,
+	src: undefined
+});
+
+const emit = defineEmits<{
+	"close": [];
+}>();
+
+const view = ref<HTMLElement>();
+
+onMounted(() => {
+	if (view.value) utils.insertBody(view.value);
+});
+
+const closeView = (evt: Event) => {
+	const target = evt.target as HTMLElement;
+	if (target.tagName !== "IMG") emit("close");
 };
 </script>
 

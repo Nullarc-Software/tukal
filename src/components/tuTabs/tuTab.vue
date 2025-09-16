@@ -17,100 +17,76 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent, getCurrentInstance, inject, onMounted, reactive, Ref, toRefs, VNode } from "vue";
+<script setup lang="ts">
+import { getCurrentInstance, inject, onMounted, reactive, Ref, toRefs, VNode, useAttrs } from "vue";
 import { TabId } from ".";
 
-export default defineComponent({
-	name: "TuTab",
-	inheritAttrs: false,
-	props: {
-		label: {
-			default: "Label",
-			type: String
-		},
-		name: {
-			default: null,
-			type: String
-		},
-		icon: {
-			default: "",
-			type: String
-		},
-		tag: {
-			default: "",
-			type: String
-		},
-		iconPack: {
-			type: String,
-			default: "material-icons"
-		},
-		disabled: {
-			type: Boolean,
-			default: false
-		},
-		noTransitions: {
-			type: Boolean,
-			default: false
-		},
-		to: {
-			type: String,
-			default: null
-		}
-	},
-	setup(props, context) {
-		const reactiveData = reactive({
-			vertical: false,
-			active: false,
-			id: null,
-			invert: false
-		});
+interface Props {
+	label?: string;
+	name?: string;
+	icon?: string;
+	tag?: string;
+	iconPack?: string;
+	disabled?: boolean;
+	noTransitions?: boolean;
+	to?: string;
+}
 
-		const setActive = function (value: boolean) {
-			reactiveData.active = value;
-		};
-
-		const setInvert = function (value: boolean) {
-			reactiveData.invert = value;
-		};
-
-		const setVertical = function (value: boolean) {
-			reactiveData.vertical = value;
-		};
-
-		const addChild = inject<Function>("addChild");
-		const updateChild = inject<Function>("updateChild");
-		const noTransitions = inject<Ref<Boolean>>("noTransitions");
-		const nextId = inject<Ref<TabId>>("tabIdInstance");
-
-		const currentId = nextId?.value ? nextId.value.tabId++ : 0;
-		const data = Object.assign({}, {
-			vnode: (getCurrentInstance()?.vnode as VNode),
-			setActive,
-			setInvert,
-			setVertical
-		}, {
-			label: props.label,
-			icon: props.icon,
-			iconPack: props.iconPack,
-			tag: props.tag,
-			id: currentId,
-			attrs: context.attrs,
-			disabled: props.disabled,
-			name: props.name,
-			to: props.to
-		});
-
-		onMounted(() => {
-			addChild?.call(null, data);
-		});
-
-		return {
-			...toRefs(reactiveData),
-			noTransitions
-		};
-	}
+const props = withDefaults(defineProps<Props>(), {
+	label: "Label",
+	icon: "",
+	tag: "",
+	iconPack: "material-icons",
+	disabled: false,
+	noTransitions: false
 });
+
+const reactiveData = reactive({
+	vertical: false,
+	active: false,
+	id: null,
+	invert: false
+});
+
+const setActive = function (value: boolean) {
+	reactiveData.active = value;
+};
+
+const setInvert = function (value: boolean) {
+	reactiveData.invert = value;
+};
+
+const setVertical = function (value: boolean) {
+	reactiveData.vertical = value;
+};
+
+const addChild = inject<(data: Record<string, unknown>) => void>("addChild");
+const noTransitions = inject<Ref<boolean>>("noTransitions");
+const nextId = inject<Ref<TabId>>("tabIdInstance");
+
+const currentId = nextId?.value ? nextId.value.tabId++ : 0;
+const data = Object.assign({}, {
+	vnode: (getCurrentInstance()?.vnode as VNode),
+	setActive,
+	setInvert,
+	setVertical
+}, {
+	label: props.label,
+	icon: props.icon,
+	iconPack: props.iconPack,
+	tag: props.tag,
+	id: currentId,
+	attrs: useAttrs(),
+	disabled: props.disabled,
+	name: props.name,
+	to: props.to
+});
+
+onMounted(() => {
+	addChild?.call(null, data);
+});
+
+const { vertical, active, invert } = toRefs(reactiveData);
 </script>
 
 <style lang="scss">

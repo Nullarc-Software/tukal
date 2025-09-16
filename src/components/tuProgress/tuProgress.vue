@@ -10,67 +10,70 @@
 	</div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { getApplyColor } from "@/utils";
-import { computed, defineComponent, onMounted, ref, watch } from "vue";
-import tuComponent from "../tuComponent";
+import { computed, onMounted, ref, watch, inject } from "vue";
+import { Router } from "vue-router";
+import { getColor } from "../../utils";
 
-export default defineComponent({
-	name: "TuProgress",
-	extends: tuComponent,
-	props: {
-		height: {
-			type: [Number, String],
-			default: 5
-		},
-		indeterminate: {
-			type: Boolean,
-			default: false
-		},
-		percent: {
-			type: Number,
-			default: 0
-		},
-		color: {
-			type: String,
-			default: "primary"
-		}
-	},
-	setup(props, context) {
-		const percentx = ref(0);
+interface Props {
+	height?: number | string;
+	indeterminate?: boolean;
+	percent?: number;
+	color?: string;
+	// tuComponent props
+	active?: boolean;
+	colorSecondary?: string;
+	textColor?: string;
+}
 
-		const styleConProgress = computed(() => {
-			return {
-				background: getApplyColor(props.color, 0.1),
-				height: `${props.height}px`
-			};
-		});
+const props = withDefaults(defineProps<Props>(), {
+	height: 5,
+	indeterminate: false,
+	percent: 0,
+	color: "primary",
+	active: false,
+	colorSecondary: "rgb(130, 207, 23)",
+	textColor: "#fff"
+});
 
-		const styleProgress = computed(() => {
-			return {
-				background: getApplyColor(props.color),
-				width: `${percentx.value}%`
-			};
-		});
+// tuComponent functionality
+inject<Router | null>("appRouter", null);
+inject<string | null>("iconPackGlobal", null);
 
-		watch(
-			() => props.percent,
-			(newVal) => {
-				percentx.value = newVal;
-			}
-		);
+const getColorSecondary = ref<string>("");
 
-		onMounted(() => {
-			setTimeout(() => {
-				percentx.value = props.percent;
-			}, 600);
-		});
+onMounted(() => {
+	getColorSecondary.value = getColor(props.colorSecondary);
+});
 
-		return {
-			styleConProgress,
-			styleProgress
-		};
+const percentx = ref(0);
+
+const styleConProgress = computed(() => {
+	return {
+		background: getApplyColor(props.color, 0.1),
+		height: `${props.height}px`
+	};
+});
+
+const styleProgress = computed(() => {
+	return {
+		background: getApplyColor(props.color),
+		width: `${percentx.value}%`
+	};
+});
+
+watch(
+	() => props.percent,
+	(newVal) => {
+		percentx.value = newVal;
 	}
+);
+
+onMounted(() => {
+	setTimeout(() => {
+		percentx.value = props.percent;
+	}, 600);
 });
 </script>
 

@@ -5,21 +5,13 @@
 		<slot />
 	</div>
 </template>
-<script lang="ts">
-import { defineComponent } from "vue";
-import tuButton from "./tuButton.vue";
+<script setup lang="ts">
+interface Props {
+	fixedHeight?: string;
+}
 
-export default defineComponent({
-	name: "TuButtonGroup",
-	components: {
-		tuButton
-	},
-	props: {
-		fixedHeight: {
-			type: String,
-			default: ""
-		}
-	}
+withDefaults(defineProps<Props>(), {
+	fixedHeight: ""
 });
 </script>
 

@@ -28,79 +28,58 @@
   </div>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent } from "vue";
+<script setup lang="ts">
+import { computed } from "vue";
 import * as _color from "../../utils";
 
-export default defineComponent({
-	name: "TuChip",
-	props: {
-		item: {
-			type: Boolean
-		},
-		value: {
-			default: null,
-			type: Array
-		},
-		active: {
-			type: Boolean,
-			default: true
-		},
-		text: {
-			type: String,
-			default: null
-		},
-		closable: {
-			type: [Boolean, String],
-			default: false
-		},
-		color: {
-			type: String,
-			default: null
-		},
-		icon: {
-			type: String,
-			default: null
-		},
-		iconPack: {
-			type: String,
-			default: "material-icons"
-		},
-		closeIcon: {
-			type: String,
-			default: "clear"
-		},
-		transparent: {
-			type: Boolean,
-			default: false
-		}
-	},
-	setup (props, context) {
-		const styleChip = computed(() => {
-			const background = props.transparent ? _color.getApplyColor(props.color, 0.15) : _color.getApplyColor(props.color, 1);
-			const color = props.transparent ? _color.getApplyColor(props.color, 1) : props.color ? "rgba(255,255,255,.9)" : "rgba(0,0,0,.7)";
+interface Props {
+	item?: boolean;
+	value?: Array<any> | null;
+	active?: boolean;
+	text?: string | null;
+	closable?: boolean | string;
+	color?: string | null;
+	icon?: string | null;
+	iconPack?: string;
+	closeIcon?: string;
+	transparent?: boolean;
+}
 
-			return {
-				background: background,
-				color: color
-			};
-		});
-
-		const closeChip = () => {
-			context.emit("input", false);
-			context.emit("click");
-		};
-
-		const remove = () => {
-			context.emit("tu-remove", false);
-			context.emit("input", false);
-		};
-
-		return {
-			styleChip,
-			closeChip,
-			remove
-		};
-	}
+const props = withDefaults(defineProps<Props>(), {
+	value: null,
+	active: true,
+	text: null,
+	closable: false,
+	color: null,
+	icon: null,
+	iconPack: "material-icons",
+	closeIcon: "clear",
+	transparent: false
 });
+
+const emit = defineEmits<{
+	input: [value: boolean];
+	click: [];
+	"tu-remove": [value: boolean];
+}>();
+
+const styleChip = computed(() => {
+	const background = props.transparent ? _color.getApplyColor(props.color, 0.15) : _color.getApplyColor(props.color, 1);
+	const color = props.transparent ? _color.getApplyColor(props.color, 1) : props.color ? "rgba(255,255,255,.9)" : "rgba(0,0,0,.7)";
+
+	return {
+		background: background,
+		color: color
+	};
+});
+
+const closeChip = () => {
+	emit("input", false);
+	emit("click");
+};
+
+const remove = () => {
+	emit("tu-remove", false);
+	emit("input", false);
+};
 </script>

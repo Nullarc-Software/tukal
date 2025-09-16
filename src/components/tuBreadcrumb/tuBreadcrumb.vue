@@ -2,10 +2,10 @@
 	<nav v-bind="$attrs" :class="`tu-align-${align}`" class="tu-breadcrumb" aria-label="breadcrumb">
 		<ol class="tu-breadcrumb--ol">
 			<slot />
-			<li v-for="item in mutableItems" v-show="!hasSlot" :key="item.title" :class="{
+			<li v-for="(item, index) in mutableItems" v-show="!hasSlot" :key="`${item.title}-${index}`" :class="{
 				'tu-active': item.active,
 				'disabled-link': item.disabled
-			}" :aria-current="item.active ? 'page' : null">
+			}" :aria-current="item.active ? 'page' : undefined">
 				<a v-if="!item.active" :href="item.url ? item.url : '#'" :title="item.title" class="tu-breadcrumb--link"
 					v-text="item.title"></a>
 				<template v-else>
@@ -19,77 +19,79 @@
 	</nav>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent } from "vue";
+<script setup lang="ts">
+import { computed, useSlots } from "vue";
 import _color from "../../utils/color";
 import { useRoute } from "vue-router";
 
-export default defineComponent({
-	name: "TuBreadcrumb",
-	props: {
-		items: {
-			type: Array,
-			readOnly: false
-		},
-		separator: {
-			type: String,
-			default: "/"
-		},
-		color: {
-			type: String,
-			default: "primary"
-		},
-		align: {
-			type: String,
-			default: "left"
-		}
-	},
-	setup(props, context) {
-		const textClass = computed(() => {
-			const classes = {};
-			if (_color.isColor(props.color))
-				classes[`tu-breadcrumb-text-${props.color}`] = true;
+interface BreadcrumbItem {
+	title: string | ((params: Record<string, string | string[]>) => string);
+	url?: string;
+	active?: boolean;
+	disabled?: boolean;
+}
 
-			return classes;
-		});
+interface ProcessedBreadcrumbItem {
+	title: string;
+	url?: string;
+	active?: boolean;
+	disabled?: boolean;
+}
 
-		const textStyle = computed(() => {
-			const style: any = {};
-			if (!_color.isColor(props.color))
-				style.color = _color.getColor(props.color);
+interface Props {
+	items?: BreadcrumbItem[];
+	separator?: string;
+	color?: string;
+	align?: string;
+}
 
-			return style;
-		});
+const props = withDefaults(defineProps<Props>(), {
+	separator: "/",
+	color: "primary",
+	align: "left"
+});
 
-		const hasSlot = computed(() => {
-			return !!context.slots.default;
-		});
+const slots = useSlots();
 
-		const mutableItems = computed(() => {
-			let newItems: typeof props.items;
-			if (props.items) {
-				newItems = props.items.map((item) => {
-					if (typeof (item as any).title === "function") {
-						return {
-							...(item as any),
-							title: (item as any).title(useRoute().params)
-						};
-					}
+const textClass = computed(() => {
+	const classes: Record<string, boolean> = {};
+	if (_color.isColor(props.color))
+		classes[`tu-breadcrumb-text-${props.color}`] = true;
 
-					return item;
-				});
+	return classes;
+});
+
+const textStyle = computed(() => {
+	const style: Record<string, string> = {};
+	if (!_color.isColor(props.color))
+		style.color = _color.getColor(props.color);
+
+	return style;
+});
+
+const hasSlot = computed(() => {
+	return !!slots.default;
+});
+
+const mutableItems = computed(() => {
+	let newItems: ProcessedBreadcrumbItem[] | undefined;
+	if (props.items) {
+		newItems = props.items.map((item) => {
+			if (typeof item.title === "function") {
+				return {
+					...item,
+					title: item.title(useRoute().params)
+				};
 			}
 
-			return newItems as any[];
+			return {
+				...item,
+				title: item.title
+			};
 		});
-
-		return {
-			textStyle,
-			textClass,
-			hasSlot,
-			mutableItems
-		};
 	}
+
+	return newItems as ProcessedBreadcrumbItem[];
 });
 </script>
 

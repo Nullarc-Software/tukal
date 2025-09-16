@@ -37,233 +37,226 @@
 	</div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import {
-	defineComponent,
-	getCurrentInstance,
 	nextTick,
 	onMounted,
+	provide,
 	ref,
 	watch,
+	inject,
 } from "vue";
-import _color from "../../utils/color";
-import tuComponent from "../tuComponent";
+
+interface Props {
+	fixed?: boolean;
+	sticky?: boolean;
+	leftAligned?: boolean;
+	open?: boolean;
+	shadow?: boolean;
+	shadowScroll?: boolean;
+	hideScroll?: boolean;
+	textWhite?: boolean;
+	square?: boolean;
+	paddingScroll?: boolean;
+	notLine?: boolean;
+	leftCollapsed?: boolean;
+	centerCollapsed?: boolean;
+	rightCollapsed?: boolean;
+	targetScroll?: string | null;
+	color?: string;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	fixed: false,
+	sticky: false,
+	leftAligned: false,
+	open: true,
+	shadow: false,
+	shadowScroll: false,
+	hideScroll: false,
+	textWhite: false,
+	square: false,
+	paddingScroll: false,
+	notLine: false,
+	leftCollapsed: false,
+	centerCollapsed: false,
+	rightCollapsed: false,
+	targetScroll: null,
+});
+
+const emit = defineEmits<{
+	collapsed: [value: boolean];
+	"update:value": [value: string];
+}>();
+
+// tuComponent functionality
+const getColor = inject<(color: string) => string>("getColor", () => "");
+const isColor = inject<boolean>("isColor", false);
 
 class NavbarConstants {
 	public static zIndex = 9000;
 }
 
-export default defineComponent({
-	name: "TuNavbar",
-	extends: tuComponent,
-	props: {
-		fixed: { default: false, type: Boolean },
-		sticky: { default: false, type: Boolean },
-		leftAligned: { default: false, type: Boolean },
-		open: { default: true, type: Boolean },
-		shadow: { default: false, type: Boolean },
-		shadowScroll: { default: false, type: Boolean },
-		hideScroll: { default: false, type: Boolean },
-		textWhite: { default: false, type: Boolean },
-		square: { default: false, type: Boolean },
-		paddingScroll: { default: false, type: Boolean },
-		notLine: { default: false, type: Boolean },
-		leftCollapsed: { default: false, type: Boolean },
-		centerCollapsed: { default: false, type: Boolean },
-		rightCollapsed: { default: false, type: Boolean },
-		targetScroll: { type: String, default: null },
-	},
-	provide() {
-		return {
-			setLeftLine: this.setLeftLine,
-			setWidthLine: this.setWidthLine,
-			setModel: this.setModel,
-		};
-	},
-	emits: ["collapsed", "update:value"],
-	setup(props, context) {
-		let leftLine = ref(0);
-		let widthLine = ref(0);
-		let scrollTop = ref(0);
-		let collapsedWidth = ref(0);
-		let hidden = ref(false);
-		let shadowActive = ref(false);
-		let paddingScrollActive = ref(false);
-		let lineNotTransition = ref(false);
-		let collapsedForced = ref(false);
+const leftLine = ref(0);
+const widthLine = ref(0);
+const scrollTop = ref(0);
+const collapsedWidth = ref(0);
+const hidden = ref(false);
+const shadowActive = ref(false);
+const paddingScrollActive = ref(false);
+const lineNotTransition = ref(false);
+const collapsedForced = ref(false);
 
-		let navbarContent = ref<HTMLDivElement>();
-		let left = ref<HTMLDivElement>();
-		let right = ref<HTMLDivElement>();
-		let center = ref<HTMLDivElement>();
-		let instance = getCurrentInstance();
-		let zIndex = NavbarConstants.zIndex--;
+const navbarContent = ref<HTMLDivElement>();
+const left = ref<HTMLDivElement>();
+const right = ref<HTMLDivElement>();
+const center = ref<HTMLDivElement>();
+const zIndex = NavbarConstants.zIndex--;
 
-		let idToLineHandler: any = {};
-		let activeId = "";
+const idToLineHandler: Record<string, () => void> = {};
+let activeId = "";
 
-		const setModel = function (id: string, handleFunc: Function) {
-			context.emit("update:value", id);
-			idToLineHandler[id] = handleFunc;
-			activeId = id;
-		};
+const setModel = function (id: string, handleFunc: () => void) {
+	emit("update:value", id);
+	idToLineHandler[id] = handleFunc;
+	activeId = id;
+};
 
-		watch(
-			[
-				() => props.hideScroll,
-				() => props.paddingScroll,
-				() => props.shadowScroll,
-			],
-			() => {
-				handleScroll();
-			}
-		);
+watch(
+	[
+		() => props.hideScroll,
+		() => props.paddingScroll,
+		() => props.shadowScroll,
+	],
+	() => {
+		handleScroll();
+	}
+);
 
-		const setLeftLine = function (left: any, transition: boolean = true) {
-			if (!transition) {
-				lineNotTransition.value = true;
-			} else {
-				lineNotTransition.value = false;
-			}
-			nextTick(() => {
-				leftLine.value = left;
-			});
-		};
+const setLeftLine = function (left: number, transition = true) {
+	if (!transition)
+		lineNotTransition.value = true;
+	else
+		lineNotTransition.value = false;
+	nextTick(() => {
+		leftLine.value = left;
+	});
+};
 
-		const setWidthLine = function (width: any) {
-			nextTick(() => {
-				widthLine.value = width;
-			});
-		};
+const setWidthLine = function (width: number) {
+	nextTick(() => {
+		widthLine.value = width;
+	});
+};
 
-		const scroll = function (evt: any) {
-			const scrollTopTemp = props.targetScroll
-				? document.querySelector(props.targetScroll)?.scrollTop
-				: window.pageYOffset;
-			if (props.hideScroll) {
-				if (
-					Math.sign((scrollTopTemp as number) - scrollTop.value) === 1
-				) {
-					hidden.value = true;
-				} else {
-					hidden.value = false;
-				}
-			}
+// Provide values for child components
+provide("setLeftLine", setLeftLine);
+provide("setWidthLine", setWidthLine);
+provide("setModel", setModel);
 
-			if (props.shadowScroll) {
-				if ((scrollTopTemp as number) > 0) {
-					shadowActive.value = true;
-				} else {
-					shadowActive.value = false;
-				}
-			}
+const scroll = function () {
+	const scrollTopTemp = props.targetScroll
+		? document.querySelector(props.targetScroll)?.scrollTop
+		: window.pageYOffset;
+	if (props.hideScroll) {
+		if (
+			Math.sign((scrollTopTemp as number) - scrollTop.value) === 1
+		)
+			hidden.value = true;
+		else
+			hidden.value = false;
+	}
 
-			if (props.paddingScroll) {
-				if ((scrollTopTemp as number) > 0) {
-					paddingScrollActive.value = true;
-				} else {
-					paddingScrollActive.value = false;
-				}
-			}
-			scrollTop.value = scrollTopTemp as number;
-		};
+	if (props.shadowScroll) {
+		if ((scrollTopTemp as number) > 0)
+			shadowActive.value = true;
+		else
+			shadowActive.value = false;
+	}
 
-		const handleScroll = function () {
-			if (props.hideScroll || props.shadowScroll || props.paddingScroll) {
-				if (props.targetScroll) {
-					const scrollElement = document.querySelector(
-						props.targetScroll
-					);
-					scrollElement?.addEventListener("scroll", scroll);
-				} else {
-					window.addEventListener("scroll", scroll);
-				}
-			}
-		};
+	if (props.paddingScroll) {
+		if ((scrollTopTemp as number) > 0)
+			paddingScrollActive.value = true;
+		else
+			paddingScrollActive.value = false;
+	}
+	scrollTop.value = scrollTopTemp as number;
+};
 
-		const handleResize = function () {
-			const active: HTMLElement = navbarContent.value?.querySelector(
-				".tu-navbar__item.active"
-			) as HTMLElement;
+const handleScroll = function () {
+	if (props.hideScroll || props.shadowScroll || props.paddingScroll) {
+		if (props.targetScroll) {
+			const scrollElement = document.querySelector(
+				props.targetScroll
+			);
+			scrollElement?.addEventListener("scroll", scroll);
+		}
+		else
+			window.addEventListener("scroll", scroll);
+	}
+};
 
-			if (active) {
-				idToLineHandler[activeId].call(null, null);
-			} else {
-				widthLine.value = 0;
-			}
-			const navbar: any = navbarContent.value;
+const handleResize = function () {
+	const active: HTMLElement = navbarContent.value?.querySelector(
+		".tu-navbar__item.active"
+	) as HTMLElement;
 
-			if (
-				props.leftCollapsed ||
-				props.centerCollapsed ||
-				props.rightCollapsed
-			) {
-				if (navbar.offsetWidth < collapsedWidth.value) {
+	if (active)
+		idToLineHandler[activeId]?.();
+	else
+		widthLine.value = 0;
+	const navbar = navbarContent.value;
+
+	if (
+		props.leftCollapsed ||
+		props.centerCollapsed ||
+		props.rightCollapsed
+	) {
+		if (navbar && navbar.offsetWidth < collapsedWidth.value)
+			collapsedForced.value = true;
+	}
+
+	if (collapsedForced.value)
+		emit("collapsed", true);
+	else
+		emit("collapsed", false);
+
+	if (navbar && navbar.offsetWidth < collapsedWidth.value)
+		emit("collapsed", true);
+	else {
+		emit("collapsed", false);
+		collapsedForced.value = false;
+	}
+};
+
+onMounted(() => {
+	setTimeout(() => {
+		try {
+			const leftEl = left.value;
+			const centerEl = center.value;
+			const rightEl = right.value;
+			if (leftEl && centerEl && rightEl) {
+				collapsedWidth.value =
+					leftEl.offsetWidth +
+					centerEl.offsetWidth +
+					rightEl.offsetWidth +
+					150;
+				const navbar = navbarContent.value;
+				if (navbar && navbar.offsetWidth < collapsedWidth.value) {
 					collapsedForced.value = true;
+					emit("collapsed", true);
+					widthLine.value = 0;
+					handleResize();
 				}
 			}
+		}
+		catch (error) {
+			console.log(error);
+		}
+	}, 150);
 
-			if (collapsedForced) {
-				context.emit("collapsed", true);
-			} else {
-				context.emit("collapsed", false);
-			}
-
-			if (navbar.offsetWidth < collapsedWidth.value) {
-				context.emit("collapsed", true);
-			} else {
-				context.emit("collapsed", false);
-				collapsedForced.value = false;
-			}
-		};
-
-		onMounted(() => {
-			setTimeout(() => {
-				try {
-					const leftEl: any = left.value;
-					const centerEl: any = center.value;
-					const rightEl: any = right.value;
-					collapsedWidth.value =
-						leftEl.offsetWidth +
-						centerEl.offsetWidth +
-						rightEl.offsetWidth +
-						150;
-					const navbar: any = navbarContent.value;
-					if (navbar.offsetWidth < collapsedWidth.value) {
-						collapsedForced.value = true;
-						context.emit("collapsed", true);
-						widthLine.value = 0;
-						handleResize();
-					}
-				} catch (error) {
-					console.log(error);
-				}
-			}, 150);
-
-			handleScroll();
-			window.addEventListener("resize", handleResize);
-		});
-
-		return {
-			leftLine,
-			widthLine,
-			scrollTop,
-			collapsedWidth,
-			hidden,
-			shadowActive,
-			paddingScrollActive,
-			lineNotTransition,
-			collapsedForced,
-			setModel,
-			setLeftLine,
-			setWidthLine,
-			navbarContent,
-			left,
-			right,
-			center,
-			zIndex,
-		};
-	},
+	handleScroll();
+	window.addEventListener("resize", handleResize);
 });
 </script>
 <style lang="scss">

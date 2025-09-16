@@ -4,8 +4,8 @@
 		`tu-tabs--position-${position}`,
 		`tu-tabs--${tabStyle}`
 	]" class="tu-tabs" :style="{
-	width: fixedWidth,
-	height: fixedHeight
+	width: fixedWidth || 'auto',
+	height: fixedHeight || 'auto'
 }">
 		<div class="con-ul-tabs">
 			<ul ref="ul" :class="[`ul-tabs-${alignment}`]" class="ul-tabs tu-tabs--ul" v-if="tabStyle !== 'progress'">
@@ -16,16 +16,16 @@
 						activeChild: childActive == child.id,
 						['tu-tabs--button-li']: tabStyle === 'pills' && position === 'top'
 					}" @mouseover="hover = true" @mouseout="hover = false">
-					<a :href="type === 'router' ? getALinkHref(child.to) : null" class="tu-tabs--a">
+					<a :href="type === 'router' && child.to ? getALinkHref(child.to) : undefined" class="tu-tabs--a">
 						<button class="tu-button tu-button--default tu-button--small tu-button__content"
-							v-if="tabStyle === 'pills' && childActive == child.id" :style="styleAlignIcon(child.icon)"
+							v-if="tabStyle === 'pills' && childActive == child.id" :style="styleAlignIcon(child.icon || '')"
 							:disabled="child.disabled" @click="activeChild(child.id)">
 							<tu-icon v-if="child.icon" :icon-pack="child.iconPack" :icon="child.icon"
 								class="tu-tabs--btn-icon"></tu-icon>
 							<span class="tu-tabs-button-text" v-if="child.label">{{ child.label }}</span>
 						</button>
-						<button v-else :style="styleAlignIcon(child.icon)" :disabled="child.disabled" class="tu-tabs--btn"
-							type="button" @click="activeChild(child.id)">
+						<button v-else :style="styleAlignIcon(child.icon || '')" :disabled="child.disabled" class="tu-tabs--btn"
+							type="button" @click="activeChild(child.id || 0)">
 							<tu-icon v-if="child.icon" :icon-pack="child.iconPack" :icon="child.icon" :color="color"
 								class="tu-tabs--btn-icon"></tu-icon>
 							<span v-if="child.label">{{ child.label }}</span>
@@ -84,31 +84,27 @@
 	</div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import * as _ from "lodash";
 import {
 	computed,
-	defineComponent,
 	nextTick,
 	onMounted,
 	reactive,
 	ref,
 	toRefs,
 	watch,
-	PropType,
-	onUnmounted
+	onUnmounted,
+	provide
 } from "vue";
 import { TuTabsChildData, TabId, TuTabsRouterParams } from ".";
 import * as utils from "../../utils";
-import tuComponent, { ComponentConstants } from "../tuComponent";
+import { ComponentConstants } from "../tuComponent";
 import tuIcon from "../tuIcon";
 import tuProgress from "../tuProgress";
 
-import { useRouter } from "vue-router";
-import { buildProps } from "@vue/compiler-core";
-
 interface TabData {
-	topx: string;
+	topx: string | number;
 	heightx: number;
 	hover: boolean;
 	children: TuTabsChildData[];
@@ -122,410 +118,379 @@ interface TabData {
 	invert: boolean;
 }
 
-export default defineComponent({
-	name: "TuTabs",
-	components: { tuIcon, tuProgress },
-	extends: tuComponent,
-	props: {
-		modelValue: {
-			default: 0,
-			type: [Number, String]
-		},
-		color: {
-			default: "primary",
-			type: String
-		},
-		tagColor: {
-			default: "primary",
-			type: String
-		},
-		alignment: {
-			default: "left",
-			type: String
-		},
-		position: {
-			default: "top",
-			type: String
-		},
-		noTransitions: {
-			type: Boolean,
-			default: false
-		},
-		headerSize: {
-			type: Number,
-			default: 16
-		},
-		progressWidth: {
-			type: String,
-			default: "100%"
-		},
-		tabStyle: {
-			type: String,
-			default: "default"
-		},
-		fixedWidth: {
-			type: String,
-			default: null
-		},
-		fixedHeight: {
-			type: String,
-			default: null
-		},
-		type: {
-			type: String,
-			default: "normal"
-		},
-		routerModeParams: {
-			type: Object as PropType<TuTabsRouterParams>,
-			default: () => { }
-		},
-	},
-	provide() {
-		return {
-			addChild: (instance: TuTabsChildData) => {
-				this.children.push(instance);
-			},
-			updateChild: (instance: TuTabsChildData) => {
-				this.children[instance.id] = _.merge(
-					this.children[instance.id],
-					instance
-				);
-			},
-			noTransitions: computed(() => {
-				return this.noTransitions;
-			}),
-			tabIdInstance: computed(() => {
-				return this.tabIdInstance;
-			})
-		};
-	},
-	setup(props, context) {
-		const tabIdInstance = ref(new TabId());
+interface Props {
+	modelValue?: number | string;
+	color?: string;
+	tagColor?: string;
+	alignment?: string;
+	position?: string;
+	noTransitions?: boolean;
+	headerSize?: number;
+	progressWidth?: string;
+	tabStyle?: string;
+	fixedWidth?: string | null;
+	fixedHeight?: string | null;
+	type?: string;
+	routerModeParams?: TuTabsRouterParams;
+}
 
-		const ul = ref<HTMLUListElement>();
-		const data: TabData = {
-			topx: "auto",
-			heightx: 2,
-			hover: false,
-			children: [],
-			childActive: 0,
-			leftx: 0,
-			widthx: 0,
-			these: false,
-			vertical: false,
-			active: false,
-			id: null,
-			invert: false
-		};
+const props = withDefaults(defineProps<Props>(), {
+	modelValue: 0,
+	color: "primary",
+	tagColor: "primary",
+	alignment: "left",
+	position: "top",
+	noTransitions: false,
+	headerSize: 16,
+	progressWidth: "100%",
+	tabStyle: "default",
+	fixedWidth: null,
+	fixedHeight: null,
+	type: "normal",
+	routerModeParams: () => ({
+		tabs: [],
+		baseRoute: undefined,
+		preventAutoRedirect: false
+	})
+});
 
-		const activeIdx = ref(0);
-		const reactiveData = reactive(data);
-		let routerHook = null;
+const emit = defineEmits<{
+	"update:modelValue": [value: number];
+	"click-tag": [child: TuTabsChildData];
+}>();
 
-		if (props.type === "router") {
-			props.routerModeParams.tabs.forEach(tab => {
-				tab.id = tabIdInstance.value.tabId++;
-				reactiveData.children.push(tab);
-			});
-		}
+defineOptions({
+	name: "TuTabs"
+});
 
-		const styleTab = (childId) => {
-			const style: any = {
-				color: utils.getApplyColor(props.color, 1)
-			};
+const tabIdInstance = ref(new TabId());
+const ul = ref<HTMLUListElement>();
+const data: TabData = {
+	topx: "auto",
+	heightx: 2,
+	hover: false,
+	children: [],
+	childActive: 0,
+	leftx: 0,
+	widthx: 0,
+	these: false,
+	vertical: false,
+	active: false,
+	id: null,
+	invert: false
+};
 
-			if (props.tabStyle === "card") {
-				style.background = utils.getApplyColor(props.color, 0.15);
-				if (childId === 0) style["border-radius"] = "15px 0px 15px 0px";
-				else if (childId === data.children.length - 1)
-					style["border-radius"] = "0px 15px 0px 15px";
-				else style["border-radius"] = "0px 0px 15px 15px";
-			}
+const activeIdx = ref(0);
+const reactiveData = reactive(data);
+let routerHook: (() => void) | null = null;
 
-			return style;
-		};
+// Destructure reactive data to expose individual reactive variables to template
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const { topx, heightx, hover, children, childActive, leftx, widthx, these, vertical, active, id, invert } = toRefs(reactiveData);
 
-		const stylex = computed(() => {
-			const bkg = `linear-gradient(30deg, ${utils.getApplyColor(
+// Methods that will be provided to child components
+const addChild = (instance: TuTabsChildData) => {
+	reactiveData.children.push(instance);
+};
+
+const updateChild = (instance: TuTabsChildData) => {
+	if (instance.id !== undefined) {
+		reactiveData.children[instance.id] = _.merge(
+			reactiveData.children[instance.id],
+			instance
+		);
+	}
+};
+
+// Provide values for child components
+provide("addChild", addChild);
+provide("updateChild", updateChild);
+provide("noTransitions", computed(() => props.noTransitions));
+provide("tabIdInstance", computed(() => tabIdInstance.value));
+
+if (props.type === "router") {
+	props.routerModeParams.tabs.forEach(tab => {
+		tab.id = tabIdInstance.value.tabId++;
+		reactiveData.children.push(tab);
+	});
+}
+
+const styleTab = (childId: number) => {
+	const style: Record<string, string | number> = {
+		color: utils.getApplyColor(props.color, 1)
+	};
+
+	if (props.tabStyle === "card") {
+		style.background = utils.getApplyColor(props.color, 0.15);
+		if (childId === 0) style["border-radius"] = "15px 0px 15px 0px";
+		else if (childId === data.children.length - 1)
+			style["border-radius"] = "0px 15px 0px 15px";
+		else style["border-radius"] = "0px 0px 15px 15px";
+	}
+
+	return style;
+};
+
+const stylex = computed(() => {
+	const bkg = `linear-gradient(30deg, ${utils.getApplyColor(
+		props.color,
+		1
+	)} 0%, ${utils.getApplyColor(props.color, 0.5)} 100%)`;
+
+	return props.tabStyle === "default"
+		? {
+			top: `${reactiveData.topx}px`,
+			left: `${reactiveData.leftx}px`,
+			width: `${reactiveData.widthx}px`,
+			height: `${reactiveData.heightx}px`,
+			background: bkg,
+			boxShadow: `0px 0px 8px 0px ${utils.getApplyColor(
 				props.color,
-				1
-			)} 0%, ${utils.getApplyColor(props.color, 0.5)} 100%)`;
+				0.5
+			)}`,
+			transform: `scaleX(${reactiveData.these ? 1.3 : 1})`
+		}
+		: {};
+});
 
-			return props.tabStyle === "default"
-				? {
-					top: `${reactiveData.topx}px`,
-					left: `${reactiveData.leftx}px`,
-					width: `${reactiveData.widthx}px`,
-					height: `${reactiveData.heightx}px`,
-					background: bkg,
-					boxShadow: `0px 0px 8px 0px ${utils.getApplyColor(
-						props.color,
-						0.5
-					)}`,
-					transform: `scaleX(${reactiveData.these ? 1.3 : 1})`
-				}
-				: {};
+const clickTag = function (child: TuTabsChildData) {
+	emit("click-tag", child);
+};
+
+const styleAlignIcon = function (icon: string) {
+	return icon
+		? {
+			display: "flex",
+			"align-items": "center",
+			"font-size": `${props.headerSize}px`,
+			cursor: "pointer"
+		}
+		: {
+			"font-size": `${props.headerSize}px`,
+			cursor: "pointer"
+		};
+};
+
+const parseIndex = function (index: number | string) {
+	let activeIndex = reactiveData.childActive;
+
+	if (typeof index === "number" || !isNaN(parseInt(index as string))) {
+		if ((index as number) < 0) activeIndex = 0;
+		else if ((index as number) >= reactiveData.children.length)
+			activeIndex = reactiveData.children.length - 1;
+		else if (reactiveData.children[index as number].disabled === false)
+			activeIndex = parseInt(index as string);
+	}
+	else {
+		activeIndex = _.findIndex(reactiveData.children, (child) => {
+			return child.name === index;
+		});
+	}
+	activeIdx.value = activeIndex;
+	return activeIndex;
+};
+
+// This is used only for type=router where on initial page load we have to 
+// set the active tab based on the current route.
+const setActiveTab = function (index: number) {
+	const initialAnimation = true;
+	const elem = ul.value?.getElementsByClassName(
+		`tu-tabs--li-${index}`
+	)[0];
+	reactiveData.childActive = index;
+	emit("update:modelValue", reactiveData.childActive);
+
+	if (props.tabStyle !== "progress")
+		changePositionLine(elem as HTMLElement, initialAnimation);
+};
+
+const activeChild = function (index: number, initialAnimation?: boolean) {
+	if (index < 0 || index > reactiveData.children.length - 1) return;
+
+	initialAnimation = !!initialAnimation;
+	const elem = ul.value?.getElementsByClassName(
+		`tu-tabs--li-${index}`
+	)[0];
+	if (reactiveData.childActive === index && !initialAnimation) {
+		reactiveData.these = true;
+		elem?.classList.add("isActive");
+		setTimeout(() => {
+			elem?.classList.remove("isActive");
+			reactiveData.these = false;
+		}, 200);
+	}
+
+	if (props.type === "normal") {
+		reactiveData.children.forEach((value, key) => {
+			if (key !== index) value.setActive?.(false);
 		});
 
-		const clickTag = function (child) {
-			context.emit("click-tag", child);
-		};
+		if (reactiveData.childActive > index) {
+			reactiveData.children[index]?.setInvert?.(true);
+			reactiveData.children[reactiveData.childActive]?.setInvert?.(
+				false
+			);
+		}
+		else {
+			reactiveData.children[reactiveData.childActive]?.setInvert?.(
+				true
+			);
+			reactiveData.children[index]?.setInvert?.(false);
+		}
 
-		const styleAlignIcon = function (icon) {
-			return icon
-				? {
-					display: "flex",
-					"align-items": "center",
-					"font-size": `${props.headerSize}px`,
-					cursor: "pointer"
+		reactiveData.children[index]?.setActive?.(true);
+
+		if (props.position === "left" || props.position === "right")
+			reactiveData.children[index]?.setVertical?.(true);
+	}
+	if (props.type === "router") {
+		const router = ComponentConstants.router;
+		if (router) {
+			const childWithId = _.find(reactiveData.children, { id: index });
+			if (childWithId && childWithId.to) {
+				const targetPath = props.routerModeParams.baseRoute ? utils.joinPath(props.routerModeParams.baseRoute, childWithId.to) : childWithId.to;
+
+				// Only replace the url if the current path is an exact match, if not, it may be a child route and we shouldn't override it.
+				if (router.currentRoute.value.path.replace(targetPath, "") === "")
+					router.replace(targetPath);
+				else if (router.currentRoute.value.path.replace(targetPath, "") === router.currentRoute.value.path)
+					router.replace(targetPath);
+			}
+		}
+	}
+	reactiveData.childActive = index;
+	activeIdx.value = index;
+	emit("update:modelValue", reactiveData.childActive);
+
+	if (props.tabStyle !== "progress")
+		changePositionLine(elem as HTMLElement, initialAnimation);
+};
+
+const changePositionLine = function (elem: HTMLElement, initialAnimation: boolean) {
+	if (props.position === "left" || props.position === "right") {
+		reactiveData.topx = elem.offsetTop;
+		reactiveData.heightx = elem.offsetHeight;
+		reactiveData.widthx = 2;
+
+		if (props.position === "right") reactiveData.leftx = 0;
+	}
+	else {
+		const update = () => {
+			if (elem) {
+				reactiveData.leftx = elem.offsetLeft;
+				reactiveData.widthx = elem.offsetWidth;
+				if (ul.value) {
+					reactiveData.topx =
+						elem.offsetHeight +
+						(elem.getBoundingClientRect().top -
+							ul.value.getBoundingClientRect().top);
 				}
-				: {
-					"font-size": `${props.headerSize}px`,
-					cursor: "pointer"
-				};
-		};
-
-		const parseIndex = function (index) {
-			let activeIndex = reactiveData.childActive;
-
-			if (typeof index === "number" || !isNaN(parseInt(index))) {
-				if (index < 0) activeIndex = 0;
-				else if (index >= reactiveData.children.length)
-					activeIndex = reactiveData.children.length - 1;
-				else if (reactiveData.children[index].disabled === false)
-					activeIndex = parseInt(index);
 			}
-			else {
-				activeIndex = _.findIndex(reactiveData.children, (child) => {
-					return child.name === index;
-				});
-			}
-			activeIdx.value = activeIndex;
-			return activeIndex;
 		};
+		if (!initialAnimation) update();
+		else setTimeout(update, 100);
+	}
+};
 
+const getPercentage = computed(() => {
+	return (
+		((activeIdx.value + 1) /
+			(reactiveData.children.length === 0
+				? 1
+				: reactiveData.children.length)) *
+		100
+	);
+});
 
-		// This is used only for type=router where on initial page load we have to 
-		// set the active tab based on the current route.
-		const setActiveTab = function (index) {
-			const initialAnimation = true;
-			const elem = ul.value?.getElementsByClassName(
-				`tu-tabs--li-${index}`
-			)[0];
-			reactiveData.childActive = index;
-			context.emit("update:modelValue", reactiveData.childActive);
+function getALinkHref(to: string) {
+	const finalPath = utils.joinPath("/#/", props.routerModeParams?.baseRoute ? utils.joinPath(props.routerModeParams?.baseRoute, to) : to);
+	return finalPath;
+}
 
-			if (props.tabStyle !== "progress")
-				changePositionLine(elem, initialAnimation);
-		};
+function getColor(colorName: string) {
+	return utils.getColor(colorName, 1);
+}
 
-		const activeChild = function (index, initialAnimation?) {
+function findMatchingPath(inputPath: string, pathsToCompare: string[]): { type: string, path: string, index: number } | undefined {
+	// Find exact matches
+	const exactMatch = pathsToCompare.find(path => path === inputPath);
+	if (exactMatch) 
+		return { type: "exact", path: exactMatch, index: pathsToCompare.indexOf(exactMatch) };
+	
 
-			if (index < 0 || index > reactiveData.children.length - 1) return;
+	// Find prefix matches
+	const prefixMatch = pathsToCompare.find(path =>
+		inputPath.startsWith(path) && (inputPath.charAt(path.length) === "/" || inputPath.length === path.length + 1)
+	);
+	if (prefixMatch) 
+		return { type: "prefix", path: prefixMatch, index: pathsToCompare.indexOf(prefixMatch) };
+	
 
-			initialAnimation = !!initialAnimation;
-			const elem = ul.value?.getElementsByClassName(
-				`tu-tabs--li-${index}`
-			)[0];
-			if (reactiveData.childActive === index && !initialAnimation) {
-				reactiveData.these = true;
-				elem?.classList.add("isActive");
-				setTimeout(() => {
-					elem?.classList.remove("isActive");
-					reactiveData.these = false;
-				}, 200);
-			}
+	// No match found
+	return undefined;
+}
 
-			if (props.type === "normal") {
-				reactiveData.children.forEach((value, key) => {
-					if (key !== index) value.setActive(false);
-				});
+onMounted(() => {
+	let activeIndex = parseIndex(props.modelValue);
 
-				if (reactiveData.childActive > index) {
-					reactiveData.children[index]?.setInvert(true);
-					reactiveData.children[reactiveData.childActive]?.setInvert(
-						false
-					);
+	if (props.type === "router") {
+		if (ComponentConstants.router) {
+			const tabMatched = findMatchingPath(ComponentConstants.router.currentRoute.value.path, reactiveData.children
+				.filter(child => child.to)
+				.map(child => {
+					const actualPath = props.routerModeParams.baseRoute && child.to ? utils.joinPath(props.routerModeParams.baseRoute, child.to) : child.to || "";
+					return actualPath;
+				}));
+		
+			if (tabMatched && reactiveData.childActive !== tabMatched.index) 
+				activeIndex = tabMatched.index;
+			
+			routerHook = ComponentConstants.router.afterEach((to) => {
+				if (props.routerModeParams?.baseRoute) {
+					if (to.fullPath === props.routerModeParams.baseRoute && !props.routerModeParams.preventAutoRedirect) 
+						activeChild(0, true);
+					
+					else {
+						const targetPath = to.fullPath.replace(props.routerModeParams.baseRoute, "");
+						const tabMatched = findMatchingPath(targetPath, reactiveData.children
+							.filter(child => child.to)
+							.map(child => child.to || ""));
+						if (tabMatched && reactiveData.childActive !== tabMatched.index) 
+							setActiveTab(tabMatched.index);
+						
+					}
 				}
 				else {
-					reactiveData.children[reactiveData.childActive]?.setInvert(
-						true
-					);
-					reactiveData.children[index]?.setInvert(false);
-				}
-
-				reactiveData.children[index]?.setActive(true);
-
-				if (props.position === "left" || props.position === "right")
-					reactiveData.children[index]?.setVertical(true);
-			}
-			if (props.type === "router") {
-
-				const router = ComponentConstants.router;
-				if (router) {
-
-					const childWithId = _.find(reactiveData.children, { id: index });
-					if (childWithId) {
-						const targetPath = props.routerModeParams.baseRoute ? utils.joinPath(props.routerModeParams.baseRoute, childWithId.to) : childWithId.to;
-
-						// Only replace the url if the current path is an exact match, if not, it may be a child route and we shouldn't override it.
-						if (router.currentRoute.value.path.replace(targetPath, "") === "")
-							router.replace(targetPath);
-						else if (router.currentRoute.value.path.replace(targetPath, "") === router.currentRoute.value.path)
-							router.replace(targetPath);
-					}
-				}
-
-			}
-			reactiveData.childActive = index;
-			activeIdx.value = index;
-			context.emit("update:modelValue", reactiveData.childActive);
-
-			if (props.tabStyle !== "progress")
-				changePositionLine(elem, initialAnimation);
-		};
-
-		const changePositionLine = function (elem, initialAnimation) {
-			if (props.position === "left" || props.position === "right") {
-				reactiveData.topx = elem.offsetTop;
-				reactiveData.heightx = elem.offsetHeight;
-				reactiveData.widthx = 2;
-
-				if (props.position === "right") reactiveData.leftx = 0;
-			}
-			else {
-				const update = () => {
-					if (elem) {
-						reactiveData.leftx = elem.offsetLeft;
-						reactiveData.widthx = elem.offsetWidth;
-						if (ul.value) {
-							reactiveData.topx =
-								elem.offsetHeight +
-								(elem.getBoundingClientRect().top -
-									ul.value.getBoundingClientRect().top);
-						}
-					}
-				};
-				if (!initialAnimation) update();
-				else setTimeout(update, 100);
-			}
-		};
-
-		const getPercentage = computed(() => {
-			return (
-				((activeIdx.value + 1) /
-					(reactiveData.children.length === 0
-						? 1
-						: reactiveData.children.length)) *
-				100
-			);
-		});
-
-		function getALinkHref(to: string) {
-			const finalPath = utils.joinPath("/#/", props.routerModeParams?.baseRoute ? utils.joinPath(props.routerModeParams?.baseRoute, to) : to);
-			return finalPath;
-		}
-
-		function findMatchingPath(inputPath: string, pathsToCompare: string[]): { type: string, path: string, index: number } | undefined {
-			// Find exact matches
-			const exactMatch = pathsToCompare.find(path => path === inputPath);
-			if (exactMatch) 
-				return { type: "exact", path: exactMatch, index: pathsToCompare.indexOf(exactMatch) };
-			
-
-			// Find prefix matches
-			const prefixMatch = pathsToCompare.find(path =>
-				inputPath.startsWith(path) && (inputPath.charAt(path.length) === "/" || inputPath.length === path.length + 1)
-			);
-			if (prefixMatch) 
-				return { type: "prefix", path: prefixMatch, index: pathsToCompare.indexOf(prefixMatch) };
-			
-
-			// No match found
-			return undefined;
-		}
-
-		onMounted(() => {
-			let activeIndex = parseIndex(props.modelValue);
-
-			if (props.type === "router") {
-				if (ComponentConstants.router) {
-
-					const tabMatched = findMatchingPath(ComponentConstants.router.currentRoute.value.path, reactiveData.children.map(child => {
-						const actualPath = _.isNil(props.routerModeParams.baseRoute) === false ? utils.joinPath(props.routerModeParams.baseRoute, child.to) : child.to;
-						return actualPath;
-					}));
-
-					if (tabMatched && reactiveData.childActive !== tabMatched.index) 
-						activeIndex = tabMatched.index;
+					const tabMatched = _.findIndex(reactiveData.children, { to: to.fullPath });
+					if (tabMatched !== -1 && reactiveData.childActive !== tabMatched) 
+						setActiveTab(tabMatched);
 					
-					routerHook = ComponentConstants.router.afterEach((to, from) => {
-						if (props.routerModeParams?.baseRoute) {
-							if (to.fullPath === props.routerModeParams.baseRoute && !props.routerModeParams.preventAutoRedirect) 
-								activeChild(0, true);
-							
-							else {
-								const targetPath = to.fullPath.replace(props.routerModeParams.baseRoute, "");
-								const tabMatched = findMatchingPath(targetPath, reactiveData.children.map(child => child.to));
-								if (tabMatched && reactiveData.childActive !== tabMatched.index) 
-									setActiveTab(tabMatched.index);
-								
-							}
-						}
-						else {
-							const tabMatched = _.findIndex(reactiveData.children, { to: to.fullPath });
-							if (tabMatched !== -1 && reactiveData.childActive !== tabMatched) 
-								setActiveTab(tabMatched);
-							
-						}
-					});
-
 				}
-			}
-			reactiveData.childActive = activeIndex;
-			nextTick(() => {
-				activeChild(activeIndex, true);
 			});
-		});
-
-		onUnmounted(() => {
-			if (routerHook) 
-				routerHook();
-			
-		});
-
-		watch(
-			() => props.modelValue,
-			() => {
-				const activeIndex = parseIndex(props.modelValue);
-				reactiveData.childActive = activeIndex;
-				nextTick(() => {
-					activeChild(activeIndex);
-				});
-			}
-		);
-
-		const overallStyles = {
-
-		};
-
-
-		return {
-			...toRefs(reactiveData),
-			ul,
-			getPercentage,
-			activeIdx,
-			styleTab,
-			stylex,
-			styleAlignIcon,
-			clickTag,
-			activeChild,
-			parseIndex,
-			getALinkHref,
-			tabIdInstance
-		};
+		}
 	}
+	reactiveData.childActive = activeIndex;
+	nextTick(() => {
+		activeChild(activeIndex, true);
+	});
 });
+
+onUnmounted(() => {
+	if (routerHook) 
+		routerHook();
+	
+});
+
+watch(
+	() => props.modelValue,
+	() => {
+		const activeIndex = parseIndex(props.modelValue);
+		reactiveData.childActive = activeIndex;
+		nextTick(() => {
+			activeChild(activeIndex);
+		});
+	}
+);
 </script>
 
 

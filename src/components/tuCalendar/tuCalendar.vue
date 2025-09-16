@@ -95,219 +95,189 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, Ref, PropType, watch, reactive } from "vue";
-import CalendarView from "../tuCalendar/CalendarView.vue";
-import CalendarViewHeader from "../tuCalendar/CalendarViewHeader.vue";
+<script setup lang="ts">
+import { ref, Ref, watch, reactive } from "vue";
+import CalendarView from "./CalendarView.vue";
+import CalendarViewHeader from "./CalendarViewHeader.vue";
 import { isUndefined } from "lodash";
 import { ICalendarItem, TuCalendarServerModel } from "./ICalendarItem";
-import * as _color from "../../utils";
+import _color from "../../utils/color";
 import "./css/light.scss";
 import "./css/index.scss";
-import tuComponent from "../tuComponent";
 import { TukalGlobals } from "../tukalGlobals";
-import { XHRRequestWrapper } from "@/utils/apiWrapper";
-import { log } from "console";
-
+import { XHRRequestWrapper } from "../../utils/apiWrapper";
 import dayjs from "dayjs";
 
 type Category = {
 	name: string;
 	color: string;
 }
-export default defineComponent({
-	name: "TuCalendar",
-	extends: tuComponent,
-	components: {
-		CalendarView,
-		CalendarViewHeader
-	},
-	props: {
-		modelValue: {},
-		items: {
-			type: Object as PropType<Array<ICalendarItem>>,
-			default: []
-		},
-		categories: {
-			type: Object as PropType<Array<Category>>,
-			default: []
-		},
-		model: {
-			type: String,
-			default: "local"
-		},
-		serverSideConfig: {
-			type: Object as PropType<TuCalendarServerModel>,
-			default: () => {
-				return {};
-			}
-		},
-		components: {
-			default: null
-		},
-		theme: {
-			type: String,
-			default: "theme-default"
-		}
-	},
-	emits: ["onClickDay", "update:modelValue", "categoriesUpdated"],
-	setup(props, context) {
-		const showDate = ref(new Date());
-		const activateDialog = ref(false);
-		const newItem = reactive({
-			Title: null,
-			StartDate: null,
-			EndDate: null,
-			StartTime: null,
-			EndTime: null,
-			Category: null
-		});
-		const periodUOM = ref("month");
-		const allDay = ref(false);
-		const colorTheme: Ref<string> = ref("theme-default");
-		let events;
-		const eventCategories = ref(props.categories);
-		if (props.model === "local") events = ref(props.items);
-		else {
-			events = ref([]);
-			const xhrRequest = new XHRRequestWrapper();
-			const serverSideModel: Ref<TuCalendarServerModel> = ref(
-				props.serverSideConfig
-			);
 
-			if (isUndefined(serverSideModel.value.method))
-				serverSideModel.value.method = "GET";
+interface Props {
+	modelValue?: unknown;
+	items?: ICalendarItem[];
+	categories?: Category[];
+	model?: string;
+	serverSideConfig?: TuCalendarServerModel;
+	components?: unknown;
+	theme?: string;
+}
 
-			xhrRequest.request.onreadystatechange = function () {
-				if (
-					xhrRequest.request.readyState === XMLHttpRequest.DONE &&
-					xhrRequest.request.status === 200
-				) {
-					if (xhrRequest.request.responseType === "json")
-						events.value = xhrRequest.request.response.data;
-					else if (xhrRequest.request.responseType === "text")
-						events.value = JSON.parse(xhrRequest.request.responseText);
-					else {
-						events.value = JSON.parse(xhrRequest.request.responseText);
-					}
-				}
-			};
-			xhrRequest.open(
-				serverSideModel.value.method,
-				TukalGlobals.ApiRequestTarget + serverSideModel.value.ajaxUrl,
-			);
-			xhrRequest.request.setRequestHeader("Content-Type", "application/json");
-			xhrRequest.request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-			xhrRequest.request.send();
-		}
-		const content = ref();
-		const onClickDay = (d: Date) => {
+const props = withDefaults(defineProps<Props>(), {
+	modelValue: undefined,
+	items: () => [],
+	categories: () => [],
+	model: "local",
+	serverSideConfig: () => ({} as TuCalendarServerModel),
+	components: undefined,
+	theme: "theme-default"
+});
 
-			const date = dayjs(d).format("YYYY-MM-DD");
-			context.emit("onClickDay",);
-			newItem.StartDate = date;
-			activateDialog.value = true;
-		};
-		const submitNewItem = () => {
-			if (newItem.EndDate === undefined)
-				newItem.EndDate = newItem.StartDate;
-			events.value.push({
-				startDate: new Date(
-					newItem.StartDate + " " + newItem.StartTime
-				),
-				endDate: new Date(newItem.EndDate + " " + newItem.EndTime),
-				category: newItem.Category,
-				title: newItem.Title,
-				id: "e" + Math.random().toString(36).substring(2, 11)
-			});
-			activateDialog.value = false;
-		};
-		const setShowDate = (d) => {
-			showDate.value = d;
-		};
-		watch(allDay, () => {
-			if (allDay.value === true) {
-				newItem.StartTime = "00:00";
-				newItem.EndTime = "23:59";
-				newItem.EndDate = newItem.StartDate;
-			}
-		});
-		const updateItems = (item: ICalendarItem) => {
-			const itemIndex = events.value.findIndex(
-				(obj) => obj.id === item.id
-			);
-			events.value[itemIndex] = item;
-			context.emit("update:modelValue", events.value);
-		};
-		const deleteItem = (id: string) => {
-			const itemIndex = events.value.findIndex((obj) => obj.id === id);
-			events.value.splice(itemIndex, 1);
-			context.emit("update:modelValue", events.value);
-		};
-		const updatePeriod = (period: string) => {
-			periodUOM.value = period;
-		};
-		const updateTheme = (theme: string) => {
-			colorTheme.value = theme;
-		};
-		const updateCategory = ([color, name]: [string, string]) => {
-			const newCategory = {
-				name: name,
-				color: color
-			};
-			eventCategories.value.push(newCategory);
-			console.log(newCategory);
-			context.emit("categoriesUpdated", newCategory);
-		};
-		// const closeDialog = () => {
-		// 	allDay.value = false;
-		// 	newItemStartTime.value = "";
-		// 	newItemEndTime.value = "";
-		// 	newItemEndDate.value = null;
-		// 	newItemTitle.value = null;
-		// };
-		const styleChip = (categoryColor: string) => {
-			let background;
-			console.log(categoryColor)
-			if (/^(rgb|rgba)/.test(categoryColor)) {
-				background = categoryColor
-			}
+const emit = defineEmits<{
+	onClickDay: [date?: Date];
+	"update:modelValue": [value: ICalendarItem[]];
+	categoriesUpdated: [category: Category];
+}>();
+
+defineOptions({
+	name: "TuCalendar"
+});
+
+const showDate = ref(new Date());
+const activateDialog = ref(false);
+const newItem = reactive({
+	Title: null as string | null,
+	StartDate: null as string | null,
+	EndDate: null as string | null,
+	StartTime: null as string | null,
+	EndTime: null as string | null,
+	Category: null as string | null
+});
+const periodUOM = ref("month");
+const allDay = ref(false);
+const colorTheme: Ref<string> = ref("theme-default");
+let events: Ref<ICalendarItem[]>;
+const eventCategories = ref(props.categories);
+
+if (props.model === "local") {
+	events = ref(props.items);
+} else {
+	events = ref([]);
+	const xhrRequest = new XHRRequestWrapper();
+	const serverSideModel: Ref<TuCalendarServerModel> = ref(
+		props.serverSideConfig
+	);
+
+	if (isUndefined(serverSideModel.value.method))
+		serverSideModel.value.method = "GET";
+
+	xhrRequest.request.onreadystatechange = function () {
+		if (
+			xhrRequest.request.readyState === XMLHttpRequest.DONE &&
+			xhrRequest.request.status === 200
+		) {
+			if (xhrRequest.request.responseType === "json")
+				events.value = xhrRequest.request.response.data;
+			else if (xhrRequest.request.responseType === "text")
+				events.value = JSON.parse(xhrRequest.request.responseText);
 			else {
-				background = `rgba(${_color.getColorAsRgb(categoryColor, 0.6)})`;
+				events.value = JSON.parse(xhrRequest.request.responseText);
 			}
-			return {
-				background: background
-			};
-		};
-
-		function log(value) {
-			console.log(value);
-
 		}
-		return {
-			log,
-			showDate,
-			setShowDate,
-			activateDialog,
-			onClickDay,
-			events,
-			newItem,
-			submitNewItem,
-			content,
-			styleChip,
-			periodUOM,
-			allDay,
-			updateItems,
-			deleteItem,
-			updatePeriod,
-			colorTheme,
-			updateTheme,
-			updateCategory,
-			eventCategories
-			// closeDialog
-		};
+	};
+	xhrRequest.open(
+		serverSideModel.value.method,
+		TukalGlobals.ApiRequestTarget + serverSideModel.value.ajaxUrl,
+	);
+	xhrRequest.request.setRequestHeader("Content-Type", "application/json");
+	xhrRequest.request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+	xhrRequest.request.send();
+}
+
+// Remove unused variables and functions
+// const content = ref();
+// function log(value: unknown) {
+// 	console.log(value);
+// }
+
+const onClickDay = (d: Date) => {
+	const date = dayjs(d).format("YYYY-MM-DD");
+	emit("onClickDay");
+	newItem.StartDate = date;
+	activateDialog.value = true;
+};
+
+const submitNewItem = () => {
+	if (newItem.EndDate === undefined)
+		newItem.EndDate = newItem.StartDate;
+	events.value.push({
+		startDate: new Date(
+			newItem.StartDate + " " + newItem.StartTime
+		),
+		endDate: new Date(newItem.EndDate + " " + newItem.EndTime),
+		category: newItem.Category || undefined,
+		title: newItem.Title || "",
+		id: "e" + Math.random().toString(36).substring(2, 11)
+	});
+	activateDialog.value = false;
+};
+
+const setShowDate = (d: Date) => {
+	showDate.value = d;
+};
+
+watch(allDay, () => {
+	if (allDay.value === true) {
+		newItem.StartTime = "00:00";
+		newItem.EndTime = "23:59";
+		newItem.EndDate = newItem.StartDate;
 	}
 });
+
+const updateItems = (item: ICalendarItem) => {
+	const itemIndex = events.value.findIndex(
+		(obj) => obj.id === item.id
+	);
+	events.value[itemIndex] = item;
+	emit("update:modelValue", events.value);
+};
+
+const deleteItem = (id: string) => {
+	const itemIndex = events.value.findIndex((obj) => obj.id === id);
+	events.value.splice(itemIndex, 1);
+	emit("update:modelValue", events.value);
+};
+
+const updatePeriod = (period: string) => {
+	periodUOM.value = period;
+};
+
+const updateTheme = (theme: string) => {
+	colorTheme.value = theme;
+};
+
+const updateCategory = ([color, name]: [string, string]) => {
+	const newCategory = {
+		name: name,
+		color: color
+	};
+	eventCategories.value.push(newCategory);
+	console.log(newCategory);
+	emit("categoriesUpdated", newCategory);
+};
+
+const styleChip = (categoryColor: string) => {
+	let background;
+	console.log(categoryColor);
+	if (/^(rgb|rgba)/.test(categoryColor)) 
+		background = categoryColor;
+	else 
+		background = `rgba(${_color.getColor(categoryColor, 0.6)})`;
+	
+	return {
+		background: background
+	};
+};
 </script>
 
 <style>

@@ -14,76 +14,74 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { computed, inject, Ref, ref, watch } from "vue";
-import tuComponent from "../tuComponent";
-import tuSelectOption from "./tuSelectOption.vue";
-export default {
+<script setup lang="ts">
+import { computed, inject, Ref, ref, watch, useSlots, provide } from "vue";
+
+interface Props {
+	disabled?: boolean;
+	value?: unknown;
+	text?: string;
+}
+
+withDefaults(defineProps<Props>(), {
+	disabled: false,
+	value: undefined,
+	text: undefined
+});
+
+defineOptions({
 	name: "TuSelectOptionGroup",
-	inheritAttrs: false,
-	extends: tuComponent,
-	components: {
-		tuSelectOption
-	},
-	props: {
-		disabled: {
-			type: Boolean,
-			default: false
-		},
-		value: {
-			default: null
-		},
-		text: {
-			default: null
-		}
-	},
-	setup (props, context) {
-		const optionGroup = ref(true);
-		const textFilter = ref<String>();
-		const hiddenOptionGroup = ref(false);
-		const parentTextFilter = inject<Ref<String>>("textFilter");
+	inheritAttrs: false
+});
 
-		const onClickOption = inject<Function>("onClickOption");
+const slots = useSlots();
 
-		const clickOption = function (value: any, label: any) {
-			onClickOption?.call(null, value, label);
-		};
+const optionGroup = ref(true);
+const textFilter = ref<string>();
+const hiddenOptionGroup = ref(false);
+const parentTextFilter = inject<Ref<string>>("textFilter");
 
-		const labels = computed(() => {
-			let labels: string = "";
-			(context.slots.default as any).forEach((item) => {
-				if (item.tag) labels += (item.componentInstance as any).label;
-			});
-			return labels;
-		});
+const onClickOption = inject<(value: unknown, label: string) => void>("onClickOption");
 
-		watch(
-			() => parentTextFilter?.value as String,
-			(val) => {
-				if (val) {
-					if (
-						labels.value
-							.toLowerCase()
-							.indexOf(val.toLowerCase()) === -1
-					)
-						hiddenOptionGroup.value = true;
-					else hiddenOptionGroup.value = false;
-				}
-				else hiddenOptionGroup.value = false;
-
-				textFilter.value = val;
-			}
-		);
-
-		return {
-			optionGroup,
-			textFilter,
-			hiddenOptionGroup,
-			clickOption,
-			labels
-		};
-	}
+const clickOption = function (value: unknown, label: string) {
+	onClickOption?.call(null, value, label);
 };
+
+const labels = computed(() => {
+	let labels = "";
+	if (slots.default) {
+		// Type assertion needed for Vue slot content
+		/* eslint-disable @typescript-eslint/no-explicit-any */
+		(slots.default() as any[]).forEach((item: any) => {
+			if (item.tag) labels += (item.componentInstance as any).label;
+		});
+		/* eslint-enable @typescript-eslint/no-explicit-any */
+	}
+	return labels;
+});
+
+watch(
+	() => parentTextFilter?.value as string,
+	(val) => {
+		if (val) {
+			if (
+				labels.value
+					.toLowerCase()
+					.indexOf(val.toLowerCase()) === -1
+			)
+				hiddenOptionGroup.value = true;
+			else hiddenOptionGroup.value = false;
+		}
+		else hiddenOptionGroup.value = false;
+
+		textFilter.value = val;
+	}
+);
+
+// Provide values for child components
+provide("onClickOption", clickOption);
+provide("textFilter", textFilter);
+provide("optionGroup", optionGroup);
 </script>
 <style lang="scss">
 @import "../../style/sass/_mixins";

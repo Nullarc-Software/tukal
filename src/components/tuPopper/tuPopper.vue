@@ -22,11 +22,10 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent, computed, onBeforeUnmount, watch, toRefs, PropType } from "vue";
+<script setup lang="ts">
+import { computed, onBeforeUnmount, provide, watch, toRefs, useSlots } from "vue";
 import usePopper from "./composables/userPopper";
-import clickAway from "./directives/click-away";
-import tuComponent from "../tuComponent";
+
 /**
  * The Popper component.
  */
@@ -48,147 +47,120 @@ const Placement = [
 	"left-start",
 	"left-end"
 ] as const;
+
 export type PlacementType = typeof Placement[number];
-export default defineComponent({
-	name: "TuPopper",
-	emits: ["show:popper", "hide:popper"],
-	directives: {
-		clickAway
-	},
-	extends: tuComponent,
-	provide() {
-		return {
-			borderRadius: this.borderRadius,
-			closeParent: () => {
-				this.hide();
-			}
-		};
-	},
-	props: {
-		/**
-		 * Preferred [placement](https://popper.js.org/docs/v2/constructors/#options)
-		 */
-		placement: {
-			type: String,
-			default: "auto"
+
+interface Props {
+	/**
+	 * Preferred [placement](https://popper.js.org/docs/v2/constructors/#options)
+	 */
+	placement?: string;
+	/**
+	 * Customize the [offset](https://popper.js.org/docs/v2/modifiers/offset/) of the popper
+	 */
+	offsetX?: string;
+	offsetY?: string;
+	/**
+	 * Show the popper on hover
+	 */
+	hover?: boolean;
+	timeout?: number;
+	/**
+	 * Add an arrow to the popper
+	 */
+	arrow?: boolean;
+	/**
+	 * Stop arrow from reaching the edge of the Popper
+	 */
+	arrowPadding?: string;
+	borderRadius?: string | null;
+	cursorPointer?: boolean;
+	fitPopperContainer?: boolean;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	placement: "auto",
+	offsetX: "0",
+	offsetY: "12",
+	hover: false,
+	timeout: -1,
+	arrow: false,
+	arrowPadding: "0",
+	borderRadius: null,
+	cursorPointer: true,
+	fitPopperContainer: false
+});
+
+const emit = defineEmits<{
+	"show:popper": [];
+	"hide:popper": [];
+}>();
+
+const slots = useSlots();
+
+const children = slots.default?.();
+
+if (children && children.length > 1) {
+	console.error(
+		`[Popper]: The <Popper> component expects only one child element at its root. You passed ${children.length} child nodes.`
+	);
+}
+
+const { offsetX, offsetY, arrowPadding, placement } = toRefs(props);
+
+const {
+	isOpen,
+	hide,
+	show,
+	toggle,
+	popperInstance,
+	popperNode,
+	triggerNode
+} = usePopper({ offsetX, offsetY, arrowPadding, placement });
+
+// Provide values for child components
+provide("borderRadius", props.borderRadius);
+provide("closeParent", () => {
+	hide();
+});
+
+const listeners = computed(() => {
+	const hover = {
+		mouseover: show,
+		mouseleave: hide
+	};
+
+	const onClick = {
+		click: toggle
+	};
+
+	return {
+		...((props.hover && hover) || onClick),
+		focus: () => {
+			show();
 		},
-		/**
-		 * Customize the [offset](https://popper.js.org/docs/v2/modifiers/offset/) of the popper
-		 */
-		offsetX: {
-			type: String,
-			default: "0"
-		},
-		offsetY: {
-			type: String,
-			default: "12"
-		},
-		/**
-		 * Show the popper on hover
-		 */
-		hover: {
-			type: Boolean,
-			default: false
-		},
-		timeout: {
-			type: Number,
-			default: -1
-		},
-		/**
-		 * Add an arrow to the popper
-		 */
-		arrow: {
-			type: Boolean,
-			default: false
-		},
-		/**
-		 * Stop arrow from reaching the edge of the Popper
-		 */
-		arrowPadding: {
-			type: String,
-			default: "0"
-		},
-		borderRadius: {
-			type: String,
-			default: null
-		},
-		cursorPointer: {
-			type: Boolean,
-			default: true
-		},
-		fitPopperContainer: {
-			type: Boolean,
-			default: false
+		blur: () => {
+			hide();
 		}
-	},
-	setup(props, { slots, emit }) {
-		const children = slots.default?.();
+	};
+});
 
-		if (children && children.length > 1) {
-			return console.error(
-				`[Popper]: The <Popper> component expects only one child element at its root. You passed ${children.length} child nodes.`
-			);
+watch(isOpen, (isOpen) => {
+	if (isOpen) {
+		emit("show:popper");
+
+		if (props.timeout > 0) {
+			setTimeout(() => {
+				hide();
+			}, props.timeout);
 		}
+	}
+	else emit("hide:popper");
+});
 
-		const { offsetX, offsetY, arrowPadding, placement } = toRefs(props);
-
-		const {
-			isOpen,
-			hide,
-			show,
-			toggle,
-			popperInstance,
-			popperNode,
-			triggerNode
-		} = usePopper({ offsetX, offsetY, arrowPadding, placement });
-
-		const listeners = computed(() => {
-			const hover = {
-				mouseover: show,
-				mouseleave: hide
-			};
-
-			const onClick = {
-				click: toggle
-			};
-
-			return {
-				...((props.hover && hover) || onClick),
-				focus: () => {
-					show();
-				},
-				blur: () => {
-					hide();
-				}
-			};
-		});
-
-		watch(isOpen, (isOpen) => {
-			if (isOpen) {
-				emit("show:popper");
-
-				if (props.timeout > 0) {
-					setTimeout(() => {
-						hide();
-					}, props.timeout);
-				}
-			}
-			else emit("hide:popper");
-		});
-
-		onBeforeUnmount(() => {
-			if (popperInstance.value) (popperInstance.value as any).destroy();
-		});
-
-		return {
-			hideFn: hide,
-			isOpen,
-			popperNode,
-			triggerNode,
-			toggle,
-			hide,
-			listeners
-		};
+onBeforeUnmount(() => {
+	if (popperInstance.value && typeof (popperInstance.value as any).destroy === "function") {
+		(popperInstance.value as any).destroy();
 	}
 });
 </script>

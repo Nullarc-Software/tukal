@@ -3,10 +3,9 @@
 		<slot></slot>
 	</button>
 </template> 
-<script lang="ts">
+<script setup lang="ts">
 import {
 	computed,
-	defineComponent,
 	getCurrentInstance,
 	inject,
 	nextTick,
@@ -14,125 +13,129 @@ import {
 	ref,
 	watch
 } from "vue";
-import { useRouter } from "vue-router";
-import tuComponent, { ComponentConstants } from "../tuComponent";
+import { Router } from "vue-router";
+import { ComponentConstants } from "../tuComponent";
+import { getColor } from "../../utils";
 
-export default defineComponent({
-	name: "TuNavbarItem",
-	extends: tuComponent,
-	props: {
-		active: { default: false, type: Boolean },
-		to: {},
-		id: {},
-		href: {},
-		target: { default: "_blank" }
-	},
-	emits: ["click"],
-	setup(props, context) {
-		let setLeftLine = inject<Function>("setLeftLine");
-		let setWidthLine = inject<Function>("setWidthLine");
-		let setModel = inject<Function>("setModel");
-		let item = ref<HTMLButtonElement>();
-		let instance = getCurrentInstance();
-		let internalActive = ref(false);
-		let router = ComponentConstants.router;
-		let parentName = instance?.parent?.type.name;
+interface Props {
+	active?: boolean;
+	to?: any;
+	id?: any;
+	href?: any;
+	target?: string;
+	// tuComponent props
+	color?: string;
+	colorSecondary?: string;
+	textColor?: string;
+}
 
-		const handleLine = function () {
-			nextTick(() => {
-				if (props.active || internalActive) {
-
-					if (parentName == "TuNavbarGroup") {
-						const left = instance?.parent?.vnode.el?.offsetLeft;
-						setLeftLine?.call(null, left);
-						const width = instance?.parent?.vnode.el?.offsetWidth;
-						setWidthLine?.call(null, width);
-					}
-					else {
-						const left = item.value?.offsetLeft;
-						setLeftLine?.call(null, left);
-						const width = item.value?.scrollWidth;
-						setWidthLine?.call(null, width);
-					}
-				}
-			});
-		};
-
-		watch(() => props.active, (val: boolean) => {
-
-			if (!val)
-				internalActive.value = false;
-
-		});
-
-		const handleClick = function () {
-			if (props.to) {
-				router.push(props.to as any);
-			} else if (props.href) {
-				window.open(props.href as string, props.target);
-			}
-		};
-
-		const handleActive = function () {
-			setModel?.call(null, props.id, handleLine);
-			handleLine();
-		};
-
-		const listeners = computed(() => {
-			return {
-				click: function (event) {
-					context.emit("click", event);
-					internalActive.value = true;
-					handleLine();
-					handleClick();
-					handleActive();
-				}
-			};
-		});
-
-		const handleRouteChange = function () {
-			if (router.currentRoute.value.path === props.to) {
-				internalActive.value = true;
-				handleLine();
-			}
-			else
-				internalActive.value = false;
-
-
-		}
-
-		const handleResize = function () {
-			if (internalActive.value)
-				handleLine();
-		}
-
-		onMounted(() => {
-			setTimeout(() => {
-
-				if (props.active || internalActive.value) {
-					handleLine();
-				}
-			}, 150);
-
-
-		});
-
-		if (router)
-			watch(router.currentRoute, () => {
-				handleRouteChange();
-			})
-
-		return {
-			handleLine,
-			handleClick,
-			handleActive,
-			item,
-			listeners,
-			handleRouteChange,
-			internalActive
-		};
-	}
+const props = withDefaults(defineProps<Props>(), {
+	active: false,
+	target: "_blank",
+	color: "primary",
+	colorSecondary: "rgb(130, 207, 23)",
+	textColor: "#fff"
 });
+
+const emit = defineEmits<{
+	click: [event: Event];
+}>();
+
+// tuComponent functionality
+inject<Router | null>("appRouter", null);
+inject<string | null>("iconPackGlobal", null);
+
+const getColorSecondary = ref<string>("");
+
+onMounted(() => {
+	getColorSecondary.value = getColor(props.colorSecondary);
+});
+
+// Component logic
+const setLeftLine = inject<Function>("setLeftLine");
+const setWidthLine = inject<Function>("setWidthLine");
+const setModel = inject<Function>("setModel");
+const item = ref<HTMLButtonElement>();
+const instance = getCurrentInstance();
+const internalActive = ref(false);
+const router = ComponentConstants.router;
+const parentName = instance?.parent?.type.name;
+
+const handleLine = function () {
+	nextTick(() => {
+		if (props.active || internalActive.value) {
+			if (parentName == "TuNavbarGroup") {
+				const left = instance?.parent?.vnode.el?.offsetLeft;
+				setLeftLine?.call(null, left);
+				const width = instance?.parent?.vnode.el?.offsetWidth;
+				setWidthLine?.call(null, width);
+			}
+			else {
+				const left = item.value?.offsetLeft;
+				setLeftLine?.call(null, left);
+				const width = item.value?.scrollWidth;
+				setWidthLine?.call(null, width);
+			}
+		}
+	});
+};
+
+watch(() => props.active, (val: boolean) => {
+	if (!val)
+		internalActive.value = false;
+});
+
+const handleClick = function () {
+	if (props.to) {
+		router.push(props.to as any);
+	} else if (props.href) {
+		window.open(props.href as string, props.target);
+	}
+};
+
+const handleActive = function () {
+	setModel?.call(null, props.id, handleLine);
+	handleLine();
+};
+
+const listeners = computed(() => {
+	return {
+		click: function (event: Event) {
+			emit("click", event);
+			internalActive.value = true;
+			handleLine();
+			handleClick();
+			handleActive();
+		}
+	};
+});
+
+const handleRouteChange = function () {
+	if (router.currentRoute.value.path === props.to) {
+		internalActive.value = true;
+		handleLine();
+	}
+	else
+		internalActive.value = false;
+};
+
+const handleResize = function () {
+	if (internalActive.value)
+		handleLine();
+};
+
+onMounted(() => {
+	setTimeout(() => {
+		if (props.active || internalActive.value) {
+			handleLine();
+		}
+	}, 150);
+});
+
+if (router)
+	watch(router.currentRoute, () => {
+		handleRouteChange();
+	});
 </script>
 
 <style lang="scss">

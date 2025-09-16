@@ -41,41 +41,61 @@
 		</div>
 	</div>
 </template>
-<script lang="ts">
-import { computed, defineComponent, h, nextTick, ref, watch } from "vue";
+<script setup lang="ts">
+import { computed, h, nextTick, ref, watch, inject } from "vue";
 import tuIconsArrow from "../../icons/arrow";
-import tuComponent from "../tuComponent";
 import tuIcon from "../tuIcon";
 
-export default defineComponent({
-	name: "TuPagination",
-	extends: tuComponent,
-	components: {
-		tuIcon
-	},
-	props: {
-		modelValue: { type: Number, default: 1 },
-		infinite: { default: false, type: Boolean },
-		flat: { default: false, type: Boolean },
-		progress: { default: false, type: Boolean },
-		notMargin: { default: false, type: Boolean },
-		buttonsDotted: { default: false, type: Boolean },
-		notArrows: { default: false, type: Boolean },
-		onlyArrows: { default: false, type: Boolean },
-		circle: { default: false, type: Boolean },
-		square: { default: false, type: Boolean },
-		disabled: { default: false, type: Boolean },
-		disabledItems: { default: () => [], type: Array },
-		loadingItems: { default: () => [], type: Array },
-		length: { default: 1, type: Number },
-		max: { default: 9, type: Number },
-		dottedNumber: { default: 5, type: Number }
-	},
-	setup(props, context) {
-		const val = ref(1);
-		const leftActive = ref(42);
-		const activeClassMove = ref(false);
-		const pagination = ref<HTMLDivElement>();
+interface Props {
+	modelValue?: number;
+	infinite?: boolean;
+	flat?: boolean;
+	progress?: boolean;
+	notMargin?: boolean;
+	buttonsDotted?: boolean;
+	notArrows?: boolean;
+	onlyArrows?: boolean;
+	circle?: boolean;
+	square?: boolean;
+	disabled?: boolean;
+	disabledItems?: number[];
+	loadingItems?: number[];
+	length?: number;
+	max?: number;
+	dottedNumber?: number;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	modelValue: 1,
+	infinite: false,
+	flat: false,
+	progress: false,
+	notMargin: false,
+	buttonsDotted: false,
+	notArrows: false,
+	onlyArrows: false,
+	circle: false,
+	square: false,
+	disabled: false,
+	disabledItems: () => [],
+	loadingItems: () => [],
+	length: 1,
+	max: 9,
+	dottedNumber: 5
+});
+
+const emit = defineEmits<{
+	"update:modelValue": [value: number];
+}>();
+
+// Inject tuComponent functionality
+const $tukal = inject("$tukal");
+const $utils = inject("$utils");
+
+const val = ref(1);
+const leftActive = ref(42);
+const activeClassMove = ref(false);
+const pagination = ref<HTMLDivElement>();
 
 		const getProgress = computed(() => {
 			let percent = 0;
@@ -86,7 +106,7 @@ export default defineComponent({
 		});
 
 		const setValuePage = function (NumberPage: number) {
-			context.emit("update:modelValue", NumberPage);
+			emit("update:modelValue", NumberPage);
 		};
 
 		const renderDotted = function (text: string = "...") {
@@ -301,18 +321,6 @@ export default defineComponent({
 			}
 		);
 
-		return {
-			leftActive,
-			activeClassMove,
-			val,
-			prevClicked,
-			nextClicked,
-			getPages,
-			pagination,
-			getProgress
-		};
-	}
-});
 </script>
 
 <style lang="scss" scoped>

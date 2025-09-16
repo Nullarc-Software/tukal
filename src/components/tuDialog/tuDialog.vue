@@ -7,9 +7,7 @@
 				fullScreen: fullScreen
 			}
 		]" ref="dialog-content" @click="click">
-			<div class="tu-dialog" :style="{
-				width: width
-			}" :class="{
+			<div class="tu-dialog" :style="dialogStyle" :class="{
 	'tu-dialog--fullScreen': fullScreen,
 	'tu-dialog--rebound': rebound,
 	'tu-dialog--notPadding': notPadding,
@@ -42,147 +40,122 @@
 	</transition>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, watch } from "vue";
+<script setup lang="ts">
+import { ref, watch, inject, computed } from "vue";
+import { Router } from "vue-router";
 import tuButton from "../tuButton/tuButton.vue";
 import tuIcon from "../tuIcon/tuIcon.vue";
-import tuComponent from "../tuComponent";
 
-export default defineComponent({
-	name: "TuDialog",
-	extends: tuComponent,
-	components: { tuIcon, tuButton },
-	props: {
-		modelValue: {
-			type: Boolean,
-			default: false
-		},
-		loading: {
-			type: Boolean,
-			default: false
-		},
-		fullScreen: {
-			type: Boolean,
-			default: false
-		},
-		notClose: {
-			type: Boolean,
-			default: false
-		},
-		preventClose: {
-			type: Boolean,
-			default: false
-		},
-		notPadding: {
-			type: Boolean,
-			default: false
-		},
-		overflowHidden: {
-			type: Boolean,
-			default: false
-		},
-		blur: {
-			type: Boolean,
-			default: false
-		},
-		square: {
-			type: Boolean,
-			default: false
-		},
-		autoWidth: {
-			type: Boolean,
-			default: false
-		},
-		scroll: {
-			type: Boolean,
-			default: false
-		},
-		notCenter: {
-			type: Boolean,
-			default: false
-		},
-		routerClose: {
-			type: Boolean,
-			default: false
-		},
-		width: {
-			type: String,
-			default: null
-		},
-		footerClasses: {
-			type: Object,
-			default: null
-		}
-	},
-	emits: ["update:modelValue", "close"],
-	setup(props, context) {
-		const rebound = ref(false);
+interface Props {
+	modelValue?: boolean;
+	loading?: boolean;
+	fullScreen?: boolean;
+	notClose?: boolean;
+	preventClose?: boolean;
+	notPadding?: boolean;
+	overflowHidden?: boolean;
+	blur?: boolean;
+	square?: boolean;
+	autoWidth?: boolean;
+	scroll?: boolean;
+	notCenter?: boolean;
+	routerClose?: boolean;
+	width?: string | null;
+	footerClasses?: Record<string, unknown> | null;
+	// tuComponent props
+	color?: string;
+	active?: boolean;
+	colorSecondary?: string;
+	textColor?: string;
+}
 
-		const esc = function (evt: any) {
-			if (evt.which === 27 && !props.preventClose) {
-				context.emit("update:modelValue", false);
-				context.emit("close");
-			}
-		};
-
-		const addEsc = function () {
-			window.addEventListener("keydown", esc);
-		};
-
-		const insertDialog = function () {
-			addEsc();
-			/* nextTick(() => {
-				const dialog = this.$refs["dialog-content"] as HTMLElement;
-				insertBody(dialog, document.querySelector("#app"));
-			}); */
-		};
-
-		watch(
-			() => props.modelValue,
-			(newVal, prevVal) => {
-				if (newVal) {
-					insertDialog();
-					if (props.overflowHidden)
-						document.body.style.overflow = "hidden";
-				}
-				else {
-					if (props.overflowHidden) {
-						document.body.style.overflow = "";
-						window.removeEventListener("keydown", esc);
-					}
-				}
-			}
-		);
-
-		const click = function (evt) {
-			if (!evt.target.closest(".tu-dialog") && !props.preventClose) {
-				context.emit("update:modelValue", !props.modelValue);
-				context.emit("close");
-			}
-
-			if (props.preventClose && !evt.target.closest(".tu-dialog")) {
-				rebound.value = true;
-				setTimeout(() => {
-					rebound.value = false;
-				}, 300);
-			}
-		};
-
-		const closeClick = function (evt) {
-			context.emit("update:modelValue", !props.modelValue);
-			context.emit("close");
-		};
-
-		return {
-			rebound,
-			closeClick,
-			click,
-			insertDialog,
-			esc,
-			addEsc
-		};
-	}
+const props = withDefaults(defineProps<Props>(), {
+	modelValue: false,
+	loading: false,
+	fullScreen: false,
+	notClose: false,
+	preventClose: false,
+	notPadding: false,
+	overflowHidden: false,
+	blur: false,
+	square: false,
+	autoWidth: false,
+	scroll: false,
+	notCenter: false,
+	routerClose: false,
+	width: null,
+	footerClasses: null,
+	color: "primary",
+	active: false,
+	colorSecondary: "rgb(130, 207, 23)",
+	textColor: "#fff"
 });
+
+const emit = defineEmits<{
+	"update:modelValue": [value: boolean];
+	close: [];
+}>();
+
+// tuComponent functionality
+inject<Router | null>("appRouter", null);
+inject<string | null>("iconPackGlobal", null);
+
+const rebound = ref(false);
+
+const dialogStyle = computed(() => ({
+	width: props.width || undefined
+}));
+
+const esc = function (evt: KeyboardEvent) {
+	if (evt.which === 27 && !props.preventClose) {
+		emit("update:modelValue", false);
+		emit("close");
+	}
+};
+
+const addEsc = function () {
+	window.addEventListener("keydown", esc);
+};
+
+const insertDialog = function () {
+	addEsc();
+};
+
+watch(
+	() => props.modelValue,
+	(newVal) => {
+		if (newVal) {
+			insertDialog();
+			if (props.overflowHidden)
+				document.body.style.overflow = "hidden";
+		}
+		else {
+			if (props.overflowHidden) {
+				document.body.style.overflow = "";
+				window.removeEventListener("keydown", esc);
+			}
+		}
+	}
+);
+
+const click = function (evt: MouseEvent) {
+	if (!(evt.target as Element).closest(".tu-dialog") && !props.preventClose) {
+		emit("update:modelValue", !props.modelValue);
+		emit("close");
+	}
+
+	if (props.preventClose && !(evt.target as Element).closest(".tu-dialog")) {
+		rebound.value = true;
+		setTimeout(() => {
+			rebound.value = false;
+		}, 300);
+	}
+};
+
+const closeClick = function () {
+	emit("update:modelValue", !props.modelValue);
+	emit("close");
+};
 </script>
 
 <style lang="scss">

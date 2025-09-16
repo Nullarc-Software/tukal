@@ -22,174 +22,154 @@
 	</th>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import _ from "lodash";
 import {
 	computed,
-	defineComponent,
-	getCurrentInstance,
 	inject,
 	onMounted,
 	ref,
 	watch,
-	PropType
 } from "vue";
-import tuComponent from "../tuComponent";
+import { Router } from "vue-router";
 import tuIcon from "../tuIcon";
 import tuInput from "../tuInput";
-import { TuHeaderDataTypes, TuTableStore } from "./tuTableStore";
+import { TuTableStore } from "./tuTableStore";
 
-export default defineComponent({
-	name: "TuTh",
-	extends: tuComponent,
-	components: { tuIcon, tuInput },
-	props: {
-		/**
-		 * Enables sorting options for the column
-		 */
-		sort: {
-			default: false,
-			type: Boolean
-		},
-		/**
-		 * Enables Searching functionality for the column
-		 */
-		search: {
-			type: Boolean,
-			default: false
-		},
-		/**
-		 * Sets the field to display data from when user Server side model
-		 * @values null, field name (Accepts field nesting by following '.' notation. i.e 'Row.Key' will look for { Row : { Key : "Value here"}})
-		 */
-		field: {
-			type: String,
-			default: null
-		},
-		fixed: {
-			type: Boolean,
-			default: false
-		},
-		type: {
-			type: String,
-			default: "string"
-		},
-		index: {
-			type: Number,
-			default: null
+interface Props {
+	sort?: boolean;
+	search?: boolean;
+	field?: string;
+	fixed?: boolean;
+	type?: string;
+	index?: number;
+	// tuComponent props
+	color?: string;
+	active?: boolean;
+	colorSecondary?: string;
+	textColor?: string;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	sort: false,
+	search: false,
+	field: "",
+	fixed: false,
+	type: "string",
+	index: 0,
+	color: "primary",
+	active: false,
+	colorSecondary: "rgb(130, 207, 23)",
+	textColor: "#fff"
+});
+
+const emit = defineEmits<{
+	enableDragListener: [];
+	disableDragListener: [];
+}>();
+
+// tuComponent functionality
+inject<Router | null>("appRouter", null);
+inject<string | null>("iconPackGlobal", null);
+
+const tableInstance = inject<TuTableStore>("tableInstance");
+const colSearch = ref("");
+const theader = ref<HTMLElement>();
+const startDateTime = ref("");
+const endDateTime = ref("");
+
+const sortType = computed(() => {
+	const item = _.find(tableInstance?.getSorters.value, (value) => {
+		return value.field === props.field;
+	});
+	return item ? item.dir : "none";
+});
+
+const headerDefn = tableInstance?.getHeaderObject(
+	props.index || props.field
+);
+
+const headerElement = ref<HTMLElement>();
+let startOffset = 0;
+
+function setDateFilter() {
+	if (props.field)
+		tableInstance?.setFilter(props.field, "date-between", [startDateTime.value, endDateTime.value]);
+}
+
+function keyPressed(event: KeyboardEvent) {
+	if (event.key === "Enter" && props.field) {
+		switch (props.type) {
+		case "string":
+			tableInstance?.setFilter(
+				props.field,
+				"like",
+				colSearch.value
+			);
+			break;
+		case "number":
+			tableInstance?.setFilter(
+				props.field,
+				"equals",
+				colSearch.value
+			);
+			break;
+		case "timestamp":
+			tableInstance?.setFilter(
+				props.field,
+				"date-between",
+				colSearch.value
+			);
+			break;
+		default:
+			break;
 		}
-	},
-	emits: ["enableDragListener", "disableDragListener"],
-	setup(props, context) {
-		const instance = getCurrentInstance();
-		const tableInstance = inject<TuTableStore>("tableInstance");
-		const tableId = inject<string>("tableId");
-		const colSearch = ref("");
-		const theader = ref<HTMLElement>();
-		const startDateTime = ref("");
-		const endDateTime = ref("");
-
-		const sortType = computed(() => {
-			const item = _.find(tableInstance.getSorters.value, (value) => {
-				return value.field === props.field;
-			});
-			return item ? item.dir : "none";
-		});
-		const headerDefn = tableInstance.getHeaderObject(
-			props.index ?? props.field
-		);
-
-		const headerElement = ref<HTMLElement>();
-		let startOffset = 0;
-
-		function setDateFilter() {
-			tableInstance.setFilter(props.field, "date-between", [startDateTime.value, endDateTime.value]);
-		}
-
-		function keyPressed(event: KeyboardEvent) {
-			if (event.key === "Enter") {
-				switch (props.type) {
-					case "string":
-						tableInstance.setFilter(
-							props.field,
-							"like",
-							colSearch.value
-						);
-						break;
-					case "number":
-						tableInstance.setFilter(
-							props.field,
-							"equals",
-							colSearch.value
-						);
-						break;
-					case "timestamp":
-						tableInstance.setFilter(
-							props.field,
-							"date-between",
-							colSearch.value
-						);
-						break;
-					default:
-						break;
-				}
-			}
-		}
-
-		function toggleSort(event) {
-			if (props.sort) tableInstance.toggleSort(props.field);
-		}
-
-		watch(colSearch, (value) => {
-			if (value === "") tableInstance.deleteFilter(props.field);
-		});
-
-		function trackMouseMove(event: MouseEvent) {
-			if (headerElement.value) {
-				const newWidth = startOffset + event.pageX;
-				if (
-					newWidth >= headerDefn.minWidth &&
-					newWidth <= headerDefn.maxWidth
-				)
-					headerDefn.width = startOffset + event.pageX + "px";
-				else if (newWidth < headerDefn.minWidth)
-					headerDefn.width = headerDefn.minWidth + "px";
-				else headerDefn.width = headerDefn.maxWidth + "px";
-			}
-		}
-
-		function trackMouseUp(event) {
-			headerElement.value = undefined;
-			context.emit("enableDragListener");
-		}
-
-		const resizeListeners = {
-			mousedown: function (event) {
-				headerElement.value = theader.value;
-				startOffset = headerElement.value.offsetWidth - event.pageX;
-				document.addEventListener("mousemove", trackMouseMove);
-				document.addEventListener("mouseup", trackMouseUp);
-				context.emit("disableDragListener");
-			}
-		};
-
-		onMounted(() => {
-			if (headerDefn) headerDefn.element = theader.value;
-		});
-
-		return {
-			headerElement,
-			theader,
-			colSearch,
-			startDateTime,
-			endDateTime,
-			sortType,
-			resizeListeners,
-			keyPressed,
-			toggleSort,
-			setDateFilter
-		};
 	}
+}
+
+function toggleSort() {
+	if (props.sort && props.field) tableInstance?.toggleSort(props.field);
+}
+
+watch(colSearch, (value) => {
+	if (value === "" && props.field) tableInstance?.deleteFilter(props.field);
+});
+
+function trackMouseMove(event: MouseEvent) {
+	if (headerElement.value && headerDefn) {
+		const newWidth = startOffset + event.pageX;
+		if (
+			headerDefn.minWidth !== undefined &&
+			headerDefn.maxWidth !== undefined &&
+			newWidth >= headerDefn.minWidth &&
+			newWidth <= headerDefn.maxWidth
+		)
+			headerDefn.width = startOffset + event.pageX + "px";
+		else if (headerDefn.minWidth !== undefined && newWidth < headerDefn.minWidth)
+			headerDefn.width = headerDefn.minWidth + "px";
+		else if (headerDefn.maxWidth !== undefined) headerDefn.width = headerDefn.maxWidth + "px";
+	}
+}
+
+function trackMouseUp() {
+	headerElement.value = undefined;
+	emit("enableDragListener");
+}
+
+const resizeListeners = {
+	mousedown: function (event: MouseEvent) {
+		headerElement.value = theader.value;
+		if (headerElement.value) {
+			startOffset = headerElement.value.offsetWidth - event.pageX;
+			document.addEventListener("mousemove", trackMouseMove);
+			document.addEventListener("mouseup", trackMouseUp);
+			emit("disableDragListener");
+		}
+	}
+};
+
+onMounted(() => {
+	if (headerDefn && theader.value) headerDefn.element = theader.value;
 });
 </script>
 

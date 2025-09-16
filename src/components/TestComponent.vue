@@ -18,16 +18,17 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
+interface Props {
+	name?: string;
+}
 
-export default defineComponent({
-	name: "TestComponent",
-	props: {
-		name: {
-			default: "test"
-		}
-	}
+withDefaults(defineProps<Props>(), {
+	name: "test"
+});
+
+defineOptions({
+	name: "TestComponent"
 });
 </script>
 

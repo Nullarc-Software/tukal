@@ -29,43 +29,54 @@
 	</transition>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { setColor, setVar } from "@/utils";
-import { defineComponent, getCurrentInstance, watch, PropType } from "vue";
+import { getCurrentInstance, watch } from "vue";
 
-type LoadingType = "default" | "waves" | "corners" | "border" | "points" | "square" | "gradient" | "rectangle" | "circles" | "square-rotate" | "scale"
-export default defineComponent({
-	name: "TuLoading",
-	props: {
-		position: { type: String, default: null },
-		text: { type: String, default: null },
-		type: { type: String, default: "default" },
-		color: { type: String, default: null },
-		background: { type: String, default: null },
-		opacity: { type: String, default: null },
-		percent: { type: String, default: null },
-		progress: { type: Number, default: null },
-		fitAnimation: { type: Boolean, default: false },
-		scale: { type: String, default: null },
-		target: {},
-		isVisible: { type: Boolean, default: true }
-	},
-	setup(props, context) {
-		const instance = getCurrentInstance();
+type LoadingType = "default" | "waves" | "corners" | "border" | "points" | "square" | "gradient" | "rectangle" | "circles" | "square-rotate" | "scale";
 
-		watch(
-			() => props.isVisible,
-			() => {
-				if (instance?.vnode.el) {
-					setColor("color", props.color, instance.vnode.el);
-					setColor("background", props.background, instance.vnode.el);
-					if (props.opacity)
-						setVar("opacity", props.opacity, instance.vnode.el);
-				}
-			}
-		);
-	}
+interface Props {
+	position?: string | null;
+	text?: string | null;
+	type?: string;
+	color?: string | null;
+	background?: string | null;
+	opacity?: string | null;
+	percent?: string | null;
+	progress?: number | null;
+	fitAnimation?: boolean;
+	scale?: string | null;
+	target?: unknown;
+	isVisible?: boolean;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	position: null,
+	text: null,
+	type: "default",
+	color: null,
+	background: null,
+	opacity: null,
+	percent: null,
+	progress: null,
+	fitAnimation: false,
+	scale: null,
+	isVisible: true
 });
+
+const instance = getCurrentInstance();
+
+watch(
+	() => props.isVisible,
+	() => {
+		if (instance?.vnode.el) {
+			if (props.color) setColor("color", props.color, instance.vnode.el);
+			if (props.background) setColor("background", props.background, instance.vnode.el);
+			if (props.opacity)
+				setVar("opacity", props.opacity, instance.vnode.el);
+		}
+	}
+);
 </script>
 
 <style lang="scss" scoped>

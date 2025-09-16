@@ -949,7 +949,7 @@
 				<h4>Calendar heatmap Component:</h4>
 				<hr />
 				<div style="width: 90%">
-					<calendar-heatmap :values="calendarData" :end-date="new Date('2021-08-01')" :vertical="false"
+					<calendar-heatmap :values="calendarData" :end-date="new Date('2021-08-01')" :start-date="new Date('2021-05-01')" :vertical="false" max
 						no-data-text="No Contributions" :locale="{
 							months: ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'],
 							days: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],

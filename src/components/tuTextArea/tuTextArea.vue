@@ -3,14 +3,14 @@
 		`tu-textarea-${color}`,
 		{
 			'textarea-danger': counter
-				? localValue && localValue.length > counter
+				? localValue && (localValue as string).length > Number(counter)
 				: false,
 			focusx: isFocus
 		}
 	]" class="tu-component tu-con-textarea" :style="{
 	'--tu-color': color ? getColor(color) : '',
-	height: height,
-	width: width
+	height: height || undefined,
+	width: width || undefined
 }" ref="parent">
 		<div v-if="label" ref="labelElem" class="tu-textarea-label">
 			{{ label }}
@@ -20,158 +20,120 @@
 			:style="{
 				'min-width': getMinWidth,
 				'min-height': getMinHeight,
-				...maxSize
+				...(maxSize as Record<string, string | null>)
 			}">
 		</textarea>
 
 		<div v-if="counter" class="count tu-textarea--count">
-			{{ localValue ? localValue.length : 0 }} / {{ counter }}
+			{{ localValue ? (localValue as string).length : 0 }} / {{ counter }}
 		</div>
 	</div>
 </template>
 
-<script lang="ts">
-import { getApplyColor } from "@/utils";
-import { computed, defineComponent, onMounted, ref, watch } from "vue";
-import tuComponent from "../tuComponent";
+<script setup lang="ts">
+import { computed, onMounted, ref, watch, inject } from "vue";
 
-export default defineComponent({
-	name: "TuTextarea",
-	extends: tuComponent,
-	props: {
-		maxSize: {
-			type: Object,
-			default: () => {
-				return {
-					"max-width": null,
-					"max-height": null
-				};
-			}
-		},
-		minWidth: {
-			type: String,
-			default: "200px"
-		},
-		minHeight: {
-			type: String,
-			default: "75px"
-		},
-		minSizeToParent: {
-			type: Boolean,
-			default: true
-		},
-		modelValue: {
-			type: [String, Object],
-			default: ""
-		},
-		label: {
-			default: null,
-			type: String
-		},
-		color: {
-			default: "primary",
-			type: String
-		},
-		counter: {
-			default: null,
-			type: [Number, String]
-		},
-		counterDanger: {
-			default: false,
-			type: Boolean
-		},
-		height: {
-			default: null,
-			type: String
-		},
-		width: {
-			default: null,
-			type: String
-		}
-	},
-	setup(props, context) {
-		const isFocus = ref(false);
-		const textarea = ref<HTMLTextAreaElement>();
-		const localValue = ref(props.modelValue);
-		const labelElem = ref<HTMLDivElement>();
-		const parent = ref<HTMLDivElement>();
-		const styleComputed = computed(() => {
-			const style: any = {};
+interface Props {
+	maxSize?: {
+		"max-width"?: string | null;
+		"max-height"?: string | null;
+	};
+	minWidth?: string;
+	minHeight?: string;
+	minSizeToParent?: boolean;
+	modelValue?: string | object;
+	label?: string | null;
+	color?: string;
+	counter?: number | string | null;
+	counterDanger?: boolean;
+	height?: string | null;
+	width?: string | null;
+}
 
-			style.border = `1px solid ${isFocus.value
-				? getApplyColor(props.color, 1)
-				: "rgba(0, 0, 0,.08)"
-				}`;
-			style.height = props.height;
-			style.width = props.width;
+const props = withDefaults(defineProps<Props>(), {
+	maxSize: () => ({
+		"max-width": null,
+		"max-height": null
+	}),
+	minWidth: "200px",
+	minHeight: "75px",
+	minSizeToParent: true,
+	modelValue: "",
+	label: null,
+	color: "primary",
+	counter: null,
+	counterDanger: false,
+	height: null,
+	width: null
+});
 
-			return style;
-		});
+const emit = defineEmits<{
+	"update:modelValue": [value: string];
+	"update:counterDanger": [value: boolean];
+	"focus": [];
+	"blur": [];
+}>();
 
-		const parentWidth = ref(0);
-		const parentHeight = ref(0);
+// Inject tuComponent functionality
+const getColor = inject("getColor", (color: string) => color);
 
-		function focus() {
-			isFocus.value = true;
-			context.emit("focus");
-		}
+const isFocus = ref(false);
+const textarea = ref<HTMLTextAreaElement>();
+const localValue = ref(props.modelValue);
+const labelElem = ref<HTMLDivElement>();
+const parent = ref<HTMLDivElement>();
 
-		function blur() {
-			isFocus.value = false;
-			context.emit("blur");
-		}
+const parentWidth = ref(0);
+const parentHeight = ref(0);
 
-		onMounted(() => {
-			if (parent.value) {
-				parentWidth.value = parent.value.clientWidth;
-				parentHeight.value = parent.value.clientHeight;
-			}
-		});
+function focus() {
+	isFocus.value = true;
+	emit("focus");
+}
 
-		const getMinWidth = computed(() => {
-			if (labelElem.value) return `${labelElem.value.clientWidth}px`;
-			else if (props.minSizeToParent) return `${parentWidth.value}px`;
-			else return props.minWidth;
-		});
+function blur() {
+	isFocus.value = false;
+	emit("blur");
+}
 
-		const getMinHeight = computed(() => {
-			if (props.minSizeToParent) return `${parentHeight.value}px`;
-			else return props.minHeight;
-		});
-
-		const listeners = computed(() => {
-			return {
-				...context.attrs,
-				input: (evt) => {
-					localValue.value = evt.target.value;
-					context.emit("update:modelValue", evt.target.value);
-				},
-				focus: () => {
-					focus();
-				},
-				blur: () => {
-					blur();
-				}
-			};
-		});
-
-		watch(localValue, () => {
-			if (localValue.value.length > props.counter)
-				context.emit("update:counterDanger", true);
-			else context.emit("update:counterDanger", false);
-		});
-
-		return {
-			isFocus,
-			listeners,
-			styleComputed,
-			localValue,
-			labelElem,
-			getMinWidth,
-			getMinHeight,
-			parent
-		};
+onMounted(() => {
+	if (parent.value) {
+		parentWidth.value = parent.value.clientWidth;
+		parentHeight.value = parent.value.clientHeight;
 	}
+});
+
+const getMinWidth = computed(() => {
+	if (labelElem.value) return `${labelElem.value.clientWidth}px`;
+	else if (props.minSizeToParent) return `${parentWidth.value}px`;
+	else return props.minWidth;
+});
+
+const getMinHeight = computed(() => {
+	if (props.minSizeToParent) return `${parentHeight.value}px`;
+	else return props.minHeight;
+});
+
+const listeners = computed(() => {
+	return {
+		input: (evt: Event) => {
+			const target = evt.target as HTMLTextAreaElement;
+			localValue.value = target.value;
+			emit("update:modelValue", target.value);
+		},
+		focus: () => {
+			focus();
+		},
+		blur: () => {
+			blur();
+		}
+	};
+});
+
+watch(localValue, () => {
+	if (props.counter && localValue.value && (localValue.value as string).length > Number(props.counter))
+		emit("update:counterDanger", true);
+	else emit("update:counterDanger", false);
 });
 </script>
 

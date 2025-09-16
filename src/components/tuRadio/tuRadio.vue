@@ -27,46 +27,63 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent } from "vue";
-import tuComponent from "../tuComponent";
+<script setup lang="ts">
+import { computed, inject, ref, onMounted } from "vue";
+import { Router } from "vue-router";
+import { getColor } from "../../utils";
 
 class RadioUid {
 	public static uid = 0;
 }
 
-export default defineComponent({
-	name: "TuRadio",
-	extends: tuComponent,
-	props: {
-		modelValue: {
-			type: [Object, String, Number]
-		},
-		val: {
-			type: [Object, String, Number]
-		},
-		name: { type: String, default: null },
-		disabled: { type: Boolean, default: false },
-		loading: { type: Boolean, default: false },
-		labelBefore: { type: Boolean, default: false }
-	},
-	emits: ["update:modelValue"],
-	setup(props, context) {
-		const onInput = function () {
-			context.emit("update:modelValue", props.val);
-		};
+interface Props {
+	modelValue?: object | string | number;
+	val?: object | string | number;
+	name?: string | null;
+	disabled?: boolean;
+	loading?: boolean;
+	labelBefore?: boolean;
+	// tuComponent props
+	color?: string;
+	active?: boolean;
+	colorSecondary?: string;
+	textColor?: string;
+}
 
-		const isChecked = computed(() => {
-			return props.modelValue === props.val;
-		});
-
-		return {
-			isChecked,
-			uid: ++RadioUid.uid,
-			onInput
-		};
-	}
+const props = withDefaults(defineProps<Props>(), {
+	name: null,
+	disabled: false,
+	loading: false,
+	labelBefore: false,
+	color: "primary",
+	active: false,
+	colorSecondary: "rgb(130, 207, 23)",
+	textColor: "#fff"
 });
+
+const emit = defineEmits<{
+	"update:modelValue": [value: object | string | number | undefined];
+}>();
+
+// tuComponent functionality
+inject<Router | null>("appRouter", null);
+inject<string | null>("iconPackGlobal", null);
+
+const getColorSecondary = ref<string>("");
+
+onMounted(() => {
+	getColorSecondary.value = getColor(props.colorSecondary);
+});
+
+const onInput = function () {
+	emit("update:modelValue", props.val);
+};
+
+const isChecked = computed(() => {
+	return props.modelValue === props.val;
+});
+
+const uid = ++RadioUid.uid;
 </script>
 
 <style lang="scss" scoped>

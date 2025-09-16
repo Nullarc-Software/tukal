@@ -17,30 +17,46 @@
 		</div>
 	</div>
 </template>
-<script lang="ts">
-import { defineComponent } from 'vue';
-import tuComponent from '../tuComponent';
+<script setup lang="ts">
+import { inject, ref, onMounted } from "vue";
+import { Router } from "vue-router";
+import { getColor, getColorAsRgb } from "../../utils";
 
+interface Props {
+	flat?: boolean;
+	name?: string;
+	value?: string;
+	color?: string;
+	active?: boolean;
+	colorSecondary?: string;
+	textColor?: string;
+}
 
-export default defineComponent({
-	name: "TuTag",
-	extends: tuComponent,
-	props: {
-		flat: Boolean,
-		name: String,
-		value: String,
-	},
-	emits: ["onTagClicked"],
-	setup(props, context) {
-		function onTagClicked() {
-			context.emit("onTagClicked");
-		}
-		return {
-			onTagClicked
-		}
-	}
+const props = withDefaults(defineProps<Props>(), {
+	color: "primary",
+	active: false,
+	colorSecondary: "rgb(130, 207, 23)",
+	textColor: "#fff"
 });
 
+const emit = defineEmits<{
+	onTagClicked: [];
+}>();
+
+// tuComponent functionality
+const componentColor = ref("");
+inject<Router | null>("appRouter", null);
+inject<string | null>("iconPackGlobal", null);
+
+const getColorSecondary = ref<string>("");
+
+onMounted(() => {
+	getColorSecondary.value = getColor(props.colorSecondary || "rgb(130, 207, 23)");
+});
+
+function onTagClicked() {
+	emit("onTagClicked");
+}
 </script>
 
 <style lang="scss">

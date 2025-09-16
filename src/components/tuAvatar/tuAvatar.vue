@@ -51,113 +51,115 @@
 	</div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { setColor } from "@/utils";
+import { getColor } from "../../utils";
 import {
 	computed,
-	defineComponent,
 	getCurrentInstance,
 	inject,
 	onMounted,
 	Ref,
 	watch,
-	ref
+	ref,
+	ComponentInternalInstance
 } from "vue";
 
-import tuComponent from "../tuComponent";
+interface Props {
+	badgePosition?: string | null;
+	pointer?: boolean;
+	circle?: boolean;
+	square?: boolean;
+	history?: boolean;
+	loading?: boolean;
+	historyGradient?: boolean;
+	writing?: boolean;
+	badge?: boolean;
+	badgeColor?: string;
+	size?: string;
+	text?: string;
+	color?: string;
+}
 
-export default defineComponent({
-	name: "TuAvatar",
-	extends: tuComponent,
-	props: {
-		badgePosition: { default: null },
-		pointer: { default: false, type: Boolean },
-		circle: { default: false, type: Boolean },
-		square: { default: false, type: Boolean },
-		history: { default: false, type: Boolean },
-		loading: { default: false, type: Boolean },
-		historyGradient: { default: false, type: Boolean },
-		writing: { default: false, type: Boolean },
-		badge: { default: false, type: Boolean },
-		badgeColor: { default: "", type: String },
-		size: { default: "", type: String },
-		text: { default: "", type: String }
-	},
-	setup(props, context) {
-		const textLength = ref(0);
-		const countPlus = ref(0);
-		const index = ref(0);
-		const additionalClasses = ref<any[]>([]);
-		const instance = getCurrentInstance();
+const props = withDefaults(defineProps<Props>(), {
+	badgePosition: null,
+	pointer: false,
+	circle: false,
+	square: false,
+	history: false,
+	loading: false,
+	historyGradient: false,
+	writing: false,
+	badge: false,
+	badgeColor: "",
+	size: "",
+	text: "",
+	color: "primary"
+});
 
-		const avatarContent = ref<HTMLDivElement>();
-		const addAvatar = inject<Function>("addAvatar", null);
-		const avatarsLength = inject<Ref<Number>>("avatarsLength", null);
-		const parentMax = inject<Ref<Number>>("parentMax", null);
+const textLength = ref(0);
+const index = ref(0);
+const additionalClasses = ref<string[]>([]);
+const instance = getCurrentInstance();
 
-		const getParent = function () {
-			if (instance?.parent)
-				return instance.parent.type.name === "TuAvatarGroup";
+const avatarContent = ref<HTMLDivElement>();
+const addAvatar = inject<((instance: ComponentInternalInstance) => void) | null>("addAvatar", null);
+const avatarsLength = inject<Ref<number> | null>("avatarsLength", null);
+const parentMax = inject<Ref<number> | null>("parentMax", null);
 
-			return false;
-		};
+// Computed for color detection
+const isColor = computed(() => {
+	return props.color && props.color !== "primary";
+});
 
-		const getText = computed(() => {
-			if (props.text.length <= 5) return props.text;
+const getParent = function () {
+	if (instance?.parent)
+		return instance.parent.type.name === "TuAvatarGroup";
 
-			const exp = /\s/g;
-			let letras = "";
-			if (exp.test(props.text)) {
-				props.text.split(exp).forEach((word) => {
-					letras += word[0].toUpperCase();
-				});
-			}
-			else letras = props.text[0].toUpperCase();
+	return false;
+};
 
-			return letras.length > 5 ? letras[0] : letras;
+const getText = computed(() => {
+	if (props.text.length <= 5) return props.text;
+
+	const exp = /\s/g;
+	let letras = "";
+	if (exp.test(props.text)) {
+		props.text.split(exp).forEach((word) => {
+			letras += word[0].toUpperCase();
 		});
+	}
+	else letras = props.text[0].toUpperCase();
 
-		const isHidden = computed(() => {
-			return (
-				getParent() &&
-				parentMax?.value &&
-				index.value > Number(parentMax?.value) - 1
-			);
-		});
+	return letras.length > 5 ? letras[0] : letras;
+});
 
-		const isLatest = computed(() => {
-			return getParent() && index.value === Number(parentMax?.value) - 1;
-		});
+const isHidden = computed(() => {
+	return (
+		getParent() &&
+		parentMax?.value &&
+		index.value > Number(parentMax?.value) - 1
+	);
+});
 
-		watch(
-			() => props.badgeColor,
-			() => {
-				setColor("badge", props.badgeColor, avatarContent.value);
-				additionalClasses.value.push("tu-change-getColor-badge");
-			}
-		);
+const isLatest = computed(() => {
+	return getParent() && index.value === Number(parentMax?.value) - 1;
+});
 
-		onMounted(() => {
-			setColor("badge", props.badgeColor, avatarContent.value);
-			additionalClasses.value.push("tu-change-getColor-badge");
-			if (getParent()) {
-				index.value = avatarsLength?.value as number;
-				addAvatar?.call(null, instance);
-			}
-		});
+watch(
+	() => props.badgeColor,
+	() => {
+		setColor("badge", props.badgeColor, avatarContent.value);
+		additionalClasses.value.push("tu-change-getColor-badge");
+	}
+);
 
-		return {
-			textLength,
-			countPlus,
-			index,
-			additionalClasses,
-			avatarContent,
-			avatarsLength,
-			parentMax,
-			isHidden,
-			isLatest,
-			getText
-		};
+onMounted(() => {
+	setColor("badge", props.badgeColor, avatarContent.value);
+	additionalClasses.value.push("tu-change-getColor-badge");
+	if (getParent() && instance) {
+		index.value = avatarsLength?.value as number;
+		addAvatar?.(instance);
 	}
 });
 </script>

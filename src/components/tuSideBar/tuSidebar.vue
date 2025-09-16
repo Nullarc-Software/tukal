@@ -33,141 +33,150 @@
 		</div>
 	</div>
 </template>
-<script lang="ts">
+<script lang="ts" setup>
 import { setColor } from "@/utils";
-import { computed, defineComponent, onMounted, ref, watch } from "vue";
-import tuComponent from "../tuComponent";
+import { computed, inject, onMounted, provide, ref, watch } from "vue";
 
-export default defineComponent({
-	name: "TuSidebar",
-	extends: tuComponent,
-	props: {
-		value: {},
-		reduce: { default: false, type: Boolean },
-		hoverExpand: { default: false, type: Boolean },
-		open: { default: false, type: Boolean },
-		notLineActive: { default: false, type: Boolean },
-		square: { default: false, type: Boolean },
-		textWhite: { default: false, type: Boolean },
-		notShadow: { default: false, type: Boolean },
-		relative: { default: false, type: Boolean },
-		absolute: { default: false, type: Boolean },
-		right: { default: false, type: Boolean },
-		background: { default: "background", type: String },
-		expanded: { default: false, type: Boolean },
-		fixedExpandWidth: { default: null, type: Number }
-	},
-	emits: ["update:open", "update:value", "update:expanded"],
-	provide() {
-		return {
-			parentValue: computed(() => this.value),
-			handleClickItem: this.handleClickItem,
-			reduced: computed(() => this.reduceInternal)
-		};
-	},
-	setup(props, context) {
-		const staticWidth = ref(260);
-		const forceExpand = ref(false);
-		const reduceInternal = ref(false);
+interface Props {
+	value?: string | number | null;
+	reduce?: boolean;
+	hoverExpand?: boolean;
+	open?: boolean;
+	notLineActive?: boolean;
+	square?: boolean;
+	textWhite?: boolean;
+	notShadow?: boolean;
+	relative?: boolean;
+	absolute?: boolean;
+	right?: boolean;
+	background?: string;
+	expanded?: boolean;
+	fixedExpandWidth?: number | null;
+	color?: string;
+}
 
-		const sidebar = ref<HTMLDivElement>();
+const props = withDefaults(defineProps<Props>(), {
+	value: undefined,
+	reduce: false,
+	hoverExpand: false,
+	open: false,
+	notLineActive: false,
+	square: false,
+	textWhite: false,
+	notShadow: false,
+	relative: false,
+	absolute: false,
+	right: false,
+	background: "background",
+	expanded: false,
+	fixedExpandWidth: null,
+});
 
-		const clickCloseSidebar = function (evt) {
-			if (!(evt.target as any).closest(".tu-sidebar-content"))
-				context.emit("update:open", false);
-		};
+const emit = defineEmits<{
+	"update:open": [value: boolean];
+	"update:value": [value: string | number | null];
+	"update:expanded": [value: boolean];
+}>();
 
-		const handleClickItem = function (id: string) {
-			context.emit("update:value", id);
-		};
+// tuComponent functionality
+const getColor = inject<(color: string) => string>("getColor", () => "");
+const isColor = inject<boolean>("isColor", false);
 
-		const getValue = computed(() => {
-			return props.value;
-		});
+const staticWidth = ref(260);
+const reduceInternal = ref(false);
 
-		const listeners = computed(() => {
-			return {
-				mouseenter: function () {
-					if (props.hoverExpand) {
-						reduceInternal.value = false;
-						context.emit("update:expanded", true);
-					}
-				},
-				mouseleave: function () {
-					if (props.hoverExpand) {
-						reduceInternal.value = true;
-						context.emit("update:expanded", false);
-					}
-				}
-			};
-		});
+const sidebar = ref<HTMLDivElement>();
 
-		watch(
-			() => props.open,
-			(val: boolean) => {
-				if (val) {
-					setTimeout(() => {
-						window.addEventListener("click", clickCloseSidebar);
-					}, 200);
-				}
-				else window.removeEventListener("click", clickCloseSidebar);
+const clickCloseSidebar = function (evt: Event) {
+	const target = evt.target as Element;
+	if (!target.closest(".tu-sidebar-content"))
+		emit("update:open", false);
+};
+
+const handleClickItem = function (id: string) {
+	emit("update:value", id);
+};
+
+// Provide values for child components
+provide("parentValue", computed(() => props.value));
+provide("handleClickItem", handleClickItem);
+provide("reduced", computed(() => reduceInternal.value));
+
+const listeners = computed(() => {
+	return {
+		mouseenter: function () {
+			if (props.hoverExpand) {
+				reduceInternal.value = false;
+				emit("update:expanded", true);
 			}
-		);
-
-		watch(
-			() => props.reduce,
-			(val: boolean) => {
-				reduceInternal.value = val;
-				const el: any = sidebar.value;
-				if (val) el.style.width = "50px";
-				else el.style.width = `${staticWidth.value}px`;
-
-				context.emit("update:expanded", !val);
+		},
+		mouseleave: function () {
+			if (props.hoverExpand) {
+				reduceInternal.value = true;
+				emit("update:expanded", false);
 			}
-		);
+		}
+	};
+});
 
-		watch(reduceInternal, (val: boolean) => {
-			const el: any = sidebar.value;
+watch(
+	() => props.open,
+	(val: boolean) => {
+		if (val) {
+			setTimeout(() => {
+				window.addEventListener("click", clickCloseSidebar);
+			}, 200);
+		}
+		else window.removeEventListener("click", clickCloseSidebar);
+	}
+);
+
+watch(
+	() => props.reduce,
+	(val: boolean) => {
+		reduceInternal.value = val;
+		const el = sidebar.value;
+		if (el) {
 			if (val) el.style.width = "50px";
 			else el.style.width = `${staticWidth.value}px`;
-		});
+		}
 
-		watch(
-			() => props.background,
-			() => {
-				setColor("background", props.background, sidebar.value, true);
-			}
-		);
-
-		onMounted(() => {
-			if (!props.fixedExpandWidth)
-				staticWidth.value = (sidebar.value?.offsetWidth as number) + 15;
-			else {
-				staticWidth.value = props.fixedExpandWidth;
-				if (sidebar.value)
-					sidebar.value.style.width = `${staticWidth.value}px`;
-			}
-
-			reduceInternal.value = props.reduce;
-
-			if (reduceInternal.value) context.emit("update:expanded", false);
-
-			if (props.background !== "background")
-				setColor("background", props.background, sidebar.value, true);
-
-			if (props.textWhite) setColor("text", "#fff", sidebar.value, true);
-		});
-
-		return {
-			staticWidth,
-			forceExpand,
-			reduceInternal,
-			handleClickItem,
-			clickCloseSidebar,
-			listeners,
-			sidebar
-		};
+		emit("update:expanded", !val);
 	}
+);
+
+watch(reduceInternal, (val: boolean) => {
+	const el = sidebar.value;
+	if (el) {
+		if (val) el.style.width = "50px";
+		else el.style.width = `${staticWidth.value}px`;
+	}
+});
+
+watch(
+	() => props.background,
+	() => {
+		setColor("background", props.background, sidebar.value, true);
+	}
+);
+
+onMounted(() => {
+	if (!props.fixedExpandWidth)
+		staticWidth.value = (sidebar.value?.offsetWidth as number) + 15;
+	else {
+		staticWidth.value = props.fixedExpandWidth;
+		if (sidebar.value)
+			sidebar.value.style.width = `${staticWidth.value}px`;
+	}
+
+	reduceInternal.value = props.reduce;
+
+	if (reduceInternal.value) emit("update:expanded", false);
+
+	if (props.background !== "background")
+		setColor("background", props.background, sidebar.value, true);
+
+	if (props.textWhite) setColor("text", "#fff", sidebar.value, true);
 });
 </script>
 

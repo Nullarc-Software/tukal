@@ -155,166 +155,114 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { ref, onMounted, watch, Ref, defineComponent } from "vue";
+<script setup lang="ts">
+import { ref, onMounted, watch } from "vue";
 import StarterKit from "@tiptap/starter-kit";
 import Underline from "@tiptap/extension-underline";
 import TextAlign from "@tiptap/extension-text-align";
 import { Editor, EditorContent } from "@tiptap/vue-3";
 import { tuButtonGroup } from "../tuButton";
-import tuComponent from "../tuComponent";
 
-export default defineComponent({
-	components: {
-		EditorContent,
-		tuButtonGroup
-	},
-	name: "TuRichTextEditor",
-	extends: tuComponent,
-	props: {
-		standard: {
-			type: Boolean,
-			default: false
-		},
-		bold: {
-			type: Boolean,
-			default: false
-		},
-		italics: {
-			type: Boolean,
-			default: false
-		},
-		underline: {
-			type: Boolean,
-			default: false
-		},
-		strikeThrough: {
-			type: Boolean,
-			default: false
-		},
-		code: {
-			type: Boolean,
-			default: false
-		},
-		heading1: {
-			type: Boolean,
-			default: false
-		},
-		heading2: {
-			type: Boolean,
-			default: false
-		},
-		heading3: {
-			type: Boolean,
-			default: false
-		},
-		heading4: {
-			type: Boolean,
-			default: false
-		},
-		heading5: {
-			type: Boolean,
-			default: false
-		},
-		heading6: {
-			type: Boolean,
-			default: false
-		},
-		unorderedList: {
-			type: Boolean,
-			default: false
-		},
-		orderedList: {
-			type: Boolean,
-			default: false
-		},
-		codeBlock: {
-			type: Boolean,
-			default: false
-		},
-		textAlignment: {
-			type: Boolean,
-			default: false
-		},
-		blockQuote: {
-			type: Boolean,
-			default: false
-		},
-		horizontalRule: {
-			type: Boolean,
-			default: false
-		},
-		undo: {
-			type: Boolean,
-			default: false
-		},
-		redo: {
-			type: Boolean,
-			default: false
-		},
-		width: {
-			type: String,
-			default: "unset"
-		},
-		height: {
-			type: String,
-			default: "unset"
-		},
-		modelValue: {
-			type: String,
-			default: ""
+interface Props {
+	standard?: boolean;
+	bold?: boolean;
+	italics?: boolean;
+	underline?: boolean;
+	strikeThrough?: boolean;
+	code?: boolean;
+	heading1?: boolean;
+	heading2?: boolean;
+	heading3?: boolean;
+	heading4?: boolean;
+	heading5?: boolean;
+	heading6?: boolean;
+	unorderedList?: boolean;
+	orderedList?: boolean;
+	codeBlock?: boolean;
+	textAlignment?: boolean;
+	blockQuote?: boolean;
+	horizontalRule?: boolean;
+	undo?: boolean;
+	redo?: boolean;
+	width?: string;
+	height?: string;
+	modelValue?: string;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	standard: false,
+	bold: false,
+	italics: false,
+	underline: false,
+	strikeThrough: false,
+	code: false,
+	heading1: false,
+	heading2: false,
+	heading3: false,
+	heading4: false,
+	heading5: false,
+	heading6: false,
+	unorderedList: false,
+	orderedList: false,
+	codeBlock: false,
+	textAlignment: false,
+	blockQuote: false,
+	horizontalRule: false,
+	undo: false,
+	redo: false,
+	width: "unset",
+	height: "unset",
+	modelValue: ""
+});
+
+const emit = defineEmits<{
+	"update:modelValue": [value: string];
+}>();
+
+const editor = ref<Editor>();
+const content = ref(null);
+
+onMounted(() => {
+	editor.value = new Editor({
+		extensions: [
+			StarterKit,
+			Underline,
+			TextAlign.configure({
+				types: ["heading", "paragraph"]
+			})
+		],
+		content: "",
+		onUpdate: () => {
+			// HTML
+			if (editor.value)
+				emit("update:modelValue", editor.value.getHTML());
+			// JSON
+			// this.$emit('update:modelValue', this.editor.getJSON())
 		}
-	},
+	});
 
-	emits: ["update:modelValue"],
-
-	setup(props, context) {
-		const editor: Ref<Editor> = ref(null);
-		const content = ref(null);
-		const editorComponent = ref<HTMLDivElement>();
-
-		onMounted(() => {
-			editor.value = new Editor({
-				extensions: [
-					StarterKit,
-					Underline,
-					TextAlign.configure({
-						types: ["heading", "paragraph"]
-					})
-				],
-				content: "",
-				onUpdate: () => {
-					// HTML
-					context.emit("update:modelValue", editor.value.getHTML());
-					// JSON
-					// this.$emit('update:modelValue', this.editor.getJSON())
-				}
-			});
-
-			if (editor.value.view && editor.value.view.dom) {
-				// editor.value.view.dom.style.width = props.width;
-				editor.value.view.dom.style.height = props.height;
-			}
-		});
-
-		watch(
-			() => props.modelValue,
-			(value: string) => {
-				// HTML
-				const isSame = editor.value.getHTML() === value;
-
-				// JSON
-				// const isSame = JSON.stringify(this.editor.getJSON()) === JSON.stringify(value)
-
-				if (isSame) return;
-
-				editor.value.commands.setContent(value, false);
-			}
-		);
-
-		return { editor, content, editorComponent };
+	if (editor.value.view && editor.value.view.dom) {
+		// editor.value.view.dom.style.width = props.width;
+		editor.value.view.dom.style.height = props.height;
 	}
 });
+
+watch(
+	() => props.modelValue,
+	(value: string) => {
+		if (!editor.value) return;
+		
+		// HTML
+		const isSame = editor.value.getHTML() === value;
+
+		// JSON
+		// const isSame = JSON.stringify(this.editor.getJSON()) === JSON.stringify(value)
+
+		if (isSame) return;
+
+		editor.value.commands.setContent(value, false);
+	}
+);
 </script>
 
 <style lang="scss">

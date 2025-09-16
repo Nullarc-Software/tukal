@@ -52,131 +52,81 @@
 	</Transition>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import tuIcon from "../tuIcon/tuIcon.vue";
 import _color from "../../utils/color";
 import {
 	onMounted,
 	ref,
-	Transition,
-	TransitionGroup,
-	defineComponent,
-	onBeforeUnmount
+	onBeforeUnmount,
+	inject
 } from "vue";
 
-import tuComponent from "../tuComponent";
+interface Props {
+	notifId?: number;
+	position?: string;
+	isVisible?: boolean;
+	content?: object | null;
+	title?: string | null;
+	text?: string | null;
+	color?: string;
+	border?: string | null;
+	icon?: string | null;
+	onClickClose?: (() => void) | null;
+	onClick?: (() => void) | null;
+	buttonClose?: boolean;
+	flat?: boolean;
+	onDestroy?: (() => void) | null;
+	sticky?: boolean;
+	square?: boolean;
+	width?: string | null;
+	loading?: boolean;
+	progressAuto?: boolean;
+	progress?: number;
+	duration?: number;
+	notPadding?: object | null;
+	clickClose?: boolean;
+	classNotification?: string | null;
+}
 
-export default defineComponent({
-	name: "TuNotifications",
-	extends: tuComponent,
-	props: {
-		notifId: {
-			type: Number,
-			default: 0
-		},
-		position: {
-			type: String,
-			default: "bottom-right"
-		},
-		isVisible: {
-			type: Boolean,
-			default: true
-		},
-		content: {
-			type: Object,
-			default: null
-		},
-		title: {
-			type: String,
-			default: null
-		},
-		text: {
-			type: String,
-			default: null
-		},
-		color: {
-			type: String,
-			default: "primary"
-		},
-		border: {
-			type: String,
-			default: null
-		},
-		icon: {
-			type: String,
-			default: null
-		},
-		onClickClose: {
-			type: Function,
-			default: null
-		},
-		onClick: {
-			type: Function,
-			default: null
-		},
-		buttonClose: {
-			type: Boolean,
-			default: true
-		},
-		flat: {
-			type: Boolean,
-			default: false
-		},
-		onDestroy: {
-			type: Function,
-			default: null
-		},
-		sticky: {
-			type: Boolean,
-			default: false
-		},
-		square: {
-			type: Boolean,
-			default: false
-		},
-		width: {
-			type: String,
-			default: null
-		},
-		loading: {
-			type: Boolean,
-			default: false
-		},
-		progressAuto: {
-			type: Boolean,
-			default: false
-		},
-		progress: {
-			type: Number,
-			default: 0
-		},
-		duration: {
-			type: Number,
-			default: 5000
-		},
-		notPadding: {
-			type: Object,
-			default: null
-		},
-		clickClose: {
-			type: Boolean,
-			default: false
-		},
-		classNotification: {
-			type: String,
-			default: null
-		}
-	},
-	components: {
-		tuIcon,
-		Transition,
-		TransitionGroup
-	},
-	emits: ["close"],
-	setup(props, context) {
-		const internalProgress = ref(props.progress);
-		const intervalProgress = ref<NodeJS.Timer>();
-		const notif = ref<HTMLDivElement>();
+const props = withDefaults(defineProps<Props>(), {
+	notifId: 0,
+	position: "bottom-right",
+	isVisible: true,
+	content: null,
+	title: null,
+	text: null,
+	color: "primary",
+	border: null,
+	icon: null,
+	onClickClose: null,
+	onClick: null,
+	buttonClose: true,
+	flat: false,
+	onDestroy: null,
+	sticky: false,
+	square: false,
+	width: null,
+	loading: false,
+	progressAuto: false,
+	progress: 0,
+	duration: 5000,
+	notPadding: null,
+	clickClose: false,
+	classNotification: null
+});
+
+const emit = defineEmits<{
+	close: [];
+}>();
+
+// Inject tuComponent functionality  
+const $tukal = inject("$tukal");
+const $utils = inject("$utils");
+
+const internalProgress = ref(props.progress);
+const intervalProgress = ref<ReturnType<typeof setInterval>>();
+const notif = ref<HTMLDivElement>();
 
 		const transitionClass = ref<Array<String>>([]);
 		transitionClass.value = [];
@@ -234,25 +184,12 @@ export default defineComponent({
 			}
 		});
 
-		onBeforeUnmount(() => {
-			clearInterval(intervalProgress.value);
-		});
-
-		return {
-			internalProgress,
-			intervalProgress,
-			notif,
-			close,
-			handleClickClose,
-			beforeEnter,
-			enter,
-			leave,
-			clickNoti,
-			isColor,
-			transitionClass
-		};
-	}
+onBeforeUnmount(() => {
+	clearInterval(intervalProgress.value);
 });
+
+// Create close function alias
+const close = handleClickClose;
 </script>
 
 <style lang="scss">

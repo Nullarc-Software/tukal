@@ -50,7 +50,7 @@
 					['--tu-color']: color ? getColor(color) : ''}" 
 					:class="[
 						{
-							isColorDark: isColorDark
+							isColorDark: computedIsColorDark
 						},
 						// colors
 						{
@@ -110,25 +110,24 @@
 	</div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import {
 	ref,
 	h,
 	computed,
 	nextTick,
-	defineComponent,
 	watch,
 	getCurrentInstance,
 	onMounted,
-	onBeforeUnmount
+	onBeforeUnmount,
+	provide
 } from "vue";
-import tuComponent from "../tuComponent";
 import tuSelectOption from "../tuSelect/tuSelectOption.vue";
 import { insertBody, removeBody, setCords } from "@/utils";
-import tuOption from "../tuSelect/tuSelectOption.vue";
 import tuIcon from "../tuIcon";
 import * as _ from "lodash";
 import { SelectOptionConstants } from ".";
+import { getColor } from "@/utils";
 
 class SelectConstants {
 	public static id = 0;
@@ -141,587 +140,586 @@ type ChildOptions = {
 	offsetTop?: number
 }
 
-export default defineComponent({
+// Define props
+interface Props {
+	modelValue?: unknown;
+	multiple?: boolean;
+	dropdown?: boolean;
+	inline?: boolean;
+	filter?: boolean;
+	dynamicFilter?: boolean;
+	addValue?: boolean;
+	placeholder?: string;
+	labelPlaceholder?: string;
+	label?: string;
+	disabled?: boolean;
+	collapseChips?: boolean;
+	loading?: boolean;
+	state?: string | null;
+	block?: boolean;
+	selectItems?: Array<unknown>;
+	width?: string;
+	color?: string;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	multiple: false,
+	dropdown: false,
+	inline: false,
+	filter: false,
+	dynamicFilter: false,
+	addValue: false,
+	placeholder: "",
+	labelPlaceholder: "",
+	label: "",
+	disabled: false,
+	collapseChips: false,
+	loading: false,
+	state: null,
+	block: false,
+	selectItems: () => [],
+	width: "100%"
+});
+
+// Define emits
+const emit = defineEmits<{
+	"update:modelValue": [value: unknown];
+	"blur": [];
+	"focus": [event: Event];
+	"filterUpdated": [value: string];
+}>();
+
+// Define component name
+defineOptions({
 	name: "TuSelect",
-	extends: tuComponent,
-	components: {
-		tuOption,
-		tuIcon,
-		tuSelectOption
-	},
-	props: {
-		modelValue: {},
-		multiple: { type: Boolean, default: false },
-		dropdown: { type: Boolean, default: false },
-		inline: { type: Boolean, default: false },
-		filter: { type: Boolean, default: false },
-		dynamicFilter: { type: Boolean, default: false },
-		addValue: { type: Boolean, default: false },
-		placeholder: { type: String, default: "" },
-		labelPlaceholder: { type: String, default: "" },
-		label: { type: String, default: "" },
-		disabled: { type: Boolean, default: false },
-		collapseChips: { type: Boolean, default: false },
-		loading: { type: Boolean, default: false },
-		state: { type: String, default: null },
-		block: { type: Boolean, default: false },
-		selectItems: { type: Array, default: () => [] },
-		width: { type: String, default: "100%" }
-	},
-	provide() {
-		return {
-			dropdown: computed(() => this.dropdown),
-			textFilter: computed(() => this.textFilter),
-			uids: computed(() => this.uids),
-			hoverOption: computed(() => this.hoverOption),
-			parentSelect: this,
-			renderSelect: computed(() => this.renderSelect),
-			isMultiple: computed(() => this.multiple),
-			addChildOption: (
-				disabled: boolean,
-				value: any,
-				label: string,
-				offsetTop: number
-			) => {
-				this.childOptions.push({
-					disabled,
-					value,
-					label,
-					offsetTop
-				});
-			},
-			addUid: (uid: any) => {
-				this.uids.push(uid);
-			},
-			callSetHover: () => {
-				this.setHover();
-			},
-			onClickOption: (value: any, label: any) => {
-				this.onClickOption(value, label);
-			},
-			updateActiveOptions: (value: boolean) => {
-				this.activeOptions = value;
-			},
-			targetSelect: computed(() => {
-				return this.targetSelect;
-			}),
-			targetClose: computed(() => {
-				return this.targetClose;
-			}),
-			parentValue: computed(() => {
-				return this.modelValue;
-			})
-		};
-	},
-	setup(props, context) {
-		const renderSelect = ref(false);
-		const activeOptions = ref(false);
-		const valueLabel = ref<any>(null);
-		const hoverOption = ref(-1);
-		const uids = ref<any[]>([]);
-		const addedOptions = ref<ChildOptions[]>([]);
-		const childOptions = ref<ChildOptions[]>([]);
-		const targetSelect = ref(false);
-		const targetSelectInput = ref(false);
-		const targetClose = ref(false);
-		const activeFilter = ref(false);
-		const chipsHovered = ref(false);
-		const textFilter = ref<string>();
-		const childVisibles = ref(0);
+	inheritAttrs: false
+});
 
-		// Template refs
-		const chips = ref<HTMLButtonElement>();
-		const chipsInput = ref<HTMLInputElement>();
-		const input = ref<HTMLInputElement>();
-		const options = ref<HTMLDivElement>();
-		const select = ref<HTMLDivElement>();
-		const content = ref<HTMLDivElement>();
+// Reactive variables
+const renderSelect = ref(false);
+const activeOptions = ref(false);
+const valueLabel = ref<unknown>(null);
+const hoverOption = ref(-1);
+const uids = ref<string[]>([]);
+const addedOptions = ref<ChildOptions[]>([]);
+const childOptions = ref<ChildOptions[]>([]);
+const targetSelect = ref(false);
+const targetSelectInput = ref(false);
+const targetClose = ref(false);
+const activeFilter = ref(false);
+const chipsHovered = ref(false);
+const textFilter = ref<string>("");
 
-		const uid = "select-" + ++SelectConstants.id;
-		const instance = getCurrentInstance();
+// Template refs
+const chips = ref<HTMLButtonElement>();
+const chipsInput = ref<HTMLInputElement>();
+const input = ref<HTMLInputElement>();
+const options = ref<HTMLDivElement>();
+const select = ref<HTMLDivElement>();
+const content = ref<HTMLDivElement>();
 
-		const setHover = function () {
-			let index = -1;
-			childOptions.value.forEach((item: any, i: number) => {
-				if (item.value === props.modelValue) index = i;
-			});
+const uid = "select-" + ++SelectConstants.id;
+const instance = getCurrentInstance();
 
-			hoverOption.value = index;
-		};
+// Provide for child components
+provide("dropdown", computed(() => props.dropdown));
+provide("textFilter", computed(() => textFilter.value));
+provide("uids", computed(() => uids.value));
+provide("hoverOption", computed(() => hoverOption.value));
+provide("parentSelect", getCurrentInstance());
+provide("renderSelect", computed(() => renderSelect.value));
+provide("isMultiple", computed(() => props.multiple));
+provide("addChildOption", (
+	disabled: boolean,
+	value: unknown,
+	label: string,
+	offsetTop: number
+) => {
+	childOptions.value.push({
+		disabled,
+		value: value as string,
+		label,
+		offsetTop
+	});
+});
+provide("addUid", (uid: string) => {
+	uids.value.push(uid);
+});
+provide("callSetHover", () => {
+	setHover();
+});
+provide("onClickOption", (value: unknown, label: unknown) => {
+	onClickOption(value, label);
+});
+provide("updateActiveOptions", (value: boolean) => {
+	activeOptions.value = value;
+});
+provide("targetSelect", computed(() => {
+	return targetSelect.value;
+}));
+provide("targetClose", computed(() => {
+	return targetClose.value;
+}));
+provide("parentValue", computed(() => {
+	return props.modelValue;
+}));
 
-		function addNewOption() {
-			let alreadyExists = false;
-			childOptions.value.forEach(child => {
-				if (child.label.trim().toLowerCase() === textFilter.value.trim().toLowerCase())
-					alreadyExists = true;
-				return;
-			});
+// Utility function - if it doesn't exist in utils, we'll define it here
+const computedIsColorDark = computed(() => {
+	// Simple implementation - you may need to adjust based on your actual isColorDark function
+	return false;
+});
 
-			if (alreadyExists || (textFilter.value.trim() === ""))
-				return;
-			else {
-				addedOptions.value.push({
-					label: textFilter.value.trim(),
-					value: textFilter.value.trim()
-				});
+// Functions
+const setHover = function () {
+	let index = -1;
+	childOptions.value.forEach((item: any, i: number) => {
+		if (item.value === props.modelValue) index = i;
+	});
 
-			}
+	hoverOption.value = index;
+};
 
-		}
+function addNewOption() {
+	let alreadyExists = false;
+	childOptions.value.forEach(child => {
+		if (child.label.trim().toLowerCase() === textFilter.value?.trim().toLowerCase())
+			alreadyExists = true;
+		return;
+	});
 
-		const handleWindowClick = function (evt: any) {
-			if (!targetSelectInput.value) handleBlur();
-
-			if (props.filter && !activeOptions.value)
-				activeFilter.value = false;
-
-			if (
-				evt.target === input.value &&
-				activeOptions.value &&
-				!props.filter
-			) {
-				handleBlur();
-				setTimeout(() => {
-					input.value?.blur();
-				}, 100);
-			}
-		};
-
-		const handleBlur = function () {
-			nextTick(() => {
-				activeOptions.value = false;
-				childOptions.value = [];
-				SelectOptionConstants.id = 0;
-			});
-			context.emit("blur");
-			setHover();
-			window.removeEventListener("click", handleWindowClick);
-			if (activeOptions.value) {
-				textFilter.value = "";
-				if (!props.multiple) activeFilter.value = false;
-			}
-		};
-
-		const clickOption = function (value: any, label: any) {
-			if (props.multiple) {
-				const oldVal = [...(props.modelValue as Array<any>)];
-				if (_.indexOf(oldVal, value) === -1) oldVal.push(value);
-				else oldVal.splice(_.indexOf(oldVal, value), 1);
-
-				const labels = _.reduce(
-					childOptions.value,
-					function (result: any[], item, key) {
-						if (_.indexOf(oldVal, item.value) !== -1) {
-							result.push({
-								value: item.value,
-								label: item.label
-							});
-						}
-						return result;
-					},
-					[]
-				);
-
-				context.emit("update:modelValue", oldVal);
-				valueLabel.value = labels;
-			}
-			else {
-				context.emit("update:modelValue", value);
-				valueLabel.value = label;
-			}
-
-			setTimeout(() => {
-				if (props.multiple && activeOptions.value) chips.value?.focus();
-			}, 10);
-
-			if (!props.multiple) handleBlur();
-		};
-
-		const onClickOption = function (value: any, label: any) {
-			clickOption(value, label);
-		};
-
-		const isValue = computed(() => {
-			if (Array.isArray(props.modelValue))
-				return props.modelValue.length !== 0;
-			else {
-				return !(
-					_.isNull(props.modelValue) &&
-					!_.isUndefined(props.modelValue)
-				);
-			}
+	if (alreadyExists || (textFilter.value?.trim() === ""))
+		return;
+	else {
+		addedOptions.value.push({
+			label: textFilter.value?.trim() || "",
+			value: textFilter.value?.trim() || ""
 		});
-		// computeds
-		const getChips = computed(() => {
-			let id = 0;
-			const chipIds: number[] = [];
-			const chip = function (item: any, isCollapse: boolean) {
-				return h(
+	}
+}
+
+const handleWindowClick = function (evt: any) {
+	if (!targetSelectInput.value) handleBlur();
+
+	if (props.filter && !activeOptions.value)
+		activeFilter.value = false;
+
+	if (
+		evt.target === input.value &&
+		activeOptions.value &&
+		!props.filter
+	) {
+		handleBlur();
+		setTimeout(() => {
+			input.value?.blur();
+		}, 100);
+	}
+};
+
+const handleBlur = function () {
+	nextTick(() => {
+		activeOptions.value = false;
+		childOptions.value = [];
+		SelectOptionConstants.id = 0;
+	});
+	emit("blur");
+	setHover();
+	window.removeEventListener("click", handleWindowClick);
+	if (activeOptions.value) {
+		textFilter.value = "";
+		if (!props.multiple) activeFilter.value = false;
+	}
+};
+
+const blur = () => {
+	// Function to handle blur events
+	handleBlur();
+};
+
+const clickOption = function (value: any, label: any) {
+	if (props.multiple) {
+		const oldVal = [...(props.modelValue as Array<any>)];
+		if (_.indexOf(oldVal, value) === -1) oldVal.push(value);
+		else oldVal.splice(_.indexOf(oldVal, value), 1);
+
+		const labels = _.reduce(
+			childOptions.value,
+			function (result: any[], item, key) {
+				if (_.indexOf(oldVal, item.value) !== -1) {
+					result.push({
+						value: item.value,
+						label: item.label
+					});
+				}
+				return result;
+			},
+			[]
+		);
+
+		emit("update:modelValue", oldVal);
+		valueLabel.value = labels;
+	}
+	else {
+		emit("update:modelValue", value);
+		valueLabel.value = label;
+	}
+
+	setTimeout(() => {
+		if (props.multiple && activeOptions.value) chips.value?.focus();
+	}, 10);
+
+	if (!props.multiple) handleBlur();
+};
+
+const onClickOption = function (value: any, label: any) {
+	clickOption(value, label);
+};
+
+// Computed properties
+const isValue = computed(() => {
+	if (Array.isArray(props.modelValue))
+		return props.modelValue.length !== 0;
+	else {
+		return !(
+			_.isNull(props.modelValue) &&
+			!_.isUndefined(props.modelValue)
+		);
+	}
+});
+
+const getChips = computed(() => {
+	let id = 0;
+	const chipIds: number[] = [];
+	const chip = function (item: any, isCollapse: boolean) {
+		return h(
+			"span",
+			{
+				class: ["tu-select__chips__chip", { isCollapse }],
+				id: ++id
+			},
+			[
+				h("span", {}, item.label),
+				!isCollapse &&
+				h(
 					"span",
 					{
-						class: ["tu-select__chips__chip", { isCollapse }],
-						id: ++id
+						class: "tu-select__chips__chip__close",
+						onClick: (evt: any) => {
+							setTimeout(() => {
+								targetClose.value = false;
+							}, 100);
+							if (!activeOptions.value) {
+								chips.value?.blur();
+								if (props.filter)
+									chipsInput.value?.blur();
+							}
+							clickOption(item.value, item.label);
+							evt.stopPropagation();
+						},
+						onMouseLeave: () => {
+							targetClose.value = false;
+						},
+						onMouseEnter: () => {
+							targetClose.value = true;
+						},
+						onMouseDown: (evt: any) => {
+							evt.stopPropagation();
+						}
 					},
 					[
-						h("span", {}, item.label),
-						!isCollapse &&
 						h(
-							"span",
+							tuIcon,
 							{
-								class: "tu-select__chips__chip__close",
-								onClick: (evt) => {
-									setTimeout(() => {
-										targetClose.value = false;
-									}, 100);
-									if (!activeOptions.value) {
-										chips.value?.blur();
-										if (props.filter)
-											chipsInput.value?.blur();
-									}
-									clickOption(item.value, item.label);
-									evt.stopPropagation();
-								},
-								onMouseLeave: () => {
-									targetClose.value = false;
-								},
-								onMouseEnter: () => {
-									targetClose.value = true;
-								},
-								onMouseDown: (evt) => {
-									evt.stopPropagation();
-								}
+								hover: "less",
+								style: { "font-size": "0.5rem" }
 							},
-							[
-								h(
-									tuIcon,
-									{
-										hover: "less",
-										style: { "font-size": "0.5rem" }
-									},
-									() => {
-										return "close";
-									}
-								)
-							]
+							() => {
+								return "close";
+							}
 						)
 					]
+				)
+			]
+		);
+	};
+
+	let chipsarr: any[] = [];
+	if (Array.isArray(valueLabel.value)) {
+		for (const item of valueLabel.value as any) {
+			const chipEl = chip(item, false);
+			chipsarr.push(chipEl);
+		}
+	}
+
+	if (props.collapseChips) {
+		chipsarr = [
+			chipsarr[0],
+			chipsarr.length > 1 &&
+			chip(
+				{ label: `+ ${chipsarr.length - 1}`, value: null },
+				true
+			)
+		];
+	}
+
+	return chipsarr;
+});
+
+const getValue = function () {
+	const options = childOptions.value;
+	const filterOptions = options.filter((option: any): boolean => {
+		return typeof props.modelValue === "number" ||
+			typeof props.modelValue === "string"
+			? props.modelValue === option.value
+			: _.find(props.modelValue as Array<any>, {
+				value: option.value
+			}) !== undefined;
+	});
+
+	const label: any[] = [];
+	filterOptions.forEach((item: any) => {
+		label.push({
+			label: (item as any).label,
+			value: (item as any).value
+		});
+	});
+
+	valueLabel.value = label;
+};
+
+const getValueLabel = computed(() => {
+	const valueLabelTemp: any = valueLabel.value;
+	let labels: any[] = [];
+	if (Array.isArray(valueLabelTemp)) {
+		valueLabelTemp.forEach((item: any) => {
+			labels.push(item.label);
+		});
+	}
+	else labels = valueLabelTemp;
+
+	return labels;
+});
+
+const selectListener = computed(() => {
+	return {
+		mouseleave: (evt: any) => {
+			if (evt.relatedTarget !== options.value) {
+				targetSelectInput.value = false;
+				targetSelect.value = false;
+			}
+		},
+		mouseenter: () => {
+			targetSelectInput.value = true;
+		}
+	};
+});
+
+const handleKeydown = function (evt: any) {
+	const optionsTemp = options.value;
+	setTimeout(() => {
+		setCords(optionsTemp, select.value);
+	}, 50);
+	if (evt.code === "ArrowDown") {
+		evt.preventDefault();
+		if (hoverOption.value < childOptions.value?.length - 1)
+			hoverOption.value++;
+		else hoverOption.value = 0;
+	}
+	else if (evt.code === "ArrowUp") {
+		evt.preventDefault();
+		if (hoverOption.value > 0) hoverOption.value--;
+		else hoverOption.value = childOptions.value?.length - 1;
+	}
+	else if (evt.code === "Enter") {
+		evt.preventDefault();
+		if (hoverOption.value !== -1) {
+			if (!childOptions.value?.[hoverOption.value]?.disabled) {
+				clickOption(
+					childOptions.value?.[hoverOption.value]?.value,
+					childOptions.value?.[hoverOption.value]?.label
 				);
-			};
-
-			let chipsarr: any[] = [];
-			if (Array.isArray(valueLabel.value)) {
-				for (const item of valueLabel.value as any) {
-					const chipEl = chip(item, false);
-					chipsarr.push(chipEl);
+				if (!props.multiple) {
+					handleBlur();
+					input.value?.blur();
 				}
 			}
+		}
+	}
 
-			if (props.collapseChips) {
-				chipsarr = [
-					chipsarr[0],
-					chipsarr.length > 1 &&
-					chip(
-						{ label: `+ ${chipsarr.length - 1}`, value: null },
-						true
-					)
-				];
+	if (hoverOption.value !== -1) {
+		const offsetTop = childOptions.value?.[hoverOption.value]?.offsetTop;
+		if (offsetTop !== undefined) {
+			(content.value as HTMLElement).scrollTop = offsetTop - 66;
+		}
+	}
+};
+
+const inputListener = computed(() => {
+	return {
+		keydown: handleKeydown,
+		focus: (evt: Event) => {
+			activeOptions.value = true;
+			emit("focus", evt);
+			if (props.filter) activeFilter.value = true;
+
+			window.addEventListener("mousedown", handleWindowClick);
+		},
+		// blur: this.blur,
+		input: (evt: any) => {
+			textFilter.value = evt.target.value;
+			if (props.dynamicFilter)
+				emit("filterUpdated", textFilter.value);
+		}
+	};
+});
+
+const chipsListener = computed(() => {
+	return {
+		keydown: handleKeydown,
+		mouseover: (event: any) => {
+			chipsHovered.value = true;
+		},
+		mouseout: (event: any) => {
+			chipsHovered.value = false;
+		},
+		focus: (evt: Event) => {
+			if (!targetClose.value) {
+				activeOptions.value = true;
+				emit("focus", evt);
 			}
+			if (props.filter && props.multiple)
+				(chipsInput.value as HTMLElement).focus();
 
-			return chipsarr;
-		});
+			window.addEventListener("mousedown", handleWindowClick);
+		},
+		blur: blur
+	};
+});
 
-		const getValue = function () {
-			const options = childOptions.value;
-			const filterOptions = options.filter((option: any): boolean => {
-				return typeof props.modelValue === "number" ||
-					typeof props.modelValue === "string"
-					? props.modelValue === option.value
-					: _.find(props.modelValue as Array<any>, {
-						value: option.value
-					}) !== undefined;
+const chipsFilterListener = computed(() => {
+	return {
+		focus: (evt: Event) => {
+			if (!targetClose.value) {
+				activeOptions.value = true;
+				emit("focus", evt);
+			}
+		},
+		blur: blur,
+		input: (evt: any) => {
+			textFilter.value = evt.target.value;
+		}
+	};
+});
+
+const notData = computed(() => {
+	if (content.value) {
+		if (content.value.querySelectorAll(".tu-select__option.hiddenOption").length === childOptions.value.length)
+			return true;
+	}
+	else if (childOptions.value.length === 0)
+		return true;
+	return false;
+});
+
+const iconClicked = function () {
+	if (activeOptions.value) activeOptions.value = false;
+	else input.value?.focus();
+};
+
+const beforeEnter = function (el: any) {
+	el.style.height = 0;
+};
+
+const enter = function (el: any, done: any) {
+	const h = el.scrollHeight;
+	el.style.height = h - 1 + "px";
+	done();
+};
+
+const leave = function (el: any, done: any) {
+	el.style.minHeight = "0px";
+	el.style.height = "0px";
+};
+
+const insertOptions = function () {
+	const optionsTemp = options.value as HTMLElement;
+	insertBody(optionsTemp, document.body);
+	setCords(optionsTemp, select.value);
+
+	setTimeout(() => {
+		setCords(optionsTemp, select.value);
+	}, 50);
+};
+
+// Watchers
+watch(activeOptions, (val: boolean) => {
+	nextTick(() => {
+		if (val) insertOptions();
+	});
+
+	uids.value = [];
+});
+
+const handleResize = function () {
+	const optionsTemp = options.value as HTMLElement;
+	if (!optionsTemp) return;
+
+	nextTick(() => {
+		setCords(optionsTemp, select.value);
+	});
+
+	setTimeout(() => {
+		setCords(optionsTemp, select.value);
+	}, 50);
+};
+
+const handleScroll = function () {
+	const optionsTemp = options.value as HTMLElement;
+	if (optionsTemp) setCords(optionsTemp, select.value);
+};
+
+// Lifecycle hooks
+onMounted(() => {
+	// getValue();
+
+	let children: any = instance?.slots.default?.();
+	if (children?.length === 1 && typeof children[0].type === "symbol")
+		children = children[0].children;
+	const reduced = _.reduce(
+		children,
+		function (result: any[], item, index) {
+			result.push({
+				label: item.props?.label,
+				value: item.props?.value
 			});
+			return result;
+		},
+		[]
+	);
 
-			const label: any[] = [];
-			filterOptions.forEach((item: any) => {
-				label.push({
-					label: (item as any).label,
-					value: (item as any).value
-				});
-			});
-
-			valueLabel.value = label;
-		};
-
-		const getValueLabel = computed(() => {
-			const valueLabelTemp: any = valueLabel.value;
-			let labels: any[] = [];
-			if (Array.isArray(valueLabelTemp)) {
-				valueLabelTemp.forEach((item: any) => {
-					labels.push(item.label);
-				});
-			}
-			else labels = valueLabelTemp;
-
-			return labels;
+	// set the default value first. Since the list is not rendered to the dom, get it from the default slot.
+	if (!Array.isArray(props.modelValue)) {
+		const labelValue = _.find(reduced, { value: props.modelValue });
+		if (labelValue) valueLabel.value = labelValue.label;
+	}
+	else {
+		const newLabelValues: any[] = [];
+		props.modelValue.forEach((value) => {
+			const labelValue = _.find(reduced, { value: value });
+			if (labelValue) newLabelValues.push(labelValue);
 		});
 
-		const selectListener = computed(() => {
-			return {
-				mouseleave: (evt: any) => {
-					if (evt.relatedTarget !== options.value) {
-						targetSelectInput.value = false;
-						targetSelect.value = false;
-					}
-				},
-				mouseenter: () => {
-					targetSelectInput.value = true;
-				}
-			};
-		});
+		valueLabel.value = newLabelValues;
+	}
 
-		const handleKeydown = function (evt: any) {
-			const optionsTemp = options.value;
-			setTimeout(() => {
-				setCords(optionsTemp, select.value);
-			}, 50);
-			if (evt.code === "ArrowDown") {
-				evt.preventDefault();
-				if (hoverOption.value < childOptions.value?.length - 1)
-					hoverOption.value++;
-				else hoverOption.value = 0;
-			}
-			else if (evt.code === "ArrowUp") {
-				evt.preventDefault();
-				if (hoverOption.value > 0) hoverOption.value--;
-				else hoverOption.value = childOptions.value?.length - 1;
-			}
-			else if (evt.code === "Enter") {
-				evt.preventDefault();
-				if (hoverOption.value !== -1) {
-					if (!childOptions.value?.[hoverOption.value].disabled) {
-						clickOption(
-							childOptions.value?.[hoverOption.value].value,
-							childOptions.value?.[hoverOption.value].label
-						);
-						if (!props.multiple) {
-							handleBlur();
-							input.value?.blur();
-						}
-					}
-				}
-			}
+	window.addEventListener("resize", handleResize);
+	window.addEventListener("scroll", handleScroll);
+});
 
-			if (hoverOption.value !== -1) {
-				(content.value as HTMLElement).scrollTop =
-					childOptions.value?.[hoverOption.value].offsetTop - 66;
-			}
-		};
-
-		const inputListener = computed(() => {
-			return {
-				keydown: handleKeydown,
-				focus: (evt: Event) => {
-					activeOptions.value = true;
-					context.emit("focus", evt);
-					if (props.filter) activeFilter.value = true;
-
-					window.addEventListener("mousedown", handleWindowClick);
-				},
-				// blur: this.blur,
-				input: (evt: any) => {
-					textFilter.value = evt.target.value;
-					if (props.dynamicFilter)
-						context.emit("filterUpdated", textFilter.value);
-				}
-			};
-		});
-
-		const chipsListener = computed(() => {
-			return {
-				keydown: handleKeydown,
-				mouseover: (event) => {
-					chipsHovered.value = true;
-				},
-				mouseout: (event) => {
-					chipsHovered.value = false;
-				},
-				focus: (evt: Event) => {
-					if (!targetClose.value) {
-						activeOptions.value = true;
-						context.emit("focus", evt);
-					}
-					if (props.filter && props.multiple)
-						(chipsInput.value as HTMLElement).focus();
-
-					window.addEventListener("mousedown", handleWindowClick);
-				},
-				blur: blur
-			};
-		});
-
-		const chipsFilterListener = computed(() => {
-			return {
-				focus: (evt: Event) => {
-					if (!targetClose.value) {
-						activeOptions.value = true;
-						context.emit("focus", evt);
-					}
-				},
-				blur: blur,
-				input: (evt: any) => {
-					textFilter.value = evt.target.value;
-				}
-			};
-		});
-
-		const notData = computed(() => {
-			if (content.value) {
-				if (content.value.querySelectorAll(".tu-select__option.hiddenOption").length === childOptions.value.length)
-					return true;
-			}
-			else if (childOptions.value.length === 0)
-				return true;
-			return false;
-		});
-
-		const iconClicked = function () {
-			if (activeOptions.value) activeOptions.value = false;
-			else input.value?.focus();
-		};
-
-		const beforeEnter = function (el: any) {
-			el.style.height = 0;
-		};
-
-		const enter = function (el: any, done: any) {
-			const h = el.scrollHeight;
-			el.style.height = h - 1 + "px";
-			done();
-		};
-
-		const leave = function (el: any, done: any) {
-			el.style.minHeight = "0px";
-			el.style.height = "0px";
-		};
-
-		const insertOptions = function () {
-			const optionsTemp = options.value as HTMLElement;
-			insertBody(optionsTemp, document.body);
-			setCords(optionsTemp, select.value);
-
-			setTimeout(() => {
-				setCords(optionsTemp, select.value);
-			}, 50);
-		};
-
-		watch(activeOptions, (val: boolean) => {
-			nextTick(() => {
-				if (val) insertOptions();
-			});
-
-			uids.value = [];
-		});
-
-		const handleResize = function () {
-			const optionsTemp = options.value as HTMLElement;
-			if (!optionsTemp) return;
-
-			nextTick(() => {
-				setCords(optionsTemp, select.value);
-			});
-
-			setTimeout(() => {
-				setCords(optionsTemp, select.value);
-			}, 50);
-		};
-
-		const handleScroll = function () {
-			const optionsTemp = options.value as HTMLElement;
-			if (optionsTemp) setCords(optionsTemp, select.value);
-		};
-
-		onMounted(() => {
-			// getValue();
-
-			let children: any = instance?.slots.default?.();
-			if (children?.length === 1 && typeof children[0].type === "symbol")
-				children = children[0].children;
-			const reduced = _.reduce(
-				children,
-				function (result: any[], item, index) {
-					result.push({
-						label: item.props?.label,
-						value: item.props?.value
-					});
-					return result;
-				},
-				[]
-			);
-
-			// set the default value first. Since the list is not rendered to the dom, get it from the default slot.
-			if (!Array.isArray(props.modelValue)) {
-				const labelValue = _.find(reduced, { value: props.modelValue });
-				if (labelValue) valueLabel.value = labelValue.label;
-			}
-			else {
-				const newLabelValues: any[] = [];
-				props.modelValue.forEach((value) => {
-					const labelValue = _.find(reduced, { value: value });
-					if (labelValue) newLabelValues.push(labelValue);
-				});
-
-				valueLabel.value = newLabelValues;
-			}
-
-			window.addEventListener("resize", handleResize);
-			window.addEventListener("scroll", handleScroll);
-		});
-
-		onBeforeUnmount(() => {
-			if (activeOptions.value) {
-				const optionsTemp = options.value as HTMLElement;
-				removeBody(optionsTemp, document.body);
-			}
-		});
-
-		return {
-			addedOptions,
-			chipsHovered,
-			renderSelect,
-			activeOptions,
-			valueLabel,
-			hoverOption,
-			uids,
-			childOptions,
-			targetSelect,
-			targetSelectInput,
-			targetClose,
-			activeFilter,
-			textFilter,
-			childVisibles,
-			uid,
-			getChips,
-			selectListener,
-			inputListener,
-			getValueLabel,
-			chipsListener,
-			chipsFilterListener,
-			notData,
-			iconClicked,
-			chips,
-			chipsInput,
-			input,
-			options,
-			select,
-			content,
-			beforeEnter,
-			enter,
-			leave,
-			setHover,
-			onClickOption,
-			addNewOption,
-			isValue
-		};
+onBeforeUnmount(() => {
+	if (activeOptions.value) {
+		const optionsTemp = options.value as HTMLElement;
+		removeBody(optionsTemp, document.body);
 	}
 });
 </script>

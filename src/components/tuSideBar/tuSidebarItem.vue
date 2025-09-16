@@ -1,7 +1,7 @@
 <template>
 	<a :href="href" class="tu-sidebar__a">
 		<button class="tu-sidebar__item" :class="{
-			active: (parentValue && this.id == parentValue) || internalActive,
+			active: (parentValue && id == parentValue) || internalActive,
 			hasIcon: !!$slots.icon
 		}" @click="onClick">
 			<div v-if="$slots.icon" class="tu-sidebar__item__icon">
@@ -20,101 +20,99 @@
 		</button>
 	</a>
 </template>
-<script lang="ts">
-import { defineComponent, inject, onMounted, ref, Ref, watch } from "vue";
-import tuComponent, { ComponentConstants } from "../tuComponent";
+
+<script lang="ts" setup>
+import { inject, onMounted, ref, watch, type Ref } from "vue";
+import { ComponentConstants } from "../tuComponent";
 import * as _ from "lodash";
 import * as pathRegex from "path-to-regexp";
 import tuIcon from "../tuIcon";
 
-export default defineComponent({
-	name: "TuSidebarItem",
-	extends: tuComponent,
-	components: {
-		tuIcon
-	},
-	props: {
-		to: {
-			type: [Object, String],
-			default: null
-		},
-		href: {
-			type: String
-		},
-		target: { default: "_blank" },
-		value: { type: String },
-		id: { type: String },
-		arrow: { type: Boolean }
-	},
-	setup(props, context) {
-		const parentValue = inject<any>("parentValue");
-		const handleClickItem = inject<Function>("handleClickItem");
-		const reduced = inject<Ref<Boolean>>("reduced");
-		const internalActive = ref(false);
-		const router = ComponentConstants.router;
+interface RouteObject {
+	name?: string;
+	path?: string;
+}
 
-		const handleClick = function () {
-			if (props.to) ComponentConstants.router.push(props.to as any);
-			else if (props.href)
-				window.open(props.href as string, props.target);
-		};
+interface Props {
+	to?: RouteObject | string | null;
+	href?: string;
+	target?: string;
+	value?: string;
+	id?: string;
+	arrow?: boolean;
+}
 
-		const onClick = () => {
-			if (props.id) handleClickItem?.call(null, props.id);
+const props = withDefaults(defineProps<Props>(), {
+	to: null,
+	href: undefined,
+	target: "_blank",
+	value: undefined,
+	id: undefined,
+	arrow: false
+});
 
-			handleClick();
-		};
+const parentValue = inject<string | null>("parentValue");
+const handleClickItem = inject<((id: string) => void) | undefined>("handleClickItem");
+const reduced = inject<Ref<boolean>>("reduced");
+const internalActive = ref(false);
+const router = ComponentConstants.router;
 
-		const handleRouteChange = function () {
-			if (router) {
-				if (
-					_.some(router.currentRoute.value.matched, (route) => {
-						if (typeof props.to === "string") {
-							return pathRegex
-								.pathToRegexp(route.path)
-								.test(props.to as string) || pathRegex.pathToRegexp(route.path).test(props.href);
-						}
-						else if (props.to && typeof props.to === "object") {
-							if (
-								props.to.name === router.currentRoute.value.name
-							)
-								return true;
-							else {
-								return pathRegex
-									.pathToRegexp(
-										router.currentRoute.value.path
-									)
-									.test(props.to.path) || pathRegex.pathToRegexp(router.currentRoute.value.path).test(props.href);
-							}
-						}
-						else return false;
-					})
-				) {
-					internalActive.value = true;
-					if (props.id) handleClickItem?.call(null, props.id);
+const handleClick = function () {
+	if (props.to) 
+		ComponentConstants.router.push(props.to as RouteObject | string);
+	else if (props.href)
+		window.open(props.href as string, props.target);
+};
+
+const onClick = () => {
+	if (props.id)
+		handleClickItem?.(props.id);
+	handleClick();
+};
+
+const handleRouteChange = function () {
+	if (router) {
+		if (
+			_.some(router.currentRoute.value.matched, (route) => {
+				if (typeof props.to === "string") {
+					return pathRegex
+						.pathToRegexp(route.path)
+						.test(props.to as string) || pathRegex.pathToRegexp(route.path).test(props.href || "");
 				}
-				else internalActive.value = false;
-			}
-		};
-
-		if (router) {
-			watch(router.currentRoute, () => {
-				handleRouteChange();
-			});
+				else if (props.to && typeof props.to === "object") {
+					const routeObj = props.to as RouteObject;
+					if (
+						routeObj.name === router.currentRoute.value.name
+					)
+						return true;
+					else {
+						return pathRegex
+							.pathToRegexp(
+								router.currentRoute.value.path
+							)
+							.test(routeObj.path || "") || pathRegex.pathToRegexp(router.currentRoute.value.path).test(props.href || "");
+					}
+				}
+				else return false;
+			})
+		) {
+			internalActive.value = true;
+			if (props.id)
+				handleClickItem?.(props.id);
 		}
-
-		onMounted(() => {
-			// Need to handle route when component mounted not just on route change
-			handleRouteChange();
-		});
-
-		return {
-			parentValue,
-			internalActive,
-			reduced,
-			onClick
-		};
+		else internalActive.value = false;
 	}
+};
+
+if (router) {
+	watch(router.currentRoute, () => {
+		handleRouteChange();
+	});
+}
+
+onMounted(() => {
+	// Need to handle route when component mounted not just on route change
+	handleRouteChange();
 });
 </script>
 
