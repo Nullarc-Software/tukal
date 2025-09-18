@@ -17,6 +17,10 @@
 import { ref } from "vue";
 import tuChip from "./tuChip.vue";
 
+defineOptions({
+	name: "TuChips"
+});
+
 interface Props {
 	value?: unknown[];
 	tuColor?: string;

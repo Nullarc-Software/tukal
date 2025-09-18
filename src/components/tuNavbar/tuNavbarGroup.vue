@@ -13,6 +13,10 @@ import { inject, ref, onMounted } from "vue";
 import { Router } from "vue-router";
 import { getColor } from "../../utils";
 
+defineOptions({
+	name: "TuNavbarGroup"
+});
+
 // tuComponent base props if needed
 interface Props {
 	color?: string;
@@ -40,7 +44,7 @@ onMounted(() => {
 </script>
 
 <style lang="scss">
-@import "../../style/sass/_mixins";
+@import "../../style/sass/_functions";
 .tu-navbar__group {
 	position: relative;
 
@@ -76,12 +80,12 @@ onMounted(() => {
 		flex-direction: column;
 		margin-bottom: -12px;
 		transform: translate(0, 90%);
-		background: -getColor("color");
+		background: getColor("color");
 		border-radius: 5px 18px 18px 18px;
 		padding: 10px;
 		min-width: 160px;
 		opacity: 0;
-		box-shadow: 0px 5px 20px 0px rgba(0, 0, 0, -var("shadow-opacity"));
+		box-shadow: 0px 5px 20px 0px rgba(0, 0, 0, tuVar("shadow-opacity"));
 		transition: all 0.25s ease;
 		color: inherit;
 		visibility: hidden;
@@ -109,7 +113,7 @@ onMounted(() => {
 				top: 0px;
 				width: 4px;
 				height: 4px;
-				background: -getColor("text");
+				background: getColor("text");
 				position: absolute;
 				border-radius: 50%;
 				top: calc(50% - 2px);
@@ -128,3 +132,4 @@ onMounted(() => {
 	}
 }
 </style>
+

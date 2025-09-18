@@ -38,6 +38,10 @@ import { tuPopper, tuPopupMenu, tuPopupItem } from "../tuPopper";
 import tuIcon from "../tuIcon";
 import { PlacementType } from "../tuPopper/tuPopper.vue";
 
+defineOptions({
+	name: "TuTableContextMenu"
+});
+
 interface Props {
 	customIcon?: Record<string, unknown>;
 	rowData?: Record<string, unknown>;

@@ -7,6 +7,11 @@ import {
 	initEmitter,
 	isVisible,
 } from "../utils";
+
+defineOptions({
+	name: "InfiniteLoading"
+});
+
 const emit = defineEmits(["infinite"]);
 const props = defineProps({
 	top: { type: Boolean, required: false },

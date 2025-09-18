@@ -1,22 +1,23 @@
 
-import color from './color'
+import * as color from "./index";
 export default {
-	name: 'theme',
+	name: "theme",
 	tufunction(json: any) {
-		for (let clave in json) {
-			let colorx
-			if (/^[rgb(]/g.test(json[clave])) {
-				colorx = json[clave].replace(/[rgb()]/g, '')
-			} else if (/[#]/g.test(json[clave])) {
+		for (const clave in json) {
+			let colorx;
+			if (/^[rgb(]/g.test(json[clave])) 
+				colorx = json[clave].replace(/[rgb()]/g, "");
+			 else if (/[#]/g.test(json[clave])) {
 				const rgbx = color.hexToRgb(json[clave]);
 				if (rgbx === null)
-					colorx = `0,0,0`
+					colorx = "0,0,0";
 				else
-					colorx = `${rgbx.r},${rgbx.g},${rgbx.b}`
-			} else {
-				colorx = json[clave]
+					colorx = `${rgbx.r},${rgbx.g},${rgbx.b}`;
 			}
-			color.setCssVariable('--tu-' + clave, colorx)
+			else 
+				colorx = json[clave];
+			
+			color.setCssVariable("--tu-" + clave, colorx);
 		}
 	},
-}
+};

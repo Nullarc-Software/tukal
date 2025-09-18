@@ -46,6 +46,10 @@ import { tuPopper } from "../tuPopper";
 import * as _color from "../../utils";
 import { UsageBarItem } from "./types";
 
+defineOptions({
+	name: "TuUsageBar"
+});
+
 interface UsageBarItemPercentage {
 	name: string;
 	percentage: number;

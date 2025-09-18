@@ -1,23 +1,23 @@
 <template>
-	<div class="tu-checkbox-content" :class="[
-		{ 'tu-checkbox--checked': isChecked },
-		{ 'tu-checkbox--disabled': disabled },
-		{ 'tu-checkbox--loading': loading },
-		{ 'tu-checkbox--label-before': labelBefore },
+	<div class="tu-check-box-content" :class="[
+		{ 'tu-check-box--checked': isChecked },
+		{ 'tu-check-box--disabled': disabled },
+		{ 'tu-check-box--loading': loading },
+		{ 'tu-check-box--label-before': labelBefore },
 
 		// colors
 		{ [`tu-component--${color}`]: color },
 	]">
-		<div class="tu-checkbox-con">
-			<input class="tu-checkbox" type="checkbox" v-bind="$attrs" :id="`input-${uid}`" v-on="listeners"
+		<div class="tu-check-box-con">
+			<input class="tu-check-box" type="checkbox" v-bind="$attrs" :id="`input-${uid}`" v-on="listeners"
 				:checked="checkedForce || isChecked" />
-			<div class="tu-checkbox-mask" :indeterminate="indeterminate">
+			<div class="tu-check-box-mask" :indeterminate="indeterminate">
 				<slot v-if="$slots.icon" name="icon" />
 				<tu-icon v-else-if="!indeterminate">check</tu-icon>
 				<tu-icon v-else>horizontal_rule</tu-icon>
 			</div>
 		</div>
-		<label v-if="$slots.default" :for="`input-${uid}`" :class="['tu-checkbox-label', { ['lineThrough']: lineThrough }]">
+		<label v-if="$slots.default" :for="`input-${uid}`" :class="['tu-check-box-label', { ['lineThrough']: lineThrough }]">
 			<slot />
 		</label>
 	</div>
@@ -28,6 +28,10 @@ import { computed, inject, ref, onMounted } from "vue";
 import tuIcon from "../tuIcon";
 import { Router } from "vue-router";
 import { getColor } from "../../utils";
+
+defineOptions({
+	name: "TuCheckBox"
+});
 
 let uid_ = 0;
 
@@ -182,16 +186,16 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-@import "../../style/sass/_mixins";
+@import "../../style/sass/_functions";
 @import "../../style/sass/root";
 
-.tu-checkbox-content {
+.tu-check-box-content {
 	display: flex;
 	align-items: center;
 	justify-content: flex-start;
 }
 
-.tu-checkbox-con {
+.tu-check-box-con {
 	width: 23px;
 	height: 23px;
 	border-radius: 9px;
@@ -199,7 +203,7 @@ onMounted(() => {
 	z-index: 1;
 }
 
-.tu-checkbox-mask {
+.tu-check-box-mask {
 	border-radius: 32%;
 	width: 100%;
 	height: 100%;
@@ -232,7 +236,7 @@ onMounted(() => {
 		left: 0px;
 		width: 100%;
 		height: 100%;
-		background: -getColor("color");
+		background: getColor("color");
 		transform: scale(0.5);
 		border-radius: inherit;
 		opacity: 0;
@@ -250,7 +254,7 @@ onMounted(() => {
 		border-radius: inherit;
 		transition: all 0.25s ease;
 		z-index: -1;
-		border: 2px solid -getColor("text");
+		border: 2px solid getColor("text");
 		box-sizing: border-box;
 	}
 
@@ -260,7 +264,7 @@ onMounted(() => {
 	}
 }
 
-.tu-checkbox {
+.tu-check-box {
 	position: absolute;
 	width: 100%;
 	height: 100%;
@@ -278,27 +282,27 @@ onMounted(() => {
 	}
 
 	&:active {
-		~.tu-checkbox-mask {
-			background: -getColor("gray-4") !important;
+		~.tu-check-box-mask {
+			background: getColor("gray-4") !important;
 		}
 	}
 
 	&:hover {
-		~.tu-checkbox-mask {
-			background: -getColor("gray-3");
+		~.tu-check-box-mask {
+			background: getColor("gray-3");
 		}
 	}
 
 	&:checked {
 		&:hover {
-			~.tu-checkbox-mask {
-				box-shadow: 0px 3px 15px 0px -getColorAlpha("color", 0.35);
+			~.tu-check-box-mask {
+				box-shadow: 0px 3px 15px 0px getColorAlpha("color", 0.35);
 			}
 		}
 
-		~.tu-checkbox-mask {
-			// border: 2px solid -getColor('color') !important
-			box-shadow: 0px 0px 0px 0px -getColorAlpha("color", 0.35);
+		~.tu-check-box-mask {
+			// border: 2px solid getColor('color') !important
+			box-shadow: 0px 0px 0px 0px getColorAlpha("color", 0.35);
 
 			::v-deep(i:not(.tu-icon-check)) {
 				opacity: 1;
@@ -339,7 +343,7 @@ onMounted(() => {
 	}
 }
 
-.tu-checkbox-label {
+.tu-check-box-label {
 	user-select: none;
 	cursor: pointer;
 	padding: 7px;
@@ -354,26 +358,26 @@ onMounted(() => {
 		position: absolute;
 		width: 0px;
 		height: 2px;
-		background: -getColorAlpha("text", 0.6);
+		background: getColorAlpha("text", 0.6);
 		content: "";
 		transition: all 0.25s ease;
 	}
 }
 
-.tu-checkbox--disabled {
+.tu-check-box--disabled {
 	pointer-events: none;
 
-	::v-deep(.tu-checkbox-label) {
+	::v-deep(.tu-check-box-label) {
 		opacity: 0.5;
 	}
 
-	::v-deep(.tu-checkbox-mask) {
+	::v-deep(.tu-check-box-mask) {
 		opacity: 0.6;
 		background: transparent !important;
 	}
 }
 
-.tu-checkbox--checked {
+.tu-check-box--checked {
 	::v-deep(.lineThrough) {
 		opacity: 0.4;
 
@@ -383,16 +387,16 @@ onMounted(() => {
 	}
 }
 
-.tu-checkbox--loading {
+.tu-check-box--loading {
 	pointer-events: none;
 
-	&.tu-checkbox--checked {
-		::v-deep(.tu-checkbox-mask) {
+	&.tu-check-box--checked {
+		::v-deep(.tu-check-box-mask) {
 			background: transparent !important;
 
 			&:before {
 				border-radius: 50%;
-				border: 2px solid -getColor("color") !important;
+				border: 2px solid getColor("color") !important;
 				border-top: 2px solid transparent !important;
 				animation: rotateCheckboxLoading 0.6s linear infinite;
 				opacity: 1 !important;
@@ -405,12 +409,12 @@ onMounted(() => {
 		}
 	}
 
-	::v-deep(.tu-checkbox-mask) {
+	::v-deep(.tu-check-box-mask) {
 		background: transparent !important;
 
 		&:before {
 			border-radius: 50%;
-			border: 2px solid -getColor("gray-4") !important;
+			border: 2px solid getColor("gray-4") !important;
 			border-top: 2px solid transparent !important;
 			animation: rotateCheckboxLoading 0.6s linear infinite;
 		}
@@ -427,9 +431,10 @@ onMounted(() => {
 	}
 }
 
-.tu-checkbox--label-before {
-	::v-deep(.tu-checkbox-label) {
+.tu-check-box--label-before {
+	::v-deep(.tu-check-box-label) {
 		order: -1;
 	}
 }
 </style>
+

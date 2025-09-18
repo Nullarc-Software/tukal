@@ -22,6 +22,10 @@ import { inject, ref, onMounted } from "vue";
 import { Router } from "vue-router";
 import { getColor, getColorAsRgb } from "../../utils";
 
+defineOptions({
+	name: "TuTag"
+});
+
 interface Props {
 	flat?: boolean;
 	name?: string;
@@ -60,15 +64,15 @@ function onTagClicked() {
 </script>
 
 <style lang="scss">
-@import "../../style/sass/_mixins";
+@import "../../style/sass/_functions";
 
 
 .tu-tag {
 	--tu-tag-text-color: #ffffff;
 	--tu-tag-text-color-rgb: 255, 255, 255;
 	display: inline-flex;
-	background: -getColor('color');
-	color: -getColor("tag-text-color");
+	background: getColor('color');
+	color: getColor("tag-text-color");
 	padding: 8px;
 	border-radius: 20px;
 	margin-left: 2px;
@@ -76,8 +80,8 @@ function onTagClicked() {
 	cursor: pointer;
 
 	&.tu-tag--flat {
-		background: -getColorAlpha('color', 0.15);
-		color: -getColor("color");
+		background: getColorAlpha('color', 0.15);
+		color: getColor("color");
 	}
 }
 
@@ -91,3 +95,4 @@ function onTagClicked() {
 	margin-right: 5px;
 }
 </style>
+

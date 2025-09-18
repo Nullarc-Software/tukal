@@ -21,6 +21,10 @@
 import tuIcon from "../tuIcon/index";
 import { ref, computed } from "vue";
 
+defineOptions({
+	name: "TuCollapseItem"
+});
+
 interface Props {
 	iconPack?: string;
 	iconArrow?: string;
@@ -69,7 +73,7 @@ const mouseout = () => {
 </script>
 
 <style lang="scss" scoped>
-@import "../../style/sass/_mixins";
+@import "../../style/sass/_functions";
 
 .tu-collapse-item {
 	border-bottom: 1px solid rgba(0, 0, 0, 0.04);
@@ -96,7 +100,7 @@ const mouseout = () => {
 
 .hover-style {
 	&:hover {
-		background-color: -getColor("gray-2") !important;
+		background-color: getColor("gray-2") !important;
 	}
 }
 

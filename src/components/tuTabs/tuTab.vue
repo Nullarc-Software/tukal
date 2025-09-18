@@ -21,6 +21,10 @@
 import { getCurrentInstance, inject, onMounted, reactive, Ref, toRefs, VNode, useAttrs } from "vue";
 import { TabId } from ".";
 
+defineOptions({
+	name: "TuTab"
+});
+
 interface Props {
 	label?: string;
 	name?: string;

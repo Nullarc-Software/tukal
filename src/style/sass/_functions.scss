@@ -1,0 +1,159 @@
+@use "sass:map";
+@use "sass:string";
+@use "tokens" as tokens;
+
+
+// =============================================================================
+// ENHANCED MIXIN FUNCTIONS
+// =============================================================================
+
+// Get spacing value
+@function spacing($key) {
+  @return map.get(tokens.$spacing, $key);
+}
+
+// Get font size value
+@function font-size($key) {
+  @return map.get(tokens.$font-size, $key);
+}
+
+// Get font weight value
+@function font-weight($key) {
+  @return map.get(tokens.$font-weight, $key);
+}
+
+// Get border radius value
+@function border-radius($key) {
+  @return map.get(tokens.$border-radius, $key);
+}
+
+// Get shadow value
+@function shadow($key) {
+  @return map.get(tokens.$shadow, $key);
+}
+
+// Get z-index value
+@function z-index($key) {
+  @return map.get(tokens.$z-index, $key);
+}
+
+// Get transition value
+@function transition($key) {
+  @return map.get(tokens.$transition, $key);
+}
+
+// Get component size property
+@function component-size($size, $property) {
+  $size-map: map.get(tokens.$component-size, $size);
+  @return map.get($size-map, $property);
+}
+
+// =============================================================================
+// RESPONSIVE MIXINS
+// =============================================================================
+
+// Media query mixin
+@mixin breakpoint($breakpoint) {
+  $size: map.get(tokens.$breakpoints, $breakpoint);
+  
+  @if $size == 0 {
+    @content;
+  } @else {
+    @media (min-width: $size) {
+      @content;
+    }
+  }
+}
+
+// =============================================================================
+// COMPONENT MIXINS
+// =============================================================================
+
+// Button size mixin
+@mixin button-size($size: 'md') {
+  /* No fixed height, so button adapts to content */
+  padding: component-size($size, 'padding-y') component-size($size, 'padding-x');
+  font-size: component-size($size, 'font-size');
+}
+
+// Focus ring mixin for accessibility
+@mixin focus-ring($color: var(--tu-primary), $offset: 1px) {
+  &:focus-visible {
+    outline: 1px solid $color;
+    outline-offset: $offset;
+    box-shadow: 0 0 0 4px rgba($color, 0.1);
+  }
+  
+  &:focus:not(:focus-visible) {
+    outline: none;
+  }
+}
+
+// Hover lift effect
+@mixin hover-lift($shadow-key: 'md') {
+  transition: transform transition('fast'), box-shadow transition('fast');
+  
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: shadow($shadow-key);
+  }
+}
+
+// Truncate text
+@mixin truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// Visually hidden (for screen readers)
+@mixin visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+// =============================================================================
+// ENHANCED COLOR FUNCTIONS (keeping existing functionality)
+// =============================================================================
+
+@function getColor($color) {
+  @return cssvar($color);
+}
+
+@function getColorAlpha($color, $alpha: 1) {
+  @return rgba(cssvar("#{$color}-rgb"), $alpha);
+}
+
+@function tuVar($var) {
+  @return unquote("var(--tu-#{$var})");
+}
+
+@function cssvar($name, $prefix: tu) {
+  @return var(--#{$prefix}-#{$name});
+}
+
+// =============================================================================
+// MOTION PREFERENCE SUPPORT
+// =============================================================================
+
+// Respect reduced motion preferences
+@mixin respect-motion-preference {
+  @media (prefers-reduced-motion: reduce) {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+// Apply reduced motion globally
+* {
+  @include respect-motion-preference;
+}

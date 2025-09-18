@@ -1,4 +1,4 @@
-@import "../../style/sass/_mixins";
+@import "../../style/sass/_functions";
 
 // @import '../../styles/colors'
 .tu-ripple-content {
@@ -13,7 +13,7 @@
 	top: 0px;
 	right: 0px;
 	border-radius: inherit;
-	z-index: -1;
+	z-index: 20;
 
 	.tu-ripple {
 		width: 0px;
@@ -25,12 +25,13 @@
 		transition: all 0.5s ease;
 		background: radial-gradient(
 			circle,
-			-getColorAlpha(background, 0.05),
-			-getColorAlpha(background, 0.6)
+			getColorAlpha(background, 0.05),
+			getColorAlpha(background, 0.6)
 		);
 
 		&--solid {
-			background: -getColor(color);
+			background: getColor(color);
+			
 			opacity: 1;
 		}
 	}
@@ -45,8 +46,8 @@
 		transition: all 0.5s ease;
 		background-image: radial-gradient(
 			circle,
-			-getColorAlpha(background, 0.5),
-			-getColorAlpha(background, 0)
+			getColorAlpha(background, 0.5),
+			getColorAlpha(background, 0)
 		);
 	}
 

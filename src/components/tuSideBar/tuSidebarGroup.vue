@@ -13,6 +13,10 @@
 <script lang="ts" setup>
 import { inject, nextTick, onMounted, provide, ref, watch } from "vue";
 
+defineOptions({
+	name: "TuSidebarGroup"
+});
+
 interface Props {
 	open?: boolean;
 }
@@ -72,7 +76,7 @@ watch(
 </script>
 
 <style lang="scss">
-@import "../../style/sass/_mixins";
+@import "../../style/sass/_functions";
 
 .tu-sidebar__group {
 	padding: 0px;
@@ -117,7 +121,7 @@ watch(
 			position: absolute;
 			left: 0px;
 			top: 0px;
-			background: -getColorAlpha("color", 0.3);
+			background: getColorAlpha("color", 0.3);
 			width: 4px;
 			height: 100%;
 			opacity: 0;
@@ -128,7 +132,7 @@ watch(
 		}
 
 		::v-deep(.tu-sidebar__item) {
-			background: -getColor("background");
+			background: getColor("background");
 		}
 	}
 
@@ -145,3 +149,4 @@ watch(
 	}
 }
 </style>
+

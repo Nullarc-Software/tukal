@@ -22,8 +22,12 @@
 
 <script setup lang="ts">
 import { computed, nextTick, onMounted, ref } from "vue";
-import _color from "../../utils/color";
+import { getColor, setColor } from "../../utils";
 import tuIcon from "../tuIcon";
+
+defineOptions({
+	name: "TuAlert"
+});
 
 interface Props {
 	active?: boolean | string;
@@ -55,18 +59,18 @@ const alert = ref<HTMLDivElement>();
 
 const styleAlert = computed(() => {
 	return {
-		background: _color.getColor(props.color, 0.15),
-		boxShadow: `0px 0px 25px 0px ${_color.getColor(
+		background: getColor(props.color, 0.15),
+		boxShadow: `0px 0px 25px 0px ${getColor(
 			props.color,
 			0.15
 		)}`,
-		color: _color.getColor(props.color, 1)
+		color: getColor(props.color, 1)
 	};
 });
 
 const styleTitle = computed(() => {
 	return {
-		boxShadow: `0px 6px 15px -7px ${_color.getColor(
+		boxShadow: `0px 6px 15px -7px ${getColor(
 			props.color,
 			0.4
 		)}`
@@ -106,7 +110,7 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-@import "../../style/sass/_mixins";
+@import "../../style/sass/_functions";
 @import "../../style/sass/_colors";
 
 .con-tu-alert {
@@ -159,18 +163,19 @@ onMounted(() => {
 
 @each $color in --tu-colors {
 	.con-tu-alert-#{$color} {
-		background: -getColorAlpha($color, 0.15);
-		box-shadow: 0px 0px 25px 0px -getColorAlpha($color, 0.15);
-		color: -getColor($color);
+		background: getColorAlpha($color, 0.15);
+		box-shadow: 0px 0px 25px 0px getColorAlpha($color, 0.15);
+		color: getColor($color);
 
 		h4 {
-			box-shadow: 0px 6px 15px -7px -getColorAlpha($color, 0.4);
+			box-shadow: 0px 6px 15px -7px getColorAlpha($color, 0.4);
 		}
 
 		.con-x {
-			background: -getColor($color);
+			background: getColor($color);
 			color: rgb(255, 255, 255);
 		}
 	}
 }
 </style>
+

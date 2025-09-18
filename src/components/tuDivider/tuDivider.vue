@@ -18,7 +18,11 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
-import _color from "../../utils/color";
+import { isColor as checkIsColor, getColor } from "../../utils";
+
+defineOptions({
+	name: "TuDivider"
+});
 
 interface Props {
 	color?: string;
@@ -67,8 +71,8 @@ const getWidthBefore = computed(() => {
 });
 
 const borderColor = computed(() => {
-	if (!_color.isColor(props.color))
-		return _color.getColor(props.color);
+	if (!checkIsColor(props.color))
+		return getColor(props.color);
 	return "";
 });
 
@@ -78,7 +82,7 @@ const afterStyle = computed(() => {
 		"border-top-width": props.borderHeight,
 		"border-top-style": props.borderStyle,
 	};
-	if (!_color.isColor(props.color))
+	if (!checkIsColor(props.color))
 		classes["border-top-color"] = borderColor;
 	return classes;
 });
@@ -96,32 +100,34 @@ const beforeStyle = computed(() => {
 
 const borderClass = computed(() => {
 	const classes = {};
-	let borderColor = _color.isColor(props.color) ? props.color : "default";
+	let borderColor = checkIsColor(props.color) ? props.color : "default";
 	classes[`tu-divider-border-${borderColor}`] = true;
 	return classes;
 });
 
 const textColor = computed(() => {
-	if (!_color.isColor(props.color)) {
-		return _color.getColor(
+	if (!checkIsColor(props.color)) {
+		return getColor(
 			props.color !== "rgba(0, 0, 0,.1)" ? props.color : ""
 		);
 	}
+	return "";
 });
 
 const backgroundColor = computed(() => {
-	if (!_color.isColor(props.background)) {
-		return _color.getColor(props.background);
+	if (!checkIsColor(props.background)) {
+		return getColor(props.background);
 	}
+	return "";
 });
 
 const textAndBackgroundClass = computed(() => {
 	const classes = {};
 
-	let textColor = _color.isColor(props.color) ? props.color : "default";
+	let textColor = checkIsColor(props.color) ? props.color : "default";
 	classes[`tu-divider-text-${textColor}`] = true;
 
-	let backgroundColor = _color.isColor(props.background)
+	let backgroundColor = checkIsColor(props.background)
 		? props.background
 		: "default";
 	classes[`tu-divider-background-${backgroundColor}`] = true;

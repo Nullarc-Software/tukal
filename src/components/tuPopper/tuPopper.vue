@@ -26,6 +26,10 @@
 import { computed, onBeforeUnmount, provide, watch, toRefs, useSlots } from "vue";
 import usePopper from "./composables/userPopper";
 
+defineOptions({
+	name: "TuPopper"
+});
+
 /**
  * The Popper component.
  */

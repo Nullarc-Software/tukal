@@ -54,13 +54,17 @@
 
 <script setup lang="ts">
 import tuIcon from "../tuIcon/tuIcon.vue";
-import _color from "../../utils/color";
+import { isColor as checkIsColor } from "../../utils";
 import {
 	onMounted,
 	ref,
 	onBeforeUnmount,
 	inject
 } from "vue";
+
+defineOptions({
+	name: "TuNotifications"
+});
 
 interface Props {
 	notifId?: number;
@@ -167,7 +171,7 @@ const notif = ref<HTMLDivElement>();
 		};
 
 		const isColor = () => {
-			return _color.isColor(props.color);
+			return checkIsColor(props.color);
 		};
 		onMounted(() => {
 			if (props.sticky === false) {
@@ -193,7 +197,7 @@ const close = handleClickClose;
 </script>
 
 <style lang="scss">
-@import "../../style/sass/_mixins";
+@import "../../style/sass/_functions";
 
 .notification-enter-active {
 	transition: all 0.3s ease 0.05s, transform 0.3s ease, margin 0.25s ease,
@@ -264,7 +268,7 @@ const close = handleClickClose;
 
 			&.tu-notification--border {
 				border: 3px solid transparent;
-				border-top: 3px solid -getColor("border");
+				border-top: 3px solid getColor("border");
 			}
 		}
 
@@ -315,7 +319,7 @@ const close = handleClickClose;
 
 			&.tu-notification--border {
 				border: 3px solid transparent;
-				border-bottom: 3px solid -getColor("border");
+				border-bottom: 3px solid getColor("border");
 			}
 		}
 
@@ -360,7 +364,7 @@ const close = handleClickClose;
 
 			&.tu-notification--border {
 				border: 3px solid transparent;
-				border-left: 3px solid -getColor("border");
+				border-left: 3px solid getColor("border");
 			}
 		}
 
@@ -417,7 +421,7 @@ const close = handleClickClose;
 		.tu-notification {
 			&.tu-notification--border {
 				border: 3px solid transparent;
-				border-left: 3px solid -getColor("border");
+				border-left: 3px solid getColor("border");
 			}
 		}
 	}
@@ -454,18 +458,18 @@ const close = handleClickClose;
 	width: 100%;
 	height: auto;
 	border-radius: 20px;
-	box-shadow: 0px 10px 30px -5px rgba(0, 0, 0, -var("shadow-opacity"));
+	box-shadow: 0px 10px 30px -5px rgba(0, 0, 0, tuVar("shadow-opacity"));
 	overflow: hidden;
 	clip-path: circle(145% at 100% 50%);
-	background: -getColor("color");
-	color: -getColor("text");
+	background: getColor("color");
+	color: getColor("text");
 	margin: 3px 10px;
 	transition: all 0.25s ease, transform 0.3s ease 0.1s, max-height 0.25s ease,
 		clip-path 0.5s ease 0.1s;
 	padding: 20px;
 
 	&:hover:not(&--flat) {
-		box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, -var("shadow-opacity"));
+		box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, tuVar("shadow-opacity"));
 		transform: translate(0, 3px);
 	}
 
@@ -509,18 +513,18 @@ const close = handleClickClose;
 	}
 
 	&--flat {
-		box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, -var("shadow-opacity"));
-		background: -getColor("background");
-		color: -getColor("color") !important;
+		box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, tuVar("shadow-opacity"));
+		background: getColor("background");
+		color: getColor("color") !important;
 
 		&:hover {
 			&::after {
-				background: -getColorAlpha("color", 0.15);
+				background: getColorAlpha("color", 0.15);
 			}
 		}
 
 		.tu-notification__progress {
-			background: -getColor("color") !important;
+			background: getColor("color") !important;
 		}
 
 		.tu-notification__close {
@@ -528,17 +532,17 @@ const close = handleClickClose;
 		}
 
 		.tu-notification__content {
-			color: -getColor("color") !important;
+			color: getColor("color") !important;
 		}
 
 		&.tu-notification--border {
 			border: 0px solid transparent !important;
-			border-right: 3px solid -getColor("border") !important;
+			border-right: 3px solid getColor("border") !important;
 		}
 
 		&:after {
 			content: "";
-			background: -getColorAlpha("color", 0.1);
+			background: getColorAlpha("color", 0.1);
 			width: 100%;
 			height: 100%;
 			border-radius: inherit;
@@ -590,13 +594,13 @@ const close = handleClickClose;
 
 	&.tu-notification--border {
 		border: 3px solid transparent;
-		border-right: 3px solid -getColor("border");
+		border-right: 3px solid getColor("border");
 	}
 
 	&__progress {
 		width: 0%;
 		height: 3px;
-		background: -getColor("text");
+		background: getColor("text");
 		position: absolute;
 		bottom: 0px;
 		left: 0px;
@@ -614,7 +618,7 @@ const close = handleClickClose;
 			position: absolute;
 			width: 100%;
 			height: 100%;
-			border: 2px solid -getColor("text");
+			border: 2px solid getColor("text");
 			border-radius: inherit;
 			border-top: 2px solid transparent;
 			border-left: 2px solid transparent;
@@ -630,7 +634,7 @@ const close = handleClickClose;
 			position: absolute;
 			width: 100%;
 			height: 100%;
-			border: 2px dashed -getColor("text");
+			border: 2px dashed getColor("text");
 			border-radius: inherit;
 			border-top: 2px solid transparent;
 			border-left: 2px solid transparent;
@@ -787,3 +791,4 @@ const close = handleClickClose;
 	}
 }
 </style>
+

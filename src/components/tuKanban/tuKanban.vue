@@ -167,7 +167,7 @@ let selectItem = (item: TuKanbanItem) => {
 </script>
 
 <style scoped lang="scss">
-@import "../../style/sass/_mixins";
+@import "../../style/sass/_functions";
 
 .tu-kanban {
 	display: flex;
@@ -177,8 +177,8 @@ let selectItem = (item: TuKanbanItem) => {
 
 
 .selected-item {
-	border: 2px solid -getColorAlpha("primary", 1);
-	background-color: -getColorAlpha("primary", 0.1) !important;
+	border: 2px solid getColorAlpha("primary", 1);
+	background-color: getColorAlpha("primary", 0.1) !important;
 }
 
 .tu-kanban-main {
@@ -212,7 +212,7 @@ let selectItem = (item: TuKanbanItem) => {
 	.tu-kanban-header {
 		top: 0;
 		width: 100%;
-		background-color: -getColor("gray-2");
+		background-color: getColor("gray-2");
 		padding: 10px;
 		font-weight: bold;
 		position: sticky;
@@ -249,8 +249,8 @@ let selectItem = (item: TuKanbanItem) => {
 	}
 
 	.selectedItem {
-		border: 2px solid -getColorAlpha("primary", 1);
-		background: -getColorAlpha("primary", 0.2);
+		border: 2px solid getColorAlpha("primary", 1);
+		background: getColorAlpha("primary", 0.2);
 	}
 }
 

@@ -12,6 +12,10 @@
 import { inject } from "vue";
 import { Router } from "vue-router";
 
+defineOptions({
+	name: "TuTd"
+});
+
 interface Props {
 	checkbox?: boolean;
 	edit?: boolean;

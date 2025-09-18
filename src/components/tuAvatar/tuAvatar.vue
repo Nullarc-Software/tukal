@@ -65,6 +65,10 @@ import {
 	ComponentInternalInstance
 } from "vue";
 
+defineOptions({
+	name: "TuAvatar"
+});
+
 interface Props {
 	badgePosition?: string | null;
 	pointer?: boolean;
@@ -165,7 +169,7 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-@import "../../style/sass/_mixins";
+@import "../../style/sass/_functions";
 @import "../../style/sass/root";
 
 .tu-avatar-content {
@@ -185,7 +189,7 @@ onMounted(() => {
 	&.tu-change-getColor-badge {
 		.tu-avatar__badge {
 			.tu-avatar__points__point {
-				background: -getColor("background");
+				background: getColor("background");
 			}
 		}
 	}
@@ -267,7 +271,7 @@ onMounted(() => {
 		.tu-avatar {
 			width: calc(100% - 4px);
 			height: calc(100% - 4px);
-			border: 2px solid -getColor("background");
+			border: 2px solid getColor("background");
 			margin: 2px;
 		}
 
@@ -281,31 +285,31 @@ onMounted(() => {
 			border-radius: inherit;
 			background-getcolor: #ffe53b;
 			z-index: -1;
-			background: -getColor("color");
+			background: getColor("color");
 		}
 	}
 
 	&.tu-component--is-getColor {
 		.tu-avatar {
-			color: -getColor("background");
+			color: getColor("background");
 		}
 
 		.tu-avatar__points {
 			.tu-avatar__points__point {
-				background: -getColor("background");
+				background: getColor("background");
 			}
 		}
 	}
 }
 
 .tu-avatar::v-deep {
-	background: -getColor("color");
+	background: getColor("color");
 	color: #fff;
 	overflow: hidden;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	color: -getColor("text");
+	color: getColor("text");
 	border-radius: inherit;
 	width: 100%;
 	height: 100%;
@@ -399,15 +403,15 @@ onMounted(() => {
 		position: absolute;
 		width: 13px;
 		height: 13px;
-		background: -getColor("badge");
+		background: getColor("badge");
 		border-radius: 50%;
-		border: 2px solid -getColor("background") !important;
+		border: 2px solid getColor("background") !important;
 		right: -4px;
 		bottom: -4px;
 		font-size: 0.6rem;
 		font-weight: bold;
 		z-index: 200;
-		color: -getColor("text");
+		color: getColor("text");
 
 		&.isSlot,
 		&.writing {
@@ -418,7 +422,7 @@ onMounted(() => {
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			color: -getColor("background");
+			color: getColor("background");
 			line-height: 0.9rem;
 			padding: 0px 3px;
 			min-height: 18px;
@@ -451,7 +455,7 @@ onMounted(() => {
 		&__point {
 			width: 5px;
 			height: 5px;
-			background: -getColor("text");
+			background: getColor("text");
 			margin: 0px 2px;
 			border-radius: 50%;
 
@@ -491,7 +495,7 @@ onMounted(() => {
 		width: auto;
 		height: auto;
 		min-height: 90%;
-		background: -getColor("gray-3");
+		background: getColor("gray-3");
 		top: 50%;
 		transform: translate(0, -50%);
 		right: -20px;
@@ -531,3 +535,4 @@ onMounted(() => {
 	}
 }
 </style>
+

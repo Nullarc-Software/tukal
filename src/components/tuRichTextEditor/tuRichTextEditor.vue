@@ -163,6 +163,10 @@ import TextAlign from "@tiptap/extension-text-align";
 import { Editor, EditorContent } from "@tiptap/vue-3";
 import { tuButtonGroup } from "../tuButton";
 
+defineOptions({
+	name: "TuRichTextEditor"
+});
+
 interface Props {
 	standard?: boolean;
 	bold?: boolean;
@@ -266,10 +270,10 @@ watch(
 </script>
 
 <style lang="scss">
-@import "../../style/sass/_mixins";
+@import "../../style/sass/_functions";
 
 .ProseMirror {
-	border: 2px solid -getColorAlpha("text", 0.1);
+	border: 2px solid getColorAlpha("text", 0.1);
 	background: rgba(var(--tu-gray-2), 1);
 	color: rgba(var(--tu-text), 1);
 	padding: 7px 13px;
@@ -327,12 +331,12 @@ watch(
 
 	blockquote {
 		padding-left: 1rem;
-		border-left: 2px solid -getColor("text");
+		border-left: 2px solid getColor("text");
 	}
 
 	hr {
 		border: none;
-		border-top: 2px solid -getColor("text");
+		border-top: 2px solid getColor("text");
 		margin: 2rem 0;
 	}
 }
@@ -345,9 +349,9 @@ watch(
 .editor-header.flex {
 	display: flex;
 	flex-wrap: wrap;
-	border-left: 2px solid -getColorAlpha("text", 0.1);
-	border-right: 2px solid -getColorAlpha("text", 0.1);
-	border-top: 2px solid -getColorAlpha("text", 0.1);
+	border-left: 2px solid getColorAlpha("text", 0.1);
+	border-right: 2px solid getColorAlpha("text", 0.1);
+	border-top: 2px solid getColorAlpha("text", 0.1);
 	border-top-left-radius: 20px;
 	border-top-right-radius: 20px;
 }

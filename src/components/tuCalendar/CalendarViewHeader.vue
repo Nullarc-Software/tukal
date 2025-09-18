@@ -69,6 +69,11 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
 import { IHeaderProps } from "./IHeaderProps";
+
+defineOptions({
+	name: "CalendarViewHeader"
+});
+
 defineProps({
 	headerProps: {
 		type: Object as () => IHeaderProps,

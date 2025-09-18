@@ -14,6 +14,10 @@
 <script lang="ts" setup>
 import { ref, onMounted, watch } from "vue";
 
+defineOptions({
+	name: "TuTimeline"
+});
+
 interface Props {
 	intervalStartTime?: number;
 	intervalEndTime?: number;

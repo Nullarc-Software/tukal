@@ -10,6 +10,10 @@ import colorPicker from "@caohenghu/vue-colorpicker";
 import { Router } from "vue-router";
 import { getColor } from "../../utils";
 
+defineOptions({
+	name: "TuColorPicker"
+});
+
 interface Props {
 	modelValue?: string;
 	// tuComponent props
@@ -52,13 +56,14 @@ const changeColor = (colorData: any) => {
 </script>
 
 <style lang="scss">
-@import "../../style/sass/_mixins";
+@import "../../style/sass/_functions";
 
 .content-box {
 	box-sizing: content-box !important;
 }
 
 .hu-color-picker {
-	background-color: -getColor("gray-2");
+	background-color: getColor("gray-2");
 }
 </style>
+

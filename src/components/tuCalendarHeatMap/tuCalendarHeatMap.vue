@@ -251,7 +251,7 @@ onBeforeUnmount(() => {
 </script>
 
 <style lang="scss">
-@import "../../style/sass/_mixins";
+@import "../../style/sass/_functions";
 @import "../../style/sass/root";
 
 .vch__container {

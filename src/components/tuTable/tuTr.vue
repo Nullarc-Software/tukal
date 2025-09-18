@@ -32,6 +32,10 @@ import {
 import { Router } from "vue-router";
 import { TuTableStore } from "./tuTableStore";
 
+defineOptions({
+	name: "TuTr"
+});
+
 interface Props {
 	data?: unknown;
 	isSelected?: boolean;
@@ -142,7 +146,7 @@ watch(() => props.expanded, () => {
 </style>
 
 <style lang="scss" scoped>
-@import "../../style/sass/_mixins";
+@import "../../style/sass/_functions";
 
 .isMultipleSelected {
 	::v-deep(.tu-table__tr) {
@@ -155,7 +159,7 @@ watch(() => props.expanded, () => {
 .tu-table__tr {
 	padding: 5px;
 	border: 0px;
-	border-bottom: 1px solid -getColorAlpha("text", 0.2);
+	border-bottom: 1px solid getColorAlpha("text", 0.2);
 
 
 	&.expand {
@@ -164,11 +168,11 @@ watch(() => props.expanded, () => {
 
 	&.tu-change-color {
 		::v-deep(.tu-table__td) {
-			background: -getColorAlpha("color", 0.1) !important;
-			color: -getColor("color") !important;
+			background: getColorAlpha("color", 0.1) !important;
+			color: getColor("color") !important;
 
 			&:hover {
-				background: -getColorAlpha("color", 0.2) !important;
+				background: getColorAlpha("color", 0.2) !important;
 			}
 		}
 	}
@@ -199,14 +203,14 @@ watch(() => props.expanded, () => {
 
 	&.isExpand:first-of-type {
 		::v-deep(.tu-table__td) {
-			background: -getColor("gray-1") !important;
+			background: getColor("gray-1") !important;
 			border-radius: 0px;
 		}
 	}
 
 	&.isExpand:not(:first-of-type) {
 		::v-deep(.tu-table__td) {
-			background: -getColor("gray-1") !important;
+			background: getColor("gray-1") !important;
 
 			&:last-child {
 				border-radius: 0px 15px 0px 0px;
@@ -226,27 +230,27 @@ watch(() => props.expanded, () => {
 
 	&.selected {
 		::v-deep(.tu-table__td) {
-			background: -getColorAlpha("color", 0.1) !important;
-			color: -getColor("color") !important;
+			background: getColorAlpha("color", 0.1) !important;
+			color: getColor("color") !important;
 		}
 	}
 
 	::v-deep(.tu-table__td) {
-		background: -getColorAlpha("bg", 0.1);
-		color: -getColor("bg");
+		background: getColorAlpha("bg", 0.1);
+		color: getColor("bg");
 	}
 
 	&.tu-change-color {
 		&:hover {
 			::v-deep(.tu-table__td) {
-				background: -getColorAlpha("color", 0.2) !important;
+				background: getColorAlpha("color", 0.2) !important;
 			}
 		}
 	}
 
 	&:hover {
 		::v-deep(.tu-table__td) {
-			background: -getColor("gray-1");
+			background: getColor("gray-1");
 		}
 	}
 }
@@ -258,7 +262,7 @@ watch(() => props.expanded, () => {
 	::v-deep(td) {
 		transition: all 0.25s ease;
 		padding: 0px;
-		background: -getColor("gray-1") !important;
+		background: getColor("gray-1") !important;
 		border: 0px;
 
 		.tu-table__expand__td__content {
@@ -278,3 +282,4 @@ watch(() => props.expanded, () => {
 	border-bottom: none !important;
 }
 </style>
+

@@ -32,6 +32,10 @@
 import { computed } from "vue";
 import * as _color from "../../utils";
 
+defineOptions({
+	name: "TuChip"
+});
+
 interface Props {
 	item?: boolean;
 	value?: Array<any> | null;

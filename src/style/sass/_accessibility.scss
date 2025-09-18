@@ -1,0 +1,294 @@
+@use "functions" as *;
+
+// =============================================================================
+// ACCESSIBILITY ENHANCEMENTS
+// =============================================================================
+
+// Global focus styles for better accessibility
+*:focus-visible {
+  outline: 2px solid var(--tu-primary, #2563eb);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+}
+
+*:focus:not(:focus-visible) {
+  outline: none;
+}
+
+// =============================================================================
+// HIGH CONTRAST MODE SUPPORT
+// =============================================================================
+
+@media (prefers-contrast: high) {
+  .tu-button {
+    border: 2px solid currentColor;
+  }
+  
+  .tu-input {
+    border: 2px solid currentColor;
+  }
+  
+  .tu-select {
+    border: 2px solid currentColor;
+  }
+}
+
+// =============================================================================
+// REDUCED MOTION PREFERENCES
+// =============================================================================
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  // Disable transform animations that might cause motion sickness
+  .tu-button {
+    &:hover {
+      transform: none !important;
+    }
+  }
+}
+
+// =============================================================================
+// COLOR CONTRAST IMPROVEMENTS
+// =============================================================================
+
+// Ensure minimum contrast ratios
+:root {
+  // Enhanced focus colors with better contrast
+  --tu-focus-color: #2563eb;
+  --tu-focus-bg: rgba(37, 99, 235, 0.1);
+  
+  // Error states with better contrast
+  --tu-error-text: #dc2626;
+  --tu-error-bg: #fef2f2;
+  --tu-error-border: #fecaca;
+  
+  // Success states with better contrast
+  --tu-success-text: #059669;
+  --tu-success-bg: #f0fdf4;
+  --tu-success-border: #bbf7d0;
+  
+  // Warning states with better contrast
+  --tu-warning-text: #d97706;
+  --tu-warning-bg: #fffbeb;
+  --tu-warning-border: #fed7aa;
+}
+
+// Dark theme adjustments for better contrast
+body.tu-dark-theme {
+  --tu-focus-color: #60a5fa;
+  --tu-focus-bg: rgba(96, 165, 250, 0.1);
+  
+  --tu-error-text: #f87171;
+  --tu-error-bg: #1f1415;
+  --tu-error-border: #991b1b;
+  
+  --tu-success-text: #34d399;
+  --tu-success-bg: #14181a;
+  --tu-success-border: #047857;
+  
+  --tu-warning-text: #fbbf24;
+  --tu-warning-bg: #1f1b14;
+  --tu-warning-border: #b45309;
+}
+
+// =============================================================================
+// ENHANCED INTERACTIVE STATES
+// =============================================================================
+
+// Better button focus states
+.tu-button {
+  @include focus-ring(var(--tu-focus-color));
+  
+  // Ensure adequate touch target size (44px minimum)
+  min-height: 22px;
+  min-width: 22px;
+  
+  // Better disabled state
+  &:disabled,
+  &[aria-disabled="true"] {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+  
+  // Loading state
+  &[aria-busy="true"] {
+    cursor: wait;
+    
+    // Hide text content but keep accessible
+    .tu-button__content {
+      opacity: 0;
+    }
+  }
+}
+
+// Enhanced form field accessibility
+.tu-input,
+.tu-select,
+.tu-textarea {
+  @include focus-ring(var(--tu-focus-color));
+  
+  // Error state
+  &[aria-invalid="true"] {
+    border-color: var(--tu-error-border);
+    background-color: var(--tu-error-bg);
+    color: var(--tu-error-text);
+  }
+  
+  // Required field indicator
+  &[required] + label::after,
+  &[aria-required="true"] + label::after {
+    content: " *";
+    color: var(--tu-error-text);
+  }
+}
+
+// =============================================================================
+// SCREEN READER ENHANCEMENTS
+// =============================================================================
+
+// Screen reader only content
+.sr-only {
+  @include visually-hidden;
+}
+
+// Skip links for keyboard navigation
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: var(--tu-primary);
+  color: white;
+  padding: spacing('sm') spacing('md');
+  text-decoration: none;
+  border-radius: border-radius('md');
+  z-index: z-index('tooltip');
+  transition: transform transition('fast');
+  
+  &:focus {
+    transform: translateY(40px);
+  }
+}
+
+// =============================================================================
+// LIVE REGION STYLES
+// =============================================================================
+
+// ARIA live regions for dynamic content
+[aria-live] {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+// Toast/notification accessibility
+.tu-toast {
+  &[role="alert"],
+  &[role="status"] {
+    // Ensure it's announced by screen readers
+    position: relative;
+    left: auto;
+    width: auto;
+    height: auto;
+    overflow: visible;
+  }
+}
+
+// =============================================================================
+// KEYBOARD NAVIGATION ENHANCEMENTS
+// =============================================================================
+
+// Enhanced tab navigation
+[tabindex="-1"]:focus {
+  outline: none;
+}
+
+// Better focus indication for custom elements
+.tu-tab,
+.tu-accordion-trigger,
+.tu-menu-item {
+  @include focus-ring(var(--tu-focus-color));
+  
+  // Keyboard navigation states
+  &[aria-selected="true"],
+  &[aria-current="true"] {
+    background-color: var(--tu-focus-bg);
+    border-color: var(--tu-focus-color);
+  }
+}
+
+// =============================================================================
+// PRINT STYLES
+// =============================================================================
+
+@media print {
+  // Hide non-essential elements
+  .tu-button,
+  .tu-sidebar,
+  .tu-navbar {
+    display: none !important;
+  }
+  
+  // Ensure good contrast in print
+  * {
+    background: white !important;
+    color: black !important;
+    box-shadow: none !important;
+  }
+  
+  // Show URLs for links
+  a[href]::after {
+    content: " (" attr(href) ")";
+    font-size: smaller;
+  }
+}
+
+// =============================================================================
+// WINDOWS HIGH CONTRAST MODE
+// =============================================================================
+
+@media (-ms-high-contrast: active) {
+  .tu-button {
+    border: 2px solid ButtonText;
+  }
+  
+  .tu-input,
+  .tu-select {
+    border: 2px solid ButtonText;
+    background-color: Field;
+    color: FieldText;
+  }
+  
+  .tu-disabled {
+    color: GrayText;
+  }
+}
+
+// =============================================================================
+// TOUCH DEVICE OPTIMIZATIONS
+// =============================================================================
+
+@media (hover: none) and (pointer: coarse) {
+  // Increase touch targets on touch devices
+  .tu-button,
+  .tu-tab,
+  .tu-menu-item {
+    min-height: 48px;
+    padding: spacing('md');
+  }
+  
+  // Remove hover effects on touch devices
+  .tu-button:hover {
+    transform: none;
+  }
+}

@@ -1,0 +1,183 @@
+// Design Tokens
+// This file contains all design tokens used throughout the Tukal component library
+
+// =============================================================================
+// SPACING TOKENS
+// =============================================================================
+$spacing: (
+  'none': 0,
+  'xs': 0.25rem,    // 4px
+  'sm': 0.5rem,     // 8px
+  'md': 1rem,       // 16px
+  'lg': 1.5rem,     // 24px
+  'xl': 2rem,       // 32px
+  'xxl': 3rem,      // 48px
+  'xxxl': 4rem      // 64px
+) !default;
+
+// =============================================================================
+// TYPOGRAPHY TOKENS
+// =============================================================================
+$font-size: (
+  'xs': 0.75rem,    // 12px
+  'sm': 0.875rem,   // 14px
+  'base': 1rem,     // 16px
+  'lg': 1.125rem,   // 18px
+  'xl': 1.25rem,    // 20px
+  'xxl': 1.5rem,    // 24px
+  'xxxl': 1.875rem, // 30px
+  'display': 2.25rem // 36px
+) !default;
+
+$font-weight: (
+  'light': 300,
+  'normal': 400,
+  'medium': 500,
+  'semibold': 600,
+  'bold': 700,
+  'extrabold': 800
+) !default;
+
+$line-height: (
+  'tight': 1.25,
+  'normal': 1.5,
+  'relaxed': 1.75
+) !default;
+
+// =============================================================================
+// BORDER & RADIUS TOKENS
+// =============================================================================
+$border-width: (
+  'none': 0,
+  'thin': 1px,
+  'medium': 2px,
+  'thick': 4px
+) !default;
+
+$border-radius: (
+  'none': 0,
+  'xs': 0.125rem,   // 2px
+  'sm': 0.25rem,    // 4px
+  'md': 0.375rem,   // 6px
+  'lg': 0.5rem,     // 8px
+  'xl': 0.75rem,    // 12px
+  'xxl': 1rem,      // 16px
+  'full': 9999px
+) !default;
+
+// =============================================================================
+// SHADOW TOKENS
+// =============================================================================
+$shadow: (
+  'none': none,
+  'xs': 0 1px 2px 0 rgba(0, 0, 0, 0.05),
+  'sm': '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+  'md': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+  'lg': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+  'xl': '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+  'xxl': 0 25px 50px -12px rgba(0, 0, 0, 0.25),
+  'inner': inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)
+) !default;
+
+// =============================================================================
+// Z-INDEX TOKENS
+// =============================================================================
+$z-index: (
+  'auto': auto,
+  'base': 1,
+  'elevated': 10,
+  'sticky': 100,
+  'fixed': 1000,
+  'overlay': 9000,
+  'modal': 9500,
+  'popover': 9750,
+  'tooltip': 9900,
+  'toast': 9950
+) !default;
+
+// =============================================================================
+// TRANSITION TOKENS
+// =============================================================================
+$transition: (
+  'none': none,
+  'fast': 150ms ease-in-out,
+  'base': 200ms ease-in-out,
+  'slow': 300ms ease-in-out,
+  'slower': 500ms ease-in-out
+) !default;
+
+$easing: (
+  'linear': linear,
+  'ease': ease,
+  'ease-in': ease-in,
+  'ease-out': ease-out,
+  'ease-in-out': ease-in-out,
+  'bounce': cubic-bezier(0.68, -0.55, 0.265, 1.55),
+  'smooth': cubic-bezier(0.25, 0.46, 0.45, 0.94)
+) !default;
+
+// =============================================================================
+// COMPONENT SIZE TOKENS
+// =============================================================================
+$component-size: (
+  'xs': (
+    'height': 1.1rem,    // 20px - much smaller for mini buttons
+    'padding-x': map-get($spacing, 'sm'),   // Increased from xs to sm
+    'padding-y': map-get($spacing, 'xs'),
+    'font-size': map-get($font-size, 'xs')
+  ),
+  'sm': (
+    'height': 1.5rem,       // 32px - small buttons
+    'padding-x': map-get($spacing, 'md'),   // Increased from sm to md
+    'padding-y': map-get($spacing, 'xs'),
+    'font-size': map-get($font-size, 'sm')
+  ),
+  'md': (
+    'height': 2rem,    // 44px - default size, slightly larger
+    'padding-x': map-get($spacing, 'md'),  
+    'padding-y': map-get($spacing, 'sm'),
+    'font-size': map-get($font-size, 'base')
+  ),
+  'lg': (
+    'height': 3rem,     // 56px - large buttons, bigger jump
+    'padding-x': map-get($spacing, 'xl'),   
+    'padding-y': map-get($spacing, 'md'),
+    'font-size': map-get($font-size, 'lg')
+  ),
+  'xl': (
+    'height': 4rem,     // 72px - extra large, very prominent
+    'padding-x': map-get($spacing, 'xxl'),  // Increased from xl to xxl
+    'padding-y': map-get($spacing, 'lg'),
+    'font-size': map-get($font-size, 'xl')
+  )
+) !default;
+
+// =============================================================================
+// BREAKPOINT TOKENS
+// =============================================================================
+$breakpoints: (
+  'xs': 0,
+  'sm': 640px,
+  'md': 768px,
+  'lg': 1024px,
+  'xl': 1280px,
+  'xxl': 1536px
+) !default;
+
+
+// =============================================================================
+// COLOR TOKENS
+// =============================================================================
+
+$tu-colors: (
+	"primary",
+	"secondary", 
+	"danger",
+	"success",
+	"warn",
+	"dark",
+	"light",
+	"background",
+	"text",
+	"color"
+);

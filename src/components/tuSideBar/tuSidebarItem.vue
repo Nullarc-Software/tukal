@@ -23,6 +23,10 @@
 
 <script lang="ts" setup>
 import { inject, onMounted, ref, watch, type Ref } from "vue";
+
+defineOptions({
+	name: "TuSidebarItem"
+});
 import { ComponentConstants } from "../tuComponent";
 import * as _ from "lodash";
 import * as pathRegex from "path-to-regexp";
@@ -117,7 +121,7 @@ onMounted(() => {
 </script>
 
 <style lang="scss">
-@import "../../style/sass/_mixins";
+@import "../../style/sass/_functions";
 
 .tu-sidebar__a {
 	display: contents;
@@ -137,7 +141,7 @@ onMounted(() => {
 	align-items: center;
 	justify-content: flex-start;
 	position: relative;
-	color: -getColor("text");
+	color: getColor("text");
 	border: 0px;
 
 	&.hasIcon {
@@ -160,7 +164,7 @@ onMounted(() => {
 		top: 0px;
 		width: 10px;
 		height: 100%;
-		background: -getColor("color");
+		background: getColor("color");
 		border-radius: 0px 20px 20px 0px;
 		transform: translate(-6px);
 		transition: all 0.25s ease;
@@ -174,8 +178,8 @@ onMounted(() => {
 	&.active {
 		opacity: 1;
 
-		// background: -getColor('background', .1) !important
-		color: -getColor("color");
+		// background: getColor('background', .1) !important
+		color: getColor("color");
 
 		&:after {
 			transform: translate(0px);
@@ -247,3 +251,4 @@ onMounted(() => {
 	}
 }
 </style>
+

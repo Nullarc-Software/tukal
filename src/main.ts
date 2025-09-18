@@ -1,4 +1,3 @@
-import * as tuComponents from "./components/index";
 import "./style/sass/vuesax.scss";
 import tuTheme from "./utils/theme";
 import DefineVuesaxMixin from "./defineGlobalMixin";
@@ -15,10 +14,7 @@ import Component2 from "../test/Component2.vue";
 const install = function (Vue : App, options : any = {}) {
 	// set default options
 
-	// Use Components
-	Object.values(tuComponents).forEach((tuComponent) => {
-		Vue.component(tuComponent.name, tuComponent);
-	});
+	// Removed global component registration - components now imported individually
 	if (options) {
 		if (Object.prototype.hasOwnProperty.call(options, "theme")) {
 			if (Object.prototype.hasOwnProperty.call(options, "color")) {

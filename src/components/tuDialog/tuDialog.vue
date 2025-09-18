@@ -46,6 +46,10 @@ import { Router } from "vue-router";
 import tuButton from "../tuButton/tuButton.vue";
 import tuIcon from "../tuIcon/tuIcon.vue";
 
+defineOptions({
+	name: "TuDialog"
+});
+
 interface Props {
 	modelValue?: boolean;
 	loading?: boolean;
@@ -159,10 +163,12 @@ const closeClick = function () {
 </script>
 
 <style lang="scss">
-@import "../../style/sass/_mixins";
+@import "../../style/sass/_functions";
+@import "../../style/sass/_tokens";
 
+// Enhanced transition animations using design tokens
 .tu-dialog-enter-active {
-	transition: all 0.25s ease;
+	transition: all map-get($transition, 'slow');
 
 	.tu-dialog {
 		&:not(.tu-dialog--fullScreen) {
@@ -172,10 +178,10 @@ const closeClick = function () {
 }
 
 .tu-dialog-leave-active {
-	transition: all 0.15s ease;
+	transition: all map-get($transition, 'fast');
 
 	.tu-dialog {
-		transition: all 0.15s ease;
+		transition: all map-get($transition, 'fast');
 	}
 }
 
@@ -185,7 +191,7 @@ const closeClick = function () {
 
 	.tu-dialog {
 		transform: scale(0.7);
-		box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, -var("shadow-opacity"));
+		box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, tuVar("shadow-opacity"));
 
 		&--fullScreen {
 			transform: translate(0, 8%) !important;
@@ -229,13 +235,14 @@ const closeClick = function () {
 	}
 }
 
+// Enhanced dialog content container using design tokens
 .tu-dialog-content {
 	--tu-color: var(--tu-primary);
-	background: rgba(0, 0, 0, -var("background-opacity"));
+	background: getColorAlpha("background", 0.8);
 	position: fixed;
-	left: 0px;
-	top: 0px;
-	z-index: -var("zindex-2");
+	left: 0;
+	top: 0;
+	z-index: map-get($z-index, 'modal');
 	display: flex;
 	align-items: flex-start;
 	justify-content: center;
@@ -244,35 +251,53 @@ const closeClick = function () {
 	max-height: 100vh;
 	overflow-y: auto;
 	overflow-x: hidden;
-	padding-top: 80px;
-	padding-bottom: 80px;
+	padding-top: map-get($spacing, 'xxl');
+	padding-bottom: map-get($spacing, 'xxl');
+
+	// Enhanced focus management for accessibility
+	&:focus-within {
+		.tu-dialog {
+			outline: 2px solid var(--tu-primary, #2563eb);
+			outline-offset: 4px;
+		}
+	}
 
 	&.fullScreen {
-		padding: 0px;
+		padding: 0;
 		overflow: hidden;
 	}
 
 	&.blur {
 		backdrop-filter: saturate(180%) blur(15px);
+		background: getColorAlpha("background", 0.6);
 	}
 }
 
+// Dark theme support
 .tu-dark-theme {
 	.tu-dialog {
-		background: -getColor("gray-1");
+		background: getColor("component-background");
+		border: 1px solid getColorAlpha("text", 0.12);
 	}
 }
 
+// Enhanced main dialog component using design tokens
 .tu-dialog {
-	background: -getColor("background");
-	color: -getColor("text");
+	background: getColor("component-background");
+	color: getColor("text");
 	position: relative;
 	min-width: 400px;
-	border-radius: -var("radius");
-	transition: all 0.25s ease;
-	box-shadow: 0px 5px 30px 0px rgba(0, 0, 0, -var("shadow-opacity"));
+	border-radius: map-get($border-radius, 'xl');
+	transition: all map-get($transition, 'slow');
+	box-shadow: map-get($shadow, 'xl');
 	max-width: calc(100vw - 10%);
 	margin: auto;
+	border: 1px solid getColorAlpha("text", 0.08);
+
+	// Enhanced accessibility and focus management
+	&[tabindex="-1"]:focus {
+		outline: none;
+	}
 
 	&--notCenter {
 		.tu-dialog__header {
@@ -287,7 +312,7 @@ const closeClick = function () {
 		left: 0px;
 		height: 100%;
 		border-radius: inherit;
-		background: -getColorAlpha("background", 0.8);
+		background: getColorAlpha("background", 0.8);
 		z-index: 100;
 		display: flex;
 		align-items: center;
@@ -299,14 +324,14 @@ const closeClick = function () {
 			width: 30px;
 			height: 30px;
 			border-radius: inherit;
-			border: 2px solid -getColor("color");
-			border-top: 2px solid -getColorAlpha("color", 0);
-			border-left: 2px solid -getColorAlpha("color", 0);
-			border-bottom: 2px solid -getColorAlpha("color", 0);
+			border: 2px solid getColor("color");
+			border-top: 2px solid getColorAlpha("color", 0);
+			border-left: 2px solid getColorAlpha("color", 0);
+			border-bottom: 2px solid getColorAlpha("color", 0);
 			box-sizing: border-box;
 			transition: all 0.25s ease;
 			display: block;
-			box-shadow: 0px 0px 0px 0px -getColor("color");
+			box-shadow: 0px 0px 0px 0px getColor("color");
 			animation: loadingDialog 0.6s ease infinite;
 		}
 
@@ -316,14 +341,14 @@ const closeClick = function () {
 			width: 30px;
 			height: 30px;
 			border-radius: inherit;
-			border: 2px dashed -getColor("color");
-			border-top: 2px solid -getColorAlpha("color", 0);
-			border-left: 2px solid -getColorAlpha("color", 0);
-			border-bottom: 2px solid -getColorAlpha("color", 0);
+			border: 2px dashed getColor("color");
+			border-top: 2px solid getColorAlpha("color", 0);
+			border-left: 2px solid getColorAlpha("color", 0);
+			border-bottom: 2px solid getColorAlpha("color", 0);
 			box-sizing: border-box;
 			transition: all 0.25s ease;
 			display: block;
-			box-shadow: 0px 0px 0px 0px -getColor("color");
+			box-shadow: 0px 0px 0px 0px getColor("color");
 			animation: loadingDialog 0.6s linear infinite;
 		}
 	}
@@ -401,7 +426,7 @@ const closeClick = function () {
 	}
 
 	&__close {
-		color: -getColor("text");
+		color: getColor("text");
 		position: absolute;
 		padding: 0px !important;
 		top: -6px;
@@ -413,7 +438,7 @@ const closeClick = function () {
 		justify-content: center;
 		background: inherit;
 		border-radius: 12px;
-		box-shadow: 0px 5px 20px 0px rgba(0, 0, 0, -var("shadow-opacity"));
+		box-shadow: 0px 5px 20px 0px rgba(0, 0, 0, tuVar("shadow-opacity"));
 		transition: all 0.25s ease;
 		z-index: 200;
 		border: 0px;
@@ -437,7 +462,7 @@ const closeClick = function () {
 		}
 
 		&:hover {
-			box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, -var("shadow-opacity"));
+			box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, tuVar("shadow-opacity"));
 			transform: translate(-2px, 2px);
 
 			i {
@@ -473,3 +498,4 @@ const closeClick = function () {
 	}
 }
 </style>
+

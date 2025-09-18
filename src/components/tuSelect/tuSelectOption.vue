@@ -7,9 +7,9 @@
 			hiddenOption: hiddenOption
 		}
 	]" v-bind="$attrs" v-on="listeners" ref="option">
-		<tu-checkbox v-if="isMultiple" v-model="isActive">
+		<tu-check-box v-if="isMultiple" v-model="isActive">
 			<slot />
-		</tu-checkbox>
+		</tu-check-box>
 		<slot v-else />
 	</button>
 </template>
@@ -24,6 +24,10 @@ import {
 	ref,
 	watch
 } from "vue";
+
+defineOptions({
+	name: "TuSelectOption"
+});
 import { SelectOptionConstants } from "./common";
 import tuCheckbox from "../tuCheckBox";
 
@@ -95,14 +99,37 @@ const isMultiple = computed(() => {
 
 const listeners = computed(() => {
 	return {
-		click: () => {
-			// console.log(this.value);
+		click: (event: Event) => {
+			// Prevent the click from bubbling up to trigger window click handler
+			// This prevents dropdown from closing when clicking options in multi-select mode
+			if (multiple?.value) {
+				event.stopPropagation();
+				event.preventDefault();
+			}
 
 			onClickOption?.call(null, props.value, props.label);
 		},
-		blur: () => {
-			if (!targetSelect?.value && !targetClose?.value)
-				updateActiveOptions?.call(null, false);
+		mousedown: (event: Event) => {
+			// Also prevent mousedown from bubbling since that's what the window listener uses
+			if (multiple?.value) {
+				event.stopPropagation();
+				event.preventDefault();
+			}
+		},
+		blur: (event: Event) => {
+			// In multi-select mode, be more careful about blur handling
+			if (multiple?.value) {
+				// Check if we're still within the select component
+				if (!targetSelect?.value && !targetClose?.value) {
+					// Delay to allow other events to process
+					setTimeout(() => {
+						updateActiveOptions?.call(null, false);
+					}, 150);
+				}
+			} else {
+				if (!targetSelect?.value && !targetClose?.value)
+					updateActiveOptions?.call(null, false);
+			}
 		}
 	};
 });
@@ -127,7 +154,7 @@ onMounted(() => {
 </script>
 
 <style lang="scss">
-@import "../../style/sass/_mixins";
+@import "../../style/sass/_functions";
 
 .tu-select__option {
 	border: 0px;
@@ -136,9 +163,9 @@ onMounted(() => {
 	text-align: left;
 	background: transparent;
 	transition: all 0.25s ease;
-	color: -getColor("text");
+	color: getColor("text");
 	border-radius: 5px;
-	box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, -var(shadow-opacity));
+	box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, tuVar(shadow-opacity));
 	margin: 2px 0px;
 	display: flex;
 	align-items: center;
@@ -147,6 +174,18 @@ onMounted(() => {
 	opacity: 1;
 	visibility: visible;
 	max-height: 40px;
+	
+	// Remove browser default focus outline for mouse interactions
+	// while maintaining accessibility for keyboard navigation
+	&:focus {
+		outline: none;
+	}
+	
+	// Only show focus ring on keyboard navigation
+	&:focus-visible {
+		outline: 2px solid getColor("primary");
+		outline-offset: 2px;
+	}
 
 	&.hiddenOption {
 		//display: none;
@@ -168,11 +207,11 @@ onMounted(() => {
 		}
 
 		&.isHover {
-			background: -getColor("gray-2") !important;
+			background: getColor("gray-2") !important;
 		}
 
 		&:disabled {
-			.tu-checkbox-content {
+			.tu-check-box-content {
 				pointer-events: none;
 			}
 		}
@@ -181,15 +220,15 @@ onMounted(() => {
 			padding-left: 5px !important;
 		}
 
-		.tu-checkbox-content {
+		.tu-check-box-content {
 			width: 100%;
 			pointer-events: none;
 
-			.tu-checkbox-con {
+			.tu-check-box-con {
 				transform: scale(0.85);
 			}
 
-			.tu-checkbox-label {
+			.tu-check-box-label {
 				width: calc(100% - 23px);
 				text-align: left;
 				justify-content: flex-start;
@@ -202,19 +241,20 @@ onMounted(() => {
 	}
 
 	&.isHover {
-		background: -getColor("gray-2");
+		background: getColor("gray-2");
 	}
 
 	&.activeOption {
-		background: -getColorAlpha("color", 0.05);
-		color: -getColor("color");
+		background: getColorAlpha("color", 0.05);
+		color: getColor("color");
 	}
 
 	// &:last-child
 	//   border-radius: 0px 0px 12px 12px
 	&:hover:not(:disabled) {
-		color: -getColor("color");
+		color: getColor("color");
 		padding-left: 14px;
 	}
 }
 </style>
+

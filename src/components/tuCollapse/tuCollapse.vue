@@ -6,6 +6,10 @@
 <script setup lang="ts">
 import { provide, ref } from "vue";
 
+defineOptions({
+	name: "TuCollapse"
+});
+
 interface Props {
 	accordion?: boolean;
 	type?: string;

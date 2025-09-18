@@ -33,6 +33,10 @@ import { useRouter } from "vue-router";
 import { serverRequest, TuHistoryEvent, TuHistoryServerModel } from "./utils";
 import { tuInfiniteLoading } from "../tuInfiniteLoading";
 
+defineOptions({
+	name: "TuHistory"
+});
+
 interface Props {
 	events?: TuHistoryEvent[];
 	alternative?: boolean;
@@ -171,7 +175,7 @@ const load = async ($state: any) => {
 </script>
 
 <style scoped lang="scss">
-@import "../../style/sass/_mixins.scss";
+@import "../../style/sass/_functions.scss";
 
 * {
 	margin: 0;

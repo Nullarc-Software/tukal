@@ -22,6 +22,11 @@
 
 <script setup lang="ts">
 import { reactive, ref, watch } from "vue";
+
+defineOptions({
+	name: "TuTree"
+});
+
 import {
 	NodeData,
 	NodesProperties,
@@ -32,6 +37,8 @@ import {
 import tuTreeRow from "./tuTreeRow.vue";
 import { recCallNodes, serverRequest } from "./helper";
 import { DFT } from "./dfs";
+import tuInput from "../../tuInput";
+import { tuButton } from "../../tuButton";
 
 interface Props {
 	checkNode?: boolean;

@@ -18,9 +18,10 @@
 
 <script setup lang="ts">
 import { inject, ref } from "vue";
-import _color from "../../utils/color";
+import { rColor } from "../../utils";
 
 defineOptions({
+	name: "TuPopupItem",
 	inheritAttrs: false
 });
 
@@ -45,7 +46,7 @@ const color = ref("");
 const closeParent = inject<() => void>("closeParent");
 
 const giveColor = function (opacity = 1) {
-	return _color.rColor(color.value, opacity);
+	return rColor(color.value, opacity);
 };
 
 const clickClose = function () {

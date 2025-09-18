@@ -17,6 +17,10 @@ import { Router } from "vue-router";
 import { ComponentConstants } from "../tuComponent";
 import { getColor } from "../../utils";
 
+defineOptions({
+	name: "TuNavbarItem"
+});
+
 interface Props {
 	active?: boolean;
 	to?: any;
@@ -139,7 +143,7 @@ if (router)
 </script>
 
 <style lang="scss">
-@import "../../style/sass/_mixins";
+@import "../../style/sass/_functions";
 
 .tu-navbar__item {
 	padding: 10px 15px;

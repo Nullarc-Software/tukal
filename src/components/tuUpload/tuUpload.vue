@@ -80,6 +80,10 @@
 import { computed, ref, watch } from "vue";
 import viewUpload from "./tuViewUpload.vue";
 
+defineOptions({
+	name: "TuUpload"
+});
+
 interface FileItem {
 	src?: string | null;
 	name?: string;
@@ -339,7 +343,7 @@ watch(percent, () => {
 
 </style>
 <style lang="scss">
-@import "../../style/sass/_mixins";
+@import "../../style/sass/_functions";
 
 .con-upload {
 	width: 100%;
@@ -362,7 +366,7 @@ watch(percent, () => {
 	margin: 15px;
 
 	&:hover {
-		border: 1px dashed rgba(-getColor(primary), 0.5);
+		border: 1px dashed rgba(getColor(primary), 0.5);
 	}
 
 	&.disabled-upload {
@@ -399,7 +403,7 @@ watch(percent, () => {
 		left: 0px;
 		top: 0px;
 		width: 29%;
-		background: -getColor("primary");
+		background: getColor("primary");
 		border-radius: 10px;
 	}
 
@@ -413,7 +417,7 @@ watch(percent, () => {
 
 	&.is-ready-all-upload {
 		.input-progress {
-			background: -getColor(success) !important;
+			background: getColor(success) !important;
 		}
 	}
 }
@@ -435,7 +439,7 @@ watch(percent, () => {
 	z-index: 500;
 	cursor: pointer;
 	margin: 0px;
-	color: -getColor("primary");
+	color: getColor("primary");
 	transition: all 0.2s ease;
 	box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.05);
 	background: rgba(0, 0, 0, 0.03);
@@ -450,7 +454,7 @@ watch(percent, () => {
 	&:hover {
 		padding-bottom: 10px;
 		padding-top: 10px;
-		background: -getColor("primary");
+		background: getColor("primary");
 		color: #fff;
 	}
 }
@@ -485,14 +489,14 @@ watch(percent, () => {
 		cursor: pointer;
 
 		&.fileError {
-			border: 1px solid -getColorAlpha("danger", 0.2);
-			box-shadow: 0px 5px 20px 0px -getColorAlpha("danger", 0.2);
+			border: 1px solid getColorAlpha("danger", 0.2);
+			box-shadow: 0px 5px 20px 0px getColorAlpha("danger", 0.2);
 
 			.btn-upload-file {
-				background: -getColorAlpha("danger", 0.3) !important;
+				background: getColorAlpha("danger", 0.3) !important;
 
 				i {
-					background: -getColor("danger") !important;
+					background: getColor("danger") !important;
 				}
 			}
 		}
@@ -557,13 +561,13 @@ watch(percent, () => {
 			&:hover {
 				i {
 					border-radius: 50%;
-					background: -getColor("danger");
+					background: getColor("danger");
 				}
 
 				&~.btn-upload-file {
 					&:not(.on-progress) {
 						background: radial-gradient(ellipse at center,
-								-getColor(danger) 0%,
+								getColor(danger) 0%,
 								rgba(0, 0, 0, 0) 70%);
 						height: 300px;
 
@@ -573,12 +577,12 @@ watch(percent, () => {
 					}
 
 					&:not(.on-progress):after {
-						border: 1px solid -getColor("danger");
+						border: 1px solid getColor("danger");
 					}
 				}
 
 				&~.on-progress {
-					background: rgba(-getColor(danger), 0.2);
+					background: rgba(getColor(danger), 0.2);
 
 					i {
 						opacity: 0;
@@ -624,7 +628,7 @@ watch(percent, () => {
 			transform: translate(-50%, 80%);
 			border: 0px;
 			background: radial-gradient(ellipse at center,
-					-getColor(success) 0%,
+					getColor(success) 0%,
 					rgba(0, 0, 0, 0) 70%);
 			cursor: pointer;
 			transition: all 0.3s ease;
@@ -641,7 +645,7 @@ watch(percent, () => {
 				transform: translate(-50%, -50%);
 				top: 50%;
 				border-radius: 50%;
-				border: 1px solid -getColor(success);
+				border: 1px solid getColor(success);
 				animation: upload-circle 1.5s ease infinite;
 			}
 
@@ -652,7 +656,7 @@ watch(percent, () => {
 
 				i {
 					font-size: 1.4rem;
-					background: -getColor(success);
+					background: getColor(success);
 					top: 6%;
 					padding: 10px;
 				}
@@ -680,8 +684,8 @@ watch(percent, () => {
 			&.on-progress {
 				width: 100%;
 				height: 20px;
-				background: rgba(-getColor(success), 0.3);
-				border-top: 1px solid -getColor(success);
+				background: rgba(getColor(success), 0.3);
+				border-top: 1px solid getColor(success);
 				bottom: 0px;
 				transform: translate(0);
 				left: 0px;
@@ -692,7 +696,7 @@ watch(percent, () => {
 
 				i {
 					opacity: 0.2;
-					background: -getColor(success);
+					background: getColor(success);
 					box-shadow: 0px 5px 17px 0px rgba(0, 0, 0, 0.15);
 					top: 50%;
 					transform: translate(-50%, -50%) scale(1.2);
@@ -709,7 +713,7 @@ watch(percent, () => {
 					left: 0px;
 					text-align: center;
 					width: 100%;
-					text-shadow: 0px 3px 15px -getColor(success);
+					text-shadow: 0px 3px 15px getColor(success);
 					font-weight: bold;
 					z-index: 300;
 					display: block;
@@ -718,8 +722,8 @@ watch(percent, () => {
 			}
 
 			&.ready-progress {
-				border-top: 0px solid -getColor(success);
-				background: rgba(-getColor(success), 0.5);
+				border-top: 0px solid getColor(success);
+				background: rgba(getColor(success), 0.5);
 
 				span {
 					z-index: 10;
@@ -734,7 +738,7 @@ watch(percent, () => {
 
 				i {
 					opacity: 1;
-					background: -getColor(success);
+					background: getColor(success);
 					box-shadow: 0px 5px 17px 0px rgba(0, 0, 0, 0.15);
 					top: 50%;
 					transform: translate(-50%, -50%) scale(1);

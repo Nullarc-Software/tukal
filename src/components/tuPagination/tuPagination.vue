@@ -46,6 +46,10 @@ import { computed, h, nextTick, ref, watch, inject } from "vue";
 import tuIconsArrow from "../../icons/arrow";
 import tuIcon from "../tuIcon";
 
+defineOptions({
+	name: "TuPagination"
+});
+
 interface Props {
 	modelValue?: number;
 	infinite?: boolean;
@@ -324,7 +328,7 @@ const pagination = ref<HTMLDivElement>();
 </script>
 
 <style lang="scss" scoped>
-@import "../../style/sass/_mixins";
+@import "../../style/sass/_functions";
 
 .tu-pagination-content {
 	--tu-getColor: var(--tu-primary);
@@ -339,7 +343,7 @@ const pagination = ref<HTMLDivElement>();
 	&.notMargin {
 		.tu-pagination {
 			&__dotted {
-				background: -getColor("gray-3");
+				background: getColor("gray-3");
 				margin: 0px;
 			}
 
@@ -408,7 +412,7 @@ const pagination = ref<HTMLDivElement>();
 				height: 12px;
 				min-width: 15px;
 				padding: 0px;
-				background: -getColor("text") !important;
+				background: getColor("text") !important;
 
 				i {
 					width: 6px;
@@ -443,7 +447,7 @@ const pagination = ref<HTMLDivElement>();
 			&__active {
 				width: 12px;
 				height: 12px;
-				box-shadow: 0px 2px 10px 0px -getColorAlpha("color", 0.4);
+				box-shadow: 0px 2px 10px 0px getColorAlpha("color", 0.4);
 				transform: scale(1);
 
 				&.move {
@@ -464,14 +468,14 @@ const pagination = ref<HTMLDivElement>();
 	&__progress {
 		width: calc(100% - 16px);
 		height: 3px;
-		background: -getColor("gray-3");
+		background: getColor("gray-3");
 		position: absolute;
 		bottom: -8px;
 		border-radius: 10px;
 
 		.progress {
 			width: 0px;
-			background: -getColor("color");
+			background: getColor("color");
 			height: 100%;
 			position: relative;
 			border-radius: inherit;
@@ -500,10 +504,10 @@ const pagination = ref<HTMLDivElement>();
 		align-items: center;
 		justify-content: center;
 		margin: 0px 2px;
-		background: -getColor("gray-2");
+		background: getColor("gray-2");
 		transition: all 0.25s ease;
 		border: 0px;
-		color: -getColor("text") !important;
+		color: getColor("text") !important;
 
 		&:disabled {
 			opacity: 0.4;
@@ -511,7 +515,7 @@ const pagination = ref<HTMLDivElement>();
 		}
 
 		&:hover {
-			background: -getColor("gray-2");
+			background: getColor("gray-2");
 		}
 
 		i {
@@ -532,11 +536,11 @@ const pagination = ref<HTMLDivElement>();
 
 	&__active {
 		&.flat {
-			background: -getColorAlpha("color", 0.15) !important;
-			color: -getColor("color") !important;
+			background: getColorAlpha("color", 0.15) !important;
+			color: getColor("color") !important;
 		}
 
-		background: -getColor("color") !important;
+		background: getColor("color") !important;
 		color: #fff !important;
 
 		&.move {
@@ -638,14 +642,14 @@ const pagination = ref<HTMLDivElement>();
 		height: 36px;
 		border-radius: 12px;
 		padding: 0px;
-		background: -getColor("gray-2");
+		background: getColor("gray-2");
 		margin: 0px 2px;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		font-size: 0.9rem;
 		transition: all 0.25s ease;
-		color: -getColor("text");
+		color: getColor("text");
 		position: relative;
 		border: 0px;
 
@@ -661,14 +665,14 @@ const pagination = ref<HTMLDivElement>();
 				width: 100%;
 				height: 100%;
 				border-radius: 50%;
-				border: 2px solid -getColor("color");
-				border-top: 2px solid -getColorAlpha("background", 0);
-				border-left: 2px solid -getColorAlpha("background", 0);
-				border-bottom: 2px solid -getColorAlpha("background", 0);
+				border: 2px solid getColor("color");
+				border-top: 2px solid getColorAlpha("background", 0);
+				border-left: 2px solid getColorAlpha("background", 0);
+				border-bottom: 2px solid getColorAlpha("background", 0);
 				box-sizing: border-box;
 				transition: all 0.25s ease;
 				display: block;
-				box-shadow: 0px 0px 0px 0px -getColor("color");
+				box-shadow: 0px 0px 0px 0px getColor("color");
 				animation: loadingPagination 0.6s ease infinite;
 			}
 
@@ -678,14 +682,14 @@ const pagination = ref<HTMLDivElement>();
 				width: 100%;
 				height: 100%;
 				border-radius: 50%;
-				border: 2px dashed -getColor("color");
-				border-top: 2px solid -getColorAlpha("background", 0);
-				border-left: 2px solid -getColorAlpha("background", 0);
-				border-bottom: 2px solid -getColorAlpha("background", 0);
+				border: 2px dashed getColor("color");
+				border-top: 2px solid getColorAlpha("background", 0);
+				border-left: 2px solid getColorAlpha("background", 0);
+				border-bottom: 2px solid getColorAlpha("background", 0);
 				box-sizing: border-box;
 				transition: all 0.25s ease;
 				display: block;
-				box-shadow: 0px 0px 0px 0px -getColor("color");
+				box-shadow: 0px 0px 0px 0px getColor("color");
 				animation: loadingPagination 0.6s linear infinite;
 			}
 		}
@@ -697,7 +701,7 @@ const pagination = ref<HTMLDivElement>();
 		}
 
 		&:hover {
-			background: -getColor("gray-4");
+			background: getColor("gray-4");
 		}
 
 		&:active {
@@ -716,3 +720,4 @@ const pagination = ref<HTMLDivElement>();
 	}
 }
 </style>
+

@@ -47,6 +47,10 @@ import {
 	inject,
 } from "vue";
 
+defineOptions({
+	name: "TuNavbar"
+});
+
 interface Props {
 	fixed?: boolean;
 	sticky?: boolean;
@@ -260,7 +264,7 @@ onMounted(() => {
 });
 </script>
 <style lang="scss">
-@import "../../style/sass/_mixins";
+@import "../../style/sass/_functions";
 
 .tu-navbar-content {
 	--tu-color: var(--tu-gray-2);
@@ -270,9 +274,9 @@ onMounted(() => {
 	left: 0px;
 	width: 100%;
 	border-radius: 0px 0px 15px 15px;
-	background: -getColor("color");
+	background: getColor("color");
 	transition: all 0.25s ease;
-	color: -getColor("text");
+	color: getColor("text");
 
 	&.paddingScroll:not(.paddingScrollActive) {
 		padding-top: 20px;
@@ -325,7 +329,7 @@ onMounted(() => {
 
 	&.shadow,
 	&.shadowActive {
-		box-shadow: 0px 5px 25px 0px rgba(0, 0, 0, -var("shadow-opacity"));
+		box-shadow: 0px 5px 25px 0px rgba(0, 0, 0, tuVar("shadow-opacity"));
 	}
 
 	&.hidden {
@@ -371,7 +375,7 @@ onMounted(() => {
 		left: 0px;
 		bottom: 0px;
 		width: 100px;
-		background: -getColor("text");
+		background: getColor("text");
 		height: 3px;
 		transition: all 0.25s ease;
 

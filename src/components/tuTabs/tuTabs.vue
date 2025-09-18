@@ -495,7 +495,7 @@ watch(
 
 
 <style lang="scss" >
-@import "../../style/sass/_mixins";
+@import "../../style/sass/_functions";
 
 .tu-tabs {
 	width: 100%;
@@ -580,7 +580,7 @@ watch(
 
 
 	&--card {
-		box-shadow: -var("elevated-1");
+		box-shadow: tuVar("elevated-1");
 		border-radius: 15px;
 		padding-bottom: 10px;
 	}
@@ -600,7 +600,7 @@ watch(
 
 	&--pills {
 		&>.con-ul-tabs>.ul-tabs>.activeChild>a>button {
-			background: -getColor("color") !important;
+			background: getColor("color") !important;
 			color: #fff !important;
 		}
 	}
@@ -753,7 +753,7 @@ watch(
 
 				.tu-tabs-progress__icon {
 					&:hover {
-						background: -getColorAlpha("text", 0.1);
+						background: getColorAlpha("text", 0.1);
 						border-radius: 20px;
 					}
 				}
@@ -775,7 +775,7 @@ watch(
 			.con-ul-tabs {
 				button {
 					&:not(:disabled):hover {
-						color: -getColor($tu-color) !important;
+						color: getColor($tu-color) !important;
 					}
 				}
 			}
@@ -784,8 +784,8 @@ watch(
 
 		&:not(.tu-tabs-progress):not(.tu-tabs-card) {
 			.line-tu-tabs {
-				background: linear-gradient(30deg, -getColor($tu-color) 0%, -getColorAlpha($tu-color, 0.5) 100%) !important;
-				box-shadow: 0 0 8px 0 -getColorAlpha($tu-color, 0.4) !important;
+				background: linear-gradient(30deg, getColor($tu-color) 0%, getColorAlpha($tu-color, 0.5) 100%) !important;
+				box-shadow: 0 0 8px 0 getColorAlpha($tu-color, 0.4) !important;
 			}
 		}
 	}
@@ -814,3 +814,4 @@ watch(
 
 }
 </style>
+

@@ -31,6 +31,7 @@ import { tuButton } from "../tuButton";
 import { tuPopper } from "../tuPopper";
 
 defineOptions({
+	name: "CustomSelect",
 	inheritAttrs: false
 });
 

@@ -23,6 +23,10 @@
 import { ref } from "vue";
 import tuIcon from "../tuIcon";
 
+defineOptions({
+	name: "TuCardGroup"
+});
+
 const cards = ref<HTMLDivElement>();
 
 const handleClick = function (evt: Event, dir: string) {

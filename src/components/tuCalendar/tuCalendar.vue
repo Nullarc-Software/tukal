@@ -34,9 +34,9 @@
 								<span title="Label"></span>
 							</td>
 							<td>
-								<tu-checkbox v-model="allDay">
+								<tu-check-box v-model="allDay">
 									All Day
-								</tu-checkbox>
+								</tu-check-box>
 							</td>
 						</tr>
 						<tr>
@@ -101,7 +101,7 @@ import CalendarView from "./CalendarView.vue";
 import CalendarViewHeader from "./CalendarViewHeader.vue";
 import { isUndefined } from "lodash";
 import { ICalendarItem, TuCalendarServerModel } from "./ICalendarItem";
-import _color from "../../utils/color";
+import { isColor as checkIsColor, getColor } from "../../utils";
 import "./css/light.scss";
 import "./css/index.scss";
 import { TukalGlobals } from "../tukalGlobals";
@@ -272,7 +272,7 @@ const styleChip = (categoryColor: string) => {
 	if (/^(rgb|rgba)/.test(categoryColor)) 
 		background = categoryColor;
 	else 
-		background = `rgba(${_color.getColor(categoryColor, 0.6)})`;
+		background = `rgba(${getColor(categoryColor, 0.6)})`;
 	
 	return {
 		background: background

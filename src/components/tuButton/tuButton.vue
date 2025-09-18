@@ -1,46 +1,11 @@
 <template>
-	<button :class="[
-		'tu-button',
-		// `tu-button--${color.replace('#', '')}`,
-		`tu-button--size-${size}`,
-		{ [`tu-button--fff`]: color === '#fff' },
-		{ [`tu-button--active`]: !!active },
-		{ [`tu-button--active-disabled`]: !!activeDisabled },
-		{ [`tu-button--icon`]: !!icon },
-		{ [`tu-button--circle`]: !!circle },
-		{ [`tu-button--square`]: !!square },
-		{ [`tu-button--loading`]: !!loading },
-		{ [`tu-button--upload`]: !!upload },
-		{ [`tu-button--block`]: !!block },
-		{ [`tu-button--animate`]: !!$slots.animate },
-		{ [`tu-button--animate-${animationType}`]: !!animationType },
-		{ [`tu-button--animate-inactive`]: !!animateInactive },
-		{ [`inline`]: !!inline },
-
-		// colors
-		{
-			[`tu-button--default`]:
-				!flat &&
-				!border &&
-				!gradient &&
-				!relief &&
-				!transparent &&
-				!shadow &&
-				!floating
-		},
-		{ [`tu-button--flat`]: !!flat },
-		{ [`tu-button--border`]: !!border },
-		{ [`tu-button--gradient`]: !!gradient },
-		{ [`tu-button--relief`]: !!relief },
-		{ [`tu-button--transparent`]: !!transparent },
-		{ [`tu-button--shadow`]: !!shadow },
-		{ [`tu-button--floating`]: !!floating }
-	]" :style="{
-	['--tu-color']: color ? getColor(color) : '', ['--tu-color-secondary']: colorSecondary ?
-		getColor(colorSecondary) : '', ['--tu-button-text-color']: textColor ? getColor(textColor) : '', width: width,
-	['--tu-color-rgb']: color ? getColorAsRgb(color) : '',
-	height: height
-}" v-bind="$attrs" v-on="listeners" ref="button">
+	<button 
+		:class="buttonClasses"
+		:style="buttonStyles"
+		v-bind="$attrs" 
+		v-on="listeners" 
+		ref="button"
+	>
 		<div class="tu-button__content">
 			<slot />
 		</div>
@@ -57,43 +22,95 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import { ComponentConstants } from "../tuComponent";
-import { getColor, getColorAsRgb } from "../../utils";
 import ripple, { rippleCut, rippleReverse } from "../../utils/ripple";
 
+
+defineOptions({
+	name: "TuButton",
+	inheritAttrs: false
+});
+
 interface Props {
-	ripple?: string;
-	activeDisabled?: boolean;
-	flat?: boolean;
-	border?: boolean;
-	gradient?: boolean;
-	relief?: boolean;
-	transparent?: boolean;
-	shadow?: boolean;
-	floating?: boolean;
-	icon?: boolean;
+	// Appearance
+	color?: "primary" | "success" | "danger" | "warn" | "dark";
+	variant?: "solid" | "flat" | "outline" | "gradient" | "relief" | "shadow" | "floating";
+	size?: "xs" | "sm" | "md" | "lg" | "xl";
+	
+	// Shape
 	circle?: boolean;
 	square?: boolean;
-	size?: string | null;
-	loading?: boolean;
-	upload?: boolean;
+	
+	// Layout
 	block?: boolean;
-	animationType?: string;
-	animateInactive?: boolean;
-	to?: Record<string, unknown> | string | null;
-	href?: string | null;
-	blank?: boolean;
 	inline?: boolean;
-	width?: string | null;
-	height?: string | null;
-	color?: string;
+	icon?: boolean;
+	width?: string;
+	height?: string;
+	
+	// States
+	active?: boolean;
+	loading?: boolean;
+	disabled?: boolean;
+	
+	// Navigation
+	to?: Record<string, unknown> | string;
+	href?: string;
+	blank?: boolean;
+	
+	// Legacy props (for backward compatibility)
+	flat?: boolean; // maps to variant="flat"
+	border?: boolean; // maps to variant="outline"
+	gradient?: boolean; // maps to variant="gradient"
+	relief?: boolean; // maps to variant="relief"
+	transparent?: boolean; // maps to variant="flat"
+	shadow?: boolean; // maps to variant="shadow"
+	floating?: boolean; // maps to variant="floating"
+	
+	// Legacy color props (for backward compatibility)
+	primary?: boolean; // maps to color="primary"
+	success?: boolean; // maps to color="success"
+	danger?: boolean; // maps to color="danger"
+	warn?: boolean; // maps to color="warn"
+	dark?: boolean; // maps to color="dark"
+	
+	// Advanced styling (rarely used)
 	colorSecondary?: string;
 	textColor?: string;
-	active?: boolean;
+	ripple?: string;
+	activeDisabled?: boolean;
+	upload?: boolean;
+	animationType?: string;
+	animateInactive?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-	ripple: "",
-	activeDisabled: false,
+	// Appearance
+	color: "primary",
+	variant: "solid",
+	size: "md",
+	
+	// Shape
+	circle: false,
+	square: false,
+	
+	// Layout
+	block: false,
+	inline: false,
+	icon: false,
+	width: undefined,
+	height: undefined,
+	
+	// States
+	active: false,
+	loading: false,
+	disabled: false,
+	
+	// Navigation
+	to: undefined,
+	href: undefined,
+	blank: false,
+	
+	// Legacy props
 	flat: false,
 	border: false,
 	gradient: false,
@@ -101,25 +118,22 @@ const props = withDefaults(defineProps<Props>(), {
 	transparent: false,
 	shadow: false,
 	floating: false,
-	icon: false,
-	circle: false,
-	square: false,
-	size: null,
-	loading: false,
-	upload: false,
-	block: false,
-	animationType: "scale",
-	animateInactive: true,
-	to: null,
-	href: null,
-	blank: false,
-	inline: false,
-	width: null,
-	height: null,
-	color: "primary",
+	
+	// Legacy color props
+	primary: false,
+	success: false,
+	danger: false,
+	warn: false,
+	dark: false,
+	
+	// Advanced
 	colorSecondary: "rgb(130, 207, 23)",
 	textColor: "#fff",
-	active: false
+	ripple: "",
+	activeDisabled: false,
+	upload: false,
+	animationType: "scale",
+	animateInactive: true,
 });
 
 const emit = defineEmits<{
@@ -133,6 +147,73 @@ const emit = defineEmits<{
 const rippleDir = ref("");
 const button = ref<HTMLButtonElement>();
 
+// Simplified computed properties
+const buttonClasses = computed(() => {
+	const classes = ["tu-button"];
+	
+	// Determine color (explicit color prop takes precedence over legacy boolean props)
+	let buttonColor = props.color;
+	if (!buttonColor || buttonColor === "primary") {
+		if (props.success) buttonColor = "success";
+		else if (props.danger) buttonColor = "danger";
+		else if (props.warn) buttonColor = "warn";
+		else if (props.dark) buttonColor = "dark";
+		else if (props.primary) buttonColor = "primary";
+	}
+	
+	// Color variant
+	if (buttonColor && ["primary", "success", "danger", "warn", "dark"].includes(buttonColor))
+		classes.push(`tu-button--${buttonColor}`);
+	
+	// Size
+	if (props.size)
+		classes.push(`tu-button--${props.size}`);
+	
+	// Style variant (only one should be active)
+	const styleVariant = getStyleVariant();
+	if (styleVariant)
+		classes.push(`tu-button--${styleVariant}`);
+	
+	// Shape
+	if (props.circle) classes.push("tu-button--circle");
+	if (props.square) classes.push("tu-button--square");
+	
+	// States
+	if (props.active) classes.push("tu-button--active");
+	if (props.loading) classes.push("tu-button--loading");
+	if (props.block) classes.push("tu-button--block");
+	if (props.icon) classes.push("tu-button--icon");
+	if (props.inline) classes.push("tu-button--inline");
+	
+	return classes;
+});
+
+const buttonStyles = computed(() => {
+	const styles: Record<string, string> = {};
+	
+	if (props.width) styles.width = props.width;
+	if (props.height) styles.height = props.height;
+	
+	return styles;
+});
+
+// Helper to determine the primary style variant
+const getStyleVariant = () => {
+	// Use explicit variant prop if provided
+	if (props.variant && props.variant !== "solid") return props.variant;
+	
+	// Fall back to legacy props for backward compatibility
+	if (props.flat) return "flat";
+	if (props.transparent) return "transparent";
+	if (props.border) return "outline";
+	if (props.gradient) return "gradient";
+	if (props.relief) return "relief";
+	if (props.shadow) return "shadow";
+	if (props.floating) return "floating";
+	
+	return "solid"; // default
+};
+
 const clickButton = function (event: MouseEvent) {
 	if (props.to)
 		ComponentConstants.router.push(props.to);
@@ -142,21 +223,39 @@ const clickButton = function (event: MouseEvent) {
 };
 
 const mousedown = (event: MouseEvent) => {
-	if (rippleDir.value === "reverse") rippleReverse(event);
-	else if (rippleDir.value === "cut") rippleCut(event);
+	if (rippleDir.value === "reverse")
+		rippleReverse(event);
+	else if (rippleDir.value === "cut")
+		rippleCut(event);
 	else {
-		if (props.flat) {
+		// Determine the current button color for ripple effect
+		let rippleColor = props.color;
+		if (props.success) rippleColor = "success";
+		else if (props.danger) rippleColor = "danger";
+		else if (props.warn) rippleColor = "warn";
+		else if (props.dark) rippleColor = "dark";
+		else if (props.primary) rippleColor = "primary";
+		
+		// Apply ripple effect based on button variant
+		const isFlat = props.flat || props.transparent || getStyleVariant() === "flat";
+		const isBorder = props.border || getStyleVariant() === "outline";
+		
+		if (isFlat) {
+			// Flat buttons: use colored ripple with full opacity
 			ripple(
 				event,
-				props.color,
-				props.flat &&
-				!props.active &&
-				document.activeElement !== button.value
+				rippleColor,
+				true // Use full color opacity for the ripple
 			);
 		}
-		else if (props.border)
-			ripple(event, props.color, true);
-		else ripple(event, null, false);
+		else if (isBorder) {
+			// Border/outline buttons: use colored ripple
+			ripple(event, rippleColor, true);
+		}
+		else {
+			// Solid buttons: use light ripple (null = white ripple)
+			ripple(event, null, false);
+		}
 	}
 };
 
@@ -167,83 +266,348 @@ const listeners = computed(() => {
 	};
 });
 
-defineOptions({
-	inheritAttrs: false
-});
+
 </script>
 
 <style lang="scss">
-@use "sass:color";
-@import "../../style/sass/_mixins";
-@import "../../style/sass/root";
-
-$tu-button-padding: 8px 12px;
-$tu-button-margin: 5px;
-$tu-button-border-radius: 12px;
-$tu-button-text-color: 255 255 255;
-$tu-color-primary: -getColor("color");
-$tu-color-primary-faded: -getColorAlpha("color", 0.15);
-$tu-color-text: -getColor("text");
-
-// Mixin for common button styles
-@mixin tu-button-style($background, $color, $hover-background, $hover-color) {
-	background: $background;
-	color: $color;
-
-	&.ripple-anim {
-		color: rgb($tu-button-text-color);
-
-	}
-
-	&.tu-button--active {
-		background: $background;
-		color: $hover-color;
-	}
-
-	&.tu-button--transparent {
-		background: transparent;
-		color: $tu-color-primary !important;
-
-		&:hover {
-			background-color: $tu-color-primary-faded !important;
-		}
-	}
-}
+@use "../../style/sass/_functions" as *;
+@use "../../style/sass/_tokens" as *;
 
 .tu-button {
-	--tu-color-rotate: -$tu-color-primary;
-	--tu-color-darken: -$tu-color-primary;
-	--tu-button-padding: $tu-button-padding;
-	--tu-button-margin: $tu-button-margin;
-	--tu-button-border-radius: $tu-button-border-radius;
-	--tu-button-text-color: $tu-button-text-color;
-	border: 0;
-	margin: $tu-button-margin;
-	border-radius: $tu-button-border-radius;
-	transition: all 0.25s ease;
-	position: relative;
-	user-select: none;
-	z-index: 1;
-	overflow: hidden;
+	// Base styles
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	padding: $tu-button-padding;
-	outline: none;
-	font-size: 0.8rem;
-	box-sizing: border-box;
-	color: rgba(255, 255, 255);
+	gap: spacing('xs');
+	
+	// Typography
+	font-weight: font-weight('medium');
+	text-decoration: none;
+	user-select: none;
+	
+	// Layout
+	border: 0;
+	border-radius: border-radius('lg');
+	cursor: pointer;
+	position: relative;
+	overflow: hidden;
+	margin: spacing('xs');
+	
+	// Default size
+	@include button-size('md');
+	
+	// Transitions and animations
+	transition: all transition('fast');
+	
+	// Default solid primary style - using direct CSS custom properties
+	background: var(--tu-primary);
+	color: white;
+	
+	// Focus state
+	@include focus-ring;
+	
+	// Hover effect
+	&:hover:not(:disabled) {
+		background: rgba(var(--tu-primary-rgb), 0.9);
+		transform: translateY(-1px);
+		box-shadow: shadow('md');
+	}
+	
+	// Disabled state
+	&:disabled,
+	&[aria-disabled="true"] {
+		opacity: 0.6;
+		cursor: not-allowed;
+		pointer-events: none;
+		transform: none !important;
+		box-shadow: none !important;
+	}
+	
+	// Size variants
+	&--xs { @include button-size('xs'); }
+	&--sm { @include button-size('sm'); }
+	&--lg { @include button-size('lg'); }
+	&--xl { 
+		@include button-size('xl'); 
+		border-radius: border-radius('xl');
+	}
+	
+	// Shape variants
+	&--circle { border-radius: border-radius('full'); }
+	&--square { border-radius: 0; }
+	
+	//Ripple 
+	&.ripple-anim {
+		color: rgb(var(--tu-button-text-color)) !important;
+	}
 
-	&.tu-component-dark {
-		&.tu-button--transparent {
-			color: $tu-color-primary !important;
+
+	// Style variants
+	&--flat {
+		background: rgba(var(--tu-primary-rgb), 0.1);
+		color: var(--tu-primary);
+		
+		&:hover:not(:disabled) {
+			background: rgba(var(--tu-primary-rgb), 0.3);
+			transform: none;
+			box-shadow: none;
 		}
+	}
+
+	&--transparent {
+		background: transparent;
+		color: var(--tu-primary);
+		box-shadow: 0px 0px 15px -7px rgba(var(--tu-primary-rgb), 0.5);
+		
+		&:hover:not(:disabled) {
+			background: transparent;
+			transform: none;
+			box-shadow: none;
+		}
+	}
+	
+	&--outline {
+		background: transparent;
+		color: var(--tu-primary);
+		border: 1px solid var(--tu-primary);
+		
+		&:hover:not(:disabled) {
+			background: transparent;
+			transform: translateY(-1px);
+			box-shadow: shadow('md');
+		}
+	}
+	
+	&--gradient {
+		background: linear-gradient(135deg, var(--tu-primary), rgba(var(--tu-primary-rgb), 0.8));
+		
+		&:hover:not(:disabled) {
+			transform: translateY(-2px);
+			box-shadow: shadow('lg');
+		}
+	}
+	
+	&--relief {
+		box-shadow: 0 4px 0 rgba(var(--tu-primary-rgb), 0.8);
+		
+		&:active:not(:disabled) {
+			transform: translateY(2px);
+			box-shadow: 0 2px 0 rgba(var(--tu-primary-rgb), 0.8);
+		}
+	}
+	
+	&--shadow {
+		box-shadow: shadow('sm');
+		
+		&:hover:not(:disabled) {
+			box-shadow: shadow('md');
+		}
+	}
+	
+	&--floating {
+		box-shadow: shadow('lg');
+		
+		&:hover:not(:disabled) {
+			transform: translateY(-4px);
+			box-shadow: shadow('xl');
+		}
+	}
+	
+	// Color variants - override CSS custom properties
+	&--success {
+		background: var(--tu-success);
+		
+		&:hover:not(:disabled) {
+			background: rgba(var(--tu-success-rgb), 0.9);
+		}
+		
+		&.tu-button--flat {
+			background: rgba(var(--tu-success-rgb), 0.1);
+			color: var(--tu-success);
+			
+			&:hover:not(:disabled) {
+				background: rgba(var(--tu-success-rgb), 0.3);
+			}
+		}
+		
+		&.tu-button--outline {
+			background: transparent;
+			color: var(--tu-success);
+			border-color: var(--tu-success);
+			
+			&:hover:not(:disabled) {
+				background: transparent;
+				transform: translateY(-1px);
+				box-shadow: shadow('md');
+			}
+		}
+		
+		&.tu-button--gradient {
+			background: linear-gradient(135deg, var(--tu-success), rgba(var(--tu-success-rgb), 0.8));
+		}
+		
+		&.tu-button--relief {
+			box-shadow: 0 4px 0 rgba(var(--tu-success-rgb), 0.8);
+			
+			&:active:not(:disabled) {
+				box-shadow: 0 2px 0 rgba(var(--tu-success-rgb), 0.8);
+			}
+		}
+	}
+	
+	&--danger {
+		background: var(--tu-danger);
+		
+		&:hover:not(:disabled) {
+			background: rgba(var(--tu-danger-rgb), 0.9);
+		}
+		
+		&.tu-button--flat {
+			background: rgba(var(--tu-danger-rgb), 0.1);
+			color: var(--tu-danger);
+			
+			&:hover:not(:disabled) {
+				background: rgba(var(--tu-danger-rgb), 0.3);
+			}
+		}
+		
+		&.tu-button--outline {
+			background: transparent;
+			color: var(--tu-danger);
+			border-color: var(--tu-danger);
+			
+			&:hover:not(:disabled) {
+				background: transparent;
+				transform: translateY(-1px);
+				box-shadow: shadow('md');
+			}
+		}
+		
+		&.tu-button--gradient {
+			background: linear-gradient(135deg, var(--tu-danger), rgba(var(--tu-danger-rgb), 0.8));
+		}
+		
+		&.tu-button--relief {
+			box-shadow: 0 4px 0 rgba(var(--tu-danger-rgb), 0.8);
+			
+			&:active:not(:disabled) {
+				box-shadow: 0 2px 0 rgba(var(--tu-danger-rgb), 0.8);
+			}
+		}
+	}
+	
+	&--warn {
+		background: var(--tu-warn);
+		color: black; // warn color is light, so use black text
+		
+		&:hover:not(:disabled) {
+			background: rgba(var(--tu-warn-rgb), 0.9);
+		}
+		
+		&.tu-button--flat {
+			background: rgba(var(--tu-warn-rgb), 0.1);
+			color: var(--tu-warn);
+			
+			&:hover:not(:disabled) {
+				background: rgba(var(--tu-warn-rgb), 0.3);
+			}
+		}
+		
+		&.tu-button--outline {
+			background: transparent;
+			color: var(--tu-warn);
+			border-color: var(--tu-warn);
+			
+			&:hover:not(:disabled) {
+				background: transparent;
+				transform: translateY(-1px);
+				box-shadow: shadow('md');
+			}
+		}
+		
+		&.tu-button--gradient {
+			background: linear-gradient(135deg, var(--tu-warn), rgba(var(--tu-warn-rgb), 0.8));
+		}
+		
+		&.tu-button--relief {
+			box-shadow: 0 4px 0 rgba(var(--tu-warn-rgb), 0.8);
+			
+			&:active:not(:disabled) {
+				box-shadow: 0 2px 0 rgba(var(--tu-warn-rgb), 0.8);
+			}
+		}
+	}
+	
+	&--dark {
+		background: var(--tu-dark);
+		
+		&:hover:not(:disabled) {
+			background: rgba(var(--tu-dark-rgb), 0.9);
+		}
+		
+		&.tu-button--flat {
+			background: rgba(var(--tu-dark-rgb), 0.1);
+			color: var(--tu-dark);
+			
+			&:hover:not(:disabled) {
+				background: rgba(var(--tu-dark-rgb), 0.3);
+			}
+		}
+		
+		&.tu-button--outline {
+			background: transparent;
+			color: var(--tu-dark);
+			border-color: var(--tu-dark);
+			
+			&:hover:not(:disabled) {
+				background: transparent;
+				transform: translateY(-1px);
+				box-shadow: shadow('md');
+			}
+		}
+		
+		&.tu-button--gradient {
+			background: linear-gradient(135deg, var(--tu-dark), rgba(var(--tu-dark-rgb), 0.8));
+		}
+		
+		&.tu-button--relief {
+			box-shadow: 0 4px 0 rgba(var(--tu-dark-rgb), 0.8);
+			
+			&:active:not(:disabled) {
+				box-shadow: 0 2px 0 rgba(var(--tu-dark-rgb), 0.8);
+			}
+		}
+	}
+	
+	// State modifiers
+	&--active {
+		background: var(--tu-primary);
+		color: white;
+	}
+	
+	&--block {
+		display: flex;
+		width: 100%;
+	}
+	
+	&--icon {
+		padding: spacing('sm');
+		
+		i {
+			font-size: 1.15rem;
+		}
+	}
+	
+	&--inline {
+		margin: 0;
 	}
 }
 
 .tu-button__content {
 	display: flex;
 	align-items: center;
+	gap: spacing('xs');
+	z-index: 50;
 }
 
 .tu-button__loading {
@@ -253,13 +617,13 @@ $tu-color-text: -getColor("text");
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	background: -getColorAlpha("color", 0.8);
+	background: rgba(var(--tu-primary-rgb), 0.8);
 	border-radius: inherit;
 	width: 100%;
 	height: 100%;
 
-	&:before,
-	&:after {
+	&::before,
+	&::after {
 		content: "";
 		position: absolute;
 		width: 17px;
@@ -268,7 +632,7 @@ $tu-color-text: -getColor("text");
 		box-sizing: border-box;
 	}
 
-	&:after {
+	&::after {
 		border: 2px dotted rgba(255, 255, 255, 0.6);
 		border-top: 2px solid transparent;
 		border-bottom: 2px solid transparent;
@@ -276,7 +640,7 @@ $tu-color-text: -getColor("text");
 		animation: btnload 0.6s linear infinite;
 	}
 
-	&:before {
+	&::before {
 		border: 2px solid rgb(255, 255, 255);
 		border-top: 2px solid transparent;
 		border-bottom: 2px solid transparent;
@@ -285,317 +649,19 @@ $tu-color-text: -getColor("text");
 	}
 }
 
-.tu-button--gradient {
-	@include tu-button-style($tu-color-primary, #fff, $tu-color-primary, #fff);
-	overflow: hidden;
-
-	&::before {
-		content: "";
-		background: linear-gradient(30deg,
-				$tu-color-primary 0%,
-				rgba($tu-color-primary, 0.6) 100%);
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		border-radius: inherit;
-		pointer-events: none;
-		transition: all 0.4s ease;
-		z-index: -1;
-		filter: hue-rotate(-40deg);
-		box-sizing: border-box;
-	}
-
-	&:hover {
-		transform: translate(0, -3px);
-		box-shadow: 0px 10px 20px -10px rgba($tu-color-primary, 0.7);
-
-		&::before {
-			opacity: 0;
+// Motion preference support
+@media (prefers-reduced-motion: reduce) {
+	.tu-button {
+		transition: none !important;
+		
+		&:hover {
+			transform: none !important;
 		}
-	}
-
-	&.tu-button--active {
-		transform: translate(0, -3px);
-		box-shadow: 0px 10px 20px -10px rgba(0, 0, 0, 0.35);
-	}
-}
-
-.tu-button--relief {
-	@include tu-button-style($tu-color-primary, #fff, $tu-color-primary, #fff);
-	overflow: hidden;
-	transform: translate(0) scale(1, 1);
-
-	.tu-button__content {
-		transition: all 0.25s ease;
-
-	}
-
-	&.tu-button--icon {
-		&.tu-button--active {
-			height: auto;
-		}
-	}
-
-	&::before {
-		content: "";
-		position: absolute;
-		bottom: 0;
-		left: 0;
-		width: 100%;
-		height: calc(100% - 3px);
-		border-radius: inherit;
-		pointer-events: none;
-		transition: all 0.4s ease;
-		z-index: -1;
-		filter: contrast(2) grayscale(0.4);
-		border-bottom: 3px solid $tu-color-primary;
-		box-sizing: border-box;
-	}
-
-	&:active {
-		transform: translate(0, 1px);
-
-		.tu-button__content {
-			padding-bottom: 1px;
-		}
-
-		&::before {
-			border-bottom: 0;
-		}
-	}
-
-	&.tu-button--active {
-		transform: translate(0, 1px);
-
-		.tu-button__content {
-			padding-bottom: 6px;
-		}
-
-		&::before {
-			border-bottom: 0;
-		}
-	}
-}
-
-.tu-button--transparent {
-	@include tu-button-style(transparent, $tu-color-text, transparent, rgba($tu-color-primary, 0.1));
-	overflow: hidden;
-
-	&::before {
-		content: "";
-		background: rgba($tu-color-primary, 0.1);
-		position: absolute;
-		bottom: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		border-radius: inherit;
-		pointer-events: none;
-		transition: all 0.25s ease;
-		z-index: -1;
-		transform: scale(0.5);
-		opacity: 0;
-		box-sizing: border-box;
-	}
-
-	&:active:not(.tu-button--active) {
-		&::before {
-			transform: scale(0.9) !important;
-		}
-	}
-
-	&:hover {
-		&::before {
-			opacity: 1;
-			transform: scale(1);
-		}
-	}
-
-	&.tu-button--active {
-		&::before {
-			background: rgba($tu-color-primary, 0.2);
-			opacity: 1;
-			transform: scale(1);
-		}
-	}
-}
-
-.tu-button--shadow {
-	@include tu-button-style($tu-color-text, transparent, transparent, transparent);
-	overflow: hidden;
-	box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
-
-	&:active:not(.tu-button--active) {
-		transform: translate(0, -1px);
-		box-shadow: 0 5px 15px 0 rgba(0, 0, 0, 0) !important;
-	}
-
-	&:hover {
-		transform: translate(0, -3px);
-		box-shadow: 0 8px 25px 0 rgba(0, 0, 0, 0);
-	}
-
-	&.tu-button--active {
-		transform: translate(0, -3px);
-		box-shadow: 0 8px 25px 0 rgba(0, 0, 0, 0);
-	}
-}
-
-
-.tu-button--default {
-	@include tu-button-style($tu-color-primary, white, $tu-color-primary, white);
-}
-
-.tu-button--flat {
-	@include tu-button-style($tu-color-primary-faded, $tu-color-primary, $tu-color-primary, white);
-
-	&.tu-button--active {
-		background: $tu-color-primary;
-		color: white;
-	}
-
-	&.tu-button--dark {
-		color: $tu-color-text;
-	}
-}
-
-.tu-button--floating {
-	@include tu-button-style($tu-color-primary, #fff, $tu-color-primary, #fff);
-	box-shadow: 0px 8px 20px -6px $tu-color-primary;
-
-	&:hover {
-		box-shadow: 0px 8px 20px -6px $tu-color-primary;
-		transform: translate(0, -6px);
-	}
-
-	&:focus {
-		transform: translate(0);
-		box-shadow: 0px 0px 0px 0px $tu-color-primary;
-	}
-
-	&.tu-button--active {
-		transform: translate(0);
-		box-shadow: 0px 0px 0px 0px $tu-color-primary;
-	}
-}
-
-.tu-button--border {
-	@include tu-button-style(transparent, $tu-color-primary, $tu-color-primary, #fff);
-
-	&:before {
-		content: "";
-		border: 2px solid $tu-color-primary;
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		border-radius: inherit;
-		background: transparent;
-		pointer-events: none;
-		transition: all 0.15s ease;
-		box-sizing: border-box;
-	}
-
-
-
-	&.tu-button--active {
-		background: -getColor("color");
-		color: -getColor("light");
-	}
-
-	// Add other button variations here...
-}
-
-.tu-button--size-xl {
-	border-radius: 20px;
-
-	.tu-button__content {
-		padding: 15px 20px;
-		font-size: 1.1rem;
-	}
-}
-
-.tu-button--size-large {
-	font-size: 1rem;
-	border-radius: 15px;
-
-	.tu-button__content {
-		padding: 10px 15px;
-	}
-}
-
-.tu-button--size-small {
-	font-size: 0.75rem;
-	border-radius: 9px;
-	margin: 0;
-	padding: 5px;
-
-	.tu-button__content {
-		padding: 5px 10px;
-	}
-}
-
-.tu-button--size-mini {
-	font-size: 0.6rem;
-	border-radius: 7px;
-	margin: 0;
-	padding: 2px;
-
-	.tu-button__content {
-		padding: 3px 8px;
-	}
-}
-
-.tu-button--circle {
-	border-radius: 25px;
-}
-
-.tu-button--square {
-	@include tu-button-style($tu-color-primary, white, $tu-color-primary, white);
-	border-radius: 0;
-}
-
-.tu-button--icon {
-	i {
-		font-size: 1.15rem;
-	}
-}
-
-.tu-button--upload {
-	&:after {
-		content: "";
-		position: absolute;
-		width: 100%;
-		height: 100%;
-		background: -getColorAlpha("color", 0.6);
-		top: 0px;
-		left: 0px;
-		z-index: 1200;
-		animation: btnupload 0.7s ease infinite;
-		box-sizing: border-box;
 	}
 }
 
 @keyframes btnload {
-	0% {
-		transform: rotate(0deg);
-	}
-
-	100% {
-		transform: rotate(360deg);
-	}
-}
-
-@keyframes btnupload {
-	0% {
-		transform: translate(0, 110%);
-	}
-
-	100% {
-		transform: translate(0, -110%);
-	}
+	0% { transform: rotate(0deg); }
+	100% { transform: rotate(360deg); }
 }
 </style>

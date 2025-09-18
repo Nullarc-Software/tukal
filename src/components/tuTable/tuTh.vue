@@ -36,6 +36,10 @@ import tuIcon from "../tuIcon";
 import tuInput from "../tuInput";
 import { TuTableStore } from "./tuTableStore";
 
+defineOptions({
+	name: "TuTh"
+});
+
 interface Props {
 	sort?: boolean;
 	search?: boolean;
@@ -174,7 +178,7 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-@import "../../style/sass/_mixins";
+@import "../../style/sass/_functions";
 
 .tu-table__th {
 	padding: 10px 12px;
@@ -190,7 +194,7 @@ onMounted(() => {
 
 	&.sort {
 		&:hover {
-			background: -getColor("gray-3");
+			background: getColor("gray-3");
 		}
 	}
 
@@ -219,10 +223,10 @@ onMounted(() => {
 			right: 0;
 			top: 0;
 			bottom: 0;
-			background-color: -getColorAlpha("text", 0.05);
+			background-color: getColorAlpha("text", 0.05);
 
 			&.active {
-				background-color: -getColor("primary");
+				background-color: getColor("primary");
 			}
 		}
 	}
@@ -301,3 +305,4 @@ onMounted(() => {
 	}
 }
 </style>
+

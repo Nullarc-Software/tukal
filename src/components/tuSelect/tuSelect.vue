@@ -4,6 +4,10 @@
 	}" :class="[
 	{ block: block },
 	{ inline: inline },
+	{ 'tu-select-content--border': border },
+	{ 'tu-select-content--shadow': shadow },
+	{ 'tu-select-content--transparent': transparent },
+	{ 'tu-select-content--square': square },
 	// colors
 	{ [`tu-component--${color}`]: color },
 	{ [`tu-component--dropdown`]: !!dropdown }
@@ -12,18 +16,20 @@
 			`tu-select--state-${state}`,
 			{
 				'tu-select--disabled': disabled,
+				'has-chips': multiple && Array.isArray(modelValue) && modelValue.length > 0,
 				activeOptions: activeOptions,
 				loading: loading
 			}
 		]" v-on="selectListener" :style="{ width: width }">
 			<input :readonly="!filter && true" :id="!multiple && uid" class="tu-select__input" ref="input"
+				:placeholder="!isValue && !labelPlaceholder ? placeholder : ''"
 				:value="activeFilter ? textFilter : getValueLabel" :class="[
 					{
-						multiple: multiple,
-						simple: !multiple && !filter
+						'tu-select__input--multiple': multiple,
+						'tu-select__input--simple': !multiple && !filter
 					}
 				]" v-on="inputListener">
-			<tu-icon v-if="addValue" class="tu-select-add-icon" @click="addNewOption">add</tu-icon>
+			<tu-icon v-if="addValue" class="tu-select__add-icon" @click="addNewOption">add</tu-icon>
 			<label v-if="label || labelPlaceholder" class="tu-select__label" :for="uid" :class="{
 				'tu-select__label--placeholder': labelPlaceholder,
 				'tu-select__label--label': label,
@@ -32,18 +38,12 @@
 			}">
 				{{ labelPlaceholder || label }}
 			</label>
-			<label v-if="!multiple && !labelPlaceholder" ref="placeholder" :for="uid"
-				class="tu-select__label tu-select__placeholder"
-				:class="{ 'tu-select__label--hidden': isValue || textFilter }">
-				{{ placeholder }}
-				<slot name="icon" />
-			</label>
 			<button v-if="multiple" class="tu-select__chips" ref="chips" v-on="chipsListener">
+				<input v-if="filter" class="tu-select__chips__input" ref="chipsInput" :placeholder="placeholder" :id="uid"
+					:value="textFilter" v-on="chipsFilterListener" />
 				<div v-for="item of getChips" :key="item">
 					<component :is="item" />
 				</div>
-				<input v-if="filter" class="tu-select__chips__input" ref="chipsInput" :placeholder="placeholder" :id="uid"
-					:value="textFilter" v-on="chipsFilterListener" />
 			</button>
 			<transition name="tu-select">
 				<div v-if="activeOptions" class="tu-select__options" ref="options" :style="{
@@ -67,11 +67,16 @@
 						}
 							">
 					<div class="tu-select__options__content" ref="content">
-						<div v-if="notData" class="tu-select__options__content__not-data">
+						<div v-if="notData" class="tu-select__options__no-data">
 							<slot v-if="$slots.notData" name="notData" />
 							<span v-else> No Data Available </span>
 						</div>
 						<slot />
+						<!-- Render selectItems prop as options (sorted with selected items at top) -->
+						<tu-select-option v-for="(item, index) of sortedSelectItems" :key="`select-item-${index}`"
+							:label="getItemLabel(item)" :value="getItemValue(item)">
+							{{ getItemLabel(item) }}
+						</tu-select-option>
 						<tu-select-option v-for="addedOption of addedOptions" :key="addedOption.value"
 							:label="addedOption.label" :value="addedOption.value">
 							{{ addedOption.label }}
@@ -81,9 +86,9 @@
 			</transition>
 			<div v-if="loading" class="tu-select__loading" />
 
-			<tu-icon @click="iconClicked" class="tu-icon-arrow" :class="{
-				'tu-select-icon-down': !activeOptions,
-				'tu-select-icon-up': activeOptions
+			<tu-icon @click="iconClicked" class="tu-select__arrow-icon" :class="{
+				'tu-select__arrow-icon--down': !activeOptions,
+				'tu-select__arrow-icon--up': activeOptions
 			}"></tu-icon>
 		</div>
 
@@ -129,71 +134,193 @@ import * as _ from "lodash";
 import { SelectOptionConstants } from ".";
 import { getColor } from "@/utils";
 
+// Type definitions for better IntelliSense support
 class SelectConstants {
 	public static id = 0;
 }
 
+/** Configuration for individual select options */
 type ChildOptions = {
-	disabled?: boolean,
-	value: string,
-	label: string,
-	offsetTop?: number
+	/** Whether this option is disabled */
+	disabled?: boolean;
+	/** The value associated with this option */
+	value: string;
+	/** The display label for this option */
+	label: string;
+	/** Offset position for keyboard navigation */
+	offsetTop?: number;
 }
 
-// Define props
+/** Supported color themes for the select component */
+type SelectColor = "primary" | "success" | "danger" | "warn" | "dark" | string;
+
+/** Supported visual states for the select component */
+type SelectState = "success" | "danger" | "warn" | "primary" | "dark" | null;
+
+/** Structure for select option items */
+type SelectItem = {
+	label: string;
+	value: unknown;
+} | string | number;
+
+// Define props interface with comprehensive documentation for IntelliSense
 interface Props {
+	/** The current selected value(s). Can be a single value or array for multiple selection */
 	modelValue?: unknown;
-	multiple?: boolean;
-	dropdown?: boolean;
-	inline?: boolean;
-	filter?: boolean;
-	dynamicFilter?: boolean;
-	addValue?: boolean;
+	
+	/** The placeholder text shown when no option is selected */
 	placeholder?: string;
-	labelPlaceholder?: string;
+	
+	/** Label text displayed above the select component */
 	label?: string;
-	disabled?: boolean;
-	collapseChips?: boolean;
-	loading?: boolean;
-	state?: string | null;
-	block?: boolean;
-	selectItems?: Array<unknown>;
+	
+	/** Placeholder text that appears as a floating label */
+	labelPlaceholder?: string;
+	
+	/** The width of the select component. Accepts CSS width values */
 	width?: string;
-	color?: string;
+	
+	/** Color theme for the component. Accepts theme color names */
+	color?: SelectColor;
+	
+	/** Visual state of the component (success, danger, warn, primary, dark) */
+	state?: SelectState;
+	
+	// Behavior Props
+	/** Enable multiple selection mode */
+	multiple?: boolean;
+	
+	/** Enable filtering/search functionality within options */
+	filter?: boolean;
+	
+	/** Enable dynamic filtering that emits filterUpdated events */
+	dynamicFilter?: boolean;
+	
+	/** Allow users to add new options by typing */
+	addValue?: boolean;
+	
+	/** Disable the select component */
+	disabled?: boolean;
+	
+	/** Show loading state with spinner */
+	loading?: boolean;
+	
+	/** Collapse multiple selected chips into a summary (e.g., "+3 more") */
+	collapseChips?: boolean;
+	
+	// Layout Props
+	/** Display as dropdown (portal-based positioning) */
+	dropdown?: boolean;
+	
+	/** Display as inline-block instead of block */
+	inline?: boolean;
+	
+	/** Take full width of parent container */
+	block?: boolean;
+	
+	// Style Variant Props
+	/** Show border style with underline effect */
+	border?: boolean;
+	
+	/** Show shadow style with elevated appearance */
+	shadow?: boolean;
+	
+	/** Show transparent background style */
+	transparent?: boolean;
+	
+	/** Show square corners instead of rounded */
+	square?: boolean;
+	
+	// Data Props
+	/** Array of selectable items (alternative to slot-based options) */
+	selectItems?: Array<SelectItem>;
 }
 
 const props = withDefaults(defineProps<Props>(), {
+	// Default values for behavior props
 	multiple: false,
-	dropdown: false,
-	inline: false,
 	filter: false,
 	dynamicFilter: false,
 	addValue: false,
+	disabled: false,
+	loading: false,
+	collapseChips: false,
+	
+	// Default values for layout props  
+	dropdown: false,
+	inline: false,
+	block: false,
+	
+	// Default values for style variant props
+	border: false,
+	shadow: false,
+	transparent: false,
+	square: false,
+	
+	// Default values for text props
 	placeholder: "",
 	labelPlaceholder: "",
 	label: "",
-	disabled: false,
-	collapseChips: false,
-	loading: false,
+	
+	// Default values for styling props
+	width: "100%",
 	state: null,
-	block: false,
-	selectItems: () => [],
-	width: "100%"
+	
+	// Default values for data props
+	selectItems: () => []
 });
 
-// Define emits
+// Define emits with comprehensive documentation for IntelliSense  
 const emit = defineEmits<{
+	/** Emitted when the selected value changes. Use with v-model */
 	"update:modelValue": [value: unknown];
+	
+	/** Emitted when the select component loses focus */
 	"blur": [];
+	
+	/** Emitted when the select component gains focus */
 	"focus": [event: Event];
+	
+	/** Emitted when filter text changes (only when dynamicFilter is enabled) */
 	"filterUpdated": [value: string];
 }>();
 
-// Define component name
+// Define component name and configuration
 defineOptions({
 	name: "TuSelect",
 	inheritAttrs: false
 });
+
+/**
+ * TuSelect - A versatile select/dropdown component with advanced features
+ * 
+ * Features:
+ * - Single and multiple selection support
+ * - Filtering and search functionality
+ * - Custom option adding
+ * - Chip-based display for multiple selections
+ * - Keyboard navigation support
+ * - Loading states and custom styling
+ * - Accessibility enhancements
+ * 
+ * @example
+ * ```vue
+ * <tu-select 
+ *   v-model="selectedValue"
+ *   :options="options"
+ *   placeholder="Select an option"
+ *   filterable
+ * />
+ * ```
+ * 
+ * @slot default - The default slot for tu-select-option components
+ * @slot icon - Icon slot displayed next to the placeholder
+ * @slot notData - Custom content when no options are available
+ * @slot message-success - Success message displayed below the select
+ * @slot message-danger - Error message displayed below the select  
+ * @slot message-warn - Warning message displayed below the select
+ * @slot message-primary - Primary message displayed below the select
+ */
 
 // Reactive variables
 const renderSelect = ref(false);
@@ -218,6 +345,19 @@ const options = ref<HTMLDivElement>();
 const select = ref<HTMLDivElement>();
 const content = ref<HTMLDivElement>();
 
+// Helper functions for selectItems
+const getItemLabel = (item: SelectItem): string => {
+	if (typeof item === "object" && item !== null && "label" in item) 
+		return item.label;
+	return String(item);
+};
+
+const getItemValue = (item: SelectItem): unknown => {
+	if (typeof item === "object" && item !== null && "value" in item) 
+		return item.value;
+	return item;
+};
+
 const uid = "select-" + ++SelectConstants.id;
 const instance = getCurrentInstance();
 
@@ -235,12 +375,16 @@ provide("addChildOption", (
 	label: string,
 	offsetTop: number
 ) => {
-	childOptions.value.push({
-		disabled,
-		value: value as string,
-		label,
-		offsetTop
-	});
+	// Check if this option already exists to prevent duplicates
+	const existingOption = childOptions.value.find(option => option.value === value);
+	if (!existingOption) {
+		childOptions.value.push({
+			disabled,
+			value: value as string,
+			label,
+			offsetTop
+		});
+	}
 });
 provide("addUid", (uid: string) => {
 	uids.value.push(uid);
@@ -299,10 +443,30 @@ function addNewOption() {
 }
 
 const handleWindowClick = function (evt: any) {
-	if (!targetSelectInput.value) handleBlur();
+	// Don't close if clicking on the main input, chips container, or filter input
+	const isClickOnSelectElements = evt.target === input.value || 
+		evt.target === chips.value || 
+		evt.target === chipsInput.value ||
+		chips.value?.contains(evt.target) ||
+		select.value?.contains(evt.target);
+		
+	if (!targetSelectInput.value && !isClickOnSelectElements) handleBlur();
 
 	if (props.filter && !activeOptions.value)
 		activeFilter.value = false;
+
+	// Special handling for multi-select with filter
+	if (props.multiple && props.filter) {
+		// If clicking on chips container but not on filter input, focus the filter input
+		if (evt.target === chips.value && chipsInput.value) {
+			setTimeout(() => {
+				if (activeOptions.value) {
+					(chipsInput.value as HTMLElement).focus();
+				}
+			}, 10);
+			return;
+		}
+	}
 
 	if (
 		evt.target === input.value &&
@@ -319,16 +483,26 @@ const handleWindowClick = function (evt: any) {
 const handleBlur = function () {
 	nextTick(() => {
 		activeOptions.value = false;
-		childOptions.value = [];
+		// Only clear childOptions for single-select mode
+		// Multi-select needs to keep childOptions for chip rendering
+		if (!props.multiple) 
+			childOptions.value = [];
 		SelectOptionConstants.id = 0;
 	});
 	emit("blur");
 	setHover();
 	window.removeEventListener("click", handleWindowClick);
-	if (activeOptions.value) {
-		textFilter.value = "";
-		if (!props.multiple) activeFilter.value = false;
-	}
+	// Only clear the text filter when the dropdown is actually closing
+	// In multi-select mode with filter, preserve the filter text for better UX
+	nextTick(() => {
+		if (!activeOptions.value) {
+			// For multi-select with filter, don't clear the textFilter to preserve search state
+			if (!(props.multiple && props.filter)) {
+				textFilter.value = "";
+			}
+			if (!props.multiple) activeFilter.value = false;
+		}
+	});
 };
 
 const blur = () => {
@@ -365,7 +539,15 @@ const clickOption = function (value: any, label: any) {
 	}
 
 	setTimeout(() => {
-		if (props.multiple && activeOptions.value) chips.value?.focus();
+		if (props.multiple && activeOptions.value) {
+			// If filter is enabled, focus the filter input to maintain search functionality
+			if (props.filter && chipsInput.value) {
+				chipsInput.value.focus();
+				// Keep the current filter text so user can continue searching and selecting
+			} else {
+				chips.value?.focus();
+			}
+		}
 	}, 10);
 
 	if (!props.multiple) handleBlur();
@@ -385,6 +567,35 @@ const isValue = computed(() => {
 			!_.isUndefined(props.modelValue)
 		);
 	}
+});
+
+// Sort selectItems with selected items at the top
+const sortedSelectItems = computed(() => {
+	if (!props.selectItems || !props.multiple) {
+		return props.selectItems || [];
+	}
+	
+	const selectedValues = Array.isArray(props.modelValue) ? props.modelValue : [];
+	const items = [...props.selectItems];
+	
+	// If there's an active filter, don't sort to prevent confusing reordering
+	// This prevents the issue where selected items move to top while filtering is active
+	if (textFilter.value && textFilter.value.trim() !== "") {
+		return items; // Return original order when filtering
+	}
+	
+	// Sort items: selected items first, then unselected items (only when not filtering)
+	return items.sort((a, b) => {
+		const aValue = getItemValue(a);
+		const bValue = getItemValue(b);
+		const aSelected = selectedValues.includes(aValue);
+		const bSelected = selectedValues.includes(bValue);
+		
+		// If both are selected or both are unselected, maintain original order
+		if (aSelected === bSelected) return 0;
+		// Selected items come first
+		return aSelected ? -1 : 1;
+	});
 });
 
 const getChips = computed(() => {
@@ -502,6 +713,33 @@ const getValueLabel = computed(() => {
 
 const selectListener = computed(() => {
 	return {
+		click: (evt: Event) => {
+			// Handle clicking anywhere on the select to open dropdown
+			if (!activeOptions.value && !props.disabled) {
+				// Prevent default to avoid focus issues
+				evt.preventDefault();
+				
+				// Open the dropdown
+				activeOptions.value = true;
+				
+				// Focus management for multi-select with filter
+				if (props.multiple && props.filter && chipsInput.value) {
+					setTimeout(() => {
+						(chipsInput.value as HTMLElement).focus();
+					}, 10);
+				} else if (props.multiple && chips.value) {
+					setTimeout(() => {
+						chips.value?.focus();
+					}, 10);
+				} else if (input.value) {
+					setTimeout(() => {
+						input.value?.focus();
+					}, 10);
+				}
+				
+				window.addEventListener("mousedown", handleWindowClick);
+			}
+		},
 		mouseleave: (evt: any) => {
 			if (evt.relatedTarget !== options.value) {
 				targetSelectInput.value = false;
@@ -587,12 +825,35 @@ const chipsListener = computed(() => {
 				activeOptions.value = true;
 				emit("focus", evt);
 			}
-			if (props.filter && props.multiple)
-				(chipsInput.value as HTMLElement).focus();
+			
+			// Delay focusing the filter input to prevent immediate blur
+			if (props.filter && props.multiple) {
+				setTimeout(() => {
+					if (activeOptions.value && chipsInput.value)
+						(chipsInput.value as HTMLElement).focus();
+				}, 10);
+			}
 
 			window.addEventListener("mousedown", handleWindowClick);
 		},
-		blur: blur
+		blur: () => {
+			// In multi-select mode, delay blur handling to allow option clicks to complete
+			if (props.multiple) {
+				// Use a short timeout to allow option click handlers to execute first
+				setTimeout(() => {
+					// Only close if we're not clicking within the options container
+					// and the filter input doesn't have focus
+					const filterInputHasFocus = props.filter && 
+						chipsInput.value && 
+						document.activeElement === chipsInput.value;
+						
+					if (!targetSelect.value && !targetClose.value && !filterInputHasFocus)
+						blur();
+				}, 100);
+			}
+			else
+				blur();
+		}
 	};
 });
 
@@ -604,9 +865,27 @@ const chipsFilterListener = computed(() => {
 				emit("focus", evt);
 			}
 		},
-		blur: blur,
+		blur: () => {
+			// Apply the same multi-select blur handling as chipsListener
+			if (props.multiple) {
+				// Use a short timeout to allow option click handlers to execute first
+				setTimeout(() => {
+					// Only close if we're not clicking within the options container
+					// and neither the chips container nor the main input have focus
+					const chipsHasFocus = chips.value && document.activeElement === chips.value;
+					const inputHasFocus = input.value && document.activeElement === input.value;
+					
+					if (!targetSelect.value && !targetClose.value && !chipsHasFocus && !inputHasFocus)
+						blur();
+				}, 100);
+			}
+			else
+				blur();
+		},
 		input: (evt: any) => {
 			textFilter.value = evt.target.value;
+			if (props.dynamicFilter)
+				emit("filterUpdated", textFilter.value);
 		}
 	};
 });
@@ -622,7 +901,13 @@ const notData = computed(() => {
 });
 
 const iconClicked = function () {
-	if (activeOptions.value) activeOptions.value = false;
+	if (activeOptions.value) {
+		activeOptions.value = false;
+		// Clear filter when dropdown is manually closed via icon
+		if (props.multiple && props.filter) {
+			textFilter.value = "";
+		}
+	}
 	else input.value?.focus();
 };
 
@@ -697,6 +982,16 @@ onMounted(() => {
 		[]
 	);
 
+	// Also add selectItems prop to the reduced options
+	if (props.selectItems && props.selectItems.length > 0) {
+		props.selectItems.forEach((item) => {
+			reduced.push({
+				label: getItemLabel(item),
+				value: getItemValue(item)
+			});
+		});
+	}
+
 	// set the default value first. Since the list is not rendered to the dom, get it from the default slot.
 	if (!Array.isArray(props.modelValue)) {
 		const labelValue = _.find(reduced, { value: props.modelValue });
@@ -725,150 +1020,108 @@ onBeforeUnmount(() => {
 </script>
 
 <style lang="scss">
-@import "../../style/sass/_mixins";
+@import "../../style/sass/_functions";
+@import "../../style/sass/_tokens";
 
-@mixin state($color) {
-	.tu-select__input {
-		// border: 2px solid -getColor($color,.5)
-		background: -getColorAlpha($color, 0.2);
-		color: -getColor($color);
+// =============================================================================
+// MIXINS & SHARED STYLES
+// =============================================================================
 
-		&:hover {
-			background: -getColorAlpha($color, 0.3);
-			// border: 2px solid rgba(-getColor($color), 0)
-			color: -getColor("text");
-		}
-	}
+// Common input/chips styles
+%select-input-base {
+	background: getColor("component-background");
+	border: 1px solid getColorAlpha("text", 0.15);
+	border-radius: border-radius('lg');
+	transition: all transition('fast'), height 0s;
+	min-height: component-size('md', 'height');
+	padding: spacing('sm') spacing('md');
+	padding-right: 40px; // Space for arrow
+	width: 100%;
+}
 
-	&.activeOptions {
-		.tu-select__input {
-			border-radius: 12px 12px 0px 0px;
-			border: 1px solid -getColorAlpha($color, 1);
+// Focused/active states
+%select-focus-state {
+	border-radius: border-radius('lg') border-radius('lg') 0 0;
+	border-color: getColorAlpha("text", 0.2);
+	border-bottom: unset;
+}
 
-			background: -getColorAlpha($color, 0.2);
-			//box-shadow: 0px 5px 25px -4px rgba(0, 0, 0, -var(shadow-opacity));
-			//transform: translate(0, -2px);
-			transition: all 0.25s ease, height 0s;
-			//border: 2px solid transparent;
-			color: -getColor("text");
-		}
-	}
-
-
+// Enhanced state mixin using design tokens
+@mixin select-state($color) {
+	.tu-select__input,
 	.tu-select__chips {
-		background-color: -getColorAlpha($color, 0.05);
-		color: -getColor($color);
-
-		&:hover {
-			&:after {
-				opacity: 0;
-			}
-		}
-
-		&:after {
-			width: calc(100% - 4px);
-			height: calc(100% - 4px);
-			content: "";
-			position: absolute;
-			top: 0px;
-			left: 0px;
-			border: 2px solid rgba(-getColor($color), 0.5);
-			border-radius: inherit;
-			transition: all 0.25s ease;
-		}
+		background: getColorAlpha($color, 0.1);
+		border-color: getColorAlpha($color, 0.3);
+		
+		&:hover { border-color: getColorAlpha($color, 0.5); }
 	}
+	
+	.tu-select__label { color: getColor($color); }
+	.tu-select-add-icon { color: getColor($color); }
+}
 
-	.tu-select__label {
-		color: -getColor($color);
-	}
+// Chip styles
+%chip-base {
+	flex: 0 1 auto;
+	position: relative;
+	background-color: getColor("gray-2");
+	border-radius: border-radius('sm'); // Smaller border radius
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: spacing('xs') spacing('md') spacing('xs') spacing('sm'); // Extra right padding for close button
+	margin: spacing('xs') spacing('xs') spacing('xs') 0; // Remove right margin to be more compact
+	font-size: font-size('xs'); // Smaller font size
+	border: 1px solid getColor("gray-3");
+	color: getColor("text");
+	transition: all transition('fast');
+	max-width: 150px; // Limit chip width
+	overflow: visible; // Allow close button to be visible outside chip bounds
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
 
-	.tu-select__icon {
-		color: -getColor($color);
-		background: rgba(-getColor($color), 0.1);
-		box-shadow: (-15px) 10px 10px -10px rgba(-getColor($color), 0.1);
-	}
-
-	.tu-icon-arrow {
-		&:after {
-			background: -getColor($color);
-		}
-
-		&:before {
-			background: -getColor($color);
-		}
-	}
-
-	.tu-select-add-icon {
-		color: -getColor($color);
+%chip-close-base {
+	position: absolute;
+	top: -3px; // Slightly higher for better visibility
+	right: -3px; // Slightly more to the right
+	width: 16px; // Slightly larger for better usability
+	height: 16px; // Slightly larger for better usability
+	background: getColor("gray-4");
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: border-radius('full');
+	font-size: font-size('xs');
+	cursor: pointer;
+	transition: all transition('fast');
+	z-index: z-index('elevated'); // Ensure it's above other elements
+	border: 1px solid getColor("component-background"); // Add border to separate from background
+	
+	&:focus-visible { @include focus-ring; }
+	
+	@media (pointer: coarse) {
+		width: 22px; // Larger for touch devices
+		height: 22px;
+		top: -5px;
+		right: -5px;
 	}
 }
 
-.tu-select-enter-active {
-	transition: all 0.25s ease;
-}
-
-.tu-select-enter-from {
-	opacity: 0;
-	transform: translate(0, -10px);
-	transition: all 0.25s ease;
-	box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, -var(shadow-opacity));
-
-	&:after {
-		opacity: 0 !important;
-		box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, -var(shadow-opacity));
-	}
-}
-
-.tu-select-leave-active {
-	transition: all 0.25s ease;
-}
-
-.tu-select-leave-to {
-	opacity: 0;
-	transform: translate(0, -10px);
-	transition: all 0.25s ease;
-	box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, -var(shadow-opacity));
-
-	&.top {
-		transform: translate(0, 10px) !important;
-	}
-
-	&:after {
-		opacity: 0 !important;
-		box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, -var(shadow-opacity));
-	}
-}
+// =============================================================================
+// MAIN COMPONENT STYLES
+// =============================================================================
 
 .tu-select-content {
-	width: 100%;
-	max-width: fit-content;
 	display: flex;
 	flex-direction: column;
+	width: 100%;
+	max-width: fit-content;
+	margin: spacing('xs');
+	padding: spacing('xs');
 
-	&.inline {
-		display: inline-flex;
-	}
-
-	margin: 5px;
-	padding: 5px;
-
-	&.block {
-		&.block {
-			max-width: 100%;
-		}
-	}
-}
-
-.tu-select__chips {
-	max-height: 50px;
-	overflow: auto;
-
-	&::-webkit-scrollbar {
-		width: 5px;
-		height: 5px;
-		display: block;
-		background: transparent;
-	}
+	&.inline { display: inline-flex; }
+	&.block { max-width: 100%; }
 }
 
 .tu-select {
@@ -876,271 +1129,164 @@ onBeforeUnmount(() => {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	min-height: 38px;
 	width: 100%;
+	height: component-size('md', 'height'); // Fixed height prevents expansion
+	
+	// For multi-select mode, ensure consistent height
+	&.has-chips {
+		height: component-size('md', 'height'); // Maintain fixed height with chips
+	}
 
+	// Focus states - only show focus ring on keyboard navigation, not when dropdown is open
+	&:not(.activeOptions):focus-within {
+		.tu-select__input,
+		.tu-select__chips { 
+			@include focus-ring; // Default focus ring, overridden by state-specific ones
+		}
+	}
 
-
+	// Loading state
 	&.loading {
 		pointer-events: none;
-
-		*:not(.tu-select__loading):not(.tu-select__label) {
-			opacity: 0.6;
-		}
-
-		.tu-select__label {
-			pointer-events: none !important;
-		}
+		
+		*:not(.tu-select__loading):not(.tu-select__label) { opacity: 0.6; }
+		.tu-select__label { pointer-events: none; }
 	}
 
-	&.top {
-		&.activeOptions {
-
-			.tu-select__input,
-			.tu-select__chips {
-				border-radius: 0px 0px 12px 12px !important;
-				box-shadow: 0px -5px 25px -4px rgba(0, 0, 0, -var(shadow-opacity)) !important;
-			}
-		}
-	}
-
+	// Disabled state
 	&--disabled {
 		opacity: 0.6;
+		cursor: not-allowed;
 		pointer-events: none;
-
-		label {
-			pointer-events: none;
-		}
+		
+		label { pointer-events: none; }
 	}
 
-	.tu-icon-arrow {
-		z-index: 600;
-		position: absolute;
-		right: 15px;
-		margin-top: -2px;
-		transition: all 0.25s ease;
-		pointer-events: auto;
-		cursor: pointer;
-	}
-
-	.tu-select-add-icon {
-		position: absolute;
-		right: -20px;
-		font-size: 16px;
-		color: -getColor("text");
-		transition: all .25s ease;
-
-		&:hover {
-			color: -getColor("color");
-			transform: rotate(180deg);
-		}
-	}
-
+	// Active/open state
 	&.activeOptions {
-		.tu-icon-arrow {
-			transform: rotate(45deg);
-			margin-top: (-2px) !important;
-		}
-
-		.tu-select__input {
-			border-radius: 12px 12px 0px 0px;
-			border: 1px solid -getColorAlpha("text", 0.09);
-			border-bottom: unset;
-			background: -getColor("component-background");
-			//box-shadow: 0px 5px 25px -4px rgba(0, 0, 0, -var(shadow-opacity));
-			//transform: translate(0, -2px);
-			transition: all 0.25s ease, height 0s;
-			//border: 2px solid transparent;
-			color: -getColor("text");
-		}
-
+		.tu-select__input,
 		.tu-select__chips {
-			border-radius: 12px 12px 0px 0px;
-			background-color: -getColor("component-background");
-			box-shadow: 0px 5px 25px -4px rgba(0, 0, 0, -var(shadow-opacity));
-			//transform: translate(0, -4px);
-			transition: all 0.25s ease, height 0s;
-
-			&:after {
-				opacity: 0;
-			}
+			@extend %select-focus-state;
+			background: getColor("component-background");
 		}
 
+		.tu-select__arrow-icon { transform: rotate(45deg); }
+		
 		.tu-select__label--placeholder {
 			opacity: 1;
 			visibility: visible;
 			pointer-events: auto;
 			transform: translate(-1%, -30px) !important;
-			font-size: 0.8rem;
-			margin-top: 0px !important;
-		}
-
-		.tu-select__label {
-			margin-top: -4px;
+			font-size: font-size('sm');
+			margin-top: 0 !important;
 		}
 	}
 
-	&__input {
-		opacity: 1;
-		background: transparent;
-		padding: 7px 13px;
-		border: 1px solid -getColorAlpha("text", 0.09);
-		border-radius: 12px;
-		cursor: pointer;
-		transition: all 0.25s ease, height 0s;
-		background: -getColor("component-background");
-		color: -getColor("text") !important;
-		min-height: 38px;
-		padding-right: 30px;
-		width: 100%;
-
-		&.multiple {
-			color: transparent;
-			background: transparent;
-			pointer-events: none;
-		}
-
-		&.simple {
-			user-select: none;
-		}
-
-		&:focus {
-			border-radius: 12px 12px 0px 0px;
-			//background: -getColor("background");
-			//box-shadow: 0px 5px 25px -4px rgba(0, 0, 0, -var(shadow-opacity));
-			//transform: translate(0, -4px);
-			transition: all 0.25s ease;
-
-			~.tu-select__label--placeholder {
-				opacity: 1;
-				visibility: visible;
-				pointer-events: auto;
-				//transform: translate(-3%, -28px) !important;
-				font-size: 0.8rem;
-				margin-top: 0px !important;
-			}
-		}
-
-		&:hover {
-			background: -getColor("gray-4");
-			//box-shadow: 0px 5px 25px -4px rgba(0, 0, 0, -var(shadow-opacity));
-			//transform: translate(0, -4px);
-
-			~.tu-select__label {
-				margin-top: -4px;
-			}
-
-			~.tu-icon-arrow {
-				margin-top: -6px;
-			}
+	// Top positioning variant
+	&.top.activeOptions {
+		.tu-select__input,
+		.tu-select__chips {
+			border-radius: 0 0 border-radius('lg') border-radius('lg') !important;
+			box-shadow: shadow('lg') !important;
 		}
 	}
+
+	// =============================================================================
+	// CHIPS SECTION
+	// =============================================================================
 
 	&__chips {
+		@extend %select-input-base;
 		width: 100%;
-		height: auto;
+		height: component-size('md', 'height'); // Fixed height - no auto expansion
 		position: absolute;
-		left: 0px;
-		background-color: -getColor("component-background");
-		z-index: 300;
-		border: 1px solid -getColorAlpha("text", 0.09);
-		border-radius: 12px;
+		left: 0;
 		display: flex;
 		align-items: flex-start;
 		justify-content: flex-start;
 		flex-wrap: wrap;
-		padding: 5px;
-		min-height: 38px;
-		transition: all 0.25s ease, height 0s;
-		padding-right: 26px;
+		padding: spacing('xs');
+		overflow-y: auto; // Vertical scroll when content exceeds height
+		overflow-x: hidden; // Prevent horizontal scroll
+		
+		// Ensure scrolling behavior is smooth
+		scroll-behavior: smooth;
 
-		&:focus {
-			border-radius: 12px 12px 0px 0px;
-			background-color: -getColor("component-background");
-			//box-shadow: 0px 5px 25px -4px rgba(0, 0, 0, -var(shadow-opacity));
-			//transform: translate(0, -4px);
-			transition: all 0.25s ease;
+		// Enhanced scrollbar styling
+		&::-webkit-scrollbar {
+			width: 6px; // Slightly wider for better visibility
+			height: 4px;
+		}
+
+		&::-webkit-scrollbar-track { 
+			background: getColorAlpha("text", 0.05); // Subtle track background
+			border-radius: border-radius('sm');
+		}
+
+		&::-webkit-scrollbar-thumb {
+			background: getColorAlpha("text", 0.3); // More visible thumb
+			border-radius: border-radius('sm');
+			
+			&:hover {
+				background: getColorAlpha("text", 0.5); // Darker on hover
+			}
+		}
+
+		// Firefox scrollbar styling
+		scrollbar-width: thin;
+		scrollbar-color: getColorAlpha("text", 0.3) getColorAlpha("text", 0.05);
+
+
+
+		&:focus { 
+			@extend %select-focus-state; 
+			outline: none; // Remove browser default focus outline
 		}
 
 		&:hover {
-			background: -getColor("gray-4");
+			
+			border-color: getColorAlpha("primary", 0.3);
 
-			//box-shadow: 0px 5px 25px -4px rgba(0, 0, 0, -var(shadow-opacity));
-			//transform: translate(0, -8px);
-			&.chips-hovered-multiple {
-				transform: translate(0, -8px);
-			}
-
-			transition: all 0.25s ease;
-
-			~.tu-icon-arrow {
-				margin-top: -6px;
-				transition: all 0.25s ease;
-			}
+			~ .tu-select__arrow-icon { margin-top: -6px; }
 		}
 
 		&__input {
 			width: auto;
-			flex: 1;
+			flex: 1 1 auto; // Allow it to grow and shrink but maintain auto basis
 			max-width: 100%;
 			position: relative;
-			min-width: 0px;
-			border: 0px solid transparent;
+			min-width: 120px; // Increase minimum width for better UX
+			border: 0;
 			background: transparent;
-			margin: 2px 3px;
-			min-width: 30px;
+			margin: spacing('xs');
+			font-size: font-size('base');
+			order: -1; // Ensure it always comes first in flex layout
 
-			&::placeholder {
-				color: -getColorAlpha("text", 0.4);
-			}
+			&::placeholder { color: getColorAlpha("text", 0.5); }
+			&:focus { outline: none; }
 		}
 
 		&__chip {
-			flex: 0 1 auto;
-			position: relative;
-			background-color: -getColor("component-background");
-			border-radius: 10px;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			padding: 0px 6px;
-			margin: 2px 3px;
-			padding-right: 10px;
-			font-size: 0.84rem;
-			border: 2px solid -getColor("gray-4");
-			box-sizing: border-box;
-			color: -getColor("text");
-
-			&.isCollapse {
-				padding-right: 6px !important;
+			@extend %chip-base;
+			
+			&:hover {
+				background-color: getColor("gray-3");
+				border-color: getColor("gray-4");
 			}
 
+			&.isCollapse { padding-right: spacing('sm') !important; }
+
 			&__close {
-				position: absolute;
-				top: -4px;
-				right: -4px;
-				width: 15px;
-				height: 15px;
-				background: -getColor("gray-4");
-				display: flex;
-				align-items: center;
-				justify-content: center;
-				border-radius: 50%;
-				font-size: 0.75rem;
-				cursor: pointer;
-				transition: all 0.25s ease;
+				@extend %chip-close-base;
 
 				&:hover {
-					background: -getColor("danger");
+					background: getColor("danger");
+					transform: scale(1.1);
 
 					.tu-icon-close {
-						--tu-color: var(--tu-background);
+						--tu-color: white;
 
-						&:after {
-							width: 12px;
-							transform: rotate(180deg);
-						}
-
+						&:after,
 						&:before {
 							width: 12px;
 							transform: rotate(180deg);
@@ -1150,48 +1296,266 @@ onBeforeUnmount(() => {
 
 				.tu-icon-close {
 					--tu-color: var(--tu-text);
-					transform: scale(0.5);
+					transform: scale(0.6);
 				}
 			}
 		}
 	}
 
+// =============================================================================
+// INPUT & ICON ELEMENTS
+// =============================================================================
+
+.tu-select__input {
+	@extend %select-input-base;
+	opacity: 1;
+	cursor: pointer;
+	color: getColor("text") !important;
+	font-size: font-size('base');
+
+	&:focus-visible:not(.tu-select__input--multiple) { 
+		@include focus-ring; // Default focus ring - only on keyboard navigation
+	}
+	
+	&--multiple {
+		color: transparent;
+		background: transparent;
+		border: none !important; // Remove border in multi-select mode to prevent double borders
+		pointer-events: none;
+	}
+
+	&--simple { user-select: none; }
+
+	&:focus {
+		@extend %select-focus-state;
+		
+		~ .tu-select__label--placeholder {
+			opacity: 1;
+			visibility: visible;
+			pointer-events: auto;
+			font-size: font-size('sm');
+			margin-top: 0 !important;
+		}
+	}
+
+	&:hover {
+		background: getColor("gray-4");
+		border-color: getColorAlpha("primary", 0.3);
+
+		~ .tu-select__label { margin-top: -4px; }
+		~ .tu-select__arrow-icon { margin-top: -6px; }
+	}
+}
+
+.tu-select__arrow-icon {
+	position: absolute;
+	right: spacing('md');
+	z-index: z-index('elevated');
+	cursor: pointer;
+	pointer-events: auto;
+	transition: all transition('fast');
+	
+	// Touch-friendly for mobile
+	@media (pointer: coarse) {
+		padding: spacing('xs');
+		margin-right: spacing('xs');
+	}
+
+	&--down {
+		transform: rotate(0deg);
+	}
+
+	&--up {
+		transform: rotate(180deg);
+	}
+}
+
+.tu-select__add-icon {
+	position: absolute;
+	right: -20px;
+	font-size: font-size('base');
+	color: getColor("text");
+	transition: all transition('fast');
+
+	&:hover {
+		color: getColor("primary");
+		transform: rotate(180deg);
+	}
+}
+
+	&__chips {
+		width: 100%;
+		position: absolute;
+		left: 0;
+		background-color: getColor("component-background");
+		z-index: z-index('elevated');
+		border: 1px solid getColorAlpha("text", 0.15);
+		border-radius: border-radius('lg');
+		display: flex;
+		align-items: flex-start;
+		justify-content: flex-start;
+		flex-wrap: wrap;
+		padding: spacing('xs');
+		min-height: component-size('md', 'height');
+		transition: all transition('fast'), height 0s;
+		padding-right: 40px; // Space for arrow icon
+		max-height: 120px; // Limit height for better UX
+		overflow: auto;
+
+		// Enhanced scrollbar styling
+		&::-webkit-scrollbar {
+			width: 4px;
+			height: 4px;
+		}
+
+		&::-webkit-scrollbar-track {
+			background: transparent;
+		}
+
+		&::-webkit-scrollbar-thumb {
+			background: getColorAlpha("text", 0.2);
+			border-radius: border-radius('sm');
+		}
+
+		&:focus {
+			border-radius: border-radius('lg') border-radius('lg') 0 0;
+			background-color: getColor("component-background");
+			transition: all transition('fast');
+		}
+
+		&:hover {
+			background: getColor("gray-4");
+			border-color: getColorAlpha("primary", 0.3);
+			transition: all transition('fast');
+
+			~ .tu-select__arrow-icon {
+				margin-top: -6px;
+				transition: all transition('fast');
+			}
+		}
+
+		&__input {
+			width: auto;
+			flex: 1;
+			max-width: 100%;
+			position: relative;
+			min-width: 30px;
+			border: 0;
+			background: transparent;
+			margin: spacing('xs');
+			font-size: font-size('base');
+
+			&::placeholder {
+				color: getColorAlpha("text", 0.5);
+			}
+
+			&:focus {
+				outline: none;
+			}
+		}
+
+		&__chip {
+			flex: 0 1 auto;
+			position: relative;
+			background-color: getColor("gray-3");
+			border-radius: border-radius('md');
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			padding: spacing('xs') spacing('sm');
+			
+			padding-right: spacing('md'); // Space for close button
+			font-size: font-size('sm');
+			border: 2px solid getColor("gray-4");
+			color: getColor("text");
+			transition: all transition('fast');
+
+			&:hover {
+				background-color: getColor("gray-3");
+				border-color: getColor("gray-4");
+			}
+
+			&.isCollapse {
+				padding-right: spacing('sm') !important;
+			}
+
+			&__close {
+				position: absolute;
+				top: -4px;
+				right: -4px;
+				width: 18px;
+				height: 18px;
+				background: getColor("gray-4");
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				border-radius: border-radius('full');
+				font-size: font-size('xs');
+				cursor: pointer;
+				transition: all transition('fast');
+				
+				// Enhanced accessibility
+				&:focus-visible {
+					@include focus-ring;
+				}
+				
+				// Minimum touch target for mobile
+				@media (pointer: coarse) {
+					width: 24px;
+					height: 24px;
+					top: -6px;
+					right: -6px;
+				}
+
+				&:hover {
+					background: getColor("danger");
+					transform: scale(1.1);
+
+					.tu-icon-close {
+						--tu-color: white;
+
+						&:after,
+						&:before {
+							width: 12px;
+							transform: rotate(180deg);
+						}
+					}
+				}
+
+				.tu-icon-close {
+					--tu-color: var(--tu-text);
+					transform: scale(0.6);
+				}
+			}
+		}
+	}
+
+	// =============================================================================
+	// OPTIONS DROPDOWN
+	// =============================================================================
+
 	&__options {
 		--tu-color: var(--tu-primary);
 		position: absolute;
-		z-index: var(--tu-zindex-1);
-		background-color: -getColor("component-background");
-		border: 1px solid -getColorAlpha("text", 0.09);
-		padding: 5px;
-		border-radius: 0px 0px 12px 12px;
+		z-index: z-index('popover');
+		background-color: getColor("component-background");
+		border: 1px solid getColorAlpha("text", 0.15);
+		padding: spacing('xs');
+		border-radius: 0 0 border-radius('lg') border-radius('lg');
 		overflow: hidden;
-		box-shadow: 0px 10px 20px -5px rgba(0, 0, 0, -var(shadow-opacity));
-		transform: translate(0, 3px);
+		box-shadow: shadow('lg');
+		transform: translateY(3px);
 
-		&--state-success {
-			background: -getColorAlpha("success", 0.3);
-		}
-
-		&--state-danger {
-			background: -getColorAlpha("danger", 0.3);
-		}
-
-		&--state-warn {
-			background: -getColorAlpha("warn", 0.3);
-		}
-
-		&--state-dark {
-			background: -getColorAlpha("dark", 0.3);
-		}
-
-		&--state-primary {
-			background: -getColorAlpha("primary", 0.3);
-		}
-
+		// State variants
+		&--state-success { background: getColorAlpha("success", 0.1); }
+		&--state-danger { background: getColorAlpha("danger", 0.1); }
+		&--state-warn { background: getColorAlpha("warn", 0.1); }
+		&--state-dark { background: getColorAlpha("dark", 0.1); }
+		&--state-primary { background: getColorAlpha("primary", 0.1); }
 
 		&.top {
-			border-radius: 12px 12px 0px 0px;
-			box-shadow: 0px -10px 20px -5px rgba(0, 0, 0, -var(shadow-opacity));
+			border-radius: border-radius('lg') border-radius('lg') 0 0;
+			box-shadow: shadow('lg');
 
 			&:after {
 				top: auto;
@@ -1205,52 +1569,60 @@ onBeforeUnmount(() => {
 			top: -10px;
 			width: 80%;
 			margin-left: 10%;
-			left: 0px;
+			left: 0;
 			height: 10px;
-			background: -getColor("background");
-			box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, -var(shadow-opacity));
-			z-index: 200;
-			transition: all 0.25s ease 0.05s;
+			background: getColor("component-background");
+			box-shadow: shadow('sm');
+			z-index: z-index('elevated');
+			transition: all transition('fast') 0.05s;
 			opacity: 1;
 		}
-
-
 
 		&__content {
 			max-height: 200px;
 			overflow: auto;
 			height: auto;
-			z-index: 100;
+			z-index: z-index('base');
 			transform: scale(1);
-			transition: all 0.25s ease;
+			transition: all transition('fast');
 			position: relative;
 			scroll-behavior: smooth;
+			
+			&:focus-within { outline: 2px solid transparent; }
 
-			&__not-data {
-				font-size: 0.8rem;
+			&__no-data {
+				font-size: font-size('sm');
 				text-align: center;
-				padding: 6px 10px;
+				padding: spacing('sm') spacing('md');
+				color: getColorAlpha("text", 0.6);
 			}
 
+			// Enhanced scrollbar
 			&::-webkit-scrollbar {
-				width: 5px;
-				height: 5px;
-				display: block;
-				background: transparent;
+				width: 4px;
+				height: 4px;
 			}
+
+			&::-webkit-scrollbar-track { background: transparent; }
 
 			&::-webkit-scrollbar-thumb {
-				background: -getColor("gray-3");
-				border-radius: 5px;
+				background: getColorAlpha("text", 0.2);
+				border-radius: border-radius('sm');
+
+				&:hover { background: getColorAlpha("text", 0.3); }
 			}
 		}
 	}
 
+	// =============================================================================
+	// LABELS & PLACEHOLDERS
+	// =============================================================================
+
 	&__label {
 		position: absolute;
-		left: 14px;
-		font-size: 0.8rem;
-		transition: all 0.25s ease;
+		left: spacing('md');
+		font-size: font-size('sm');
+		transition: all transition('fast');
 		cursor: text;
 		user-select: none;
 		pointer-events: none;
@@ -1258,11 +1630,10 @@ onBeforeUnmount(() => {
 		display: flex;
 		align-items: center;
 		justify-content: flex-start;
-		opacity: 0.4;
-		z-index: 500;
-		color: -getColorAlpha("text", 0.8) !important;
+		opacity: 0.6;
+		z-index: z-index('elevated');
+		color: getColorAlpha("text", 0.8) !important;
 
-		// top: 10px
 		&--hidden {
 			opacity: 0;
 			visibility: hidden;
@@ -1272,8 +1643,8 @@ onBeforeUnmount(() => {
 				visibility: visible;
 				pointer-events: auto;
 				transform: translate(-3%, -28px) !important;
-				font-size: 0.8rem;
-				margin-top: 0px !important;
+				font-size: font-size('sm');
+				margin-top: 0 !important;
 			}
 		}
 
@@ -1282,45 +1653,46 @@ onBeforeUnmount(() => {
 			visibility: visible;
 			pointer-events: auto;
 			transform: translate(-3%, -28px) !important;
-			font-size: 0.8rem;
-			margin-top: 0px !important;
+			font-size: font-size('sm');
+			margin-top: 0 !important;
 		}
 	}
+
+	// =============================================================================
+	// LOADING & MESSAGE STATES
+	// =============================================================================
 
 	&__loading {
 		position: absolute;
 		width: 22px;
 		height: 22px;
-		right: 7px;
+		right: spacing('sm');
 		pointer-events: none;
-		border-radius: 50%;
-		box-sizing: border-box;
+		border-radius: border-radius('full');
 		background: inherit;
 		cursor: default;
-		z-index: 600;
+		z-index: z-index('elevated');
 
 		&:after {
-			box-sizing: border-box;
 			position: absolute;
 			width: 100%;
 			height: 100%;
-			border: 2px solid -getColor("primary");
+			border: 2px solid getColor("primary");
 			border-radius: inherit;
 			border-top: 2px solid transparent;
 			border-left: 2px solid transparent;
 			border-right: 2px solid transparent;
 			animation: rotateInputLoading 0.8s ease infinite;
-			top: 0px;
+			top: 0;
 			content: "";
 		}
 
 		&:before {
-			box-sizing: border-box;
-			top: 0px;
+			top: 0;
 			position: absolute;
 			width: 100%;
 			height: 100%;
-			border: 2px dashed -getColor("primary");
+			border: 2px dashed getColor("primary");
 			border-radius: inherit;
 			border-top: 2px solid transparent;
 			border-left: 2px solid transparent;
@@ -1330,64 +1702,286 @@ onBeforeUnmount(() => {
 			content: "";
 		}
 
-		&~.tu-icon-arrow {
-			opacity: 0 !important;
-		}
+		& ~ .tu-select__arrow-icon { opacity: 0 !important; }
 	}
 
 	&__message {
-		font-size: 0.7rem;
+		font-size: font-size('xs');
 		position: relative;
-		padding: 0px 7px;
-		transition: all 0.25s ease;
+		padding: 0 spacing('sm');
+		transition: all transition('fast');
 		overflow: hidden;
 		height: unset !important;
 
-		&--success {
-			color: -getColor("success");
+		// State colors
+		&--success { color: getColor("success"); }
+		&--danger { color: getColor("danger"); }
+		&--warn { color: getColor("warn"); }
+		&--dark { color: getColor("dark"); }
+		&--primary { color: getColor("primary"); }
+	}
+
+	// State modifiers with state-aware focus rings
+	&--state-success { 
+		@include select-state("success");
+		
+		// Container focus-within - only when dropdown is closed
+		&:not(.activeOptions):focus-within {
+			.tu-select__input,
+			.tu-select__chips { 
+				@include focus-ring(getColor("success"));
+			}
 		}
-
-		&--danger {
-			color: -getColor("danger");
-		}
-
-		&--warn {
-			color: -getColor("warn");
-		}
-
-		&--dark {
-			color: -getColor("dark");
-		}
-
-		&--primary {
-			color: -getColor("primary");
+		
+		// Direct element focus - only on keyboard navigation
+		.tu-select__input:focus-visible,
+		.tu-select__chips:focus-visible {
+			@include focus-ring(getColor("success"));
 		}
 	}
-
-	&--state-success {
-		@include state("success");
+	
+	&--state-danger { 
+		@include select-state("danger");
+		
+		&:not(.activeOptions):focus-within {
+			.tu-select__input,
+			.tu-select__chips { 
+				@include focus-ring(getColor("danger"));
+			}
+		}
+		
+		.tu-select__input:focus-visible,
+		.tu-select__chips:focus-visible {
+			@include focus-ring(getColor("danger"));
+		}
 	}
-
-	&--state-danger {
-		@include state("danger");
+	
+	&--state-warn { 
+		@include select-state("warn");
+		
+		&:not(.activeOptions):focus-within {
+			.tu-select__input,
+			.tu-select__chips { 
+				@include focus-ring(getColor("warn"));
+			}
+		}
+		
+		.tu-select__input:focus-visible,
+		.tu-select__chips:focus-visible {
+			@include focus-ring(getColor("warn"));
+		}
 	}
-
-	&--state-warn {
-		@include state("warn");
+	
+	&--state-dark { 
+		@include select-state("dark");
+		
+		&:not(.activeOptions):focus-within {
+			.tu-select__input,
+			.tu-select__chips { 
+				@include focus-ring(getColor("dark"));
+			}
+		}
+		
+		.tu-select__input:focus-visible,
+		.tu-select__chips:focus-visible {
+			@include focus-ring(getColor("dark"));
+		}
 	}
-
-	&--state-dark {
-		@include state("dark");
+	
+	&--state-primary { 
+		@include select-state("primary");
+		
+		&:not(.activeOptions):focus-within {
+			.tu-select__input,
+			.tu-select__chips { 
+				@include focus-ring(getColor("primary"));
+			}
+		}
+		
+		.tu-select__input:focus-visible,
+		.tu-select__chips:focus-visible {
+			@include focus-ring(getColor("primary"));
+		}
 	}
-
-	&--state-primary {
-		@include state("primary");
-	}
-
 }
 
-.tu-select-content:not(.tu-select--dropdown) .tu-select .tu-select__placeholder {
+// =============================================================================
+// STYLE VARIANTS - BORDER, SHADOW, TRANSPARENT, SQUARE
+// =============================================================================
+
+// Border variant - underline style (no border on container)
+.tu-select-content--border {
+	.tu-select {
+		&__input,
+		&__chips {
+			background: transparent;
+			border: none !important;
+			border-radius: 0;
+			border-bottom: 2px solid getColorAlpha("text", 0.3);
+			
+			&:focus,
+			&:hover {
+				background: transparent;
+				border-bottom: 2px solid getColor("primary");
+				border-radius: 0;
+			}
+		}
+		
+		&.activeOptions {
+			.tu-select__input,
+			.tu-select__chips {
+				background: transparent;
+				border-bottom: 2px solid getColor("primary");
+			}
+		}
+	}
+}
+
+// Shadow variant - elevated style (no border on container)
+.tu-select-content--shadow {
+	.tu-select {
+		&__input,
+		&__chips {
+			border: none !important;
+			box-shadow: shadow('md');
+			
+			&:focus,
+			&:hover {
+				box-shadow: shadow('lg');
+				transform: translateY(-2px);
+			}
+		}
+		
+		&.activeOptions {
+			.tu-select__input,
+			.tu-select__chips {
+				box-shadow: shadow('lg');
+				transform: translateY(-2px);
+			}
+		}
+	}
+}
+
+// Transparent variant - no background or border
+.tu-select-content--transparent {
+	.tu-select {
+		&__input,
+		&__chips {
+			background: transparent !important;
+			border: none !important;
+			
+			&:focus,
+			&:hover {
+				background: getColorAlpha("text", 0.05) !important;
+			}
+		}
+		
+		&.activeOptions {
+			.tu-select__input,
+			.tu-select__chips {
+				background: getColorAlpha("text", 0.05) !important;
+			}
+		}
+	}
+}
+
+// Square variant - no border radius
+.tu-select-content--square {
+	.tu-select {
+		&__input,
+		&__chips {
+			border-radius: 0 !important;
+		}
+		
+		&.activeOptions {
+			.tu-select__input,
+			.tu-select__chips {
+				border-radius: 0 !important;
+			}
+		}
+	}
+}
+
+// Dropdown specific styles
+.tu-select-content:not(.tu-select--dropdown) .tu-select .tu-select__label--placeholder {
 	opacity: 1;
-	margin-left: 10px;
+	margin-left: spacing('md');
+}
+
+// Transition animations using design tokens
+.tu-select-enter-active {
+	transition: all transition('fast');
+}
+
+.tu-select-enter-from {
+	opacity: 0;
+	transform: translateY(-10px);
+	transition: all transition('fast');
+	box-shadow: shadow('none');
+
+	&:after {
+		opacity: 0 !important;
+		box-shadow: shadow('none');
+	}
+}
+
+.tu-select-leave-active {
+	transition: all transition('fast');
+}
+
+.tu-select-leave-to {
+	opacity: 0;
+	transform: translateY(-10px);
+	transition: all transition('fast');
+	box-shadow: shadow('none');
+
+	&.top {
+		transform: translateY(10px) !important;
+	}
+
+	&:after {
+		opacity: 0 !important;
+		box-shadow: shadow('none');
+	}
+}
+
+// High contrast mode support
+@media (prefers-reduced-motion: reduce) {
+	.tu-select,
+	.tu-select *,
+	.tu-select-enter-active,
+	.tu-select-leave-active {
+		transition: none !important;
+		animation: none !important;
+	}
+	
+	.tu-select__options {
+		transform: none !important;
+	}
+	
+	.tu-select__loading {
+		&:after,
+		&:before {
+			animation: none !important;
+		}
+	}
+}
+
+// High contrast mode support
+@media (prefers-contrast: high) {
+	.tu-select__input,
+	.tu-select__chips {
+		border: 2px solid currentColor;
+	}
+	
+	.tu-select__label {
+		color: currentColor !important;
+	}
+	
+	.tu-select__chips__chip {
+		border: 2px solid currentColor;
+		background: ButtonFace;
+		color: ButtonText;
+	}
 }
 </style>

@@ -1,9 +1,17 @@
 @use "sass:color";
+
+// Design tokens and functions (must be imported first)
+@import "tokens";
+
+// Base styles
 @import "_colors";
 @import "_vars";
 @import "_dark";
 @import "_reset";
-@import "_mixins.scss";
+
+// Utilities and accessibility
+@import "utilities";
+@import "accessibility";
 
 .unselectable {
 	-webkit-touch-callout: none;

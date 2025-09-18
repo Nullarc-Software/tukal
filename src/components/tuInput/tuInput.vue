@@ -1,21 +1,21 @@
 <template>
 	<div class="tu-input-parent" v-bind="$attrs" :style="{
-		['--tu-color']: color ? getColor(color) : ''
+		['--tu-color']: tuColor
 	}" :class="[
-	`tu-input-parent--state-${state}`,
-	{ 'tu-input-parent--border': !!border },
-	{ 'tu-input-parent--shadow': !!shadow },
-	{ [`tu-input-content--has-label`]: label || labelPlaceholder },
-	{ block: block },
-	{ transparent: transparent },
-	{ textWhite: textWhite },
-	{ square: square },
-	{ inline: inline },
-	// colors
-	{ [`tu-component--${color}`]: color },
-	{ [`tu-component--is-color`]: !!isColor },
-	{ [`tu-component-static-editable`]: !!editableStaticInternal }
-]">
+		`tu-input-parent--state-${state}`,
+		{ 'tu-input-parent--border': !!border },
+		{ 'tu-input-parent--shadow': !!shadow },
+		{ [`tu-input-content--has-label`]: label || labelPlaceholder },
+		{ block: block },
+		{ transparent: transparent },
+		{ textWhite: textWhite },
+		{ square: square },
+		{ inline: inline },
+		// colors
+		{ [`tu-component--${color}`]: color },
+		{ [`tu-component--is-color`]: !!isColor },
+		{ [`tu-component-static-editable`]: !!editableStaticInternal }
+	]">
 		<div class="tu-input-content" :class="[
 			{ [`tu-input-content--has-color`]: hasColor },
 			{
@@ -100,8 +100,13 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import tuIcon from "../tuIcon";
+import { getColor, isColor } from "@/utils";
+
+defineOptions({
+	name: "TuInput"
+});
 
 interface Props {
 	modelValue?: string | number | object;
@@ -158,10 +163,6 @@ const emit = defineEmits<{
 	"onEnter": [];
 }>();
 
-// tuComponent functionality
-const getColor = inject<(color: string) => string>("getColor", () => "");
-const isColor = inject<boolean>("isColor", false);
-
 class InputConstants {
 	public static id = 0;
 }
@@ -177,6 +178,14 @@ const editableStaticInternal = ref(props.editableStatic);
 
 const hasColor = computed(() => {
 	return props.color;
+});
+
+const tuColor = computed(() => {
+	if (props.state)
+		return getColor(props.state);
+	else if (props.color)
+		return getColor(props.color);
+	return "var(--tu-primary)";
 });
 
 const beforeEnter = function (el: Element) {
@@ -228,49 +237,57 @@ if (props.editableStatic) {
 }
 </script>
 <style lang="scss" scoped>
-@import "../../style/sass/_mixins";
+@import "../../style/sass/_functions";
+@import "../../style/sass/_tokens";
 
+// Enhanced state mixin using design tokens
 @mixin state($color) {
 	.tu-input {
-		background: rgba(-getColor($color), 0.1) !important;
-		color: -getColor($color);
+		background: getColorAlpha($color, 0.1) !important;
+		color: getColor($color);
+		border-color: getColorAlpha($color, 0.3);
+
+		&:focus {
+			background: getColorAlpha($color, 0.15) !important;
+			border-color: getColor($color);
+			box-shadow: 0 0 0 2px getColorAlpha($color, 0.2);
+		}
 	}
 
 	.tu-input__label {
-		color: -getColor($color);
+		color: getColor($color);
 	}
 
 	.tu-input__icon {
-		color: -getColor($color);
-		background: rgba(-getColor($color), 0.1);
-		box-shadow: (-15px) 10px 10px -10px rgba(-getColor($color), 0.1);
+		color: getColor($color);
+		background: getColorAlpha($color, 0.1);
+		box-shadow: map-get($shadow, 'sm');
 	}
 }
 
+// Enhanced input parent component using design tokens
 .tu-input-parent {
-	--tu-color: var(--tu-primary);
 	display: flex;
 	flex-direction: column;
 	max-width: max-content;
+	position: relative;
+	margin: map-get($spacing, 'xs');
+	padding: map-get($spacing, 'xs');
 
 	&.inline {
 		display: inline-flex;
 		justify-content: center;
 	}
 
-	position: relative;
-	margin: 5px;
-	padding: 5px;
-
 	&.square {
 		.tu-input-content {
-			border-radius: 0px !important;
+			border-radius: 0 !important;
 		}
 	}
 
 	&.textWhite {
 		.tu-input {
-			color: #fff;
+			color: white;
 		}
 	}
 
@@ -290,9 +307,10 @@ if (props.editableStatic) {
 	}
 
 	&--has-label {
-		margin-top: 20px !important;
+		margin-top: map-get($spacing, 'lg') !important;
 	}
 
+	// State variants using enhanced mixin
 	&--state-success {
 		@include state("success");
 	}
@@ -314,60 +332,70 @@ if (props.editableStatic) {
 	}
 }
 
+// Enhanced input content container
 .tu-input-content {
 	display: flex;
 	align-items: center;
 	justify-content: flex-start;
 	position: relative;
-	border-radius: 12px;
-	border: 1px solid -getColorAlpha("text", 0.09);
+	border-radius: map-get($border-radius, 'lg');
+	border: 1px solid getColorAlpha("text", 0.15);
+	transition: all map-get($transition, 'fast');
+
+	// Enhanced focus-within for accessibility
 
 	+.tu-input__message {
-		padding-top: 2px;
+		padding-top: map-get($spacing, 'xs');
 		display: flex;
 	}
 
-	&--has-getColor {
+	&--has-color {
 		.tu-input {
-
-			// box-shadow: 0px 10px 20px -5px -getColor('color',.3)
 			&:focus {
-				border-bottom: 2px solid -getColor("color");
+				border-bottom: 2px solid getColor("color");
 
 				~.tu-input__icon {
-					color: -getColor("color");
+					color: getColor("color");
 				}
 
 				~.tu-input__label {
-					color: -getColor("color");
+					color: getColor("color");
 				}
 
 				~.tu-input__label--placeholder {
-					color: -getColor("color");
+					color: getColor("color");
 				}
 			}
 		}
 	}
 }
 
+// Enhanced input field using design tokens
 .tu-input {
 	border: 2px solid transparent;
-	background: -getColor("gray-2");
-	color: -getColor("text");
-	padding: 7px 13px;
+	background: getColor("component-background");
+	color: getColor("text");
+	padding: map-get($spacing, 'sm') map-get($spacing, 'md');
 	border-radius: inherit;
-	transition: all 0.25s ease;
-	padding-left: 10px;
+	transition: all map-get($transition, 'fast');
+	padding-left: map-get($spacing, 'sm');
+	font-size: map-get($font-size, 'base');
+	min-height: map-get(map-get($component-size, 'md'), 'height');
+	outline: none;
 
+	// Enhanced accessibility and focus states
 	&:focus {
-		background: -getColor("gray-3");
-		padding-left: 15px;
+		background: getColor("gray-1");
+		padding-left: map-get($spacing, 'md');
+
+		box-shadow: map-get($shadow, 'sm');
 
 		&.tu-input--has-icon:not(.tu-input--has-icon--after) {
 			padding-left: 40px;
 
 			~.tu-input__icon {
-				box-shadow: 15px 10px 10px -10px rgba(0, 0, 0, -var(shadow-opacity));
+				box-shadow: map-get($shadow, 'md');
+				transform: translate(-6px, -6px);
 			}
 
 			~.tu-input__label:not(.tu-input__label--placeholder):not(.tu-input__label--label) {
@@ -376,9 +404,9 @@ if (props.editableStatic) {
 		}
 
 		~.tu-input__icon {
-			box-shadow: (-15px) 10px 10px -10px rgba(0, 0, 0, -var(shadow-opacity));
+			box-shadow: map-get($shadow, 'md');
 			transform: translate(-6px, -6px);
-			background: -getColor("gray-1");
+			background: getColor("component-background");
 
 			&--after {
 				transform: translate(6px, -6px);
@@ -387,7 +415,7 @@ if (props.editableStatic) {
 
 		~.tu-input__label:not(.tu-input__label--placeholder):not(.tu-input__label--label) {
 			opacity: 0;
-			left: 20px;
+			left: map-get($spacing, 'lg');
 		}
 
 		~.tu-input__label--placeholder {
@@ -395,15 +423,32 @@ if (props.editableStatic) {
 			visibility: visible;
 			pointer-events: auto;
 			transform: translate(-0.5%, -77%);
-			font-size: 0.8rem;
+			font-size: map-get($font-size, 'sm');
 		}
 	}
 
+	// Enhanced hover states
+	&:hover:not(:focus) {
+		background: getColor("gray-2");
+		transform: translateY(-1px);
+	}
+
+	// Placeholder styling
+	&::placeholder {
+		color: getColorAlpha("text", 0.5);
+		transition: all map-get($transition, 'fast');
+	}
+
+	&:focus::placeholder {
+		color: getColorAlpha("text", 0.3);
+	}
+
+	// Label styling with design tokens
 	&__label {
 		position: absolute;
-		left: 13px;
-		font-size: 0.8rem;
-		transition: all 0.25s ease;
+		left: map-get($spacing, 'md');
+		font-size: map-get($font-size, 'sm');
+		transition: all map-get($transition, 'fast');
 		cursor: text;
 		user-select: none;
 		pointer-events: none;
@@ -412,7 +457,8 @@ if (props.editableStatic) {
 		display: flex;
 		align-items: center;
 		justify-content: flex-start;
-		opacity: 0.4;
+		opacity: 0.6;
+		color: getColorAlpha("text", 0.7);
 
 		&--hidden {
 			opacity: 0;
@@ -423,7 +469,7 @@ if (props.editableStatic) {
 				visibility: visible;
 				pointer-events: auto;
 				transform: translate(-3px, -80%);
-				font-size: 0.8rem;
+				font-size: map-get($font-size, 'sm');
 			}
 		}
 
@@ -432,10 +478,11 @@ if (props.editableStatic) {
 			visibility: visible;
 			pointer-events: auto;
 			transform: translate(-2px, -77%);
-			font-size: 0.8rem;
+			font-size: map-get($font-size, 'sm');
 		}
 	}
 
+	// Icon styling with design tokens
 	&--has-icon {
 		padding-left: 38px;
 
@@ -444,11 +491,11 @@ if (props.editableStatic) {
 		}
 
 		&--after {
-			padding-left: 7px;
+			padding-left: map-get($spacing, 'sm');
 			padding-right: 38px;
 
 			~.tu-input__label {
-				left: 13px;
+				left: map-get($spacing, 'md');
 			}
 
 			&.tu-input__label--label {
@@ -464,8 +511,7 @@ if (props.editableStatic) {
 					}
 
 					~.tu-input__label--placeholder {
-						transform: translate(calc(-3px - 22px),
-								-20%) !important;
+						transform: translate(calc(-3px - 22px), -20%) !important;
 					}
 
 					~.tu-input__label {
@@ -484,17 +530,18 @@ if (props.editableStatic) {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		box-shadow: 12px 0px 10px -10px rgba(0, 0, 0, -var(shadow-opacity));
-		transition: all 0.25s ease;
+		box-shadow: map-get($shadow, 'sm');
+		transition: all map-get($transition, 'fast');
 		border-radius: inherit;
-		background: -getColor("gray-2");
+		background: getColor("component-background");
 		pointer-events: none;
-		left: 0px;
+		left: 0;
+		color: getColorAlpha("text", 0.6);
 
 		&--after {
 			left: auto;
-			right: 0px;
-			box-shadow: (-12px) 0px 10px -10px rgba(0, 0, 0, -var(shadow-opacity));
+			right: 0;
+			box-shadow: map-get($shadow, 'sm');
 		}
 
 		&--click {
@@ -502,9 +549,10 @@ if (props.editableStatic) {
 			cursor: pointer;
 
 			&:hover {
-				box-shadow: (-15px) 10px 10px -10px rgba(0, 0, 0, -var(shadow-opacity));
+				box-shadow: map-get($shadow, 'md');
 				transform: translate(-6px, -6px);
-				background: -getColor("gray-1");
+				background: getColor("gray-1");
+				color: getColor("primary");
 
 				&.tu-input__icon--after {
 					transform: translate(6px, -6px);
@@ -513,78 +561,77 @@ if (props.editableStatic) {
 		}
 	}
 
+	// Message styling with design tokens
 	&__message {
-		font-size: 0.7rem;
+		font-size: map-get($font-size, 'xs');
 		position: relative;
-		padding: 0px 7px;
-		transition: all 0.25s ease;
+		padding: 0 map-get($spacing, 'sm');
+		transition: all map-get($transition, 'fast');
 		overflow: hidden;
 
+		// State colors
 		&--success {
-			color: -getColor("success");
+			color: getColor("success");
 		}
 
 		&--danger {
-			color: -getColor("danger");
+			color: getColor("danger");
 		}
 
 		&--warn {
-			color: -getColor("warn");
+			color: getColor("warn");
 		}
 
 		&--dark {
-			color: -getColor("dark");
+			color: getColor("dark");
 		}
 
 		&--primary {
-			color: -getColor("primary");
+			color: getColor("primary");
 		}
 	}
 
+	// Progress indicator using design tokens
 	&__progress {
 		width: 95%;
 		left: 2.5%;
 		position: relative;
 		height: 2px;
-		background: -getColor("gray-2");
-		margin-top: 5px;
+		background: getColor("gray-2");
+		margin-top: map-get($spacing, 'xs');
 		overflow: hidden;
-		border-radius: 5px;
+		border-radius: map-get($border-radius, 'sm');
 
-		&--danger {
-			.tu-input__progress__bar {
-				background: -getColor("danger");
-			}
+		&--danger .tu-input__progress__bar {
+			background: getColor("danger");
 		}
 
-		&--warn {
-			.tu-input__progress__bar {
-				background: -getColor("warn");
-			}
+		&--warn .tu-input__progress__bar {
+			background: getColor("warn");
 		}
 
-		&--success {
-			.tu-input__progress__bar {
-				background: -getColor("success");
-			}
+		&--success .tu-input__progress__bar {
+			background: getColor("success");
 		}
 
 		&__bar {
 			width: 32%;
 			height: 2px;
 			max-width: 100%;
-			transition: all 0.25s ease;
-			border-radius: 5px;
+			transition: all map-get($transition, 'fast');
+			border-radius: map-get($border-radius, 'sm');
+			background: getColor("primary");
 		}
 	}
 
+	// Loading indicator using design tokens
 	&__loading {
 		position: absolute;
 		width: 22px;
 		height: 22px;
-		right: 7px;
+		right: map-get($spacing, 'sm');
 		pointer-events: none;
-		border-radius: 50%;
+		border-radius: map-get($border-radius, 'full');
 		box-sizing: border-box;
 		background: inherit;
 		cursor: default;
@@ -594,23 +641,23 @@ if (props.editableStatic) {
 			position: absolute;
 			width: 100%;
 			height: 100%;
-			border: 2px solid -getColor("primary");
+			border: 2px solid getColor("primary");
 			border-radius: inherit;
 			border-top: 2px solid transparent;
 			border-left: 2px solid transparent;
 			border-right: 2px solid transparent;
 			animation: rotateInputLoading 0.8s ease infinite;
-			top: 0px;
+			top: 0;
 			content: "";
 		}
 
 		&:before {
 			box-sizing: border-box;
-			top: 0px;
+			top: 0;
 			position: absolute;
 			width: 100%;
 			height: 100%;
-			border: 2px dashed -getColor("primary");
+			border: 2px dashed getColor("primary");
 			border-radius: inherit;
 			border-top: 2px solid transparent;
 			border-left: 2px solid transparent;
@@ -622,6 +669,7 @@ if (props.editableStatic) {
 	}
 }
 
+// Border variant styles using design tokens
 .tu-input-parent {
 	&--border {
 		.tu-input__icon {
@@ -630,33 +678,33 @@ if (props.editableStatic) {
 		}
 
 		.tu-input-content {
-			border-radius: 0px;
+			border-radius: 0;
 			border: none !important;
 
 			.tu-input__affects {
 				width: 100%;
 				height: 100%;
 				position: absolute;
-				top: 0px;
-				left: 0px;
+				top: 0;
+				left: 0;
 				pointer-events: none;
 
 				&__1 {
-					border-bottom: 2px solid -getColorAlpha("text", 0.3);
+					border-bottom: 2px solid getColorAlpha("text", 0.3);
 					width: 100%;
 					height: 2px;
 					position: absolute;
-					bottom: 0px;
-					transition: all 0.25s ease;
+					bottom: 0;
+					transition: all map-get($transition, 'fast');
 				}
 
 				&__2 {
-					border-bottom: 2px solid -getColor("color");
+					border-bottom: 2px solid getColor("color");
 					width: 0%;
 					height: 2px;
 					position: absolute;
-					bottom: 0px;
-					transition: all 0.25s ease;
+					bottom: 0;
+					transition: all map-get($transition, 'fast');
 					left: 50%;
 					transform: translate(-50%);
 				}
@@ -664,7 +712,7 @@ if (props.editableStatic) {
 
 			.tu-input {
 				background: transparent;
-				border-radius: 0px;
+				border-radius: 0;
 				border: none !important;
 
 				&:focus {
@@ -678,12 +726,11 @@ if (props.editableStatic) {
 		}
 	}
 
+	// Shadow variant styles using design tokens
 	&--shadow {
 		.tu-input__icon {
 			background: transparent;
-			z-index: 100;
-
-			// box-shadow: none !important
+			z-index: map-get($z-index, 'elevated');
 		}
 
 		.tu-input-content {
@@ -691,42 +738,42 @@ if (props.editableStatic) {
 				width: 100%;
 				height: 100%;
 				position: absolute;
-				top: 0px;
-				left: 0px;
+				top: 0;
+				left: 0;
 				border-radius: inherit;
 				pointer-events: none;
-				z-index: 10;
+				z-index: map-get($z-index, 'base');
 
 				&__1 {
-					box-shadow: 0px 6px 25px -6px rgba(0, 0, 0, -var(shadow-opacity));
+					box-shadow: map-get($shadow, 'lg');
 					width: 100%;
 					height: 100%;
 					position: absolute;
-					top: 0px;
-					transition: all 0.25s ease;
-					z-index: 200;
+					top: 0;
+					transition: all map-get($transition, 'fast');
+					z-index: map-get($z-index, 'elevated');
 					border-radius: inherit;
 				}
 			}
 
 			.tu-input {
 				background: transparent;
-				border-radius: 0px;
+				border-radius: 0;
 				border: 2px solid transparent;
 
 				&:focus {
 					transform: translate(0, 3px);
 
 					~.tu-input__icon {
-						background: -getColor("background") !important;
+						background: getColor("component-background") !important;
 						opacity: 1;
-						box-shadow: 0px 10px 20px -5px rgba(0, 0, 0, -var(shadow-opacity)) !important;
+						box-shadow: map-get($shadow, 'lg') !important;
 					}
 
 					~.tu-input__affects {
 						.tu-input__affects__1 {
 							transform: translate(0, 3px);
-							box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, -var(shadow-opacity));
+							box-shadow: map-get($shadow, 'sm');
 						}
 					}
 				}
@@ -735,6 +782,7 @@ if (props.editableStatic) {
 	}
 }
 
+// Enhanced loading animation
 @keyframes rotateInputLoading {
 	0% {
 		transform: rotate(0deg);
@@ -745,6 +793,7 @@ if (props.editableStatic) {
 	}
 }
 
+// Static editable variant
 .tu-input-parent.tu-component-static-editable {
 	::v-deep(.tu-input-content) {
 		border: none !important;
@@ -752,14 +801,29 @@ if (props.editableStatic) {
 
 	::v-deep(.tu-input) {
 		cursor: text;
-		//pointer-events: none;
 		background-color: transparent;
 	}
 
 	::v-deep(.tu-input__icon__editable) {
 		i {
-			font-size: 16px;
+			font-size: map-get($font-size, 'base');
 		}
 	}
 }
+
+// Motion preference support
+@media (prefers-reduced-motion: reduce) {
+
+	.tu-input,
+	.tu-input *,
+	.tu-input-content,
+	.tu-input-content * {
+		transition: none !important;
+		animation: none !important;
+		transform: none !important;
+	}
+}
+
+// High contrast mode support
+@media (prefers-contrast: high) {}
 </style>

@@ -9,6 +9,10 @@
 import { ref, onMounted } from "vue";
 import * as utils from "../../utils";
 
+defineOptions({
+	name: "TuViewUpload"
+});
+
 interface Props {
 	active?: boolean;
 	src?: string;

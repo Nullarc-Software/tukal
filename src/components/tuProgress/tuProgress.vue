@@ -16,6 +16,10 @@ import { computed, onMounted, ref, watch, inject } from "vue";
 import { Router } from "vue-router";
 import { getColor } from "../../utils";
 
+defineOptions({
+	name: "TuProgress"
+});
+
 interface Props {
 	height?: number | string;
 	indeterminate?: boolean;
@@ -78,8 +82,9 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-@import "../../style/sass/_mixins";
+@import "../../style/sass/_functions";
 @import "../../style/sass/_colors";
+@import "../../style/sass/_tokens";
 
 .tu-progress--indeterminate {
 	position: absolute;
@@ -128,11 +133,12 @@ onMounted(() => {
 
 @each $color in $tu-colors {
 	.tu-progress-#{$color} {
-		background: -getColorAlpha($color, 0.1);
+		background: getColorAlpha($color, 0.1);
 
 		::v-deep(.tu-progress--foreground, .tu-progress--indeterminate) {
-			background: -getColor($color);
+			background: getColor($color);
 		}
 	}
 }
 </style>
+

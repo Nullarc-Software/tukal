@@ -304,6 +304,10 @@ import {
 import { IHeaderProps } from "./IHeaderProps";
 import * as _color from "../../utils";
 
+defineOptions({
+	name: "CalendarView"
+});
+
 type TCategory = {
 	name: string;
 	color: string;

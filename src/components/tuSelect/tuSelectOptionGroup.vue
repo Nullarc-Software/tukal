@@ -84,11 +84,11 @@ provide("textFilter", textFilter);
 provide("optionGroup", optionGroup);
 </script>
 <style lang="scss">
-@import "../../style/sass/_mixins";
+@import "../../style/sass/_functions";
 
 .tu-select__option-group {
 	padding-left: 10px;
-	border-bottom: 2px solid -getColor("gray-1");
+	border-bottom: 2px solid getColor("gray-1");
 	position: relative;
 	overflow: hidden;
 	transition: all 0.25s ease;
@@ -98,7 +98,7 @@ provide("optionGroup", optionGroup);
 	}
 
 	&.hiddenOptionGroup {
-		border-bottom: 0px solid -getColor("gray-1");
+		border-bottom: 0px solid getColor("gray-1");
 
 		// display: none
 		// visibility: hidden
@@ -127,3 +127,4 @@ provide("optionGroup", optionGroup);
 	}
 }
 </style>
+

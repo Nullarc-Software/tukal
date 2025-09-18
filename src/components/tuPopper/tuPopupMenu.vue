@@ -24,6 +24,10 @@ import {
 	ComponentInternalInstance
 } from "vue";
 
+defineOptions({
+	name: "TuPopupMenu"
+});
+
 const emit = defineEmits<{
 	remove: [instance: ComponentInternalInstance | null];
 	shown: [instance: ComponentInternalInstance | null];
@@ -54,7 +58,7 @@ const { dropdownVisible, leftAfter, rightx, tuDropRight, widthx, tuCustomContent
 </script>
 
 <style lang="scss" scoped>
-@import "../../style/sass/_mixins";
+@import "../../style/sass/_functions";
 
 .dropdownx-enter-from,
 .dropdownx-leave-to {
@@ -63,7 +67,7 @@ const { dropdownVisible, leftAfter, rightx, tuDropRight, widthx, tuCustomContent
 }
 
 .con-tu-dropdown--menu {
-	background: -getColor("dark");
+	background: getColor("dark");
 	padding-top: 10px;
 	position: absolute;
 	height: auto;
@@ -153,3 +157,4 @@ const { dropdownVisible, leftAfter, rightx, tuDropRight, widthx, tuCustomContent
 	}
 }
 </style>
+

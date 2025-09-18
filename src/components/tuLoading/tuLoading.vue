@@ -33,6 +33,10 @@
 import { setColor, setVar } from "@/utils";
 import { getCurrentInstance, watch } from "vue";
 
+defineOptions({
+	name: "TuLoading"
+});
+
 type LoadingType = "default" | "waves" | "corners" | "border" | "points" | "square" | "gradient" | "rectangle" | "circles" | "square-rotate" | "scale";
 
 interface Props {
@@ -80,7 +84,7 @@ watch(
 </script>
 
 <style lang="scss" scoped>
-@import "../../style/sass/_mixins";
+@import "../../style/sass/_functions";
 
 .tu-loading-enter-active,
 .tu-loading-leave-active {
@@ -105,7 +109,7 @@ watch(
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	background: -getColor("background");
+	background: getColor("background");
 	transition: all 0.25s ease;
 	padding: 20px;
 	border-radius: inherit;
@@ -128,14 +132,14 @@ watch(
 			font-size: 0.75em;
 			margin: 7px;
 			font-weight: bold;
-			color: -getColor("color");
+			color: getColor("color");
 		}
 
 		&__percent {
 			position: relative;
 			font-size: 0.65rem;
 			font-weight: bold;
-			color: -getColor("color");
+			color: getColor("color");
 			margin-top: 1px;
 			z-index: 200;
 		}
@@ -158,10 +162,10 @@ watch(
 	top: 0px;
 	left: 0px;
 	height: 4px;
-	background: -getColorAlpha("color", 0.2);
+	background: getColorAlpha("color", 0.2);
 
 	&__bar {
-		background: -getColor("color");
+		background: getColor("color");
 		height: 100%;
 		position: relative;
 		border-radius: 0px 10px 10px 0px;
@@ -176,7 +180,7 @@ watch(
 			position: absolute;
 			width: 100%;
 			height: 100%;
-			border: 3px solid -getColor("color");
+			border: 3px solid getColor("color");
 			border-radius: inherit;
 			border-top: 3px solid transparent;
 			border-left: 3px solid transparent;
@@ -190,7 +194,7 @@ watch(
 			position: absolute;
 			width: 100%;
 			height: 100%;
-			border: 3px dashed -getColor("color");
+			border: 3px dashed getColor("color");
 			border-radius: inherit;
 			border-top: 3px solid transparent;
 			border-left: 3px solid transparent;
@@ -227,7 +231,7 @@ watch(
 			height: 0px;
 			position: absolute;
 			animation: waves 0.7s ease infinite;
-			box-shadow: 0px 0px 10px 0px -getColorAlpha("color", 0.5);
+			box-shadow: 0px 0px 10px 0px getColorAlpha("color", 0.5);
 			border-radius: 50%;
 		}
 
@@ -237,7 +241,7 @@ watch(
 			height: 0px;
 			position: absolute;
 			animation: waves 1.4s linear infinite;
-			box-shadow: 0px 0px 10px 0px -getColorAlpha("color", 0.5);
+			box-shadow: 0px 0px 10px 0px getColorAlpha("color", 0.5);
 			border-radius: 50%;
 		}
 
@@ -247,7 +251,7 @@ watch(
 			height: 0px;
 			position: absolute;
 			animation: waves 1.75s ease infinite;
-			box-shadow: 0px 0px 10px 0px -getColorAlpha("color", 0.5);
+			box-shadow: 0px 0px 10px 0px getColorAlpha("color", 0.5);
 			border-radius: 50%;
 		}
 	}
@@ -279,7 +283,7 @@ watch(
 			position: absolute;
 			animation: corners 1s ease infinite;
 			border-radius: 50%;
-			border: 2px solid -getColor("color");
+			border: 2px solid getColor("color");
 		}
 
 		&__2 {
@@ -329,7 +333,7 @@ watch(
 			position: absolute;
 			width: 100%;
 			height: 100%;
-			border: 1px solid -getColor("color");
+			border: 1px solid getColor("color");
 			border-radius: inherit;
 			border-top: 1px solid transparent;
 			border-left: 1px solid transparent;
@@ -343,7 +347,7 @@ watch(
 			position: absolute;
 			width: 100%;
 			height: 100%;
-			border: 1px dashed -getColor("color");
+			border: 1px dashed getColor("color");
 			border-radius: inherit;
 			border-top: 1px solid transparent;
 			border-left: 1px solid transparent;
@@ -356,7 +360,7 @@ watch(
 			position: absolute;
 			width: 100%;
 			height: 100%;
-			border: 1px dashed -getColor("color");
+			border: 1px dashed getColor("color");
 			border-radius: inherit;
 			animation: rotate 1s linear infinite 0.4s;
 			opacity: 0.2;
@@ -379,7 +383,7 @@ watch(
 		&__1 {
 			width: 8px;
 			height: 8px;
-			background: -getColor("color");
+			background: getColor("color");
 			border-radius: 50%;
 			margin: 3px;
 			animation: points 0.75s ease infinite;
@@ -388,7 +392,7 @@ watch(
 		&__2 {
 			width: 8px;
 			height: 8px;
-			background: -getColor("color");
+			background: getColor("color");
 			border-radius: 50%;
 			margin: 3px;
 			animation: points 0.75s ease infinite 0.25s;
@@ -397,7 +401,7 @@ watch(
 		&__3 {
 			width: 8px;
 			height: 8px;
-			background: -getColor("color");
+			background: getColor("color");
 			border-radius: 50%;
 			margin: 3px;
 			animation: points 0.75s ease infinite 0.5s;
@@ -429,7 +433,7 @@ watch(
 			position: absolute;
 			width: 100%;
 			height: 100%;
-			border: 2px solid -getColor("color");
+			border: 2px solid getColor("color");
 			border-radius: inherit;
 			animation: rotateSquare 4s ease infinite;
 			top: 0px;
@@ -440,10 +444,10 @@ watch(
 			position: absolute;
 			width: 100%;
 			height: 100%;
-			border: 2px solid -getColor("color");
+			border: 2px solid getColor("color");
 			border-radius: inherit;
 			animation: rotateSquare 4s ease infinite reverse;
-			background: -getColor("background");
+			background: getColor("background");
 		}
 
 		&__3 {
@@ -483,8 +487,8 @@ watch(
 			animation: rotate 1s linear infinite;
 			top: 0px;
 			background: linear-gradient(0deg,
-					-getColorAlpha("background", 0) 33%,
-					-getColor("color") 100%);
+					getColorAlpha("background", 0) 33%,
+					getColor("color") 100%);
 			border-radius: 50%;
 		}
 
@@ -495,7 +499,7 @@ watch(
 			height: calc(100% - 4px);
 			border: 0px;
 			border-radius: inherit;
-			background: -getColor("background");
+			background: getColor("background");
 			border-radius: 50%;
 		}
 
@@ -523,7 +527,7 @@ watch(
 			border: 0px;
 			border-radius: inherit;
 			animation: rectangle 1s ease infinite;
-			background: -getColor("color");
+			background: getColor("color");
 		}
 
 		&__2 {
@@ -533,7 +537,7 @@ watch(
 			border: 0px;
 			border-radius: inherit;
 			animation: rectangle 1s ease-out infinite;
-			background: -getColorAlpha("color", 0.2);
+			background: getColorAlpha("color", 0.2);
 		}
 
 		&__3 {
@@ -570,7 +574,7 @@ watch(
 			height: 40px;
 			animation: rotate 1s ease infinite;
 			border-radius: 50%;
-			border: 2px solid -getColor("color");
+			border: 2px solid getColor("color");
 			border-top: 3px solid transparent;
 			border-left: 3px solid transparent;
 			border-right: 3px solid transparent;
@@ -582,7 +586,7 @@ watch(
 			height: 50px;
 			animation: rotate 1s ease-in-out infinite;
 			border-radius: 50%;
-			border: 2px dashed -getColor("color");
+			border: 2px dashed getColor("color");
 			border-top: 3px solid transparent;
 			border-left: 3px solid transparent;
 			border-right: 3px solid transparent;
@@ -594,7 +598,7 @@ watch(
 			height: 60px;
 			animation: rotate 1s linear infinite reverse;
 			border-radius: 50%;
-			border: 2px solid -getColor("color");
+			border: 2px solid getColor("color");
 			border-top: 3px solid transparent;
 			border-left: 3px solid transparent;
 			border-right: 3px solid transparent;
@@ -620,7 +624,7 @@ watch(
 			width: 25px;
 			height: 25px;
 			animation: squareRotate 3s ease infinite;
-			background: -getColor("color");
+			background: getColor("color");
 		}
 
 		&__2 {
@@ -673,7 +677,7 @@ watch(
 			position: relative;
 			width: 5px;
 			height: 5px;
-			background: -getColor("color");
+			background: getColor("color");
 			margin: 3px;
 			animation: scale 0.8s ease infinite;
 			border-radius: 5px;
@@ -683,7 +687,7 @@ watch(
 			position: relative;
 			width: 5px;
 			height: 5px;
-			background: -getColor("color");
+			background: getColor("color");
 			margin: 3px;
 			animation: scale 0.8s ease infinite 0.2s;
 			border-radius: 5px;
@@ -693,7 +697,7 @@ watch(
 			position: relative;
 			width: 5px;
 			height: 5px;
-			background: -getColor("color");
+			background: getColor("color");
 			margin: 3px;
 			animation: scale 0.8s ease infinite 0.4s;
 			border-radius: 5px;
@@ -715,3 +719,4 @@ watch(
 	}
 }
 </style>
+

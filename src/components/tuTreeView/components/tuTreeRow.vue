@@ -22,7 +22,7 @@
 				<span v-else class="loading-icon" />
 			</span>
 			<div :class="[{ 'margin-left-loading': loading }, 'inline-block']">
-				<tu-checkbox :eventBubble="true" v-if="isCheckNode" type="checkbox" :data-id="currentNode.id"
+				<tu-check-box :eventBubble="true" v-if="isCheckNode" type="checkbox" :data-id="currentNode.id"
 					:indeterminate="currentNode.state.partiallyChecked" :checked="
 	currentNode.state.partiallyChecked
 		? false
@@ -60,7 +60,7 @@
 					</div>
 					<span v-else-if="editSelected"><tu-input @focusOut="focusOut" @onEnter="focusOut"
 							v-model="currentNode.text" /></span>
-				</tu-checkbox>
+				</tu-check-box>
 				<div :class="['node-alignment']">
 					<div v-if="!isCheckNode && !editSelected">
 						<span data-toggle="tooltip" data-placement="top" v-bind:class="[
@@ -125,6 +125,13 @@ import {
 	TuTreeServerModel
 } from "./interface";
 import { recCallNodes, serverRequest } from "./helper";
+import tuCheckBox from "../../tuCheckBox";
+import tuIcon from "../../tuIcon";
+import tuInput from "../../tuInput";
+
+defineOptions({
+	name: "TuTreeRow"
+});
 
 interface Props {
 	root?: unknown;
@@ -426,7 +433,7 @@ const loading = ref(false);
 		}
 </script>
 <style lang="scss" scoped>
-@import "../../../style/sass/_mixins.scss";
+@import "../../../style/sass/_functions.scss";
 
 .small-tree-indent {
 	margin: 0 3px;
@@ -478,7 +485,7 @@ li {
 
 div.row_data {
 	&:hover {
-		background-color: -getColor("gray-2");
+		background-color: getColor("gray-2");
 	}
 }
 
@@ -591,7 +598,7 @@ ul {
 		position: absolute;
 		width: 100%;
 		height: 100%;
-		border: 2px solid -getColor("primary");
+		border: 2px solid getColor("primary");
 		border-radius: inherit;
 		border-top: 2px solid transparent;
 		border-left: 2px solid transparent;

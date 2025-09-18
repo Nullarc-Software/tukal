@@ -8,7 +8,7 @@ having to override as much.
 */
 
 /* Header */
-@import "../../../style/sass/_mixins";
+@import "../../../style/sass/_functions";
 $border-color_1: #ccc;
 
 /* Grid */
@@ -20,41 +20,41 @@ $border-color_1: #ccc;
 /* Event Times */
 .theme-default {
 	.cv-header {
-		background-color: -getColor("gray-4") !important;
+		background-color: getColor("gray-4") !important;
 		border-width: 1px 1px 0 1px;
 		button {
-			color: -getColor("text") ;
+			color: getColor("text") ;
 		}
 		.category-button {
-			color: -getColor("text");
+			color: getColor("text");
 		}
 	}
 	.cv-header-day {
-		background-color: -getColor("gray-4") !important;
+		background-color: getColor("gray-4") !important;
 	}
 	.cv-weeknumber {
-		background-color:  -getColor("gray-4") !important;
+		background-color:  getColor("gray-4") !important;
 		border-color: $border-color_1;
 		color: #808080;
 	}
 	.cv-day {
-		background-color: -getColor("gray-3") !important;
+		background-color: getColor("gray-3") !important;
 		border-width: 1px 1px 0 0;
 		&:hover {
 			cursor: pointer;
-			background-color: -getColor("gray-1") !important;
+			background-color: getColor("gray-1") !important;
 		}
 	}
 	.cv-day.past {
 		&:hover {
-			background-color: -getColor("gray-4") !important;
+			background-color: getColor("gray-4") !important;
 		}
 	}
 	.cv-day.outsideOfMonth {
 		cursor: pointer;
 	}
 	.cv-day.today {
-		background-color: -getColor("gray-3") !important;
+		background-color: getColor("gray-3") !important;
 	}
 	.cv-day[aria-selected="true"] {
 		background-color: #ffc;

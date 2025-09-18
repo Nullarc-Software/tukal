@@ -17,8 +17,13 @@
 <script setup lang="ts">
 import { computed, inject } from "vue";
 import { Router } from "vue-router";
-import _color from "../../utils/color";
+import { isColor as checkIsColor } from "../../utils";
 import { ComponentConstants } from "../tuComponent";
+
+
+defineOptions({
+	name: "TuIcon"
+});
 
 interface Props {
 	icon?: string | null;
@@ -60,7 +65,7 @@ const getIconPack = computed(() => {
 const iconClass = computed(() => {
 	const classes: Record<string, boolean> = {};
 	if (props.size) classes[props.size] = true;
-	if (props.color && _color.isColor(props.color))
+	if (props.color && checkIsColor(props.color))
 		classes[`tu-icon-${props.color}`] = true;
 	if (getIconPack.value.includes("material-icons") && props.outlined)
 		classes["material-icons-outlined"] = true;
@@ -94,7 +99,7 @@ const iconStyle = computed(() => {
 const getBg = computed(() => {
 	const classes: Record<string, boolean> = {};
 
-	if (props.bg && _color.isColor(props.bg))
+	if (props.bg && checkIsColor(props.bg))
 		classes[`con-tu-icon-bg-${props.bg}`] = true;
 
 	return classes;
@@ -111,10 +116,10 @@ const getBgSize = computed(() => {
 });
 
 const getColor = computed(() => {
-	return props.color && _color.isColor(props.color) ? props.color : props.color;
+	return props.color && checkIsColor(props.color) ? props.color : props.color;
 });
 
 const getBgColor = computed(() => {
-	return props.bg && _color.isColor(props.bg) ? props.bg : props.bg;
+	return props.bg && checkIsColor(props.bg) ? props.bg : props.bg;
 });
 </script>

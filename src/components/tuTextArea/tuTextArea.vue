@@ -33,6 +33,10 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch, inject } from "vue";
 
+defineOptions({
+	name: "TuTextArea"
+});
+
 interface Props {
 	maxSize?: {
 		"max-width"?: string | null;
@@ -138,7 +142,7 @@ watch(localValue, () => {
 </script>
 
 <style lang="scss" scoped>
-@import "../../style/sass/_mixins";
+@import "../../style/sass/_functions";
 
 .tu-con-textarea {
 	width: fit-content;
@@ -149,11 +153,11 @@ watch(localValue, () => {
 	transition: boxShadow 0.25s ease, border 0.25s ease, transform 0.25s ease;
 	transform: translate(0, 0px);
 	max-width: 100%;
-	background: -getColor("gray-2");
+	background: getColor("gray-2");
 
 	&.focusx {
 		::v-deep(.tu-textarea-label) {
-			background: -getColor("gray-1");
+			background: getColor("gray-1");
 			padding-top: 4px;
 			padding-bottom: 4px;
 		}
@@ -175,7 +179,7 @@ watch(localValue, () => {
 	border: 0px solid rgba(0, 0, 0, 0);
 	display: block;
 	padding: 9px;
-	color: -getColorAlpha("text", 0.8);
+	color: getColorAlpha("text", 0.8);
 	font-size: 0.8rem;
 	width: 100%;
 	max-width: 100%;
@@ -191,15 +195,15 @@ watch(localValue, () => {
 }
 
 .textarea-danger {
-	border: 1px solid -getColorAlpha("danger", 0.4);
-	box-shadow: 0px 4px 20px 0px -getColorAlpha("danger", 0.1);
+	border: 1px solid getColorAlpha("danger", 0.4);
+	box-shadow: 0px 4px 20px 0px getColorAlpha("danger", 0.1);
 
 	.tu-textarea {
-		color: -getColorAlpha("danger", 0.8);
+		color: getColorAlpha("danger", 0.8);
 	}
 
 	.count {
-		background: -getColor("danger");
+		background: getColor("danger");
 	}
 }
 
@@ -214,17 +218,18 @@ watch(localValue, () => {
 	font-weight: bold;
 	box-shadow: 0px 4px 20px 0px rgba(0, 0, 0, 0.05);
 	cursor: default;
-	background: -getColor("primary");
-	color: -getColor("text") !important;
+	background: getColor("primary");
+	color: getColor("text") !important;
 	opacity: 0.3;
 	transition: all 0.25s ease;
 }
 
 .focusx.tu-con-textarea {
-	border: 1px solid -getColor("color") !important;
+	border: 1px solid getColor("color") !important;
 }
 
 .tu-textarea-label {
-	border-bottom: 1px solid -getColorAlpha("color", 0.2);
+	border-bottom: 1px solid getColorAlpha("color", 0.2);
 }
 </style>
+

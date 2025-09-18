@@ -32,6 +32,10 @@ import { computed, inject, ref, onMounted } from "vue";
 import { Router } from "vue-router";
 import { getColor } from "../../utils";
 
+defineOptions({
+	name: "TuRadio"
+});
+
 class RadioUid {
 	public static uid = 0;
 }
@@ -87,7 +91,7 @@ const uid = ++RadioUid.uid;
 </script>
 
 <style lang="scss" scoped>
-@import "../../style/sass/_mixins";
+@import "../../style/sass/_functions";
 
 .tu-radio-content {
 	position: relative;
@@ -103,8 +107,8 @@ const uid = ++RadioUid.uid;
 
 		::v-deep(.tu-radio__effect) {
 			&:after {
-				border: 7px solid -getColor("color");
-				box-shadow: 0px 3px 12px 0px -getColorAlpha("color", 0.3);
+				border: 7px solid getColor("color");
+				box-shadow: 0px 3px 12px 0px getColorAlpha("color", 0.3);
 			}
 		}
 	}
@@ -119,7 +123,7 @@ const uid = ++RadioUid.uid;
 						}
 
 						&::after {
-							border: 2px solid -getColorAlpha("text", 0.2);
+							border: 2px solid getColorAlpha("text", 0.2);
 						}
 					}
 				}
@@ -149,14 +153,14 @@ const uid = ++RadioUid.uid;
 						width: 100%;
 						height: 100%;
 						border-radius: inherit;
-						border: 2px solid -getColorAlpha("text", 0.4);
-						border-top: 2px solid -getColorAlpha("text", 0);
-						border-left: 2px solid -getColorAlpha("text", 0);
-						border-bottom: 2px solid -getColorAlpha("text", 0);
+						border: 2px solid getColorAlpha("text", 0.4);
+						border-top: 2px solid getColorAlpha("text", 0);
+						border-left: 2px solid getColorAlpha("text", 0);
+						border-bottom: 2px solid getColorAlpha("text", 0);
 						box-sizing: border-box;
 						transition: all 0.25s ease;
 						display: block;
-						box-shadow: 0px 0px 0px 0px -getColorAlpha("color", 0.4);
+						box-shadow: 0px 0px 0px 0px getColorAlpha("color", 0.4);
 						animation: loadingRadio 0.6s ease infinite;
 					}
 
@@ -166,14 +170,14 @@ const uid = ++RadioUid.uid;
 						width: 100%;
 						height: 100%;
 						border-radius: inherit;
-						border: 2px dashed -getColorAlpha("text", 0.4);
-						border-top: 2px solid -getColorAlpha("text", 0);
-						border-left: 2px solid -getColorAlpha("text", 0);
-						border-bottom: 2px solid -getColorAlpha("text", 0);
+						border: 2px dashed getColorAlpha("text", 0.4);
+						border-top: 2px solid getColorAlpha("text", 0);
+						border-left: 2px solid getColorAlpha("text", 0);
+						border-bottom: 2px solid getColorAlpha("text", 0);
 						box-sizing: border-box;
 						transition: all 0.25s ease;
 						display: block;
-						box-shadow: 0px 0px 0px 0px -getColorAlpha("color", 0.4);
+						box-shadow: 0px 0px 0px 0px getColorAlpha("color", 0.4);
 						animation: loadingRadio 0.6s linear infinite;
 					}
 				}
@@ -191,7 +195,7 @@ const uid = ++RadioUid.uid;
 
 		.tu-radio {
 			&__effect {
-				background: -getColor("gray-3");
+				background: getColor("gray-3");
 			}
 		}
 
@@ -244,11 +248,11 @@ const uid = ++RadioUid.uid;
 			width: 100%;
 			height: 100%;
 			border-radius: inherit;
-			border: 2px solid -getColorAlpha("text", 0.4);
+			border: 2px solid getColorAlpha("text", 0.4);
 			box-sizing: border-box;
 			transition: all 0.25s ease;
 			display: block;
-			box-shadow: 0px 0px 0px 0px -getColorAlpha("color", 0.4);
+			box-shadow: 0px 0px 0px 0px getColorAlpha("color", 0.4);
 		}
 	}
 
@@ -272,3 +276,4 @@ const uid = ++RadioUid.uid;
 	}
 }
 </style>
+

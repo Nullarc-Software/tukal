@@ -34,6 +34,10 @@ import { computed, inject, ref, onMounted } from "vue";
 import { Router } from "vue-router";
 import { getColor } from "../../utils";
 
+defineOptions({
+	name: "TuSwitch"
+});
+
 interface Props {
 	modelValue?: boolean | string | Array<any>;
 	val?: any;
@@ -159,7 +163,7 @@ const inputListener = computed(() => {
 </script>
 
 <style lang="scss">
-@import "../../style/sass/_mixins";
+@import "../../style/sass/_functions";
 
 @keyframes rotateSwitch {
 	0% {
@@ -184,7 +188,7 @@ const inputListener = computed(() => {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	background: -getColor("gray-3");
+	background: getColor("gray-3");
 	transition: all 0.25s ease;
 	overflow: hidden;
 
@@ -239,7 +243,7 @@ const inputListener = computed(() => {
 		position: absolute;
 		width: calc(100% - 8px);
 		height: calc(100% - 8px);
-		border: 3px dashed -getColor("color");
+		border: 3px dashed getColor("color");
 		z-index: 200;
 		border-radius: 50%;
 		border-top: 3px solid transparent;
@@ -261,7 +265,7 @@ const inputListener = computed(() => {
 		position: absolute;
 		width: calc(100% - 8px);
 		height: calc(100% - 8px);
-		border: 3px solid -getColor("color");
+		border: 3px solid getColor("color");
 		z-index: 200;
 		border-radius: 50%;
 		border-top: 3px solid transparent;
@@ -300,7 +304,7 @@ const inputListener = computed(() => {
 	}
 
 	&:hover {
-		background: -getColor("gray-4");
+		background: getColor("gray-4");
 	}
 
 	&:active {
@@ -311,7 +315,7 @@ const inputListener = computed(() => {
 		width: 100%;
 		height: auto;
 		position: absolute;
-		background: -getColor("color");
+		background: getColor("color");
 		border-radius: inherit;
 		z-index: 2;
 		transition: all 0.25s ease-out;
@@ -328,7 +332,7 @@ const inputListener = computed(() => {
 		padding: 5px;
 		padding-left: 25px;
 		transition: all 0.25s ease 0.05s;
-		color: -getColor("text");
+		color: getColor("text");
 		z-index: 9;
 		display: flex;
 		align-items: center;
@@ -352,13 +356,13 @@ const inputListener = computed(() => {
 	&__circle {
 		width: 20px;
 		height: 20px;
-		background: -getColor("background");
+		background: getColor("background");
 		border-radius: 20px;
 		transition: all 0.25s ease;
 		position: absolute;
 		z-index: 10;
 		left: 4px;
-		color: -getColor("text");
+		color: getColor("text");
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -427,10 +431,11 @@ const inputListener = computed(() => {
 
 			~.tu-switch__circle {
 				left: calc(100% - 24px);
-				box-shadow: (-5px) 0px 25px 0px -getColorAlpha("background", 0.6);
-				color: -getColor("color");
+				box-shadow: (-5px) 0px 25px 0px getColorAlpha("background", 0.6);
+				color: getColor("color");
 			}
 		}
 	}
 }
 </style>
+

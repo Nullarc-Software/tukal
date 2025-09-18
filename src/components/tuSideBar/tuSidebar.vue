@@ -37,6 +37,10 @@
 import { setColor } from "@/utils";
 import { computed, inject, onMounted, provide, ref, watch } from "vue";
 
+defineOptions({
+	name: "TuSidebar"
+});
+
 interface Props {
 	value?: string | number | null;
 	reduce?: boolean;
@@ -181,7 +185,7 @@ onMounted(() => {
 </script>
 
 <style lang="scss">
-@import "../../style/sass/_mixins";
+@import "../../style/sass/_functions";
 
 .tu-sidebar-content {
 	--tu-color: var(--tu-primary);
@@ -192,14 +196,14 @@ onMounted(() => {
 	max-width: 260px;
 	height: 100%;
 	border-radius: 0px 30px 30px 0px;
-	color: -getColor("text");
-	box-shadow: 0px 0px 25px 0px rgba(0, 0, 0, -var("shadow-opacity"));
+	color: getColor("text");
+	box-shadow: 0px 0px 25px 0px rgba(0, 0, 0, tuVar("shadow-opacity"));
 	display: flex;
 	align-items: flex-start;
 	justify-content: space-between;
 	flex-direction: column;
 	z-index: 21000;
-	background: -getColor("gray-2");
+	background: getColor("gray-2");
 	transition: all 0.25s ease;
 	padding: 5px;
 
@@ -393,3 +397,4 @@ onMounted(() => {
 	}
 }
 </style>
+

@@ -6,6 +6,11 @@
 	</div>
 </template>
 <script setup lang="ts">
+
+defineOptions({
+	name: "TuButtonGroup"
+});
+
 interface Props {
 	fixedHeight?: string;
 }
@@ -16,7 +21,7 @@ withDefaults(defineProps<Props>(), {
 </script>
 
 <style lang="scss">
-@import "../../style/sass/_mixins";
+@import "../../style/sass/_functions";
 
 .tu-button-group {
 	display: inline-flex;

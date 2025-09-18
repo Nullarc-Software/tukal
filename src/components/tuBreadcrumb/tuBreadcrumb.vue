@@ -21,8 +21,12 @@
 
 <script setup lang="ts">
 import { computed, useSlots } from "vue";
-import _color from "../../utils/color";
+import { isColor as checkIsColor, getColor } from "../../utils";
 import { useRoute } from "vue-router";
+
+defineOptions({
+	name: "TuBreadcrumb"
+});
 
 interface BreadcrumbItem {
 	title: string | ((params: Record<string, string | string[]>) => string);
@@ -55,7 +59,7 @@ const slots = useSlots();
 
 const textClass = computed(() => {
 	const classes: Record<string, boolean> = {};
-	if (_color.isColor(props.color))
+	if (checkIsColor(props.color))
 		classes[`tu-breadcrumb-text-${props.color}`] = true;
 
 	return classes;
@@ -63,8 +67,8 @@ const textClass = computed(() => {
 
 const textStyle = computed(() => {
 	const style: Record<string, string> = {};
-	if (!_color.isColor(props.color))
-		style.color = _color.getColor(props.color);
+	if (!checkIsColor(props.color))
+		style.color = getColor(props.color);
 
 	return style;
 });
@@ -96,7 +100,8 @@ const mutableItems = computed(() => {
 </script>
 
 <style lang="scss" scoped>
-@import "../../style/sass/_mixins";
+@import "../../style/sass/_functions";
+@import "../../style/sass/_tokens";
 
 .tu-breadcrumb {
 	display: flex;
@@ -133,13 +138,13 @@ const mutableItems = computed(() => {
 
 	a {
 		transition: all 0.2s ease;
-		color: -getColor("text");
+		color: getColor("text");
 	}
 }
 
 .tu-breadcrumb--ol a:hover,
 .tu-breadcrumb--ol a:focus {
-	color: -getColor("text");
+	color: getColor("text");
 	text-decoration: none;
 }
 
@@ -155,7 +160,8 @@ const mutableItems = computed(() => {
 
 @each $color in $tu-colors {
 	.tu-breadcrumb-text-#{$color} {
-		color: -getColor(colorx);
+		color: getColor(colorx);
 	}
 }
 </style>
+

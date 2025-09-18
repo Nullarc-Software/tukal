@@ -28,6 +28,10 @@
 import CronCore from "./core.vue";
 import CustomSelect from "./customSelect.vue";
 
+defineOptions({
+	name: "TuCron"
+});
+
 interface Props {
 	cols?: Record<string, number>;
 	customLocale?: Record<string, unknown> | undefined;
