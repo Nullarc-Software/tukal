@@ -1,10 +1,28 @@
 import tuComponent from "./tuCalendar.vue";
+import tuComponent2 from "./tuCalendarDialog.vue";
+import type { 
+	ICalendarItem, 
+	TuCalendarServerModel, 
+	CalendarCategory, 
+	CalendarTheme, 
+	CalendarPeriod 
+} from "./ICalendarItem";
+
+
 
 tuComponent.install = (vue: any) => {
 	vue.component(tuComponent.name, tuComponent);
+	vue.component(tuComponent2.name, tuComponent2);  
 };
 
-if (typeof window !== "undefined" && (<any>window).Vue)
-	tuComponent.install((<any>window).Vue);
+if (typeof window !== "undefined" && (<any>window).Vue) 
+	tuComponent.install((<any>window).Vue);  
 
-export { tuComponent as tuCalendar };
+export {tuComponent as tuCalendar, tuComponent2 as tuCalendarDialog};
+export type { 
+	ICalendarItem, 
+	TuCalendarServerModel, 
+	CalendarCategory, 
+	CalendarTheme, 
+	CalendarPeriod 
+};

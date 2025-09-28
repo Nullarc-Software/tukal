@@ -13,8 +13,8 @@ export { tuUpload } from "./components/tuUpload";
 export { tuRichTextEditor } from "./components/tuRichTextEditor";
 
 // Layout Components
-export { default as tuRow } from "./layout/tuRow";
-export { default as tuCol } from "./layout/tuCol";
+export { tuRow } from "./components/tuRow";
+export { tuCol } from "./components/tuCol";
 export { tuCard, tuCardGroup } from "./components/tuCard";
 export { default as tuDivider } from "./components/tuDivider";
 export { tuCollapse, tuCollapseItem } from "./components/tuCollapse";

@@ -5,9 +5,10 @@ import { App } from "vue";
 import RootApp from "./App.vue";
 import { createApp } from "vue";
 
-import "material-design-icons/iconfont/material-icons.css";
+import "material-icons/iconfont/material-icons.css";
 import { createPinia } from "pinia";
 import { createRouter, createWebHashHistory } from "vue-router";
+import VueClickAway from "vue3-click-away";
 import Component1 from "../test/Component1.vue";
 import Component2 from "../test/Component2.vue";
 
@@ -62,6 +63,8 @@ const router = createRouter({
 	],
 	history: createWebHashHistory()
 });
+
+appVm.use(VueClickAway);
 appVm.use(router);
 appVm.use(pinia);
 appVm.mount("#app");

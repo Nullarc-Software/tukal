@@ -1,3 +1,9 @@
 {
 	"typescript.tsdk": "node_modules/typescript/lib",
+	"typescript.preferences.displayPartsForJSDoc": true,
+	"typescript.inlayHints.parameterNames.enabled": "all",
+	"typescript.inlayHints.variableTypes.enabled": true,
+	"typescript.inlayHints.functionLikeReturnTypes.enabled": true,
+	"volar.autoCompleteRefs": true,
+	"typescript.suggest.autoImports": true
 }

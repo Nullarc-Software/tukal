@@ -51,5 +51,5 @@ export { tuKanban } from "./tuKanban";
 
 export type {TuKanbanItem, TuKanbanField} from "./tuKanban";
 // layout
-export { default as tuRow } from "../layout/tuRow";
-export { default as tuCol } from "../layout/tuCol";
+export { tuRow } from "./tuRow";
+export { tuCol } from "./tuCol";

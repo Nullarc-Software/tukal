@@ -17,19 +17,19 @@
 		<TuCheckbox v-model="checkBox2" val="maria" name="checkbox">
 			Array option
 		</TuCheckbox>
-		<TuCheckbox primary v-model="checkBox1" val="luis" name="checkbox">
+		<TuCheckbox color="primary" v-model="checkBox1" val="luis" name="checkbox">
 			Primary
 		</TuCheckbox>
-		<TuCheckbox success v-model="checkBox1" val="luis" name="checkbox">
+		<TuCheckbox color="success" v-model="checkBox1" val="luis" name="checkbox">
 			Success
 		</TuCheckbox>
-		<TuCheckbox danger v-model="checkBox1" val="luis" name="checkbox">
+		<TuCheckbox color="danger" v-model="checkBox1" val="luis" name="checkbox">
 			Danger
 		</TuCheckbox>
-		<TuCheckbox warn v-model="checkBox1" val="luis" name="checkbox">
+		<TuCheckbox color="warn" v-model="checkBox1" val="luis" name="checkbox">
 			Warn
 		</TuCheckbox>
-		<TuCheckbox dark v-model="checkBox1" val="luis" name="checkbox">
+		<TuCheckbox color="dark" v-model="checkBox1" val="luis" name="checkbox">
 			Dark
 		</TuCheckbox>
 		<TuCheckbox color="#7d33ff" v-model="checkBox1" val="luis" name="checkbox">
@@ -41,10 +41,10 @@
 			</template>
 			Icon
 		</TuCheckbox>
-		<TuCheckbox linethrough v-model="checkBox1" val="luis" name="checkbox">
+		<TuCheckbox line-through v-model="checkBox1" val="luis" name="checkbox">
 			Linethrough
 		</TuCheckbox>
-		<TuCheckbox indeterminate v-model="checkBox1" val="luis" name="checkbox">
+		<TuCheckbox :indeterminate="true" v-model="checkBox1" val="luis" name="checkbox">
 			Indeterminate
 		</TuCheckbox>
 	</div>

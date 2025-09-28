@@ -4,7 +4,7 @@
 		<header class="tu-collapse-item--header" @click="toggleContent">
 			<slot name="header"></slot>
 			<span v-if="!notArrow" class="icon-header tu-collapse-item--icon-header">
-				<tu-icon :icon-pack="iconPack" :icon="arrow" />
+				<TuIcon :icon-pack="iconPack" :icon="arrow" />
 			</span>
 		</header>
 
@@ -18,8 +18,8 @@
 	</div>
 </template>
 <script setup lang="ts">
-import tuIcon from "../tuIcon/index";
-import { ref, computed } from "vue";
+import TuIcon from "../tuIcon/index";
+import { ref, computed, inject, onMounted, onUnmounted } from "vue";
 
 defineOptions({
 	name: "TuCollapseItem"
@@ -39,18 +39,26 @@ const props = withDefaults(defineProps<Props>(), {
 	disabled: false
 });
 
+// Inject values from parent tuCollapse component
+const accordion = inject<boolean>("accordion", false);
+const openHover = inject<boolean>("openHover", false);
+const emitChange = inject<(() => void) | null>("emitChange", null);
+const registerItem = inject<((itemId: symbol, toggleFn: () => void) => void) | null>("registerItem", null);
+const unregisterItem = inject<((itemId: symbol) => void) | null>("unregisterItem", null);
+const updateItemState = inject<((itemId: symbol, isOpen: boolean) => void) | null>("updateItemState", null);
+const closeOtherItems = inject<((currentItemId: symbol) => void) | null>("closeOtherItems", null);
+
 const content = ref<HTMLElement>();
 const maxHeight = ref("0px");
 const arrow = ref("keyboard_arrow_down");
 const isOpen = ref(false);
+const itemId = Symbol(); // Unique identifier for this item
 
 const styleContent = computed(() => ({
 	maxHeight: maxHeight.value
 }));
 
-const toggleContent = () => {
-	if (props.disabled) return;
-	
+const doToggle = () => {
 	if (isOpen.value) {
 		maxHeight.value = "0px";
 		arrow.value = "keyboard_arrow_down";
@@ -61,14 +69,52 @@ const toggleContent = () => {
 		arrow.value = "keyboard_arrow_up";
 		isOpen.value = true;
 	}
+	
+	// Update the state in parent component
+	if (updateItemState)
+		updateItemState(itemId, isOpen.value);
 };
+
+const toggleContent = () => {
+	if (props.disabled) return;
+	
+	// If accordion mode is enabled and we're opening this item, close all others first
+	if (accordion && !isOpen.value && closeOtherItems)
+		closeOtherItems(itemId);
+	
+	doToggle();
+	
+	// Emit change event
+	if (emitChange)
+		emitChange();
+};
+
+// Register this item with the parent when mounted
+onMounted(() => {
+	if (registerItem)
+		registerItem(itemId, doToggle);
+});
+
+// Unregister this item when unmounted
+onUnmounted(() => {
+	if (unregisterItem)
+		unregisterItem(itemId);
+});
 
 const mouseover = () => {
 	if (props.disabled) return;
+	
+	// If openHover is enabled, open the item on hover
+	if (openHover && !isOpen.value)
+		toggleContent();
 };
 
 const mouseout = () => {
 	if (props.disabled) return;
+	
+	// If openHover is enabled, close the item when mouse leaves
+	if (openHover && isOpen.value)
+		toggleContent();
 };
 </script>
 

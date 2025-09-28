@@ -15,6 +15,17 @@
 			</div>
 		</div>
 
+		<!-- Key-Value Tags -->
+		<div style="margin: 20px 0;">
+			<h4>Key-Value Tags:</h4>
+			<div style="display: flex; flex-wrap: wrap; gap: 10px;">
+				<TuTag name="Status" value="Active" color="success" />
+				<TuTag name="Priority" value="High" color="danger" />
+				<TuTag name="Type" value="Feature" color="primary" />
+				<TuTag name="Environment" value="Production" color="warn" />
+			</div>
+		</div>
+
 		<!-- Different Colors -->
 		<div style="margin: 20px 0;">
 			<h4>Different Colors:</h4>

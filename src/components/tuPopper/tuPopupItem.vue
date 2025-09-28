@@ -1,13 +1,13 @@
 <template>
-	<li :class="{ divider: divider, 'divider-bottom': dividerBottom, 'tu-popup-item-disabled': disabled }" :style="{
-		color: hoverx ? giveColor() + ' !important' : null,
-		background: hoverx ? giveColor(0.01) + ' !important' : null
-	}" class="tu-component tu-dropdown--item" @click="clickClose" @mouseover="hoverx = true" @mouseout="hoverx = false">
-
-
+	<li :class="{ 
+		divider: divider, 
+		'divider-bottom': dividerBottom, 
+		'tu-popup-item-disabled': disabled 
+	}" 
+	class="tu-component tu-dropdown--item" 
+	@click="clickClose">
 		<router-link v-if="to" :to="to" v-bind="$attrs" class="tu-dropdown--item-link">
 			{{ $attrs.disabled }}
-
 			<slot />
 		</router-link>
 		<a v-else v-bind="$attrs" :class="{ disabled: disabled }" class="tu-dropdown--item-link">
@@ -17,8 +17,7 @@
 </template>
 
 <script setup lang="ts">
-import { inject, ref } from "vue";
-import { rColor } from "../../utils";
+import { inject } from "vue";
 
 defineOptions({
 	name: "TuPopupItem",
@@ -41,13 +40,7 @@ const props = withDefaults(defineProps<Props>(), {
 	dividerBottom: false
 });
 
-const hoverx = ref(false);
-const color = ref("");
 const closeParent = inject<() => void>("closeParent");
-
-const giveColor = function (opacity = 1) {
-	return rColor(color.value, opacity);
-};
 
 const clickClose = function () {
 	if (props.onClickClose) closeParent?.call(null);
@@ -78,6 +71,7 @@ const clickClose = function () {
 		position: relative;
 		display: block;
 		color: rgba(0, 0, 0, 0.7);
+		text-decoration: none;
 
 		&.disabled {
 			user-select: none;
@@ -86,10 +80,11 @@ const clickClose = function () {
 			opacity: var(--tu-disabled-opacity) !important;
 			color: rgba(0, 0, 0, var(--tu-disabled-opacity)) !important;
 		}
+	}
 
-		&:hover {
-			background: rgba(var(--popper-theme-background-color-hover-rgb), 0.3) !important;
-		}
+	&:hover .tu-dropdown--item-link {
+		background: rgba(0, 123, 255, 0.1) !important;
+		color: rgba(0, 0, 0, 0.9) !important;
 	}
 
 	&.divider {

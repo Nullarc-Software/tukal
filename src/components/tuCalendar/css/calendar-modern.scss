@@ -1,0 +1,415 @@
+/* Modern Calendar Styling with CSS Grid and Flexbox */
+.cv-wrapper {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	min-height: 500px;
+	border-radius: var(--tu-radius, 12px);
+	background: var(--tu-background);
+	border: 1px solid var(--tu-gray-4);
+	box-shadow: var(--tu-elevated-2);
+	overflow: hidden;
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+	color: var(--tu-text);
+	
+	*,
+	*::before,
+	*::after {
+		box-sizing: border-box;
+	}
+}
+
+/* Header Days - Using CSS Grid for perfect alignment */
+.cv-header-days {
+	display: grid;
+	grid-template-columns: 2rem repeat(7, 1fr); /* Week number column + 7 day columns */
+	background: var(--tu-component-background);
+	border-bottom: 1px solid var(--tu-gray-4);
+	position: relative;
+	
+	/* When week numbers are disabled, remove the first column */
+	&:not(:has(.cv-weeknumber)) {
+		grid-template-columns: repeat(7, 1fr);
+	}
+}
+
+.cv-header-day {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 1rem 0.5rem;
+	font-weight: 600;
+	font-size: 0.875rem;
+	color: var(--tu-text);
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+	background: var(--tu-component-background);
+	
+	&:not(:last-child) {
+		border-right: 1px solid var(--tu-gray-4);
+	}
+}
+
+/* Week Number Styling */
+.cv-weeknumber {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: var(--tu-gray-2);
+	color: var(--tu-text);
+	font-size: 0.75rem;
+	font-weight: 500;
+	border-right: 1px solid var(--tu-gray-4);
+	
+	span {
+		opacity: 0.7;
+	}
+}
+
+/* Weeks Container */
+.cv-weeks {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	overflow-y: auto;
+	scrollbar-width: thin;
+	scrollbar-color: var(--tu-gray-4) transparent;
+	
+	&::-webkit-scrollbar {
+		width: 8px;
+	}
+	
+	&::-webkit-scrollbar-track {
+		background: transparent;
+	}
+	
+	&::-webkit-scrollbar-thumb {
+		background: var(--tu-gray-4);
+		border-radius: 4px;
+	}
+	
+	&::-webkit-scrollbar-thumb:hover {
+		background: var(--tu-gray-3);
+	}
+}
+
+/* Individual Week Row */
+.cv-week {
+	display: grid;
+	grid-template-columns: 2rem 1fr;
+	min-height: 80px;
+	flex: 1;
+	position: relative; /* Add this so absolutely positioned events anchor to this container */
+	
+	/* When week numbers are disabled, remove the first column */
+	&:not(:has(.cv-weeknumber)) {
+		grid-template-columns: 1fr;
+	}
+	
+	&:not(:last-child) {
+		border-bottom: 1px solid var(--tu-gray-4);
+	}
+}
+
+/* Force Grid Layout - Ultra High Specificity */
+.tu-calendar .cv-wrapper .cv-weeks .cv-week .cv-weekdays,
+div.cv-wrapper div.cv-weeks div.cv-week div.cv-weekdays {
+	display: grid !important;
+	grid-template-columns: repeat(7, 1fr) !important;
+	gap: 1px !important;
+	background: var(--tu-gray-4) !important;
+	/* Reset any conflicting flex properties */
+	flex-direction: unset !important;
+	flex-flow: unset !important;
+	flex-basis: unset !important;
+	flex-grow: unset !important;
+	flex-shrink: unset !important;
+	position: static !important;
+	overflow: visible !important;
+}
+
+/* Day Cell Styling */
+.cv-wrapper .cv-weeks .cv-week .cv-weekdays .cv-day {
+	display: flex;
+	flex-direction: column;
+	padding: 0.5rem;
+	background: var(--tu-background);
+	transition: all 0.2s cubic-bezier(0.4, 0.0, 0.2, 1);
+	cursor: pointer;
+	position: relative;
+	min-height: 80px;
+	
+	/* Remove any borders since we use gap for separation */
+	border: none !important;
+	border-right: none !important;
+	
+	&:hover {
+		background: var(--tu-gray-1);
+		transform: translateY(-1px);
+		box-shadow: inset 0 0 0 2px rgba(var(--tu-primary-rgb), 0.1);
+	}
+	
+	&.past {
+		background: var(--tu-gray-2);
+		color: rgba(var(--tu-text-rgb), 0.6);
+		
+		&:hover {
+			background: var(--tu-gray-3);
+			transform: none;
+		}
+	}
+	
+	&.today {
+		background: rgba(var(--tu-primary-rgb), 0.05);
+		
+		.cv-day-number {
+			background: var(--tu-primary);
+			color: white;
+		}
+		
+		&:hover {
+			background: rgba(var(--tu-primary-rgb), 0.1);
+		}
+	}
+	
+	&.outsideMonth {
+		background: var(--tu-gray-1);
+		color: rgba(var(--tu-text-rgb), 0.4);
+		
+		&:hover {
+			background: var(--tu-gray-2);
+		}
+	}
+}
+
+/* Day Number Styling */
+.cv-day-number {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 2rem;
+	height: 2rem;
+	border-radius: 50%;
+	font-weight: 600;
+	font-size: 0.875rem;
+	margin-bottom: 0.25rem;
+	transition: all 0.2s ease;
+}
+
+/* Event Items */
+.cv-items {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	margin-top: 0.25rem;
+}
+
+.cv-item {
+	display: flex;
+	align-items: center;
+	padding: 2px 6px;
+	background: rgba(var(--tu-primary-rgb), 0.3);
+	border-left: 3px solid var(--tu-primary);
+	border-radius: 3px;
+	font-size: 0.75rem;
+	font-weight: 500;
+	color: var(--tu-text);
+	cursor: pointer;
+	transition: all 0.2s ease;
+	position: absolute;
+	height: 18px;
+	z-index: 2; /* Ensure events appear above day content */
+	
+	&:hover {
+		background: rgba(var(--tu-primary-rgb), 0.5);
+		transform: translateX(2px);
+	}
+	
+	/* Event spans - width based on day count, starting after week number column */
+	&.span1 { 
+		width: calc((100% - 2rem) / 7 - 4px);
+		left: calc(2rem + 0 * (100% - 2rem) / 7 + 2px);
+	}
+	&.span2 { 
+		width: calc(2 * (100% - 2rem) / 7 - 4px);
+	}
+	&.span3 { 
+		width: calc(3 * (100% - 2rem) / 7 - 4px);
+	}
+	&.span4 { 
+		width: calc(4 * (100% - 2rem) / 7 - 4px);
+	}
+	&.span5 { 
+		width: calc(5 * (100% - 2rem) / 7 - 4px);
+	}
+	&.span6 { 
+		width: calc(6 * (100% - 2rem) / 7 - 4px);
+	}
+	&.span7 { 
+		width: calc(7 * (100% - 2rem) / 7 - 4px);
+	}
+	
+	/* Event offsets - position based on day offset, accounting for week number column */
+	&.offset0 { left: calc(2rem + 0 * (100% - 2rem) / 7 + 2px); }
+	&.offset1 { left: calc(2rem + 1 * (100% - 2rem) / 7 + 2px); }
+	&.offset2 { left: calc(2rem + 2 * (100% - 2rem) / 7 + 2px); }
+	&.offset3 { left: calc(2rem + 3 * (100% - 2rem) / 7 + 2px); }
+	&.offset4 { left: calc(2rem + 4 * (100% - 2rem) / 7 + 2px); }
+	&.offset5 { left: calc(2rem + 5 * (100% - 2rem) / 7 + 2px); }
+	&.offset6 { left: calc(2rem + 6 * (100% - 2rem) / 7 + 2px); }
+}
+
+/* Event with specific categories */
+.cv-item[data-category="work"] {
+	background: rgba(var(--tu-success-rgb), 0.3);
+	border-left-color: var(--tu-success);
+	
+	&:hover {
+		background: rgba(var(--tu-success-rgb), 0.5);
+	}
+}
+
+.cv-item[data-category="personal"] {
+	background: rgba(var(--tu-warn-rgb), 0.3);
+	border-left-color: var(--tu-warn);
+	
+	&:hover {
+		background: rgba(var(--tu-warn-rgb), 0.5);
+	}
+}
+
+.cv-item[data-category="important"] {
+	background: rgba(var(--tu-danger-rgb), 0.3);
+	border-left-color: var(--tu-danger);
+	
+	&:hover {
+		background: rgba(var(--tu-danger-rgb), 0.5);
+	}
+}
+
+/* Time Display */
+.cv-time {
+	font-size: 0.625rem;
+	opacity: 0.7;
+	font-weight: normal;
+	margin-left: auto;
+}
+
+/* Header Controls */
+.cv-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 1rem 1.5rem;
+	background: var(--tu-component-background);
+	border-bottom: 1px solid var(--tu-gray-4);
+	
+	.currentPeriod {
+		font-size: 1.25rem;
+		font-weight: 700;
+		color: var(--tu-text);
+		margin: 0;
+	}
+	
+	button {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		padding: 0.5rem;
+		border: none;
+		border-radius: var(--tu-radius, 6px);
+		background: transparent;
+		color: var(--tu-text);
+		cursor: pointer;
+		transition: all 0.2s ease;
+		
+		&:hover {
+			background: rgba(var(--tu-primary-rgb), 0.1);
+			color: var(--tu-primary);
+		}
+		
+		&:focus {
+			outline: 2px solid var(--tu-primary);
+			outline-offset: 2px;
+		}
+	}
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+	.cv-wrapper {
+		border-radius: 0;
+		border: none;
+		box-shadow: none;
+	}
+	
+	.cv-header {
+		padding: 0.75rem 1rem;
+		
+		.currentPeriod {
+			font-size: 1.125rem;
+		}
+	}
+	
+	.cv-header-day {
+		padding: 0.75rem 0.25rem;
+		font-size: 0.75rem;
+	}
+	
+	.cv-week {
+		min-height: 60px;
+	}
+	
+	.cv-day {
+		padding: 0.25rem;
+	}
+	
+	.cv-day-number {
+		width: 1.5rem;
+		height: 1.5rem;
+		font-size: 0.75rem;
+	}
+}
+
+@media (max-width: 480px) {
+	.cv-weeknumber {
+		display: none;
+	}
+	
+	.cv-header-days,
+	.cv-week {
+		grid-template-columns: repeat(7, 1fr);
+	}
+	
+	.cv-week {
+		min-height: 50px;
+	}
+}
+
+/* Dark theme support */
+@media (prefers-color-scheme: dark) {
+	.cv-wrapper {
+		background: var(--tu-dark-3, #1a1a1a);
+		border-color: var(--tu-dark-1, #333);
+		color: var(--tu-text-100, #fff);
+	}
+	
+	.cv-header,
+	.cv-header-day {
+		background: var(--tu-dark-2, #2a2a2a);
+		border-color: var(--tu-dark-1, #333);
+	}
+	
+	.cv-day {
+		background: var(--tu-dark-3, #1a1a1a);
+		
+		&:hover {
+			background: var(--tu-dark-2, #2a2a2a);
+		}
+		
+		&.past {
+			background: var(--tu-dark-4, #0f0f0f);
+		}
+	}
+}

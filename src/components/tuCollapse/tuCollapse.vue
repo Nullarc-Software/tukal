@@ -4,7 +4,7 @@
 	</div>
 </template>
 <script setup lang="ts">
-import { provide, ref } from "vue";
+import { provide, ref, reactive } from "vue";
 
 defineOptions({
 	name: "TuCollapse"
@@ -28,29 +28,43 @@ const emit = defineEmits<{
 
 const collapse = ref<HTMLDivElement>();
 
+// State management for accordion mode
+const itemsState = reactive(new Map<symbol, { isOpen: boolean; toggle: () => void }>());
+
 const emitChange = function () {
 	emit("change");
 };
 
-const closeAllItems = function (el: any, maxHeight: any) {
-	const children = collapse.value?.children;
+const registerItem = function (itemId: symbol, toggleFn: () => void) {
+	itemsState.set(itemId, { isOpen: false, toggle: toggleFn });
+};
 
-	if (children) {
-		for (let item of children) {
-			item = item as HTMLElement;
-			if (item !== el.value.parentElement) {
-				const ex = item.querySelector(".tu-collapse-item--content") as HTMLElement;
-				ex.style.maxHeight = "0px";
-				maxHeight.value = "0px";
-			}
+const unregisterItem = function (itemId: symbol) {
+	itemsState.delete(itemId);
+};
+
+const updateItemState = function (itemId: symbol, isOpen: boolean) {
+	const item = itemsState.get(itemId);
+	if (item)
+		item.isOpen = isOpen;
+};
+
+const closeOtherItems = function (currentItemId: symbol) {
+	if (props.accordion) {
+		for (const [itemId, item] of itemsState) {
+			if (itemId !== currentItemId && item.isOpen)
+				item.toggle();
 		}
 	}
 };
 
-provide("closeAllItems", closeAllItems);
 provide("accordion", props.accordion);
 provide("openHover", props.openHover);
 provide("emitChange", emitChange);
+provide("registerItem", registerItem);
+provide("unregisterItem", unregisterItem);
+provide("updateItemState", updateItemState);
+provide("closeOtherItems", closeOtherItems);
 </script>
 
 <style lang="scss" scoped>

@@ -20,7 +20,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, ref, inject } from "vue";
 import { ComponentConstants } from "../tuComponent";
 import ripple, { rippleCut, rippleReverse } from "../../utils/ripple";
 
@@ -56,6 +56,9 @@ interface Props {
 	to?: Record<string, unknown> | string;
 	href?: string;
 	blank?: boolean;
+	
+	// Button Group
+	value?: string | number; // Used for identification in mutually exclusive button groups
 	
 	// Legacy props (for backward compatibility)
 	flat?: boolean; // maps to variant="flat"
@@ -110,6 +113,9 @@ const props = withDefaults(defineProps<Props>(), {
 	href: undefined,
 	blank: false,
 	
+	// Button Group
+	value: undefined,
+	
 	// Legacy props
 	flat: false,
 	border: false,
@@ -147,6 +153,34 @@ const emit = defineEmits<{
 const rippleDir = ref("");
 const button = ref<HTMLButtonElement>();
 
+// Button group integration
+const buttonGroup = inject<{
+	mutuallyExclusive: boolean;
+	selectedButton: { value: number | string | null };
+	selectButton: (buttonId: number | string) => void;
+	isSelected: (buttonId: number | string) => boolean;
+} | null>("buttonGroup", null);
+
+// Generate a unique ID for this button instance if none provided
+const buttonId = computed(() => {
+	if (props.value !== undefined) return props.value;
+	// Fallback to instance uid if available, or generate a simple ID
+	return Math.random().toString(36).substr(2, 9);
+});
+
+// Check if this button is selected in a mutually exclusive button group
+const isSelectedInGroup = computed(() => {
+	if (!buttonGroup || !buttonGroup.mutuallyExclusive) return false;
+	return buttonGroup.isSelected(buttonId.value);
+});
+
+// Determine final active state (either from prop or button group selection)
+const isActive = computed(() => {
+	if (buttonGroup && buttonGroup.mutuallyExclusive)
+		return isSelectedInGroup.value;
+	return props.active;
+});
+
 // Simplified computed properties
 const buttonClasses = computed(() => {
 	const classes = ["tu-button"];
@@ -179,7 +213,7 @@ const buttonClasses = computed(() => {
 	if (props.square) classes.push("tu-button--square");
 	
 	// States
-	if (props.active) classes.push("tu-button--active");
+	if (isActive.value) classes.push("tu-button--active");
 	if (props.loading) classes.push("tu-button--loading");
 	if (props.block) classes.push("tu-button--block");
 	if (props.icon) classes.push("tu-button--icon");
@@ -215,6 +249,10 @@ const getStyleVariant = () => {
 };
 
 const clickButton = function (event: MouseEvent) {
+	// Handle button group selection if in a mutually exclusive group
+	if (buttonGroup && buttonGroup.mutuallyExclusive)
+		buttonGroup.selectButton(buttonId.value);
+	
 	if (props.to)
 		ComponentConstants.router.push(props.to);
 	else if (props.href)

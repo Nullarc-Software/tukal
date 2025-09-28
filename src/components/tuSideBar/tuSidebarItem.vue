@@ -1,16 +1,15 @@
 <template>
 	<a :href="href" class="tu-sidebar__a">
 		<button class="tu-sidebar__item" :class="{
-			active: (parentValue && id == parentValue) || internalActive,
-			hasIcon: !!$slots.icon
+			active: isActive,
+			hasIcon: !!$slots.icon,
+			reduced: reduced
+
 		}" @click="onClick">
 			<div v-if="$slots.icon" class="tu-sidebar__item__icon">
 				<slot name="icon" />
 			</div>
-			<div class="tu-sidebar__item__text" :class="{ reduced: reduced }">
-				<slot />
-			</div>
-			<div class="tu-sidebar__item__text-tooltip">
+			<div class="tu-sidebar__item__text" :class="{ reduced: reduced }" :title="tooltip">
 				<slot />
 			</div>
 			<div v-if="$slots.arrow || arrow" class="tu-sidebar__item__arrow">
@@ -22,7 +21,7 @@
 </template>
 
 <script lang="ts" setup>
-import { inject, onMounted, ref, watch, type Ref } from "vue";
+import { computed, inject, onMounted, ref, watch, type Ref } from "vue";
 
 defineOptions({
 	name: "TuSidebarItem"
@@ -31,6 +30,7 @@ import { ComponentConstants } from "../tuComponent";
 import * as _ from "lodash";
 import * as pathRegex from "path-to-regexp";
 import tuIcon from "../tuIcon";
+import TuPopper from "../tuPopper/tuPopper.vue";
 
 interface RouteObject {
 	name?: string;
@@ -44,6 +44,7 @@ interface Props {
 	value?: string;
 	id?: string;
 	arrow?: boolean;
+	tooltip?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -52,14 +53,23 @@ const props = withDefaults(defineProps<Props>(), {
 	target: "_blank",
 	value: undefined,
 	id: undefined,
+	tooltip: "",
 	arrow: false
 });
 
-const parentValue = inject<string | null>("parentValue");
+const parentValue = inject<Ref<string | null>>("parentValue");
 const handleClickItem = inject<((id: string) => void) | undefined>("handleClickItem");
 const reduced = inject<Ref<boolean>>("reduced");
 const internalActive = ref(false);
+const tooltipVisible = ref(false);
 const router = ComponentConstants.router;
+
+
+const isActive = computed(() => {
+	if (parentValue?.value && props.id)
+		return parentValue?.value === props.id || internalActive.value;
+	return internalActive.value;
+});
 
 const handleClick = function () {
 	if (props.to) 
@@ -72,6 +82,15 @@ const onClick = () => {
 	if (props.id)
 		handleClickItem?.(props.id);
 	handleClick();
+};
+
+const showTooltip = () => {
+	if (reduced?.value)
+		tooltipVisible.value = true;
+};
+
+const hideTooltip = () => {
+	tooltipVisible.value = false;
 };
 
 const handleRouteChange = function () {
@@ -123,97 +142,99 @@ onMounted(() => {
 <style lang="scss">
 @import "../../style/sass/_functions";
 
+// Variables
+$transition-ease: all 0.25s ease;
+$active-padding: 25px;
+$icon-padding: 8px;
+
+// Mixins
+@mixin flex-center {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+@mixin text-ellipsis {
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
 .tu-sidebar__a {
-	display: contents;
+	display: flex;
+	justify-content: start;
+	align-items: center;
+	width: 100%;
 }
 
 .tu-sidebar__item {
 	width: 100%;
-	padding: 14px 16px;
-	padding-top: 15px;
+	padding: 5px;
 	text-align: left;
 	background: transparent;
 	font-size: 1rem;
 	font-weight: bold;
 	opacity: 0.7;
-	transition: all 0.25s ease;
-	display: flex;
-	align-items: center;
+	transition: $transition-ease;
+	@include flex-center;
 	justify-content: flex-start;
 	position: relative;
 	color: getColor("text");
-	border: 0px;
+	border: 0;
 
-	&.hasIcon {
-		padding: 0px;
-
-		&.active {
-			padding-left: 8px;
-		}
-
-		&:hover {
-			padding-left: 8px;
-			opacity: 1;
-		}
-	}
-
+	// Active indicator line (base state)
 	&:after {
 		content: "";
 		position: absolute;
 		left: -4px;
-		top: 0px;
+		top: 0;
 		width: 10px;
 		height: 100%;
 		background: getColor("color");
-		border-radius: 0px 20px 20px 0px;
-		transform: translate(-6px);
-		transition: all 0.25s ease;
+		border-radius: 0 20px 20px 0;
+		transform: translateX(-6px);
+		transition: $transition-ease;
 		z-index: 60;
 	}
 
+	// Base hover and active states
+	&:hover:not(.hasIcon),
 	&.active:not(.hasIcon) {
-		padding-left: 25px;
+		opacity: 1;
+		padding-left: $active-padding;
+	}
+
+	&.reduced { 
+		justify-content: space-around;
+	}
+	
+	&:hover.hasIcon,
+	&.active.hasIcon {
+		opacity: 1;
+		padding-left: $icon-padding;
 	}
 
 	&.active {
-		opacity: 1;
-
-		// background: getColor('background', .1) !important
 		color: getColor("color");
-
-		&:after {
-			transform: translate(0px);
-		}
-	}
-
+		&:after { transform: translateX(0); }
+	}	// Child elements
 	&__icon {
 		min-width: 40px;
 		height: 47px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
+		@include flex-center;
 		font-size: 1.2rem;
 		z-index: 50;
 		background: transparent;
 	}
 
-	&:hover:not(.hasIcon) {
-		opacity: 1;
-		padding-left: 25px;
-	}
-
 	&__text {
-		white-space: nowrap;
-		text-overflow: ellipsis;
-		overflow: hidden;
+		@include text-ellipsis;
 		z-index: 10;
-		transition: all 0.25s ease;
+		transition: $transition-ease;
 		font-size: 0.9rem;
 		opacity: 1;
 
-		&.reduced {
-			opacity: 0;
-		}
+		&.reduced { display: none; }
 	}
 
 	&__arrow {
@@ -221,33 +242,17 @@ onMounted(() => {
 		justify-self: flex-end;
 		margin-left: auto;
 		margin-right: 15px;
-
-		i {
-			transition: all 0.25s ease;
-			transform: rotate(0deg) !important;
-		}
-
 		z-index: 80;
 
-		.tu-icon-arrow {
-			&:before {
-				width: 2px;
-			}
-
-			&:after {
-				height: 2px;
-			}
+		i { 
+			transition: $transition-ease;
+			transform: rotate(0deg) !important; 
 		}
-	}
 
-	&__text-tooltip {
-		position: fixed;
-		left: 50px;
-		opacity: 0;
-		pointer-events: none;
-		transition: all 0.25s ease;
-		font-size: 0.85rem;
-		white-space: nowrap;
+		.tu-icon-arrow {
+			&:before { width: 2px; }
+			&:after { height: 2px; }
+		}
 	}
 }
 </style>

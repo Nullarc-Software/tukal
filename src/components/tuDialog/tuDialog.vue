@@ -65,6 +65,7 @@ interface Props {
 	notCenter?: boolean;
 	routerClose?: boolean;
 	width?: string | null;
+	height?: string | null;
 	footerClasses?: Record<string, unknown> | null;
 	// tuComponent props
 	color?: string;
@@ -88,6 +89,7 @@ const props = withDefaults(defineProps<Props>(), {
 	notCenter: false,
 	routerClose: false,
 	width: null,
+	heihgt: null,
 	footerClasses: null,
 	color: "primary",
 	active: false,
@@ -107,11 +109,12 @@ inject<string | null>("iconPackGlobal", null);
 const rebound = ref(false);
 
 const dialogStyle = computed(() => ({
-	width: props.width || undefined
+	width: props.width || undefined,
+	height: props.height || undefined
 }));
 
 const esc = function (evt: KeyboardEvent) {
-	if (evt.which === 27 && !props.preventClose) {
+	if (evt.which === 27 && !props.preventClose && !props.notClose) {
 		emit("update:modelValue", false);
 		emit("close");
 	}
@@ -143,12 +146,12 @@ watch(
 );
 
 const click = function (evt: MouseEvent) {
-	if (!(evt.target as Element).closest(".tu-dialog") && !props.preventClose) {
+	if (!(evt.target as Element).closest(".tu-dialog") && !props.preventClose && !props.notClose) {
 		emit("update:modelValue", !props.modelValue);
 		emit("close");
 	}
 
-	if (props.preventClose && !(evt.target as Element).closest(".tu-dialog")) {
+	if ((props.preventClose || props.notClose) && !(evt.target as Element).closest(".tu-dialog")) {
 		rebound.value = true;
 		setTimeout(() => {
 			rebound.value = false;
@@ -203,15 +206,12 @@ const closeClick = function () {
 	0% {
 		transform: scale(0.8);
 	}
-
 	40% {
 		transform: scale(1.08);
 	}
-
 	80% {
 		transform: scale(0.98);
 	}
-
 	100% {
 		transform: scale(1);
 	}
@@ -221,17 +221,23 @@ const closeClick = function () {
 	0% {
 		transform: scale(1);
 	}
-
 	40% {
 		transform: scale(1.05);
 	}
-
 	80% {
 		transform: scale(0.96);
 	}
-
 	100% {
 		transform: scale(1);
+	}
+}
+
+@keyframes loadingDialog {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
 	}
 }
 
@@ -240,8 +246,7 @@ const closeClick = function () {
 	--tu-color: var(--tu-primary);
 	background: getColorAlpha("background", 0.8);
 	position: fixed;
-	left: 0;
-	top: 0;
+	inset: 0;
 	z-index: map-get($z-index, 'modal');
 	display: flex;
 	align-items: flex-start;
@@ -251,15 +256,12 @@ const closeClick = function () {
 	max-height: 100vh;
 	overflow-y: auto;
 	overflow-x: hidden;
-	padding-top: map-get($spacing, 'xxl');
-	padding-bottom: map-get($spacing, 'xxl');
+	padding: map-get($spacing, 'xxl') 0;
 
 	// Enhanced focus management for accessibility
-	&:focus-within {
-		.tu-dialog {
-			outline: 2px solid var(--tu-primary, #2563eb);
-			outline-offset: 4px;
-		}
+	&:focus-within .tu-dialog {
+		outline: 2px solid var(--tu-primary, #2563eb);
+		outline-offset: 4px;
 	}
 
 	&.fullScreen {
@@ -270,14 +272,6 @@ const closeClick = function () {
 	&.blur {
 		backdrop-filter: saturate(180%) blur(15px);
 		background: getColorAlpha("background", 0.6);
-	}
-}
-
-// Dark theme support
-.tu-dark-theme {
-	.tu-dialog {
-		background: getColor("component-background");
-		border: 1px solid getColorAlpha("text", 0.12);
 	}
 }
 
@@ -299,65 +293,13 @@ const closeClick = function () {
 		outline: none;
 	}
 
-	&--notCenter {
-		.tu-dialog__header {
-			display: block;
-		}
+	&--notCenter .tu-dialog__header {
+		display: block;
 	}
 
-	&__loading {
-		width: 100%;
-		position: absolute;
-		top: 0px;
-		left: 0px;
-		height: 100%;
-		border-radius: inherit;
-		background: getColorAlpha("background", 0.8);
-		z-index: 100;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-
-		&:after {
-			content: "";
-			position: absolute;
-			width: 30px;
-			height: 30px;
-			border-radius: inherit;
-			border: 2px solid getColor("color");
-			border-top: 2px solid getColorAlpha("color", 0);
-			border-left: 2px solid getColorAlpha("color", 0);
-			border-bottom: 2px solid getColorAlpha("color", 0);
-			box-sizing: border-box;
-			transition: all 0.25s ease;
-			display: block;
-			box-shadow: 0px 0px 0px 0px getColor("color");
-			animation: loadingDialog 0.6s ease infinite;
-		}
-
-		&:before {
-			content: "";
-			position: absolute;
-			width: 30px;
-			height: 30px;
-			border-radius: inherit;
-			border: 2px dashed getColor("color");
-			border-top: 2px solid getColorAlpha("color", 0);
-			border-left: 2px solid getColorAlpha("color", 0);
-			border-bottom: 2px solid getColorAlpha("color", 0);
-			box-sizing: border-box;
-			transition: all 0.25s ease;
-			display: block;
-			box-shadow: 0px 0px 0px 0px getColor("color");
-			animation: loadingDialog 0.6s linear infinite;
-		}
-	}
-
-	&--scroll {
-		.tu-dialog__content {
-			max-height: calc(80vh - 200px);
-			overflow: auto;
-		}
+	&--scroll .tu-dialog__content {
+		max-height: calc(80vh - 200px);
+		overflow: auto;
 	}
 
 	&--autoWidth {
@@ -367,25 +309,22 @@ const closeClick = function () {
 	}
 
 	&--square {
-		border-radius: 0px;
+		border-radius: 0;
 
 		.tu-dialog__close {
-			border-radius: 0px;
+			border-radius: 0;
 		}
 	}
 
 	&--notPadding {
-		.tu-dialog__footer {
-			padding: 0px;
+		.tu-dialog__footer,
+		.tu-dialog__content,
+		.tu-dialog__header {
+			padding: 0;
 		}
 
 		.tu-dialog__content {
-			padding: 0px;
-			margin-bottom: 0px !important;
-		}
-
-		.tu-dialog__header {
-			padding: 0px;
+			margin-bottom: 0 !important;
 		}
 	}
 
@@ -400,9 +339,42 @@ const closeClick = function () {
 		max-height: none !important;
 	}
 
+	&__loading {
+		position: absolute;
+		inset: 0;
+		background: getColorAlpha("background", 0.8);
+		border-radius: inherit;
+		z-index: 100;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+
+		&::before,
+		&::after {
+			content: "";
+			position: absolute;
+			width: 30px;
+			height: 30px;
+			border-radius: inherit;
+			border: 2px solid transparent;
+			box-sizing: border-box;
+			animation: loadingDialog 0.6s infinite;
+		}
+
+		&::after {
+			border-color: getColor("color") transparent transparent transparent;
+			animation-timing-function: ease;
+		}
+
+		&::before {
+			border: 2px dashed getColor("color");
+			border-color: getColor("color") transparent transparent transparent;
+			animation-timing-function: linear;
+		}
+	}
+
 	&__footer {
-		padding: 10px 16px;
-		padding-top: 0px;
+		padding: 10px 16px 10px 16px;
 		display: flex;
 		justify-content: flex-end;
 	}
@@ -428,53 +400,43 @@ const closeClick = function () {
 	&__close {
 		color: getColor("text");
 		position: absolute;
-		padding: 0px !important;
 		top: -6px;
 		right: -6px;
-		padding: 0px;
-		margin: 0px;
+		padding: 0;
+		margin: 0;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		background: inherit;
+		border: 0;
 		border-radius: 12px;
-		box-shadow: 0px 5px 20px 0px rgba(0, 0, 0, tuVar("shadow-opacity"));
+		box-shadow: 0 5px 20px 0 rgba(0, 0, 0, tuVar("shadow-opacity"));
 		transition: all 0.25s ease;
 		z-index: 200;
-		border: 0px;
 
-		::v-deep(.tu-button__content) {
+		.tu-button__content {
 			padding: 2px !important;
 		}
 
-		i {
+		.tu-icon {
 			width: 34px;
 			height: 34px;
 			opacity: 0.7;
+			padding: 5px;
 
-			&:after {
-				width: 14px;
-			}
-
-			&:before {
+			&::after,
+			&::before {
 				width: 14px;
 			}
 		}
 
 		&:hover {
-			box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, tuVar("shadow-opacity"));
+			box-shadow: 0 0 4px 0 rgba(0, 0, 0, tuVar("shadow-opacity"));
 			transform: translate(-2px, 2px);
-
-			i {
-				opacity: 1;
-			}
-		}
-
-		.tu-button__content {
-			padding: inherit !important;
+			color: getColor("light");
 
 			.tu-icon {
-				padding: 5px;
+				opacity: 1;
 			}
 		}
 	}
@@ -482,12 +444,17 @@ const closeClick = function () {
 
 @keyframes loadingDialog {
 	0% {
-		transform: rotate(0);
+		transform: rotate(0deg);
 	}
-
 	100% {
 		transform: rotate(360deg);
 	}
+}
+
+// Dark theme support
+.tu-dark-theme .tu-dialog {
+	background: getColor("component-background");
+	border: 1px solid getColorAlpha("text", 0.12);
 }
 
 @media (max-width: 600px) {

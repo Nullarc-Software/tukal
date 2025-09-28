@@ -1,7 +1,7 @@
 <template>
 	<div :class="[
 		`tu-tabs--${color}`,
-		`tu-tabs--position-${position}`,
+		`tu-tabs--position-${actualPosition}`,
 		`tu-tabs--${tabStyle}`
 	]" class="tu-tabs" :style="{
 	width: fixedWidth || 'auto',
@@ -14,7 +14,7 @@
 						[`tu-tabs--li-${child.id}`]: true,
 						[`tu-tabs--li-${child.name}`]: child.name,
 						activeChild: childActive == child.id,
-						['tu-tabs--button-li']: tabStyle === 'pills' && position === 'top'
+						['tu-tabs--button-li']: tabStyle === 'pills' && actualPosition === 'top'
 					}" @mouseover="hover = true" @mouseout="hover = false">
 					<a :href="type === 'router' && child.to ? getALinkHref(child.to) : undefined" class="tu-tabs--a">
 						<button class="tu-button tu-button--default tu-button--small tu-button__content"
@@ -124,7 +124,6 @@ interface Props {
 	tagColor?: string;
 	alignment?: string;
 	position?: string;
-	noTransitions?: boolean;
 	headerSize?: number;
 	progressWidth?: string;
 	tabStyle?: string;
@@ -132,6 +131,7 @@ interface Props {
 	fixedHeight?: string | null;
 	type?: string;
 	routerModeParams?: TuTabsRouterParams;
+	vertical?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -140,7 +140,6 @@ const props = withDefaults(defineProps<Props>(), {
 	tagColor: "primary",
 	alignment: "left",
 	position: "top",
-	noTransitions: false,
 	headerSize: 16,
 	progressWidth: "100%",
 	tabStyle: "default",
@@ -151,11 +150,12 @@ const props = withDefaults(defineProps<Props>(), {
 		tabs: [],
 		baseRoute: undefined,
 		preventAutoRedirect: false
-	})
+	}),
+	vertical: false
 });
 
 const emit = defineEmits<{
-	"update:modelValue": [value: number];
+	"update:modelValue": [value: number | string];
 	"click-tag": [child: TuTabsChildData];
 }>();
 
@@ -166,8 +166,8 @@ defineOptions({
 const tabIdInstance = ref(new TabId());
 const ul = ref<HTMLUListElement>();
 const data: TabData = {
-	topx: "auto",
-	heightx: 2,
+	topx: 0,
+	heightx: 3,
 	hover: false,
 	children: [],
 	childActive: 0,
@@ -205,8 +205,12 @@ const updateChild = (instance: TuTabsChildData) => {
 // Provide values for child components
 provide("addChild", addChild);
 provide("updateChild", updateChild);
-provide("noTransitions", computed(() => props.noTransitions));
 provide("tabIdInstance", computed(() => tabIdInstance.value));
+
+// Computed property to determine the actual position
+const actualPosition = computed(() => {
+	return props.vertical ? "left" : props.position;
+});
 
 if (props.type === "router") {
 	props.routerModeParams.tabs.forEach(tab => {
@@ -278,13 +282,17 @@ const parseIndex = function (index: number | string) {
 		if ((index as number) < 0) activeIndex = 0;
 		else if ((index as number) >= reactiveData.children.length)
 			activeIndex = reactiveData.children.length - 1;
-		else if (reactiveData.children[index as number].disabled === false)
+		else if (reactiveData.children[index as number]?.disabled === false)
 			activeIndex = parseInt(index as string);
 	}
 	else {
+		// First try to find by value, then by name
 		activeIndex = _.findIndex(reactiveData.children, (child) => {
-			return child.name === index;
+			return child.value === index || child.name === index;
 		});
+		
+		// If not found, default to 0
+		if (activeIndex === -1) activeIndex = 0;
 	}
 	activeIdx.value = activeIndex;
 	return activeIndex;
@@ -298,7 +306,11 @@ const setActiveTab = function (index: number) {
 		`tu-tabs--li-${index}`
 	)[0];
 	reactiveData.childActive = index;
-	emit("update:modelValue", reactiveData.childActive);
+	
+	// Emit the correct value - if child has a value prop, use that, otherwise use the index
+	const activeChild = reactiveData.children[index];
+	const emitValue = activeChild?.value || activeChild?.name || index;
+	emit("update:modelValue", emitValue);
 
 	if (props.tabStyle !== "progress")
 		changePositionLine(elem as HTMLElement, initialAnimation);
@@ -325,23 +337,7 @@ const activeChild = function (index: number, initialAnimation?: boolean) {
 			if (key !== index) value.setActive?.(false);
 		});
 
-		if (reactiveData.childActive > index) {
-			reactiveData.children[index]?.setInvert?.(true);
-			reactiveData.children[reactiveData.childActive]?.setInvert?.(
-				false
-			);
-		}
-		else {
-			reactiveData.children[reactiveData.childActive]?.setInvert?.(
-				true
-			);
-			reactiveData.children[index]?.setInvert?.(false);
-		}
-
 		reactiveData.children[index]?.setActive?.(true);
-
-		if (props.position === "left" || props.position === "right")
-			reactiveData.children[index]?.setVertical?.(true);
 	}
 	if (props.type === "router") {
 		const router = ComponentConstants.router;
@@ -360,35 +356,35 @@ const activeChild = function (index: number, initialAnimation?: boolean) {
 	}
 	reactiveData.childActive = index;
 	activeIdx.value = index;
-	emit("update:modelValue", reactiveData.childActive);
+	
+	// Emit the correct value - if child has a value prop, use that, otherwise use the index
+	const activeChild = reactiveData.children[index];
+	const emitValue = activeChild?.value || activeChild?.name || index;
+	emit("update:modelValue", emitValue);
 
 	if (props.tabStyle !== "progress")
 		changePositionLine(elem as HTMLElement, initialAnimation);
 };
 
 const changePositionLine = function (elem: HTMLElement, initialAnimation: boolean) {
-	if (props.position === "left" || props.position === "right") {
+	if (!elem || !ul.value) return;
+	
+	if (actualPosition.value === "left" || actualPosition.value === "right") {
 		reactiveData.topx = elem.offsetTop;
 		reactiveData.heightx = elem.offsetHeight;
-		reactiveData.widthx = 2;
-
-		if (props.position === "right") reactiveData.leftx = 0;
+		reactiveData.widthx = 3;
+		reactiveData.leftx = actualPosition.value === "right" ? 0 : elem.offsetParent ? (elem.offsetParent as HTMLElement).offsetWidth - 3 : 0;
 	}
 	else {
 		const update = () => {
-			if (elem) {
+			if (elem && ul.value) {
 				reactiveData.leftx = elem.offsetLeft;
 				reactiveData.widthx = elem.offsetWidth;
-				if (ul.value) {
-					reactiveData.topx =
-						elem.offsetHeight +
-						(elem.getBoundingClientRect().top -
-							ul.value.getBoundingClientRect().top);
-				}
+				reactiveData.topx = actualPosition.value === "bottom" ? 0 : elem.offsetHeight;
 			}
 		};
 		if (!initialAnimation) update();
-		else setTimeout(update, 100);
+		else setTimeout(update, 150);
 	}
 };
 
@@ -470,8 +466,14 @@ onMounted(() => {
 		}
 	}
 	reactiveData.childActive = activeIndex;
+	
+	// Use nextTick to ensure child components are mounted
 	nextTick(() => {
-		activeChild(activeIndex, true);
+		// Re-parse the index in case children were registered after initial mount
+		if (reactiveData.children.length > 0) {
+			const newActiveIndex = parseIndex(props.modelValue);
+			activeChild(newActiveIndex, true);
+		}
 	});
 });
 
@@ -489,6 +491,20 @@ watch(
 		nextTick(() => {
 			activeChild(activeIndex);
 		});
+	}
+);
+
+// Watch for children changes to ensure initial selection works
+watch(
+	() => reactiveData.children.length,
+	(newLength, oldLength) => {
+		// When children are first registered, ensure correct initial selection
+		if (oldLength === 0 && newLength > 0) {
+			const activeIndex = parseIndex(props.modelValue);
+			nextTick(() => {
+				activeChild(activeIndex, true);
+			});
+		}
 	}
 );
 </script>
@@ -509,6 +525,8 @@ watch(
 		padding-left: 0;
 		position: relative;
 		margin-top: 0;
+		margin-bottom: 0;
+		list-style: none;
 
 		&.ul-tabs-center {
 			justify-content: center;
@@ -531,9 +549,10 @@ watch(
 	&--li {
 		display: block;
 		position: relative;
+		list-style: none;
 
 		button {
-			color: inherit;
+			color: rgba(var(--tu-text), 0.7);
 			font-family: inherit;
 			box-sizing: border-box;
 			display: block;
@@ -541,20 +560,32 @@ watch(
 			width: 100%;
 			background: transparent;
 			margin: 0;
-			padding: 10px;
+			padding: 12px 16px;
 			border: 0;
 			cursor: pointer;
-			transition: all 0.2s ease;
-			z-index: 100;
+			transition: all 0.25s ease;
+			font-size: 14px;
+			font-weight: 500;
+			border-radius: 4px;
 
 			&:hover:not(:disabled) {
-				color: inherit;
+				color: rgba(var(--tu-text), 0.9);
+				background: rgba(var(--tu-text), 0.05);
 			}
 
 			&:disabled {
-				opacity: 0.5;
+				opacity: 0.4;
 				cursor: default !important;
 				pointer-events: none;
+				color: rgba(var(--tu-text), 0.3) !important;
+				background: transparent !important;
+			}
+		}
+
+		&.activeChild {
+			button {
+				color: rgba(var(--tu-text), 1);
+				font-weight: 600;
 			}
 		}
 	}
@@ -566,12 +597,15 @@ watch(
 
 	&>.con-ul-tabs>.line-tu-tabs {
 		width: 100px;
-		height: 2px;
+		height: 3px;
 		display: block;
 		position: absolute;
-		transition: all 0.2s ease;
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 		transform: translateZ(0);
-		will-change: left, right;
+		will-change: left, width, transform;
+		border-radius: 3px 3px 0 0;
+		bottom: 0;
+		z-index: 10;
 	}
 
 	&>.con-slot-tabs.tabs-fixed-height {
@@ -580,28 +614,88 @@ watch(
 
 
 	&--card {
-		box-shadow: tuVar("elevated-1");
-		border-radius: 15px;
-		padding-bottom: 10px;
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+		border-radius: 12px;
+		padding-bottom: 0;
+		border: 1px solid rgba(var(--tu-text), 0.1);
+		overflow: hidden;
+
+		.con-ul-tabs {
+			.ul-tabs {
+				.tu-tabs--li {
+					border-bottom: 1px solid rgba(var(--tu-text), 0.1);
+					
+					&:last-child {
+						border-bottom: none;
+					}
+
+					button {
+						padding: 16px 20px;
+						border-radius: 0;
+						
+						&:hover:not(:disabled) {
+							background: rgba(var(--tu-text), 0.05);
+						}
+					}
+
+					&.activeChild {
+						background: rgba(var(--tu-primary), 0.1);
+						border-left: 3px solid rgb(var(--tu-primary));
+						
+						button {
+							color: rgb(var(--tu-primary)) !important;
+							font-weight: 600;
+						}
+					}
+				}
+			}
+		}
+
+		.con-slot-tabs {
+			padding: 20px;
+		}
 	}
 
 	&>.con-ul-tabs>.ul-tabs>.activeChild {
 		button {
 			&:not(:disabled) {
-				color: inherit;
+				color: rgba(var(--tu-text), 1) !important;
+				font-weight: 600;
 			}
 
 			&.tu-tabs--btn {
-				padding-top: 8px;
+				padding-top: 12px;
 				padding-bottom: 12px;
 			}
 		}
 	}
 
 	&--pills {
-		&>.con-ul-tabs>.ul-tabs>.activeChild>a>button {
-			background: getColor("color") !important;
-			color: #fff !important;
+		&>.con-ul-tabs>.ul-tabs {
+			gap: 8px;
+
+			.tu-tabs--li {
+				button {
+					border-radius: 20px;
+					padding: 8px 16px;
+					background: rgba(var(--tu-text), 0.05);
+					transition: all 0.25s ease;
+
+					&:hover:not(:disabled) {
+						background: rgba(var(--tu-text), 0.1);
+						transform: translateY(-1px);
+					}
+				}
+
+				&.activeChild {
+					button {
+						color: #fff !important;
+						font-weight: 600;
+						box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+						transform: translateY(-1px);
+					}
+				}
+			}
 		}
 	}
 
@@ -637,31 +731,53 @@ watch(
 		flex-wrap: wrap;
 	}
 
-	&--position-bottom>.con-ul-tabs>.tu-tabs--ul {
+	&--position-bottom {
 		display: flex;
-		border-top: 1px solid rgba(0, 0, 0, 0.05);
-		border-bottom: 0 !important;
-	}
+		flex-direction: column;
+		
+		&>.con-ul-tabs {
+			order: 2;
+			border-top: 1px solid rgba(var(--tu-text), 0.1);
+			border-bottom: 0 !important;
 
-	&--position-bottom>.con-ul-tabs {
-		order: 2;
-	}
+			>.tu-tabs--ul {
+				display: flex;
+			}
 
-	&--position-bottom>.con-ul-tabs>.line-tu-tabs {
-		top: 0;
+			>.line-tu-tabs {
+				top: 0;
+				border-radius: 0 0 3px 3px;
+			}
+		}
 	}
 
 	&--position-left {
 		display: flex;
 		flex-direction: row !important;
 
-		&>.con-slot-tabs {
-			margin-left: 15px;
+		>.con-ul-tabs>.tu-tabs--ul {
+			display: block !important;
+			width: auto;
+			border-bottom: 0 !important;
+			border-right: 1px solid rgba(var(--tu-text), 0.1);
+			margin: 0;
 		}
 
-		&>.con-ul-tabs>.line-tu-tabs {
-			left: auto !important;
-			right: 0;
+		&>.con-slot-tabs {
+			margin-left: 20px;
+			flex: 1;
+		}
+
+		&>.con-ul-tabs {
+			min-width: 200px;
+			
+			>.line-tu-tabs {
+				left: auto !important;
+				right: 0;
+				width: 3px !important;
+				height: auto;
+				border-radius: 0 3px 3px 0;
+			}
 		}
 
 		>.con-ul-tabs {
@@ -671,18 +787,8 @@ watch(
 			position: relative;
 		}
 
-		>.con-ul-tabs>.tu-tabs--ul {
-			display: block;
-			width: auto;
-			border-bottom: 0 !important;
-			border-right: 1px solid rgba(0, 0, 0, 0.05);
-			margin: 0;
-		}
-
 		&>.con-ul-tabs>.ul-tabs>.activeChild>li>a>button {
-			padding-top: 10px !important;
-			padding-bottom: 10px !important;
-			padding-left: 12px !important;
+			padding: 12px !important;
 		}
 	}
 
@@ -692,12 +798,20 @@ watch(
 
 		>.con-slot-tabs {
 			width: 100%;
-			margin-right: 15px;
+			margin-right: 20px;
+			flex: 1;
 		}
 
-		&>.con-ul-tabs>.line-tu-tabs {
-			left: 0 !important;
-			right: auto !important;
+		&>.con-ul-tabs {
+			min-width: 200px;
+			
+			>.line-tu-tabs {
+				left: 0 !important;
+				right: auto !important;
+				width: 3px !important;
+				height: auto;
+				border-radius: 3px 0 0 3px;
+			}
 		}
 
 		>.con-ul-tabs {
@@ -712,52 +826,73 @@ watch(
 			display: block;
 			width: auto;
 			border-bottom: 0 !important;
-			border-left: 1px solid rgba(0, 0, 0, 0.05);
+			border-left: 1px solid rgba(var(--tu-text), 0.1);
 			margin: 0;
 		}
 
 		&>.con-ul-tabs>.ul-tabs>.activeChild>li>a>button {
-			padding-top: 10px !important;
-			padding-bottom: 10px !important;
-			padding-left: 8px !important;
-			padding-right: 12px !important;
+			padding: 12px !important;
 		}
 
-		&.tu-tabs-progress {
+		&.tu-tabs--progress {
 			padding: 20px;
-			box-shadow: var(--tu-elevated-6);
-			border-radius: 15px;
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+			border-radius: 12px;
 		}
-
 	}
 
 	>.con-ul-tabs>.tu-tabs--ul>.tu-tabs-progress-header {
 		flex-direction: column;
 		display: flex;
 		width: 100%;
-		margin-bottom: 10px;
+		margin-bottom: 20px;
+		padding: 20px;
+		background: rgba(var(--tu-text), 0.02);
+		border-radius: 12px;
+		border: 1px solid rgba(var(--tu-text), 0.1);
 
 		>.tu-tabs--progress__info {
 			display: flex;
 			align-items: center;
 			align-self: flex-end;
+			margin-bottom: 15px;
 
 			&>.tu-tabs--progress__title {
-				margin-right: 10px;
+				margin-right: 15px;
+				font-size: 18px;
+				font-weight: 600;
+				color: rgba(var(--tu-text), 0.9);
 			}
 
 			&>.tu-tabs-progress__nav {
 				display: inline-flex;
 				margin-left: auto;
 				align-items: center;
+				gap: 10px;
 
 				.tu-tabs-progress__icon {
+					padding: 8px;
+					border-radius: 50%;
+					cursor: pointer;
+					transition: all 0.2s ease;
+					color: rgba(var(--tu-text), 0.6);
+
 					&:hover {
-						background: getColorAlpha("text", 0.1);
-						border-radius: 20px;
+						background: rgba(var(--tu-text), 0.1);
+						color: rgba(var(--tu-text), 0.9);
 					}
 				}
+
+				span {
+					font-size: 14px;
+					font-weight: 500;
+				}
 			}
+		}
+
+		>.tu-tabs--progress__bar {
+			border-radius: 8px;
+			overflow: hidden;
 		}
 	}
 
@@ -770,44 +905,70 @@ watch(
 	}
 
 	@mixin state($tu-color) {
+		&>.con-ul-tabs>.ul-tabs>.activeChild {
+			button {
+				&:not(:disabled) {
+					color: getColor($tu-color) !important;
+				}
 
-		:not(.tu-tabs-pills) {
+				&:not(:disabled):hover {
+					color: getColor($tu-color) !important;
+				}
+			}
+		}
+
+		&:not(.tu-tabs--pills) {
 			.con-ul-tabs {
 				button {
 					&:not(:disabled):hover {
 						color: getColor($tu-color) !important;
+						background: getColorAlpha($tu-color, 0.1);
 					}
 				}
 			}
 		}
 
-
-		&:not(.tu-tabs-progress):not(.tu-tabs-card) {
+		&:not(.tu-tabs--progress):not(.tu-tabs--card) {
 			.line-tu-tabs {
-				background: linear-gradient(30deg, getColor($tu-color) 0%, getColorAlpha($tu-color, 0.5) 100%) !important;
-				box-shadow: 0 0 8px 0 getColorAlpha($tu-color, 0.4) !important;
+				background: linear-gradient(135deg, getColor($tu-color) 0%, getColorAlpha($tu-color, 0.8) 100%) !important;
+				box-shadow: 0 2px 8px 0 getColorAlpha($tu-color, 0.3) !important;
+			}
+		}
+
+		&.tu-tabs--pills {
+			&>.con-ul-tabs>.ul-tabs>.activeChild>a>button {
+				background: getColor($tu-color) !important;
+				color: #fff !important;
+				box-shadow: 0 2px 8px 0 getColorAlpha($tu-color, 0.4);
+			}
+		}
+
+		&.tu-tabs--card {
+			&>.con-ul-tabs>.ul-tabs>.activeChild {
+				background: getColorAlpha($tu-color, 0.1);
+				border-color: getColor($tu-color);
 			}
 		}
 	}
 
 	&.tu-tabs {
-		&-success {
+		&--success {
 			@include state("success");
 		}
 
-		&-danger {
+		&--danger {
 			@include state("danger");
 		}
 
-		&-warn {
+		&--warn {
 			@include state("warn");
 		}
 
-		&-dark {
+		&--dark {
 			@include state("dark");
 		}
 
-		&-primary {
+		&--primary {
 			@include state("primary");
 		}
 	}

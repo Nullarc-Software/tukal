@@ -1,5 +1,5 @@
 <template>
-	<div class="tu-sidebar__group" :class="{ open: openState }" ref="sidebarGroup">
+<div class="tu-sidebar__group" :class="{ open: openState }" ref="sidebarGroup">
 		<div class="tu-sidebar__group__header" @click="openState = !openState">
 			<slot name="header" />
 		</div>

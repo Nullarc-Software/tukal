@@ -19,6 +19,10 @@
 </template>
 
 <script setup lang="ts">
+defineOptions({
+	name: "TuCol"
+});
+
 interface Props {
 	w?: string | number;
 	offset?: string | number;

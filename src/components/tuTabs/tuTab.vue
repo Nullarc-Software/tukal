@@ -1,18 +1,5 @@
 <template>
-	<transition v-if="!noTransitions" :name="
-	invert
-		? vertical
-			? 'fade-tab-vertical-invert'
-			: 'fade-tab-invert'
-		: vertical
-			? 'fade-tab-vertical'
-			: 'fade-tab'
-">
-		<div v-if="active" class="con-tab tu-tabs--content" v-bind="$attrs">
-			<slot />
-		</div>
-	</transition>
-	<div v-else-if="active" class="con-tab tu-tabs--content" v-bind="$attrs">
+	<div v-if="active" class="con-tab tu-tabs--content" v-bind="$attrs">
 		<slot />
 	</div>
 </template>
@@ -28,11 +15,11 @@ defineOptions({
 interface Props {
 	label?: string;
 	name?: string;
+	value?: string;
 	icon?: string;
 	tag?: string;
 	iconPack?: string;
 	disabled?: boolean;
-	noTransitions?: boolean;
 	to?: string;
 }
 
@@ -42,38 +29,25 @@ const props = withDefaults(defineProps<Props>(), {
 	tag: "",
 	iconPack: "material-icons",
 	disabled: false,
-	noTransitions: false
+	value: ""
 });
 
 const reactiveData = reactive({
-	vertical: false,
 	active: false,
-	id: null,
-	invert: false
+	id: null
 });
 
 const setActive = function (value: boolean) {
 	reactiveData.active = value;
 };
 
-const setInvert = function (value: boolean) {
-	reactiveData.invert = value;
-};
-
-const setVertical = function (value: boolean) {
-	reactiveData.vertical = value;
-};
-
 const addChild = inject<(data: Record<string, unknown>) => void>("addChild");
-const noTransitions = inject<Ref<boolean>>("noTransitions");
 const nextId = inject<Ref<TabId>>("tabIdInstance");
 
 const currentId = nextId?.value ? nextId.value.tabId++ : 0;
 const data = Object.assign({}, {
 	vnode: (getCurrentInstance()?.vnode as VNode),
-	setActive,
-	setInvert,
-	setVertical
+	setActive
 }, {
 	label: props.label,
 	icon: props.icon,
@@ -83,6 +57,7 @@ const data = Object.assign({}, {
 	attrs: useAttrs(),
 	disabled: props.disabled,
 	name: props.name,
+	value: props.value,
 	to: props.to
 });
 
@@ -90,7 +65,7 @@ onMounted(() => {
 	addChild?.call(null, data);
 });
 
-const { vertical, active, invert } = toRefs(reactiveData);
+const { active } = toRefs(reactiveData);
 </script>
 
 <style lang="scss">
@@ -100,83 +75,5 @@ const { vertical, active, invert } = toRefs(reactiveData);
 	.con-tab {
 		height: inherit;
 	}
-}
-
-.fade-tab-enter-active,
-.fade-tab-leave-active {
-	transition: all 0.3s;
-}
-
-.fade-tab-enter,
-.fade-tab-leave-to {
-	top: 0px;
-	opacity: 0;
-	position: absolute !important;
-	transform: translate3d(-100%, 0, 0);
-}
-
-.fade-tab-leave-to {
-	top: 0px;
-	opacity: 0;
-	position: absolute !important;
-	transform: translate3d(100%, 0, 0);
-}
-
-.fade-tab-invert-enter-active,
-.fade-tab-invert-leave-active {
-	transition: all 0.3s;
-}
-
-.fade-tab-invert-enter,
-.fade-tab-invert-leave-to {
-	top: 0px;
-	opacity: 0;
-	position: absolute !important;
-	transform: translate3d(100%, 0, 0);
-}
-
-.fade-tab-invert-leave-to {
-	top: 0px;
-	opacity: 0;
-	position: absolute !important;
-	transform: translate3d(-100%, 0, 0);
-}
-
-.fade-tab-vertical-enter-active,
-.fade-tab-vertical-leave-active {
-	transition: all 0.3s;
-}
-
-.fade-tab-vertical-enter {
-	top: 0px;
-	opacity: 0;
-	position: absolute !important;
-	transform: translate3d(0, 100%, 0);
-}
-
-.fade-tab-vertical-leave-to {
-	top: 0px;
-	opacity: 0;
-	position: absolute !important;
-	transform: translate3d(0, -100%, 0);
-}
-
-.fade-tab-vertical-invert-enter-active,
-.fade-tab-vertical-invert-leave-active {
-	transition: all 0.3s;
-}
-
-.fade-tab-vertical-invert-enter {
-	top: 0px;
-	opacity: 0;
-	position: absolute !important;
-	transform: translate3d(0, -100%, 0);
-}
-
-.fade-tab-vertical-invert-leave-to {
-	top: 0px;
-	opacity: 0;
-	position: absolute !important;
-	transform: translate3d(0, 100%, 0) !important;
 }
 </style>

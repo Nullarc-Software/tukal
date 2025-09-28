@@ -35,7 +35,7 @@
 		<!-- Different States -->
 		<div style="margin: 20px 0;">
 			<h4>Different States:</h4>
-			<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+			<div>
 				<tu-input v-model="successInput" state="success" label="Success" placeholder="Valid input" />
 				<tu-input v-model="dangerInput" state="danger" label="Error" placeholder="Invalid input" />
 				<tu-input v-model="warnInput" state="warn" label="Warning" placeholder="Warning input" />

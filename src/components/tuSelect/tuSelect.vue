@@ -10,7 +10,8 @@
 	{ 'tu-select-content--square': square },
 	// colors
 	{ [`tu-component--${color}`]: color },
-	{ [`tu-component--dropdown`]: !!dropdown }
+	{ [`tu-component--dropdown`]: !!dropdown },
+	{ [`tu-select--has-label`]: label || labelPlaceholder}
 ]">
 		<div class="tu-select" ref="select" :class="[
 			`tu-select--state-${state}`,
@@ -1135,6 +1136,10 @@ onBeforeUnmount(() => {
 	// For multi-select mode, ensure consistent height
 	&.has-chips {
 		height: component-size('md', 'height'); // Maintain fixed height with chips
+	}
+
+	&--has-label {
+		margin-top: spacing('lg');
 	}
 
 	// Focus states - only show focus ring on keyboard navigation, not when dropdown is open

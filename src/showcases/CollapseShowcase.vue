@@ -7,15 +7,15 @@
 		<div style="margin: 20px 0;">
 			<h4>Basic Collapse:</h4>
 			<TuCollapse>
-				<TuCollapse-item title="What is Vue.js?" value="vue">
+				<TuCollapseItem title="What is Vue.js?" value="vue">
 					Vue.js is a progressive JavaScript framework for building user interfaces. It's designed to be incrementally adoptable, meaning you can use as much or as little of Vue as you need.
-				</tu-collapse-item>
-				<TuCollapse-item title="What makes Vue special?" value="special">
+				</TuCollapseItem>
+				<TuCollapseItem title="What makes Vue special?" value="special">
 					Vue combines the best of React and Angular while being easier to learn. It offers reactive data binding, component-based architecture, and excellent performance.
-				</tu-collapse-item>
-				<TuCollapse-item title="How do I get started?" value="start">
+				</TuCollapseItem>
+				<TuCollapseItem title="How do I get started?" value="start">
 					You can start with Vue by including it via CDN, using Vue CLI, or Vite. The official documentation provides excellent tutorials and guides.
-				</tu-collapse-item>
+				</TuCollapseItem>
 			</TuCollapse>
 		</div>
 
@@ -23,7 +23,7 @@
 		<div style="margin: 20px 0;">
 			<h4>Accordion Mode (Only one open at a time):</h4>
 			<TuCollapse v-model="accordionValue" accordion>
-				<TuCollapse-item title="Project Setup" value="setup">
+				<TuCollapseItem title="Project Setup" value="setup">
 					<div style="padding: 10px;">
 						<h5>Prerequisites:</h5>
 						<ul>
@@ -34,22 +34,22 @@
 						<h5>Installation:</h5>
 						<pre style="background: #f5f5f5; padding: 10px; border-radius: 4px;">npm create vue@latest my-project</pre>
 					</div>
-				</tu-collapse-item>
-				<TuCollapse-item title="Configuration" value="config">
+				</TuCollapseItem>
+				<TuCollapseItem title="Configuration" value="config">
 					<div style="padding: 10px;">
 						<h5>Environment Variables:</h5>
 						<p>Create a <code>.env</code> file in your project root:</p>
 						<pre style="background: #f5f5f5; padding: 10px; border-radius: 4px;">VITE_API_URL=https://api.example.com
 VITE_APP_TITLE=My Vue App</pre>
 					</div>
-				</tu-collapse-item>
-				<TuCollapse-item title="Deployment" value="deploy">
+				</TuCollapseItem>
+				<TuCollapseItem title="Deployment" value="deploy">
 					<div style="padding: 10px;">
 						<h5>Build for Production:</h5>
 						<pre style="background: #f5f5f5; padding: 10px; border-radius: 4px;">npm run build</pre>
 						<p>This creates a <code>dist</code> folder with optimized files ready for deployment.</p>
 					</div>
-				</tu-collapse-item>
+				</TuCollapseItem>
 			</TuCollapse>
 			<p style="margin-top: 10px; font-size: 12px; color: #666;">
 				Current accordion value: {{ accordionValue }}
@@ -60,7 +60,7 @@ VITE_APP_TITLE=My Vue App</pre>
 		<div style="margin: 20px 0;">
 			<h4>With Icons:</h4>
 			<TuCollapse>
-				<TuCollapse-item title="User Management" value="users">
+				<TuCollapseItem title="User Management" value="users">
 					<template #icon>
 						<tu-icon>people</tu-icon>
 					</template>
@@ -81,8 +81,8 @@ VITE_APP_TITLE=My Vue App</pre>
 							</div>
 						</div>
 					</div>
-				</tu-collapse-item>
-				<TuCollapse-item title="System Settings" value="settings">
+				</TuCollapseItem>
+				<TuCollapseItem title="System Settings" value="settings">
 					<template #icon>
 						<tu-icon>settings</tu-icon>
 					</template>
@@ -103,8 +103,8 @@ VITE_APP_TITLE=My Vue App</pre>
 							</div>
 						</div>
 					</div>
-				</tu-collapse-item>
-				<TuCollapse-item title="Analytics" value="analytics">
+				</TuCollapseItem>
+				<TuCollapseItem title="Analytics" value="analytics">
 					<template #icon>
 						<tu-icon>analytics</tu-icon>
 					</template>
@@ -116,7 +116,7 @@ VITE_APP_TITLE=My Vue App</pre>
 							<TuUsageBar :value="90" label="Disk Usage" color="warning" style="margin-top: 10px;" />
 						</div>
 					</div>
-				</tu-collapse-item>
+				</TuCollapseItem>
 			</TuCollapse>
 		</div>
 
@@ -126,7 +126,7 @@ VITE_APP_TITLE=My Vue App</pre>
 			<div style="background: #f8f9fa; padding: 20px; border-radius: 8px;">
 				<h5>Frequently Asked Questions</h5>
 				<TuCollapse>
-					<TuCollapse-item v-for="faq in faqs" :key="faq.id" :title="faq.question" :value="faq.id.toString()">
+					<TuCollapseItem v-for="faq in faqs" :key="faq.id" :title="faq.question" :value="faq.id.toString()">
 						<div style="padding: 15px; line-height: 1.6;">
 							{{ faq.answer }}
 							<div v-if="faq.helpful !== undefined" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #dee2e6;">
@@ -141,7 +141,7 @@ VITE_APP_TITLE=My Vue App</pre>
 								</div>
 							</div>
 						</div>
-					</tu-collapse-item>
+					</TuCollapseItem>
 				</TuCollapse>
 			</div>
 		</div>
@@ -152,23 +152,23 @@ VITE_APP_TITLE=My Vue App</pre>
 			<div style="border: 1px solid #ddd; border-radius: 8px; padding: 20px;">
 				<h5>User Registration Form</h5>
 				<TuCollapse v-model="formSections">
-					<TuCollapse-item title="Personal Information" value="personal">
+					<TuCollapseItem title="Personal Information" value="personal">
 						<div style="padding: 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
 							<TuInput v-model="userForm.firstName" label="First Name" />
 							<TuInput v-model="userForm.lastName" label="Last Name" />
 							<TuInput v-model="userForm.email" label="Email" type="email" />
 							<TuInput v-model="userForm.phone" label="Phone Number" />
 						</div>
-					</tu-collapse-item>
-					<TuCollapse-item title="Account Details" value="account">
+					</TuCollapseItem>
+					<TuCollapseItem title="Account Details" value="account">
 						<div style="padding: 15px;">
 							<TuInput v-model="userForm.username" label="Username" style="margin-bottom: 15px;" />
 							<TuInput v-model="userForm.password" label="Password" type="password" style="margin-bottom: 15px;" />
 							<TuInput v-model="userForm.confirmPassword" label="Confirm Password" type="password" style="margin-bottom: 15px;" />
 							<TuSelect v-model="userForm.role" label="Role" :select-items="roleOptions" />
 						</div>
-					</tu-collapse-item>
-					<TuCollapse-item title="Preferences" value="preferences">
+					</TuCollapseItem>
+					<TuCollapseItem title="Preferences" value="preferences">
 						<div style="padding: 15px;">
 							<div style="margin: 15px 0; display: flex; justify-content: space-between; align-items: center;">
 								<span>Email Notifications</span>
@@ -181,7 +181,7 @@ VITE_APP_TITLE=My Vue App</pre>
 							<TuSelect v-model="userForm.language" label="Preferred Language" :select-items="languageOptions" />
 							<TuSelect v-model="userForm.timezone" label="Timezone" :select-items="timezoneOptions" style="margin-top: 15px;" />
 						</div>
-					</tu-collapse-item>
+					</TuCollapseItem>
 				</TuCollapse>
 				<div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #dee2e6;">
 					<TuButton @click="submitForm" color="primary">Submit Registration</TuButton>
@@ -198,7 +198,7 @@ VITE_APP_TITLE=My Vue App</pre>
 				<TuButton @click="addSection" :disabled="!newSectionTitle.trim()">Add Section</TuButton>
 			</div>
 			<TuCollapse>
-				<TuCollapse-item v-for="section in dynamicSections" :key="section.id" :title="section.title" :value="section.id.toString()">
+				<TuCollapseItem v-for="section in dynamicSections" :key="section.id" :title="section.title" :value="section.id.toString()">
 					<div style="padding: 15px;">
 						<p>{{ section.content }}</p>
 						<div style="margin-top: 10px;">
@@ -206,7 +206,7 @@ VITE_APP_TITLE=My Vue App</pre>
 							<TuButton @click="removeSection(section.id)" size="sm" color="danger" style="margin-left: 10px;">Remove</TuButton>
 						</div>
 					</div>
-				</tu-collapse-item>
+				</TuCollapseItem>
 			</TuCollapse>
 			<p v-if="dynamicSections.length === 0" style="text-align: center; color: #666; padding: 40px;">
 				No sections yet. Add some above!
@@ -238,6 +238,8 @@ import { ref } from "vue";
 import { tuUsageBar as TuUsageBar } from "../components/tuUsageBar";
 import { tuButton as TuButton } from "../components/tuButton";
 import { tuCollapse as TuCollapse } from "../components/tuCollapse";
+import { tuCollapseItem as TuCollapseItem } from "../components/tuCollapse";
+
 import TuInput from "../components/tuInput";
 import TuSwitch from "../components/tuSwitch";
 import TuSelect from "../components/tuSelect/tuSelect.vue";

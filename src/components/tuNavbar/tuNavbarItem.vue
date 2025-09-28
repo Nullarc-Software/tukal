@@ -90,11 +90,11 @@ watch(() => props.active, (val: boolean) => {
 });
 
 const handleClick = function () {
-	if (props.to) {
+	if (props.to) 
 		router.push(props.to as any);
-	} else if (props.href) {
+	else if (props.href) 
 		window.open(props.href as string, props.target);
-	}
+	
 };
 
 const handleActive = function () {
@@ -130,16 +130,17 @@ const handleResize = function () {
 
 onMounted(() => {
 	setTimeout(() => {
-		if (props.active || internalActive.value) {
+		if (props.active || internalActive.value) 
 			handleLine();
-		}
+		
 	}, 150);
 });
 
-if (router)
+if (router) {
 	watch(router.currentRoute, () => {
 		handleRouteChange();
 	});
+}
 </script>
 
 <style lang="scss">

@@ -90,7 +90,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<{
 	collapsed: [value: boolean];
-	"update:value": [value: string];
+	"update:modelValue": [value: string];
 }>();
 
 // tuComponent functionality
@@ -121,7 +121,7 @@ const idToLineHandler: Record<string, () => void> = {};
 let activeId = "";
 
 const setModel = function (id: string, handleFunc: () => void) {
-	emit("update:value", id);
+	emit("update:modelValue", id);
 	idToLineHandler[id] = handleFunc;
 	activeId = id;
 };
@@ -320,7 +320,7 @@ onMounted(() => {
 	}
 
 	&.fixed {
-		position: fixed !important;
+		position: absolute !important;
 	}
 
 	&.sticky {

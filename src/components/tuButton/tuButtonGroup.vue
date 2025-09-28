@@ -6,6 +6,7 @@
 	</div>
 </template>
 <script setup lang="ts">
+import { provide, ref, watch } from "vue";
 
 defineOptions({
 	name: "TuButtonGroup"
@@ -13,10 +14,46 @@ defineOptions({
 
 interface Props {
 	fixedHeight?: string;
+	mutuallyExclusive?: boolean;
+	modelValue?: number | string | null;
 }
 
-withDefaults(defineProps<Props>(), {
-	fixedHeight: ""
+const props = withDefaults(defineProps<Props>(), {
+	fixedHeight: "",
+	mutuallyExclusive: false,
+	modelValue: null
+});
+
+const emit = defineEmits<{
+	"update:modelValue": [value: number | string | null];
+	"change": [value: number | string | null, previousValue: number | string | null];
+}>();
+
+const selectedButton = ref<number | string | null>(props.modelValue);
+
+// Watch for changes in modelValue prop to keep selectedButton in sync
+watch(() => props.modelValue, (newValue) => {
+	if (props.mutuallyExclusive)
+		selectedButton.value = newValue;
+}, { immediate: true });
+
+// Provide context to child buttons
+provide("buttonGroup", {
+	mutuallyExclusive: props.mutuallyExclusive,
+	selectedButton,
+	selectButton: (buttonId: number | string) => {
+		if (!props.mutuallyExclusive) return;
+		
+		const previousValue = selectedButton.value;
+		selectedButton.value = buttonId;
+		
+		emit("update:modelValue", buttonId);
+		emit("change", buttonId, previousValue);
+	},
+	isSelected: (buttonId: number | string) => {
+		if (!props.mutuallyExclusive) return false;
+		return selectedButton.value === buttonId;
+	}
 });
 </script>
 

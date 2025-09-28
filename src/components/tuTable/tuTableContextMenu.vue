@@ -33,7 +33,8 @@
 <script setup lang="ts">
 import { inject } from "vue";
 import { Router } from "vue-router";
-import { TuTableContextMenuEntry } from "./tuTableStore";
+import { TuTableContextMenuEntry } from "./tuTableStore.refactored";
+import { useTableRowContext } from "./useTableRowContext";
 import { tuPopper, tuPopupMenu, tuPopupItem } from "../tuPopper";
 import tuIcon from "../tuIcon";
 import { PlacementType } from "../tuPopper/tuPopper.vue";
@@ -44,8 +45,6 @@ defineOptions({
 
 interface Props {
 	customIcon?: Record<string, unknown>;
-	rowData?: Record<string, unknown>;
-	rowIndex?: number;
 	modelValue?: TuTableContextMenuEntry[];
 	placement?: PlacementType;
 	// tuComponent props
@@ -55,11 +54,10 @@ interface Props {
 	textColor?: string;
 }
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
 	customIcon: () => ({
 		icon: "more_horiz"
 	}),
-	rowIndex: 0,
 	modelValue: () => [],
 	placement: "right",
 	color: "primary",
@@ -72,14 +70,18 @@ const props = withDefaults(defineProps<Props>(), {
 inject<Router | null>("appRouter", null);
 inject<string | null>("iconPackGlobal", null);
 
-// Inject table instance for future use
-// const tableInstance = inject<TuTableStore>("tableInstance");
+// Use row context composable
+const rowContext = useTableRowContext();
 
 // eslint-disable-next-line @typescript-eslint/ban-types
-const onOptionClicked = function (callback?: Function) {
-	if (callback && props.rowData) {
-		// Type assertion to ensure it's callable
-		(callback as (...args: unknown[]) => void)(props.rowData);
+const onOptionClicked = function (callback?: (...args: unknown[]) => void) {
+	if (callback && rowContext?.rowData) {
+		// Pass row data to callback
+		callback(rowContext.rowData);
+	} 
+	else if (callback) {
+		// Fallback for callbacks that don't need row data
+		callback();
 	}
 };
 </script>

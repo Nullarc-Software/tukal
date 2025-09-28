@@ -826,13 +826,39 @@ const getWeekItems = (weekStart: Date): INormalizedCalendarItem[] => {
 		const startOffset = continued
 			? 0
 			: CalendarMath.dayDiff(weekStart, ep.startDate);
-		const span = Math.min(
-			7 - startOffset,
-			CalendarMath.dayDiff(
-				CalendarMath.addDays(weekStart, startOffset),
-				ep.endDate
-			) + 1
-		);
+			
+		// Calculate span with better logic for single-day events
+		let span;
+		if (CalendarMath.isSameDate(ep.startDate, ep.endDate)) {
+			// For events that start and end on the same day, span should always be 1
+			span = 1;
+			console.log("Single-day event detected:", {
+				title: ep.title,
+				startDate: ep.startDate,
+				endDate: ep.endDate,
+				span: span
+			});
+		} else {
+			// For multi-day events, use the original calculation
+			span = Math.min(
+				7 - startOffset,
+				CalendarMath.dayDiff(
+					CalendarMath.addDays(weekStart, startOffset),
+					ep.endDate
+				) + 1
+			);
+			console.log("Multi-day event detected:", {
+				title: ep.title,
+				startDate: ep.startDate,
+				endDate: ep.endDate,
+				span: span,
+				startOffset: startOffset,
+				dayDiff: CalendarMath.dayDiff(
+					CalendarMath.addDays(weekStart, startOffset),
+					ep.endDate
+				)
+			});
+		}
 		if (continued) ep.classes.push("continued");
 		if (CalendarMath.dayDiff(weekStart, ep.endDate) > 6)
 			ep.classes.push("toBeContinued");
@@ -890,7 +916,8 @@ const getItemTitle = (item: INormalizedCalendarItem): string => {
 // Compute the top position of the item based on its assigned row within the given week.
 const getItemTop = (item: INormalizedCalendarItem): string => {
 	const r = item.itemRow;
-	const top = 20 + Number(r) * 28;
+	// Start at 40px to account for day number (32px) + some margin
+	const top = 40 + Number(r) * 20; // Reduced spacing between rows from 28 to 20
 	return `${top}px`;
 };
 

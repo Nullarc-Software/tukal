@@ -1,7 +1,90 @@
 <template>
 	<div class="showcase-component">
-		<h3>Pagination:</h3>
+		<div class="showcase-header">
+			<h3>Pagination:</h3>
+			<div class="theme-controls">
+				<span style="margin-right: 10px; font-size: 14px;">Theme:</span>
+				<tu-switch v-model="isDarkMode" @change="toggleTheme">
+					{{ isDarkMode ? '🌙 Dark' : '☀️ Light' }}
+				</tu-switch>
+			</div>
+		</div>
 		<hr />
+
+		<!-- Theme Demonstration -->
+		<div style="margin: 20px 0;">
+			<h4>Theme Demonstration:</h4>
+			<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+				<!-- Light Theme Demo -->
+				<div style="border: 2px solid #e6e9ea; border-radius: 12px; padding: 20px;">
+					<h6 style="margin: 0 0 15px 0; text-align: center;">☀️ Light Theme</h6>
+					<div class="theme-demo-light">
+						<TuPagination 
+							v-model="themeDemoPage" 
+							:total="200" 
+							:per-page="10"
+							show-total
+							show-jumper
+							show-size-changer
+							:page-size-options="[5, 10, 20]"
+						/>
+						<div style="margin-top: 15px;">
+							<TuPagination 
+								v-model="themeDemoPage2" 
+								:total="150" 
+								:per-page="15"
+								simple
+							/>
+						</div>
+						<div style="margin-top: 15px;">
+							<TuPagination 
+								v-model="themeDemoPage3" 
+								:total="100" 
+								:per-page="10"
+								size="sm"
+								color="success"
+							/>
+						</div>
+					</div>
+				</div>
+
+				<!-- Dark Theme Demo -->
+				<div style="border: 2px solid #333437; border-radius: 12px; padding: 20px; background: #1e1f22; color: #ffffff;">
+					<h6 style="margin: 0 0 15px 0; text-align: center; color: #ffffff;">🌙 Dark Theme</h6>
+					<div class="theme-demo-dark tu-dark-theme">
+						<TuPagination 
+							v-model="themeDemoPage" 
+							:total="200" 
+							:per-page="10"
+							show-total
+							show-jumper
+							show-size-changer
+							:page-size-options="[5, 10, 20]"
+						/>
+						<div style="margin-top: 15px;">
+							<TuPagination 
+								v-model="themeDemoPage2" 
+								:total="150" 
+								:per-page="15"
+								simple
+							/>
+						</div>
+						<div style="margin-top: 15px;">
+							<TuPagination 
+								v-model="themeDemoPage3" 
+								:total="100" 
+								:per-page="10"
+								size="sm"
+								color="success"
+							/>
+						</div>
+					</div>
+				</div>
+			</div>
+			<p style="font-size: 14px; color: #666; text-align: center; margin: 0;">
+				💡 The demo above shows both themes side by side. Use the theme toggle to switch the entire showcase.
+			</p>
+		</div>
 		
 		<!-- Basic Pagination -->
 		<div style="margin: 20px 0;">
@@ -14,6 +97,92 @@
 			<p style="margin-top: 10px; font-size: 14px;">
 				Current page: {{ basicCurrentPage }} of {{ Math.ceil(basicTotalItems / basicPerPage) }}
 			</p>
+		</div>
+
+		<!-- Dark Theme Showcase -->
+		<div v-if="isDarkMode" style="margin: 20px 0;">
+			<h4>🌙 Dark Theme Variations:</h4>
+			<div style="background: var(--tu-component-background, #1e1f22); padding: 20px; border-radius: 12px; border: 1px solid var(--tu-gray-3, #333);">
+				
+				<!-- Standard Pagination in Dark -->
+				<div style="margin: 15px 0;">
+					<h6 style="color: var(--tu-text); margin-bottom: 10px;">Standard Pagination</h6>
+					<TuPagination 
+						v-model="basicCurrentPage" 
+						:total="200" 
+						:per-page="10"
+					/>
+				</div>
+
+				<!-- Different Colors in Dark -->
+				<div style="margin: 15px 0;">
+					<h6 style="color: var(--tu-text); margin-bottom: 10px;">Color Variations</h6>
+					<div style="display: flex; flex-direction: column; gap: 15px;">
+						<div>
+							<span style="color: var(--tu-text); font-size: 12px; margin-bottom: 5px; display: block;">Primary (Default)</span>
+							<TuPagination v-model="sizeCurrentPage" :total="100" :per-page="10" />
+						</div>
+						<div>
+							<span style="color: var(--tu-text); font-size: 12px; margin-bottom: 5px; display: block;">Success</span>
+							<TuPagination v-model="sizeCurrentPage" :total="100" :per-page="10" color="success" />
+						</div>
+						<div>
+							<span style="color: var(--tu-text); font-size: 12px; margin-bottom: 5px; display: block;">Warning</span>
+							<TuPagination v-model="sizeCurrentPage" :total="100" :per-page="10" color="warn" />
+						</div>
+					</div>
+				</div>
+
+				<!-- Shape Variations in Dark -->
+				<div style="margin: 15px 0;">
+					<h6 style="color: var(--tu-text); margin-bottom: 10px;">Shape Variations</h6>
+					<div style="display: flex; flex-direction: column; gap: 15px;">
+						<div>
+							<span style="color: var(--tu-text); font-size: 12px; margin-bottom: 5px; display: block;">Circle</span>
+							<TuPagination v-model="sizeCurrentPage" :total="80" :per-page="10" circle />
+						</div>
+						<div>
+							<span style="color: var(--tu-text); font-size: 12px; margin-bottom: 5px; display: block;">Square</span>
+							<TuPagination v-model="sizeCurrentPage" :total="80" :per-page="10" square />
+						</div>
+						<div>
+							<span style="color: var(--tu-text); font-size: 12px; margin-bottom: 5px; display: block;">No Margin</span>
+							<TuPagination v-model="sizeCurrentPage" :total="80" :per-page="10" not-margin />
+						</div>
+					</div>
+				</div>
+
+				<!-- Advanced Features in Dark -->
+				<div style="margin: 15px 0;">
+					<h6 style="color: var(--tu-text); margin-bottom: 10px;">Advanced Features</h6>
+					<div style="display: flex; flex-direction: column; gap: 15px;">
+						<div>
+							<span style="color: var(--tu-text); font-size: 12px; margin-bottom: 5px; display: block;">With Progress Bar</span>
+							<TuPagination v-model="sizeCurrentPage" :total="120" :per-page="10" progress />
+						</div>
+						<div>
+							<span style="color: var(--tu-text); font-size: 12px; margin-bottom: 5px; display: block;">Simple Mode</span>
+							<TuPagination v-model="simpleCurrentPage" :total="100" :per-page="15" simple />
+						</div>
+						<div>
+							<span style="color: var(--tu-text); font-size: 12px; margin-bottom: 5px; display: block;">Full Featured</span>
+							<TuPagination 
+								v-model="jumpCurrentPage" 
+								:total="500" 
+								:per-page="25"
+								show-total
+								show-jumper
+								show-size-changer
+								:page-size-options="[10, 25, 50]"
+							/>
+						</div>
+					</div>
+				</div>
+				
+				<p style="font-size: 12px; color: var(--tu-text, #ccc); margin: 10px 0 0 0; opacity: 0.8;">
+					✨ All pagination variants automatically adapt to dark theme with enhanced contrast and shadows.
+				</p>
+			</div>
 		</div>
 
 		<!-- Different Sizes -->
@@ -104,7 +273,7 @@
 							size="sm"
 						>
 							<template #prepend>
-								<tu-icon>search</tu-icon>
+								<TuIcon>search</TuIcon>
 							</template>
 						</TuInput>
 						<TuSelect 
@@ -157,8 +326,8 @@
 						:key="product.id"
 						style="background: white; border-radius: 8px; padding: 15px; border: 1px solid #ddd;"
 					>
-						<div style="background: #e9ecef; height: 120px; border-radius: 4px; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; color: #6c757d;">
-							<tu-icon style="font-size: 32px;">image</tu-icon>
+						<div style="background: #e9ecef; height: 120px; border-radius: 4px; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; color: #6c757d; font-size: 14px;">
+							📷 Product Image
 						</div>
 						<h6 style="margin: 0 0 8px 0;">{{ product.name }}</h6>
 						<p style="margin: 0 0 10px 0; color: #666; font-size: 14px;">{{ product.description }}</p>
@@ -218,12 +387,12 @@
 				
 				<div style="display: flex; justify-content: space-between; align-items: center;">
 					<div style="font-size: 14px; color: #666;">
-						Page {{ postCurrentPage }} of {{ Math.ceil(blogPosts.length / postPageSize) }}
+						Page {{ postCurrentPage }} of {{ Math.ceil(apiPosts.length / postPageSize) }}
 					</div>
 					
 					<TuPagination 
 						v-model="postCurrentPage" 
-						:total="blogPosts.length" 
+						:total="apiPosts.length" 
 						:per-page="postPageSize"
 						simple
 					/>
@@ -239,7 +408,7 @@
 				
 				<div style="margin: 20px 0;">
 					<div 
-						v-for="(activity, index) in visibleActivities" 
+						v-for="activity in visibleActivities" 
 						:key="activity.id"
 						style="background: white; border-radius: 4px; padding: 15px; margin-bottom: 10px; border-left: 4px solid #007bff;"
 					>
@@ -255,12 +424,12 @@
 				
 				<div style="text-align: center;">
 					<TuButton 
-						v-if="visibleActivities.length < activities.length"
+						v-if="visibleActivities.length < 8"
 						@click="loadMoreActivities"
 						color="primary"
 						:loading="loadingMore"
 					>
-						Load More ({{ activities.length - visibleActivities.length }} remaining)
+						Load More ({{ 8 - visibleActivities.length }} remaining)
 					</TuButton>
 					<p v-else style="color: #666; margin: 0;">
 						All activities loaded
@@ -289,7 +458,7 @@
 					</div>
 					
 					<div v-if="loadingInfinite" style="text-align: center; padding: 20px; color: #666;">
-						<tu-loading size="sm" />
+						<TuLoading size="sm" />
 						<span style="margin-left: 10px;">Loading more items...</span>
 					</div>
 				</div>
@@ -300,10 +469,53 @@
 			</div>
 		</div>
 
+		<!-- Photo Gallery with API Data -->
+		<div style="margin: 20px 0;">
+			<h4>Photo Gallery (API Data):</h4>
+			<div style="background: #f8f9fa; padding: 20px; border-radius: 8px;">
+				<h5>Photos from JSONPlaceholder API</h5>
+				
+				<div v-if="loading" style="text-align: center; padding: 40px;">
+					<div style="color: #666;">Loading photos from API...</div>
+				</div>
+				
+				<div v-else style="margin: 20px 0;">
+					<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 15px; margin-bottom: 20px;">
+						<div 
+							v-for="photo in paginatedPhotos" 
+							:key="photo.id"
+							style="background: white; border-radius: 8px; overflow: hidden; border: 1px solid #ddd;"
+						>
+							<img 
+								:src="photo.thumbnail" 
+								:alt="photo.title"
+								style="width: 100%; height: 120px; object-fit: cover;"
+							/>
+							<div style="padding: 8px;">
+								<div style="font-size: 11px; color: #666; line-height: 1.3; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+									{{ photo.title }}
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<div style="display: flex; justify-content: center;">
+						<TuPagination 
+							v-model="photoCurrentPage" 
+							:total="apiPhotos.length" 
+							:per-page="photoPageSize"
+							show-total
+						/>
+					</div>
+				</div>
+			</div>
+		</div>
+
 		<!-- Current State -->
 		<div style="margin: 20px 0;">
 			<h4>Current State:</h4>
 			<div style="background: #f5f5f5; padding: 15px; border-radius: 8px; font-size: 12px;">
+				<p><strong>Theme Mode:</strong> {{ isDarkMode ? '🌙 Dark Theme' : '☀️ Light Theme' }}</p>
 				<p><strong>Basic Page:</strong> {{ basicCurrentPage }} / {{ Math.ceil(basicTotalItems / basicPerPage) }}</p>
 				<p><strong>Jump Page:</strong> {{ jumpCurrentPage }}</p>
 				<p><strong>Table Page:</strong> {{ tableCurrentPage }} ({{ tablePageSize }} per page)</p>
@@ -313,13 +525,14 @@
 				<p><strong>Selected Role Filter:</strong> {{ filterRole || 'All' }}</p>
 				<p><strong>Product Category:</strong> {{ productCategory || 'All' }}</p>
 				<p><strong>Infinite Scroll Items:</strong> {{ infiniteScrollItems.length }}</p>
+				<p><strong>Theme Demo Pages:</strong> {{ themeDemoPage }}, {{ themeDemoPage2 }}, {{ themeDemoPage3 }}</p>
 			</div>
 		</div>
 	</div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 
 import { tuButton as TuButton } from "../components/tuButton";
 import TuPagination from "../components/tuPagination";
@@ -327,6 +540,89 @@ import { tuChip as TuChip } from "../components/tuChip";
 import { tuTable as TuTable } from "../components/tuTable";
 import TuInput from "../components/tuInput";
 import TuSelect from "../components/tuSelect/tuSelect.vue";
+import TuIcon from "../components/tuIcon";
+import { tuLoading as TuLoading } from "../components/tuLoading";
+import TuSwitch from "../components/tuSwitch";
+
+// Types
+interface User {
+	id: number;
+	name: string;
+	email: string;
+	role: string;
+	status?: string;
+	joined?: string;
+}
+
+interface Post {
+	id: number;
+	title: string;
+	body?: string;
+	excerpt?: string;
+	author: string;
+	status: string;
+	date: string;
+	readTime: number;
+}
+
+interface Product {
+	id: number;
+	name: string;
+	description: string;
+	price: number;
+	category: string;
+	rating?: string;
+	reviews?: number;
+	inStock?: boolean;
+}
+
+interface Photo {
+	id: number;
+	title: string;
+	url: string;
+	thumbnail: string;
+}
+
+// API Response types
+interface ApiUser {
+	id: number;
+	name: string;
+	email: string;
+	phone: string;
+	website: string;
+	company: {
+		name: string;
+	};
+}
+
+interface ApiPost {
+	id: number;
+	title: string;
+	body: string;
+}
+
+interface ApiPhoto {
+	id: number;
+	title: string;
+	url: string;
+	thumbnailUrl: string;
+	albumId: number;
+}
+
+// API Data
+const apiUsers = ref<User[]>([]);
+const apiPosts = ref<Post[]>([]);
+const apiProducts = ref<Product[]>([]);
+const apiPhotos = ref<Photo[]>([]);
+
+const loading = ref(true);
+
+// Theme control
+const isDarkMode = ref(false);
+const themeDemoPage = ref(1);
+const themeDemoPage2 = ref(1);
+const themeDemoPage3 = ref(1);
+
 // Basic pagination
 const basicCurrentPage = ref(1);
 const basicTotalItems = ref(100);
@@ -361,35 +657,111 @@ const productCategory = ref("");
 const postCurrentPage = ref(1);
 const postPageSize = ref(3);
 
+// Photo pagination
+const photoCurrentPage = ref(1);
+const photoPageSize = ref(12);
+
 // Load more
 const loadingMore = ref(false);
 const loadMoreCount = ref(5);
 
 // Infinite scroll
 const loadingInfinite = ref(false);
-const infiniteScrollItems = ref([]);
+const infiniteScrollItems = ref<Array<{id: number; title: string; content: string}>>([]);
 const scrollContainer = ref();
 
-// Sample data
-const allUsers = ref([
-	{ id: 1, name: "John Doe", email: "john@example.com", role: "Admin", status: "Active", joined: "2023-01-15" },
-	{ id: 2, name: "Jane Smith", email: "jane@example.com", role: "Editor", status: "Active", joined: "2023-02-20" },
-	{ id: 3, name: "Mike Johnson", email: "mike@example.com", role: "User", status: "Inactive", joined: "2023-03-10" },
-	{ id: 4, name: "Sarah Wilson", email: "sarah@example.com", role: "Editor", status: "Active", joined: "2023-04-05" },
-	{ id: 5, name: "Alex Chen", email: "alex@example.com", role: "User", status: "Active", joined: "2023-05-12" },
-	{ id: 6, name: "Emily Davis", email: "emily@example.com", role: "Admin", status: "Active", joined: "2023-06-18" },
-	{ id: 7, name: "Robert Brown", email: "robert@example.com", role: "User", status: "Inactive", joined: "2023-07-22" },
-	{ id: 8, name: "Lisa Anderson", email: "lisa@example.com", role: "Editor", status: "Active", joined: "2023-08-30" },
-	{ id: 9, name: "David Miller", email: "david@example.com", role: "User", status: "Active", joined: "2023-09-14" },
-	{ id: 10, name: "Jennifer Garcia", email: "jennifer@example.com", role: "Admin", status: "Active", joined: "2023-10-08" }
-]);
+// Fetch data from APIs
+const fetchApiData = async () => {
+	try {
+		loading.value = true;
+		
+		// Fetch users from JSONPlaceholder
+		const usersResponse = await fetch("https://jsonplaceholder.typicode.com/users");
+		const users = await usersResponse.json();
+		apiUsers.value = users.map((user: ApiUser) => ({
+			id: user.id,
+			name: user.name,
+			email: user.email,
+			role: ["Admin", "Editor", "User"][Math.floor(Math.random() * 3)],
+			status: Math.random() > 0.3 ? "Active" : "Inactive",
+			joined: new Date(2023, Math.floor(Math.random() * 12), Math.floor(Math.random() * 28) + 1).toISOString().split("T")[0],
+			phone: user.phone,
+			website: user.website,
+			company: user.company.name
+		}));
 
+		// Fetch posts
+		const postsResponse = await fetch("https://jsonplaceholder.typicode.com/posts");
+		const posts = await postsResponse.json();
+		apiPosts.value = posts.slice(0, 20).map((post: ApiPost) => ({
+			id: post.id,
+			title: post.title,
+			excerpt: post.body.substring(0, 120) + "...",
+			author: apiUsers.value[Math.floor(Math.random() * apiUsers.value.length)]?.name || "Unknown Author",
+			date: new Date(2024, Math.floor(Math.random() * 12), Math.floor(Math.random() * 28) + 1).toISOString().split("T")[0],
+			readTime: Math.floor(Math.random() * 15) + 3,
+			status: Math.random() > 0.2 ? "published" : "draft",
+			category: ["Technology", "Design", "Business", "Programming", "Tutorial"][Math.floor(Math.random() * 5)]
+		}));
+
+		// Create sample products with more variety
+		const productNames = [
+			"Wireless Headphones", "Smart Watch", "Laptop Stand", "Coffee Mug", "Phone Case",
+			"Bluetooth Speaker", "Desk Lamp", "Water Bottle", "Notebook", "Pen Set",
+			"Yoga Mat", "Plant Pot", "Gaming Mouse", "Keyboard", "Monitor Stand",
+			"USB Cable", "Power Bank", "Tablet Case", "Webcam", "Microphone"
+		];
+		
+		apiProducts.value = productNames.map((name, index) => ({
+			id: index + 1,
+			name: name,
+			description: `High-quality ${name.toLowerCase()} for everyday use`,
+			price: Math.floor(Math.random() * 200) + 10,
+			category: ["Electronics", "Home", "Office", "Sports", "Gaming"][Math.floor(Math.random() * 5)],
+			rating: (Math.random() * 2 + 3).toFixed(1),
+			reviews: Math.floor(Math.random() * 500) + 10,
+			inStock: Math.random() > 0.1
+		}));
+
+		// Fetch photos for visual examples
+		const photosResponse = await fetch("https://jsonplaceholder.typicode.com/photos?_limit=50");
+		const photos = await photosResponse.json();
+		apiPhotos.value = photos.map((photo: ApiPhoto) => ({
+			id: photo.id,
+			title: photo.title,
+			thumbnail: photo.thumbnailUrl,
+			url: photo.url,
+			albumId: photo.albumId
+		}));
+
+		loading.value = false;
+	}
+	catch (error) {
+		console.error("Error fetching API data:", error);
+		loading.value = false;
+		// Fallback to original static data if API fails
+		initializeFallbackData();
+	}
+};
+
+const initializeFallbackData = () => {
+	// Fallback static data in case API fails
+	apiUsers.value = [
+		{ id: 1, name: "John Doe", email: "john@example.com", role: "Admin", status: "Active", joined: "2023-01-15" },
+		{ id: 2, name: "Jane Smith", email: "jane@example.com", role: "Editor", status: "Active", joined: "2023-02-20" },
+		{ id: 3, name: "Mike Johnson", email: "mike@example.com", role: "User", status: "Inactive", joined: "2023-03-10" },
+		{ id: 4, name: "Sarah Wilson", email: "sarah@example.com", role: "Editor", status: "Active", joined: "2023-04-05" },
+		{ id: 5, name: "Alex Chen", email: "alex@example.com", role: "User", status: "Active", joined: "2023-05-12" }
+	];
+};
+
+// Table columns
 const userColumns = ref([
-	{ key: "name", label: "Name" },
-	{ key: "email", label: "Email" },
-	{ key: "role", label: "Role" },
-	{ key: "status", label: "Status" },
-	{ key: "joined", label: "Joined" }
+	{ field: "name", caption: "Name" },
+	{ field: "email", caption: "Email" },
+	{ field: "role", caption: "Role" },
+	{ field: "status", caption: "Status" },
+	{ field: "joined", caption: "Joined" }
 ]);
 
 const roleFilterOptions = ref([
@@ -397,21 +769,6 @@ const roleFilterOptions = ref([
 	{ label: "Admin", value: "Admin" },
 	{ label: "Editor", value: "Editor" },
 	{ label: "User", value: "User" }
-]);
-
-const allProducts = ref([
-	{ id: 1, name: "Wireless Headphones", description: "High-quality wireless headphones", price: 99.99, category: "Electronics" },
-	{ id: 2, name: "Smart Watch", description: "Fitness tracking smartwatch", price: 199.99, category: "Electronics" },
-	{ id: 3, name: "Coffee Mug", description: "Ceramic coffee mug", price: 12.99, category: "Home" },
-	{ id: 4, name: "Laptop Stand", description: "Adjustable laptop stand", price: 45.99, category: "Office" },
-	{ id: 5, name: "Desk Lamp", description: "LED desk lamp with dimmer", price: 34.99, category: "Office" },
-	{ id: 6, name: "Phone Case", description: "Protective phone case", price: 19.99, category: "Electronics" },
-	{ id: 7, name: "Water Bottle", description: "Stainless steel water bottle", price: 24.99, category: "Sports" },
-	{ id: 8, name: "Notebook", description: "Spiral-bound notebook", price: 8.99, category: "Office" },
-	{ id: 9, name: "Bluetooth Speaker", description: "Portable bluetooth speaker", price: 79.99, category: "Electronics" },
-	{ id: 10, name: "Plant Pot", description: "Ceramic plant pot", price: 16.99, category: "Home" },
-	{ id: 11, name: "Yoga Mat", description: "Non-slip yoga mat", price: 29.99, category: "Sports" },
-	{ id: 12, name: "Pen Set", description: "Set of 5 gel pens", price: 14.99, category: "Office" }
 ]);
 
 const sortOptions = ref([
@@ -426,71 +783,13 @@ const categoryOptions = ref([
 	{ label: "Electronics", value: "Electronics" },
 	{ label: "Home", value: "Home" },
 	{ label: "Office", value: "Office" },
-	{ label: "Sports", value: "Sports" }
+	{ label: "Sports", value: "Sports" },
+	{ label: "Gaming", value: "Gaming" }
 ]);
 
-const blogPosts = ref([
-	{
-		id: 1,
-		title: "Getting Started with Vue.js 3",
-		excerpt: "Learn the basics of Vue.js 3 and the Composition API in this comprehensive guide.",
-		author: "John Developer",
-		date: "2024-01-15",
-		readTime: 8,
-		status: "published"
-	},
-	{
-		id: 2,
-		title: "Advanced TypeScript Patterns",
-		excerpt: "Explore advanced TypeScript patterns for better code organization and type safety.",
-		author: "Jane Coder",
-		date: "2024-01-12",
-		readTime: 12,
-		status: "published"
-	},
-	{
-		id: 3,
-		title: "Building Scalable APIs",
-		excerpt: "Best practices for designing and building scalable REST APIs with Node.js.",
-		author: "Mike Backend",
-		date: "2024-01-10",
-		readTime: 15,
-		status: "draft"
-	},
-	{
-		id: 4,
-		title: "CSS Grid Layout Guide",
-		excerpt: "Master CSS Grid Layout with practical examples and real-world use cases.",
-		author: "Sarah Designer",
-		date: "2024-01-08",
-		readTime: 10,
-		status: "published"
-	},
-	{
-		id: 5,
-		title: "JavaScript Performance Tips",
-		excerpt: "Optimize your JavaScript code for better performance and user experience.",
-		author: "Alex Optimizer",
-		date: "2024-01-05",
-		readTime: 7,
-		status: "published"
-	}
-]);
-
-const activities = ref([
-	{ id: 1, user: "John Doe", action: "updated", target: "Project Alpha", timestamp: Date.now() - 300000 },
-	{ id: 2, user: "Jane Smith", action: "created", target: "New Task", timestamp: Date.now() - 600000 },
-	{ id: 3, user: "Mike Johnson", action: "deleted", target: "Old File", timestamp: Date.now() - 900000 },
-	{ id: 4, user: "Sarah Wilson", action: "commented on", target: "Issue #123", timestamp: Date.now() - 1200000 },
-	{ id: 5, user: "Alex Chen", action: "assigned", target: "Bug Fix", timestamp: Date.now() - 1500000 },
-	{ id: 6, user: "Emily Davis", action: "reviewed", target: "Pull Request", timestamp: Date.now() - 1800000 },
-	{ id: 7, user: "Robert Brown", action: "deployed", target: "Version 2.1", timestamp: Date.now() - 2100000 },
-	{ id: 8, user: "Lisa Anderson", action: "merged", target: "Feature Branch", timestamp: Date.now() - 2400000 }
-]);
-
-// Computed properties
+// Computed properties using API data
 const filteredUsers = computed(() => {
-	let filtered = allUsers.value;
+	let filtered = apiUsers.value;
 	
 	if (searchQuery.value) {
 		const query = searchQuery.value.toLowerCase();
@@ -500,9 +799,8 @@ const filteredUsers = computed(() => {
 		);
 	}
 	
-	if (filterRole.value) {
+	if (filterRole.value) 
 		filtered = filtered.filter(user => user.role === filterRole.value);
-	}
 	
 	return filtered;
 });
@@ -514,22 +812,20 @@ const paginatedUsers = computed(() => {
 });
 
 const filteredProducts = computed(() => {
-	let filtered = allProducts.value;
+	let filtered = apiProducts.value;
 	
-	if (productCategory.value) {
+	if (productCategory.value) 
 		filtered = filtered.filter(product => product.category === productCategory.value);
-	}
 	
 	// Sort products
-	if (productSort.value === "name") {
+	if (productSort.value === "name") 
 		filtered.sort((a, b) => a.name.localeCompare(b.name));
-	} else if (productSort.value === "price-asc") {
+	else if (productSort.value === "price-asc") 
 		filtered.sort((a, b) => a.price - b.price);
-	} else if (productSort.value === "price-desc") {
+	else if (productSort.value === "price-desc") 
 		filtered.sort((a, b) => b.price - a.price);
-	} else if (productSort.value === "category") {
+	else if (productSort.value === "category") 
 		filtered.sort((a, b) => a.category.localeCompare(b.category));
-	}
 	
 	return filtered;
 });
@@ -543,25 +839,42 @@ const paginatedProducts = computed(() => {
 const paginatedPosts = computed(() => {
 	const start = (postCurrentPage.value - 1) * postPageSize.value;
 	const end = start + postPageSize.value;
-	return blogPosts.value.slice(start, end);
+	return apiPosts.value.slice(start, end);
+});
+
+const paginatedPhotos = computed(() => {
+	const start = (photoCurrentPage.value - 1) * photoPageSize.value;
+	const end = start + photoPageSize.value;
+	return apiPhotos.value.slice(start, end);
 });
 
 const visibleActivities = computed(() => {
-	return activities.value.slice(0, loadMoreCount.value);
+	// Generate activities from API data
+	const activities = apiUsers.value.slice(0, 8).map((user, index) => ({
+		id: index + 1,
+		user: user.name,
+		action: ["updated", "created", "deleted", "commented on", "assigned"][Math.floor(Math.random() * 5)],
+		target: ["Project Alpha", "New Task", "Bug Report", "Feature Request"][Math.floor(Math.random() * 4)],
+		timestamp: Date.now() - (index * 300000)
+	}));
+	
+	return activities.slice(0, loadMoreCount.value);
 });
 
-// Initialize infinite scroll
-const initializeInfiniteScroll = () => {
-	for (let i = 1; i <= 10; i++) {
-		infiniteScrollItems.value.push({
-			id: i,
-			title: `Feed Item ${i}`,
-			content: `This is the content for feed item ${i}. It contains some interesting information.`
-		});
-	}
-};
+// Initialize data on component mount
+onMounted(() => {
+	fetchApiData();
+	initializeInfiniteScroll();
+});
 
 // Methods
+const toggleTheme = () => {
+	if (isDarkMode.value)
+		document.body.classList.add("tu-dark-theme");
+	else
+		document.body.classList.remove("tu-dark-theme");
+};
+
 const onPageSizeChange = (newSize: number) => {
 	selectedPageSize.value = newSize;
 };
@@ -576,7 +889,8 @@ const getCategoryColor = (category: string): string => {
 		Electronics: "primary",
 		Home: "success",
 		Office: "warning",
-		Sports: "info"
+		Sports: "info",
+		Gaming: "danger"
 	};
 	return colors[category as keyof typeof colors] || "default";
 };
@@ -613,9 +927,8 @@ const handleScroll = (event: Event) => {
 	const target = event.target as HTMLElement;
 	const threshold = 50;
 	
-	if (target.scrollTop + target.clientHeight >= target.scrollHeight - threshold) {
+	if (target.scrollTop + target.clientHeight >= target.scrollHeight - threshold) 
 		loadMoreInfiniteItems();
-	}
 };
 
 const loadMoreInfiniteItems = () => {
@@ -636,6 +949,94 @@ const loadMoreInfiniteItems = () => {
 	}, 1000);
 };
 
-// Initialize
-initializeInfiniteScroll();
+// Initialize infinite scroll
+const initializeInfiniteScroll = () => {
+	for (let i = 1; i <= 10; i++) {
+		infiniteScrollItems.value.push({
+			id: i,
+			title: `Feed Item ${i}`,
+			content: `This is the content for feed item ${i}. It contains some interesting information.`
+		});
+	}
+};
+
+// Initialize data on component mount
+onMounted(() => {
+	fetchApiData();
+	initializeInfiniteScroll();
+});
 </script>
+
+<style scoped>
+.showcase-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 10px;
+}
+
+.theme-controls {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.theme-demo-light {
+	background: #ffffff;
+	padding: 15px;
+	border-radius: 8px;
+	border: 1px solid #e6e9ea;
+}
+
+.theme-demo-dark {
+	background: #1e1f22;
+	padding: 15px;
+	border-radius: 8px;
+	border: 1px solid #333437;
+	
+	/* Override CSS custom properties for dark theme demo */
+	--tu-background: #151916;
+	--tu-component-background: #1e1f22;
+	--tu-text: #ffffff;
+	--tu-gray-1: #333437;
+	--tu-gray-2: #1e1f22;
+	--tu-gray-3: #0f1013;
+	--tu-gray-4: #0a0b0e;
+	--tu-background-rgb: 21, 25, 22;
+	--tu-component-background-rgb: 30, 31, 34;
+	--tu-text-rgb: 255, 255, 255;
+	--tu-gray-1-rgb: 51, 52, 55;
+	--tu-gray-2-rgb: 30, 31, 34;
+	--tu-gray-3-rgb: 15, 16, 19;
+	--tu-gray-4-rgb: 10, 11, 14;
+}
+
+/* Dark theme support for entire showcase */
+.tu-dark-theme .showcase-component {
+	background: var(--tu-background);
+	color: var(--tu-text);
+}
+
+.tu-dark-theme .theme-demo-light {
+	opacity: 0.8;
+}
+
+/* Dark theme styling for current state section */
+.tu-dark-theme .showcase-component div[style*="background: #f5f5f5"] {
+	background: var(--tu-gray-1) !important;
+	color: var(--tu-text);
+	border: 1px solid var(--tu-gray-3);
+}
+
+@media (max-width: 768px) {
+	.showcase-header {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 10px;
+	}
+	
+	.theme-controls {
+		align-self: flex-end;
+	}
+}
+</style>

@@ -4,27 +4,29 @@
 		<hr />
 		
 		<!-- Basic Tree View -->
-		<div style="margin: 20px 0;">
+		<div style="margin: 20px 0; height: 200px; background-color: red;">
 			<h4>Basic Tree View:</h4>
-			<tu-tree-view :data="basicTreeData" @node-click="onNodeClick" />
+			<div style="flex: 1; min-height: 0;">
+				<TuTreeView :nodes="basicTreeData" @node-click="onNodeClick" />
+			</div>
 			<p v-if="selectedNode" style="margin-top: 10px; padding: 10px; background: #f8f9fa; border-radius: 4px;">
-				Selected: {{ selectedNode.label }}
+				Selected: {{ selectedNode.text }}
 			</p>
 		</div>
 
 		<!-- File System Tree -->
 		<div style="margin: 20px 0;">
 			<h4>File System Tree:</h4>
-			<div style="border: 1px solid #ddd; border-radius: 8px; padding: 15px; max-height: 400px; overflow-y: auto;">
-				<tu-tree-view :data="fileSystemData" @node-click="onFileClick" @node-expand="onNodeExpand">
+			<div style="border: 1px solid #ddd; border-radius: 8px; padding: 15px;">
+				<TuTreeView :nodes="fileSystemData" @node-click="onFileClick" @node-expand="onNodeExpand">
 					<template #node="{ node }">
 						<div style="display: flex; align-items: center; gap: 8px;">
 							<tu-icon :style="{ color: getFileColor(node) }">{{ getFileIcon(node) }}</tu-icon>
-							<span>{{ node.label }}</span>
+							<span>{{ node.text }}</span>
 							<TuChip v-if="node.size" size="xs" color="default">{{ node.size }}</TuChip>
 						</div>
 					</template>
-				</tu-tree-view>
+				</TuTreeView>
 			</div>
 		</div>
 
@@ -32,12 +34,12 @@
 		<div style="margin: 20px 0;">
 			<h4>Organization Chart:</h4>
 			<div style="background: #f8f9fa; padding: 20px; border-radius: 8px;">
-				<tu-tree-view :data="organizationData" @node-click="onEmployeeClick">
+				<TuTreeView :nodes="organizationData" @node-click="onEmployeeClick">
 					<template #node="{ node }">
 						<div style="display: flex; align-items: center; gap: 10px; padding: 5px;">
-							<TuAvatar :text="node.label.charAt(0)" size="24" />
+							<TuAvatar :text="node.text.charAt(0)" size="24" />
 							<div>
-								<div style="font-weight: bold;">{{ node.label }}</div>
+								<div style="font-weight: bold;">{{ node.text }}</div>
 								<div style="font-size: 12px; color: #666;">{{ node.position }}</div>
 							</div>
 							<TuChip v-if="node.department" size="xs" :color="getDepartmentColor(node.department)">
@@ -45,12 +47,12 @@
 							</TuChip>
 						</div>
 					</template>
-				</tu-tree-view>
+				</TuTreeView>
 			</div>
 		</div>
 
 		<!-- Interactive Tree with Checkboxes -->
-		<div style="margin: 20px 0;">
+		<div style="margin: 20px 0">
 			<h4>Interactive Tree with Checkboxes:</h4>
 			<div style="margin-bottom: 15px;">
 				<TuButton @click="selectAll" size="sm">Select All</TuButton>
@@ -58,25 +60,25 @@
 				<TuButton @click="expandAll" size="sm" style="margin-left: 10px;">Expand All</TuButton>
 				<TuButton @click="collapseAll" size="sm" style="margin-left: 10px;">Collapse All</TuButton>
 			</div>
-			<tu-tree-view 
-				:data="checkboxTreeData" 
-				checkable 
-				@check="onNodeCheck"
+			<TuTreeView 
+				:nodes="checkboxTreeData" 
+				:checkNode="true"
+				@node-checked="onNodeCheck"
 				@node-click="onCheckboxNodeClick"
 			>
 				<template #node="{ node }">
 					<div style="display: flex; align-items: center; gap: 8px;">
 						<tu-icon>{{ getNodeIcon(node.type) }}</tu-icon>
-						<span>{{ node.label }}</span>
+						<span>{{ node.text }}</span>
 						<TuChip v-if="node.count" size="xs" color="info">{{ node.count }}</TuChip>
 					</div>
 				</template>
-			</tu-tree-view>
+			</TuTreeView>
 			<div v-if="checkedNodes.length > 0" style="margin-top: 15px; padding: 10px; background: #e7f3ff; border-radius: 4px;">
 				<strong>Selected items ({{ checkedNodes.length }}):</strong>
 				<div style="margin-top: 5px;">
 					<TuTag v-for="node in checkedNodes" :key="node.id" size="sm" style="margin: 2px;">
-						{{ node.label }}
+						{{ node.text }}
 					</TuTag>
 				</div>
 			</div>
@@ -86,7 +88,7 @@
 		<div style="margin: 20px 0;">
 			<h4>Navigation Menu Tree:</h4>
 			<div style="background: #2c3e50; color: white; padding: 20px; border-radius: 8px;">
-				<tu-tree-view :data="menuData" @node-click="onMenuClick" style="color: white;">
+				<TuTreeView :nodes="menuData" @node-click="onMenuClick" style="color: white;">
 					<template #node="{ node }">
 						<div style="display: flex; align-items: center; gap: 8px; color: white;">
 							<tu-icon style="color: white;">{{ node.icon }}</tu-icon>
@@ -94,7 +96,7 @@
 							<TuChip v-if="node.badge" size="xs" color="danger">{{ node.badge }}</TuChip>
 						</div>
 					</template>
-				</tu-tree-view>
+				</TuTreeView>
 			</div>
 		</div>
 
@@ -105,7 +107,7 @@
 				<TuInput v-model="newNodeName" placeholder="Enter node name" style="margin-right: 10px;" />
 				<TuButton @click="addNode" :disabled="!newNodeName.trim()">Add Node</TuButton>
 			</div>
-			<tu-tree-view :data="dynamicTreeData" @node-click="onDynamicNodeClick">
+			<TuTreeView :nodes="dynamicTreeData" @node-click="onDynamicNodeClick">
 				<template #node="{ node }">
 					<div style="display: flex; align-items: center; gap: 8px; justify-content: space-between; width: 100%;">
 						<div style="display: flex; align-items: center; gap: 8px;">
@@ -118,7 +120,7 @@
 						</div>
 					</div>
 				</template>
-			</tu-tree-view>
+			</TuTreeView>
 		</div>
 
 		<!-- Project Structure Tree -->
@@ -129,7 +131,7 @@
 					<h5>Vue.js Project</h5>
 					<TuChip color="success" size="sm">Active</TuChip>
 				</div>
-				<tu-tree-view :data="projectStructure" @node-click="onProjectFileClick">
+				<TuTreeView :nodes="projectStructure" @node-click="onProjectFileClick">
 					<template #node="{ node }">
 						<div style="display: flex; align-items: center; gap: 8px;">
 							<tu-icon :style="{ color: getProjectFileColor(node) }">{{ getProjectFileIcon(node) }}</tu-icon>
@@ -139,7 +141,7 @@
 							</TuChip>
 						</div>
 					</template>
-				</tu-tree-view>
+				</TuTreeView>
 			</div>
 		</div>
 
@@ -147,7 +149,7 @@
 		<div style="margin: 20px 0;">
 			<h4>Current Values:</h4>
 			<div style="background: #f5f5f5; padding: 15px; border-radius: 8px; font-size: 12px;">
-				<p><strong>Selected Node:</strong> {{ selectedNode?.label || 'None' }}</p>
+				<p><strong>Selected Node:</strong> {{ selectedNode?.text || 'None' }}</p>
 				<p><strong>Checked Nodes:</strong> {{ checkedNodes.length }}</p>
 				<p><strong>Dynamic Tree Nodes:</strong> {{ countNodes(dynamicTreeData) }}</p>
 				<p><strong>Last Clicked File:</strong> {{ lastClickedFile || 'None' }}</p>
@@ -159,7 +161,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-
+import { tuTreeView as TuTreeView } from "../components/tuTreeView";
 import { tuButton as TuButton } from "../components/tuButton";
 import { tuChip as TuChip } from "../components/tuChip";
 import { tuTag as TuTag } from "../components/tuTag";
@@ -175,22 +177,22 @@ const newNodeName = ref("");
 // Basic tree data
 const basicTreeData = ref([
 	{
-		id: 1,
-		label: "Root Node",
+		id: "1",
+		text: "Root Node",
 		children: [
 			{
-				id: 2,
-				label: "Child 1",
+				id: "2",
+				text: "Child 1",
 				children: [
-					{ id: 3, label: "Grandchild 1" },
-					{ id: 4, label: "Grandchild 2" }
+					{ id: "3", text: "Grandchild 1" },
+					{ id: "4", text: "Grandchild 2" }
 				]
 			},
 			{
-				id: 5,
-				label: "Child 2",
+				id: "5",
+				text: "Child 2",
 				children: [
-					{ id: 6, label: "Grandchild 3" }
+					{ id: "6", text: "Grandchild 3" }
 				]
 			}
 		]
@@ -200,39 +202,39 @@ const basicTreeData = ref([
 // File system data
 const fileSystemData = ref([
 	{
-		id: 1,
-		label: "Documents",
+		id: "1",
+		text: "Documents",
 		type: "folder",
 		children: [
-			{ id: 2, label: "Resume.pdf", type: "file", size: "245 KB" },
-			{ id: 3, label: "Cover Letter.docx", type: "file", size: "127 KB" },
+			{ id: "2", text: "Resume.pdf", type: "file", size: "245 KB" },
+			{ id: "3", text: "Cover Letter.docx", type: "file", size: "127 KB" },
 			{
-				id: 4,
-				label: "Projects",
+				id: "4",
+				text: "Projects",
 				type: "folder",
 				children: [
-					{ id: 5, label: "Project1.zip", type: "file", size: "2.3 MB" },
-					{ id: 6, label: "Project2.zip", type: "file", size: "1.8 MB" }
+					{ id: "5", text: "Project1.zip", type: "file", size: "2.3 MB" },
+					{ id: "6", text: "Project2.zip", type: "file", size: "1.8 MB" }
 				]
 			}
 		]
 	},
 	{
-		id: 7,
-		label: "Images",
+		id: "7",
+		text: "Images",
 		type: "folder",
 		children: [
-			{ id: 8, label: "vacation.jpg", type: "file", size: "3.2 MB" },
-			{ id: 9, label: "profile.png", type: "file", size: "567 KB" }
+			{ id: "8", text: "vacation.jpg", type: "file", size: "3.2 MB" },
+			{ id: "9", text: "profile.png", type: "file", size: "567 KB" }
 		]
 	},
 	{
-		id: 10,
-		label: "Music",
+		id: "10",
+		text: "Music",
 		type: "folder",
 		children: [
-			{ id: 11, label: "song1.mp3", type: "file", size: "4.1 MB" },
-			{ id: 12, label: "song2.mp3", type: "file", size: "3.8 MB" }
+			{ id: "11", text: "song1.mp3", type: "file", size: "4.1 MB" },
+			{ id: "12", text: "song2.mp3", type: "file", size: "3.8 MB" }
 		]
 	}
 ]);
@@ -240,28 +242,28 @@ const fileSystemData = ref([
 // Organization data
 const organizationData = ref([
 	{
-		id: 1,
-		label: "John Doe",
+		id: "1",
+		text: "John Doe",
 		position: "CEO",
 		department: "Executive",
 		children: [
 			{
-				id: 2,
-				label: "Jane Smith",
+				id: "2",
+				text: "Jane Smith",
 				position: "CTO",
 				department: "Technology",
 				children: [
-					{ id: 3, label: "Bob Johnson", position: "Senior Developer", department: "Engineering" },
-					{ id: 4, label: "Alice Brown", position: "DevOps Engineer", department: "Engineering" }
+					{ id: "3", text: "Bob Johnson", position: "Senior Developer", department: "Engineering" },
+					{ id: "4", text: "Alice Brown", position: "DevOps Engineer", department: "Engineering" }
 				]
 			},
 			{
-				id: 5,
-				label: "Charlie Wilson",
+				id: "5",
+				text: "Charlie Wilson",
 				position: "CFO",
 				department: "Finance",
 				children: [
-					{ id: 6, label: "David Lee", position: "Accountant", department: "Finance" }
+					{ id: "6", text: "David Lee", position: "Accountant", department: "Finance" }
 				]
 			}
 		]
@@ -271,29 +273,29 @@ const organizationData = ref([
 // Checkbox tree data
 const checkboxTreeData = ref([
 	{
-		id: 1,
-		label: "All Categories",
+		id: "1",
+		text: "All Categories",
 		type: "category",
 		children: [
 			{
-				id: 2,
-				label: "Electronics",
+				id: "2",
+				text: "Electronics",
 				type: "category",
 				count: 156,
 				children: [
-					{ id: 3, label: "Smartphones", type: "subcategory", count: 45 },
-					{ id: 4, label: "Laptops", type: "subcategory", count: 32 },
-					{ id: 5, label: "Tablets", type: "subcategory", count: 28 }
+					{ id: "3", text: "Smartphones", type: "subcategory", count: 45 },
+					{ id: "4", text: "Laptops", type: "subcategory", count: 32 },
+					{ id: "5", text: "Tablets", type: "subcategory", count: 28 }
 				]
 			},
 			{
-				id: 6,
-				label: "Clothing",
+				id: "6",
+				text: "Clothing",
 				type: "category",
 				count: 203,
 				children: [
-					{ id: 7, label: "Men's", type: "subcategory", count: 98 },
-					{ id: 8, label: "Women's", type: "subcategory", count: 105 }
+					{ id: "7", text: "Men's", type: "subcategory", count: 98 },
+					{ id: "8", text: "Women's", type: "subcategory", count: 105 }
 				]
 			}
 		]
@@ -303,44 +305,44 @@ const checkboxTreeData = ref([
 // Menu data
 const menuData = ref([
 	{
-		id: 1,
-		label: "Dashboard",
+		id: "1",
+		text: "Dashboard",
 		icon: "dashboard",
 		route: "/dashboard"
 	},
 	{
-		id: 2,
-		label: "Users",
+		id: "2",
+		text: "Users",
 		icon: "people",
 		badge: "5",
 		children: [
-			{ id: 3, label: "All Users", icon: "person", route: "/users" },
-			{ id: 4, label: "Add User", icon: "person_add", route: "/users/add" },
-			{ id: 5, label: "User Roles", icon: "admin_panel_settings", route: "/users/roles" }
+			{ id: "3", text: "All Users", icon: "person", route: "/users" },
+			{ id: "4", text: "Add User", icon: "person_add", route: "/users/add" },
+			{ id: "5", text: "User Roles", icon: "admin_panel_settings", route: "/users/roles" }
 		]
 	},
 	{
-		id: 6,
-		label: "Products",
+		id: "6",
+		text: "Products",
 		icon: "inventory",
 		children: [
-			{ id: 7, label: "All Products", icon: "list", route: "/products" },
-			{ id: 8, label: "Add Product", icon: "add", route: "/products/add" },
-			{ id: 9, label: "Categories", icon: "category", route: "/products/categories" }
+			{ id: "7", text: "All Products", icon: "list", route: "/products" },
+			{ id: "8", text: "Add Product", icon: "add", route: "/products/add" },
+			{ id: "9", text: "Categories", icon: "category", route: "/products/categories" }
 		]
 	},
 	{
-		id: 10,
-		label: "Reports",
+		id: "10",
+		text: "Reports",
 		icon: "assessment",
 		children: [
-			{ id: 11, label: "Sales Report", icon: "trending_up", route: "/reports/sales" },
-			{ id: 12, label: "User Report", icon: "people_outline", route: "/reports/users" }
+			{ id: "11", text: "Sales Report", icon: "trending_up", route: "/reports/sales" },
+			{ id: "12", text: "User Report", icon: "people_outline", route: "/reports/users" }
 		]
 	},
 	{
-		id: 13,
-		label: "Settings",
+		id: "13",
+		text: "Settings",
 		icon: "settings",
 		route: "/settings"
 	}
@@ -349,12 +351,12 @@ const menuData = ref([
 // Dynamic tree data
 const dynamicTreeData = ref([
 	{
-		id: 1,
-		label: "Root Folder",
+		id: "1",
+		text: "Root Folder",
 		type: "folder",
 		children: [
-			{ id: 2, label: "Document 1", type: "file" },
-			{ id: 3, label: "Document 2", type: "file" }
+			{ id: "2", text: "Document 1", type: "file" },
+			{ id: "3", text: "Document 2", type: "file" }
 		]
 	}
 ]);
@@ -364,33 +366,33 @@ let nextDynamicId = 4;
 // Project structure
 const projectStructure = ref([
 	{
-		id: 1,
-		label: "src",
+		id: "1",
+		text: "src",
 		type: "folder",
 		children: [
 			{
-				id: 2,
-				label: "components",
+				id: "2",
+				text: "components",
 				type: "folder",
 				children: [
-					{ id: 3, label: "Header.vue", type: "vue", status: "modified" },
-					{ id: 4, label: "Footer.vue", type: "vue", status: "clean" }
+					{ id: "3", text: "Header.vue", type: "vue", status: "modified" },
+					{ id: "4", text: "Footer.vue", type: "vue", status: "clean" }
 				]
 			},
-			{ id: 5, label: "main.ts", type: "typescript", status: "clean" },
-			{ id: 6, label: "App.vue", type: "vue", status: "modified" }
+			{ id: "5", text: "main.ts", type: "typescript", status: "clean" },
+			{ id: "6", text: "App.vue", type: "vue", status: "modified" }
 		]
 	},
 	{
-		id: 7,
-		label: "public",
+		id: "7",
+		text: "public",
 		type: "folder",
 		children: [
-			{ id: 8, label: "index.html", type: "html", status: "clean" }
+			{ id: "8", text: "index.html", type: "html", status: "clean" }
 		]
 	},
-	{ id: 9, label: "package.json", type: "json", status: "clean" },
-	{ id: 10, label: "vite.config.ts", type: "typescript", status: "clean" }
+	{ id: "9", text: "package.json", type: "json", status: "clean" },
+	{ id: "10", text: "vite.config.ts", type: "typescript", status: "clean" }
 ]);
 
 // Methods
@@ -400,7 +402,7 @@ const onNodeClick = (node: any) => {
 };
 
 const onFileClick = (node: any) => {
-	lastClickedFile.value = node.label;
+	lastClickedFile.value = node.text;
 	console.log("File clicked:", node);
 };
 
@@ -421,7 +423,7 @@ const onCheckboxNodeClick = (node: any) => {
 };
 
 const onMenuClick = (node: any) => {
-	lastMenuAction.value = `Clicked: ${node.label}`;
+	lastMenuAction.value = `Clicked: ${node.text}`;
 	if (node.route) {
 		console.log("Navigate to:", node.route);
 	}
@@ -438,7 +440,7 @@ const onProjectFileClick = (node: any) => {
 // Helper methods
 const getFileIcon = (node: any) => {
 	if (node.type === "folder") return "folder";
-	const extension = node.label.split(".").pop()?.toLowerCase();
+	const extension = node.text.split(".").pop()?.toLowerCase();
 	switch (extension) {
 		case "pdf": return "picture_as_pdf";
 		case "docx": return "description";
@@ -525,8 +527,8 @@ const collapseAll = () => {
 const addNode = () => {
 	if (newNodeName.value.trim()) {
 		const newNode = {
-			id: nextDynamicId++,
-			label: newNodeName.value.trim(),
+			id: String(nextDynamicId++),
+			text: newNodeName.value.trim(),
 			type: "file"
 		};
 		
@@ -540,9 +542,9 @@ const addNode = () => {
 };
 
 const editNode = (node: any) => {
-	const newLabel = prompt("Edit node name:", node.label);
+	const newLabel = prompt("Edit node name:", node.text);
 	if (newLabel !== null && newLabel.trim()) {
-		node.label = newLabel.trim();
+		node.text = newLabel.trim();
 	}
 };
 

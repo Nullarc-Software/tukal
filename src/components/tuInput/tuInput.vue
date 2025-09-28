@@ -5,7 +5,7 @@
 		`tu-input-parent--state-${state}`,
 		{ 'tu-input-parent--border': !!border },
 		{ 'tu-input-parent--shadow': !!shadow },
-		{ [`tu-input-content--has-label`]: label || labelPlaceholder },
+		{ [`tu-input-parent--has-label`]: label || labelPlaceholder },
 		{ block: block },
 		{ transparent: transparent },
 		{ textWhite: textWhite },
@@ -22,7 +22,7 @@
 				[`tu-input-content--has-label`]: label || labelPlaceholder
 			}
 		]">
-			<input v-bind="$attrs" :type="type" class="tu-input" :value="modelValue" :class="[
+			<input v-bind="inputAttrs" :type="type" class="tu-input" :value="modelValue" :class="[
 				{ ['tu-input--has-icon']: !!$slots.icon },
 				{ ['tu-input--has-icon--after']: !!iconAfter }
 			]" @input="onInput" @keyup.enter="onEnter" :id="getId" :disabled="editableStaticInternal || disable" />
@@ -100,66 +100,270 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watch } from "vue";
+import { computed, ref, watch, useAttrs } from "vue";
 import tuIcon from "../tuIcon";
 import { getColor, isColor } from "@/utils";
 
 defineOptions({
-	name: "TuInput"
+	name: "TuInput",
+	inheritAttrs: false
 });
 
+/**
+ * TuInput Component Props Interface
+ * 
+ * A comprehensive input component with various styling options, states, and behaviors.
+ * Props are organized by category for better maintainability and understanding.
+ */
 interface Props {
+	// ====================
+	// CORE DATA & BINDING
+	// ====================
+	
+	/** 
+	 * The input value - supports v-model binding
+	 * @type {string | number | object}
+	 * @default ""
+	 */
 	modelValue?: string | number | object;
-	labelPlaceholder?: string;
-	label?: string;
-	block?: boolean;
-	iconAfter?: boolean;
-	visiblePassword?: boolean;
-	loading?: boolean;
-	state?: string | null;
-	progress?: number;
-	border?: boolean;
-	shadow?: boolean;
-	transparent?: boolean;
-	textWhite?: boolean;
-	square?: boolean;
-	id?: string | null;
-	placeholder?: string | null;
+
+	/** 
+	 * Input type attribute (text, password, email, number, etc.)
+	 * @type {string}
+	 * @default "text"
+	 */
 	type?: string;
+
+	// ====================
+	// LABELS & PLACEHOLDERS
+	// ====================
+
+	/** 
+	 * Primary label text displayed above/floating on the input
+	 * @type {string}
+	 * @default ""
+	 */
+	label?: string;
+
+	/** 
+	 * Alternative label that acts as placeholder
+	 * @type {string}
+	 * @default ""
+	 */
+	labelPlaceholder?: string;
+
+	/** 
+	 * Placeholder text shown when input is empty
+	 * @type {string}
+	 * @default null
+	 */
+	placeholder?: string | null;
+
+	// ====================
+	// LAYOUT & SIZING
+	// ====================
+
+	/** 
+	 * Makes input take full width of its container
+	 * @type {boolean}
+	 * @default false
+	 */
+	block?: boolean;
+
+	/** 
+	 * Displays input inline with other elements
+	 * @type {boolean}
+	 * @default false
+	 */
 	inline?: boolean;
-	disable?: boolean;
-	editableStatic?: boolean;
+
+	/** 
+	 * Custom width for the input component
+	 * @type {string}
+	 * @default "unset"
+	 */
 	width?: string;
+
+	/** 
+	 * Makes input corners square instead of rounded
+	 * @type {boolean}
+	 * @default false
+	 */
+	square?: boolean;
+
+	// ====================
+	// VISUAL STYLING
+	// ====================
+
+	/** 
+	 * Primary color theme for the input
+	 * @type {string}
+	 * @default undefined
+	 */
 	color?: string;
+
+	/** 
+	 * Adds a visible border around the input
+	 * @type {boolean}
+	 * @default false
+	 */
+	border?: boolean;
+
+	/** 
+	 * Adds drop shadow effect to the input
+	 * @type {boolean}
+	 * @default false
+	 */
+	shadow?: boolean;
+
+	/** 
+	 * Makes input background transparent
+	 * @type {boolean}
+	 * @default false
+	 */
+	transparent?: boolean;
+
+	/** 
+	 * Makes input text white (for dark backgrounds)
+	 * @type {boolean}
+	 * @default false
+	 */
+	textWhite?: boolean;
+
+	// ====================
+	// STATES & VALIDATION
+	// ====================
+
+	/** 
+	 * Current state of the input (success, danger, warn, primary)
+	 * @type {string | null}
+	 * @default null
+	 */
+	state?: string | null;
+
+	/** 
+	 * Progress bar value (0-100) displayed below input
+	 * @type {number}
+	 * @default 0
+	 */
+	progress?: number;
+
+	/** 
+	 * Shows loading spinner/animation
+	 * @type {boolean}
+	 * @default false
+	 */
+	loading?: boolean;
+
+	// ====================
+	// BEHAVIOR & INTERACTION
+	// ====================
+
+	/** 
+	 * Disables the input for user interaction
+	 * @type {boolean}
+	 * @default false
+	 */
+	disable?: boolean;
+
+	/** 
+	 * Makes input editable only when clicked (static display mode)
+	 * @type {boolean}
+	 * @default false
+	 */
+	editableStatic?: boolean;
+
+	/** 
+	 * Shows/hides password visibility (for password inputs)
+	 * @type {boolean}
+	 * @default false
+	 */
+	visiblePassword?: boolean;
+
+	// ====================
+	// ICONS & SLOTS
+	// ====================
+
+	/** 
+	 * Positions icon after the input text instead of before
+	 * @type {boolean}
+	 * @default false
+	 */
+	iconAfter?: boolean;
+
+	// ====================
+	// TECHNICAL ATTRIBUTES
+	// ====================
+
+	/** 
+	 * Custom ID for the input element (auto-generated if not provided)
+	 * @type {string | null}
+	 * @default null
+	 */
+	id?: string | null;
 }
 
 const props = withDefaults(defineProps<Props>(), {
+	// Core data & binding
 	modelValue: "",
-	labelPlaceholder: "",
+	type: "text",
+	
+	// Labels & placeholders
 	label: "",
+	labelPlaceholder: "",
+	placeholder: null,
+	
+	// Layout & sizing
 	block: false,
-	iconAfter: false,
-	visiblePassword: false,
-	loading: false,
-	state: null,
-	progress: 0,
+	inline: false,
+	width: "unset",
+	square: false,
+	
+	// Visual styling
+	color: undefined,
 	border: false,
 	shadow: false,
 	transparent: false,
 	textWhite: false,
-	square: false,
-	id: null,
-	placeholder: null,
-	type: undefined,
-	inline: false,
+	
+	// States & validation
+	state: null,
+	progress: 0,
+	loading: false,
+	
+	// Behavior & interaction
 	disable: false,
 	editableStatic: false,
-	width: "unset"
+	visiblePassword: false,
+	
+	// Icons & slots
+	iconAfter: false,
+	
+	// Technical attributes
+	id: null
 });
 
+/**
+ * TuInput Component Events
+ * 
+ * Events emitted by the input component for parent component communication
+ */
 const emit = defineEmits<{
+	/** 
+	 * Emitted when input value changes (v-model support)
+	 * @param value - The new input value (string or number)
+	 */
 	"update:modelValue": [value: string | number];
+	
+	/** 
+	 * Emitted when icon is clicked (requires click-icon attribute)
+	 * @param value - Current input value when icon was clicked
+	 */
 	"click-icon": [value: string];
+	
+	/** 
+	 * Emitted when Enter key is pressed in the input
+	 */
 	"onEnter": [];
 }>();
 
@@ -168,7 +372,7 @@ class InputConstants {
 }
 
 // Generate ID outside of computed to avoid side effects
-const inputId = props.id || `input-${++InputConstants.id}`;
+const inputId = props.id || `input-${Math.random().toString(36).substring(2, 11)}-${Date.now()}`;
 
 const getId = computed(() => {
 	return `tu-input--${inputId}`;
@@ -186,6 +390,31 @@ const tuColor = computed(() => {
 	else if (props.color)
 		return getColor(props.color);
 	return "var(--tu-primary)";
+});
+
+// Filter attributes to only pass input-specific ones to the input element
+const inputAttrs = computed(() => {
+	const attrs = useAttrs();
+	const inputSpecificAttrs: Record<string, unknown> = {};
+	
+	// List of attributes that should be applied to the input element
+	const inputAttributes = [
+		"placeholder", "readonly", "required", "maxlength", "minlength",
+		"max", "min", "step", "pattern", "autocomplete", "autofocus",
+		"name", "form", "formaction", "formenctype", "formmethod",
+		"formnovalidate", "formtarget", "multiple", "accept", "capture",
+		"size", "spellcheck", "tabindex", "title", "accesskey",
+		"contenteditable", "draggable", "hidden", "lang", "dir"
+	];
+	
+	// Only include attributes that are relevant for input elements
+	for (const [key, value] of Object.entries(attrs)) {
+		if (inputAttributes.includes(key.toLowerCase()) || key.startsWith("data-") || key.startsWith("aria-")) {
+			inputSpecificAttrs[key] = value;
+		}
+	}
+	
+	return inputSpecificAttrs;
 });
 
 const beforeEnter = function (el: Element) {

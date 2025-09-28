@@ -112,9 +112,9 @@ const buttonActive = ref(false);
 const loading = ref(false);
 
 const showLoadingBtn = () => {
-  loading.value = true;
-  setTimeout(() => {
-    loading.value = false;
-  }, 2000);
+	loading.value = true;
+	setTimeout(() => {
+		loading.value = false;
+	}, 2000);
 };
 </script>

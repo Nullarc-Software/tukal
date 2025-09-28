@@ -91,9 +91,9 @@ export default defineComponent({
 			{ key: "collapse", name: "Collapse" },
 			{ key: "dialog", name: "Dialog" },
 			{ key: "input", name: "Input" },
+			{ key: "popper", name: "Popper & Dropdown" },
 			{ key: "radio", name: "Radio" },
 			{ key: "select", name: "Select" },
-			{ key: "dropdown", name: "Dropdown" },
 			{ key: "sidebar", name: "Sidebar" },
 			{ key: "switch", name: "Switch" },
 			{ key: "navbar", name: "Navbar" },
@@ -157,6 +157,9 @@ export default defineComponent({
 				case "input":
 					component = defineAsyncComponent(() => import("./showcases/InputShowcase.vue"));
 					break;
+				case "popper":
+					component = defineAsyncComponent(() => import("./showcases/PopperShowcase.vue"));
+					break;
 				case "radio":
 					component = defineAsyncComponent(() => import("./showcases/RadioShowcase.vue"));
 					break;
@@ -210,6 +213,9 @@ export default defineComponent({
 					break;
 				case "timeline":
 					component = defineAsyncComponent(() => import("./showcases/TimelineShowcase.vue"));
+					break;
+				case "treeview":
+					component = defineAsyncComponent(() => import("./showcases/TreeViewShowcase.vue"));
 					break;
 				case "notifications":
 					component = defineAsyncComponent(() => import("./showcases/NotificationsShowcase.vue"));
@@ -458,10 +464,6 @@ export default defineComponent({
 
 .text-color {
 	color: getColor("text");
-}
-
-.tu-select-content {
-	margin: 20px;
 }
 
 body {

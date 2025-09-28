@@ -7,26 +7,26 @@
 		<div style="margin: 20px 0;">
 			<h4>Basic Tabs:</h4>
 			<TuTabs v-model="basicTab">
-				<tu-tab label="Tab 1" value="tab1">
+				<TuTab label="Tab 1" value="tab1">
 					<div style="padding: 20px;">
 						<h5>Content for Tab 1</h5>
 						<p>This is the content of the first tab. You can put any content here including text, images, forms, and other components.</p>
 					</div>
-				</tu-tab>
-				<tu-tab label="Tab 2" value="tab2">
+				</TuTab>
+				<TuTab label="Tab 2" value="tab2">
 					<div style="padding: 20px;">
 						<h5>Content for Tab 2</h5>
 						<p>This is the second tab with different content. Tabs are useful for organizing related information.</p>
 						<TuButton size="sm">Sample Button</TuButton>
 					</div>
-				</tu-tab>
-				<tu-tab label="Tab 3" value="tab3">
+				</TuTab>
+				<TuTab label="Tab 3" value="tab3">
 					<div style="padding: 20px;">
 						<h5>Content for Tab 3</h5>
 						<TuInput placeholder="Sample input in tab" style="margin-bottom: 10px;" />
 						<TuSelect placeholder="Sample select" :select-items="[{label: 'Option 1', value: '1'}, {label: 'Option 2', value: '2'}]" />
 					</div>
-				</tu-tab>
+				</TuTab>
 			</TuTabs>
 			<p>Active tab: {{ basicTab }}</p>
 		</div>
@@ -35,21 +35,21 @@
 		<div style="margin: 20px 0;">
 			<h4>Different Colors:</h4>
 			<TuTabs v-model="colorTab" color="success">
-				<tu-tab label="Success" value="success">
+				<TuTab label="Success" value="success">
 					<div style="padding: 20px;">
 						<p>This tab uses the success color theme.</p>
 					</div>
-				</tu-tab>
-				<tu-tab label="Primary" value="primary">
+				</TuTab>
+				<TuTab label="Primary" value="primary">
 					<div style="padding: 20px;">
 						<p>This tab content is in the primary theme.</p>
 					</div>
-				</tu-tab>
-				<tu-tab label="Danger" value="danger">
+				</TuTab>
+				<TuTab label="Danger" value="danger">
 					<div style="padding: 20px;">
 						<p>This tab uses the danger color theme.</p>
 					</div>
-				</tu-tab>
+				</TuTab>
 			</TuTabs>
 		</div>
 
@@ -57,7 +57,7 @@
 		<div style="margin: 20px 0;">
 			<h4>With Icons:</h4>
 			<TuTabs v-model="iconTab">
-				<tu-tab label="Dashboard" value="dashboard">
+				<TuTab label="Dashboard" value="dashboard">
 					<template #icon>
 						<tu-icon>dashboard</tu-icon>
 					</template>
@@ -79,8 +79,8 @@
 							</div>
 						</div>
 					</div>
-				</tu-tab>
-				<tu-tab label="Users" value="users">
+				</TuTab>
+				<TuTab label="Users" value="users">
 					<template #icon>
 						<tu-icon>person</tu-icon>
 					</template>
@@ -100,8 +100,8 @@
 							</TuChip>
 						</div>
 					</div>
-				</tu-tab>
-				<tu-tab label="Settings" value="settings">
+				</TuTab>
+				<TuTab label="Settings" value="settings">
 					<template #icon>
 						<tu-icon>settings</tu-icon>
 					</template>
@@ -125,7 +125,7 @@
 							</div>
 						</div>
 					</div>
-				</tu-tab>
+				</TuTab>
 			</TuTabs>
 		</div>
 
@@ -133,7 +133,7 @@
 		<div style="margin: 20px 0;">
 			<h4>Vertical Tabs:</h4>
 			<TuTabs v-model="verticalTab" vertical>
-				<tu-tab label="Profile" value="profile">
+				<TuTab label="Profile" value="profile">
 					<div style="padding: 20px;">
 						<h5>Profile Information</h5>
 						<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
@@ -143,8 +143,8 @@
 							<TuInput label="Phone" value="+1 234 567 8900" />
 						</div>
 					</div>
-				</tu-tab>
-				<tu-tab label="Security" value="security">
+				</TuTab>
+				<TuTab label="Security" value="security">
 					<div style="padding: 20px;">
 						<h5>Security Settings</h5>
 						<div style="margin: 15px 0;">
@@ -158,8 +158,8 @@
 						</div>
 						<TuButton color="primary">Update Password</TuButton>
 					</div>
-				</tu-tab>
-				<tu-tab label="Billing" value="billing">
+				</TuTab>
+				<TuTab label="Billing" value="billing">
 					<div style="padding: 20px;">
 						<h5>Billing Information</h5>
 						<p>Manage your subscription and payment methods.</p>
@@ -169,29 +169,138 @@
 							<TuButton size="sm">Change Plan</TuButton>
 						</div>
 					</div>
-				</tu-tab>
+				</TuTab>
 			</TuTabs>
+		</div>
+
+		<!-- Tab Styles -->
+		<div style="margin: 20px 0;">
+			<h4>Tab Styles:</h4>
+			
+			<!-- Default Style -->
+			<div style="margin: 15px 0;">
+				<h5>Default Style:</h5>
+				<TuTabs v-model="styleTab1" tabStyle="default">
+					<TuTab label="Home" value="home">
+						<div style="padding: 20px;">
+							<p>Default tab style with underline indicator.</p>
+						</div>
+					</TuTab>
+					<TuTab label="About" value="about">
+						<div style="padding: 20px;">
+							<p>Clean and minimal design.</p>
+						</div>
+					</TuTab>
+					<TuTab label="Contact" value="contact">
+						<div style="padding: 20px;">
+							<p>Perfect for most use cases.</p>
+						</div>
+					</TuTab>
+				</TuTabs>
+			</div>
+
+			<!-- Pills Style -->
+			<div style="margin: 15px 0;">
+				<h5>Pills Style:</h5>
+				<TuTabs v-model="styleTab2" tabStyle="pills" color="primary">
+					<TuTab label="Overview" value="overview">
+						<div style="padding: 20px;">
+							<p>Pills style with rounded buttons.</p>
+						</div>
+					</TuTab>
+					<TuTab label="Details" value="details">
+						<div style="padding: 20px;">
+							<p>Modern and button-like appearance.</p>
+						</div>
+					</TuTab>
+					<TuTab label="Analytics" value="analytics">
+						<div style="padding: 20px;">
+							<p>Great for action-oriented interfaces.</p>
+						</div>
+					</TuTab>
+				</TuTabs>
+			</div>
+
+			<!-- Card Style -->
+			<div style="margin: 15px 0;">
+				<h5>Card Style:</h5>
+				<TuTabs v-model="styleTab3" tabStyle="card" color="success">
+					<TuTab label="Projects" value="projects">
+						<div style="padding: 20px;">
+							<p>Card style with borders and background highlights.</p>
+							<p>Perfect for sidebar navigation or contained layouts.</p>
+						</div>
+					</TuTab>
+					<TuTab label="Tasks" value="tasks">
+						<div style="padding: 20px;">
+							<p>Each tab appears as a distinct card.</p>
+							<p>Great for organized, structured interfaces.</p>
+						</div>
+					</TuTab>
+					<TuTab label="Reports" value="reports">
+						<div style="padding: 20px;">
+							<p>Clean separation between tabs.</p>
+							<p>Excellent readability and organization.</p>
+						</div>
+					</TuTab>
+				</TuTabs>
+			</div>
+
+			<!-- Progress Style -->
+			<div style="margin: 15px 0;">
+				<h5>Progress Style:</h5>
+				<TuTabs v-model="styleTab4" tabStyle="progress" color="warn">
+					<TuTab label="Step 1" value="step1">
+						<div style="padding: 20px;">
+							<h6>Welcome</h6>
+							<p>This is the first step in our progress tabs.</p>
+							<p>Progress tabs are perfect for wizards, forms, and step-by-step processes.</p>
+						</div>
+					</TuTab>
+					<TuTab label="Step 2" value="step2">
+						<div style="padding: 20px;">
+							<h6>Configuration</h6>
+							<p>Configure your settings in this step.</p>
+							<p>Users can navigate between steps using the navigation arrows.</p>
+						</div>
+					</TuTab>
+					<TuTab label="Step 3" value="step3">
+						<div style="padding: 20px;">
+							<h6>Review</h6>
+							<p>Review your settings before proceeding.</p>
+							<p>The progress bar shows completion status.</p>
+						</div>
+					</TuTab>
+					<TuTab label="Step 4" value="step4">
+						<div style="padding: 20px;">
+							<h6>Complete</h6>
+							<p>Process completed successfully!</p>
+							<p>Perfect for onboarding and multi-step workflows.</p>
+						</div>
+					</TuTab>
+				</TuTabs>
+			</div>
 		</div>
 
 		<!-- Disabled Tabs -->
 		<div style="margin: 20px 0;">
 			<h4>Disabled Tabs:</h4>
 			<TuTabs v-model="disabledTab">
-				<tu-tab label="Available" value="available">
+				<TuTab label="Available" value="available">
 					<div style="padding: 20px;">
 						<p>This tab is available and can be accessed.</p>
 					</div>
-				</tu-tab>
-				<tu-tab label="Disabled" value="disabled" disabled>
+				</TuTab>
+				<TuTab label="Disabled" value="disabled" disabled>
 					<div style="padding: 20px;">
 						<p>This tab is disabled.</p>
 					</div>
-				</tu-tab>
-				<tu-tab label="Another Available" value="another">
+				</TuTab>
+				<TuTab label="Another Available" value="another">
 					<div style="padding: 20px;">
 						<p>This tab is also available.</p>
 					</div>
-				</tu-tab>
+				</TuTab>
 			</TuTabs>
 		</div>
 
@@ -203,13 +312,13 @@
 				<TuButton @click="removeTab" size="sm" style="margin-left: 10px;">Remove Last Tab</TuButton>
 			</div>
 			<TuTabs v-model="dynamicTab">
-				<tu-tab v-for="tab in dynamicTabs" :key="tab.id" :label="tab.label" :value="tab.value">
+				<TuTab v-for="tab in dynamicTabs" :key="tab.id" :label="tab.label" :value="tab.value">
 					<div style="padding: 20px;">
 						<h5>{{ tab.label }}</h5>
 						<p>{{ tab.content }}</p>
 						<TuButton @click="removeSpecificTab(tab.id)" color="danger" size="sm">Remove This Tab</TuButton>
 					</div>
-				</tu-tab>
+				</TuTab>
 			</TuTabs>
 			<p v-if="dynamicTabs.length === 0" style="text-align: center; color: #666; padding: 40px;">
 				No tabs available. Click "Add Tab" to create one.
@@ -226,6 +335,10 @@
 				<p><strong>Vertical Tab:</strong> {{ verticalTab }}</p>
 				<p><strong>Disabled Tab:</strong> {{ disabledTab }}</p>
 				<p><strong>Dynamic Tab:</strong> {{ dynamicTab }}</p>
+				<p><strong>Style Tab 1 (Default):</strong> {{ styleTab1 }}</p>
+				<p><strong>Style Tab 2 (Pills):</strong> {{ styleTab2 }}</p>
+				<p><strong>Style Tab 3 (Card):</strong> {{ styleTab3 }}</p>
+				<p><strong>Style Tab 4 (Progress):</strong> {{ styleTab4 }}</p>
 				<p><strong>Dynamic Tabs Count:</strong> {{ dynamicTabs.length }}</p>
 			</div>
 		</div>
@@ -242,6 +355,7 @@ import TuInput from "../components/tuInput";
 import TuAvatar from "../components/tuAvatar";
 import TuSwitch from "../components/tuSwitch";
 import TuSelect from "../components/tuSelect/tuSelect.vue";
+import TuTab from "@/components/tuTabs/tuTab.vue";
 // Tab values
 const basicTab = ref("tab1");
 const colorTab = ref("success");
@@ -249,6 +363,12 @@ const iconTab = ref("dashboard");
 const verticalTab = ref("profile");
 const disabledTab = ref("available");
 const dynamicTab = ref("dynamic1");
+
+// Tab style examples
+const styleTab1 = ref("home");
+const styleTab2 = ref("overview");
+const styleTab3 = ref("projects");
+const styleTab4 = ref("step1");
 
 // Sample data
 const sampleUsers = ref([

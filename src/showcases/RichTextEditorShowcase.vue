@@ -6,10 +6,28 @@
 		<!-- Basic Editor -->
 		<div style="margin: 20px 0;">
 			<h4>Basic Rich Text Editor:</h4>
-			<tu-rich-text-editor 
+			<TuRichTextEditor 
+				code
+				horizontal-rule
+				heading3
+				heading4
+				heading5
+				heading6
+				undo
+				redo
+				block-quote
+				ordered-list
+				bullet-list
+				link
+				image
+				bold
+				italic
+				underline
+				strikethrough
+				clear-format
 				v-model="basicContent" 
 				placeholder="Start typing your content here..."
-				:height="200"
+				height="200"
 			/>
 			<p style="margin-top: 10px; font-size: 14px;">
 				Content length: {{ basicContent.length }} characters
@@ -19,10 +37,10 @@
 		<!-- Editor with Custom Toolbar -->
 		<div style="margin: 20px 0;">
 			<h4>Custom Toolbar:</h4>
-			<tu-rich-text-editor 
+			<TuRichTextEditor 
 				v-model="customContent" 
 				:toolbar="customToolbar"
-				:height="250"
+				height="250"
 				placeholder="Rich editor with custom toolbar..."
 			/>
 		</div>
@@ -30,10 +48,10 @@
 		<!-- Minimal Editor -->
 		<div style="margin: 20px 0;">
 			<h4>Minimal Editor:</h4>
-			<tu-rich-text-editor 
+			<TuRichTextEditor 
 				v-model="minimalContent" 
 				:toolbar="minimalToolbar"
-				:height="150"
+				height="150"
 				placeholder="Simple editor for basic formatting..."
 			/>
 		</div>
@@ -51,10 +69,10 @@
 				</div>
 				<div style="margin: 15px 0;">
 					<label style="display: block; margin-bottom: 8px; font-weight: 500;">Message:</label>
-					<tu-rich-text-editor 
+					<TuRichTextEditor 
 						v-model="emailData.body" 
 						:toolbar="emailToolbar"
-						:height="300"
+						height="300"
 						placeholder="Write your email message..."
 					/>
 				</div>
@@ -96,10 +114,10 @@
 					
 					<div style="margin: 15px 0;">
 						<label style="display: block; margin-bottom: 8px; font-weight: 500;">Content:</label>
-						<tu-rich-text-editor 
+						<TuRichTextEditor 
 							v-model="blogPost.content" 
 							:toolbar="blogToolbar"
-							:height="400"
+							height="400"
 							placeholder="Write your blog post content..."
 						/>
 					</div>
@@ -149,10 +167,10 @@
 					<TuInput v-model="documentData.title" placeholder="Document title" style="font-size: 18px; font-weight: bold;" />
 				</div>
 				
-				<tu-rich-text-editor 
+				<TuRichTextEditor 
 					v-model="documentData.content" 
 					:toolbar="documentToolbar"
-					:height="350"
+					height="350"
 					placeholder="Start writing your document..."
 					@change="onDocumentChange"
 				/>
@@ -225,10 +243,10 @@
 				<!-- Add New Comment -->
 				<div style="background: white; border-radius: 8px; padding: 15px;">
 					<h6>Add a Comment</h6>
-					<tu-rich-text-editor 
+					<TuRichTextEditor 
 						v-model="newComment" 
 						:toolbar="commentToolbar"
-						:height="150"
+						height="150"
 						placeholder="Write your comment..."
 					/>
 					<div style="margin-top: 15px; display: flex; justify-content: space-between; align-items: center;">
@@ -313,6 +331,7 @@ import { tuChip as TuChip } from "../components/tuChip";
 import TuInput from "../components/tuInput";
 import TuAvatar from "../components/tuAvatar";
 import TuSelect from "../components/tuSelect/tuSelect.vue";
+import TuRichTextEditor from "@/components/tuRichTextEditor/tuRichTextEditor.vue";
 // Basic content
 const basicContent = ref("<p>Welcome to the <strong>rich text editor</strong>! You can format your text with <em>italics</em>, <strong>bold</strong>, and much more.</p>");
 

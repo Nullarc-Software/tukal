@@ -56,7 +56,7 @@
 				</template>
 			</TuDialog>
 			
-			<TuDialog v-model="largeDialog" width="800px">
+			<TuDialog v-model="largeDialog" width="1200px" height="50%">
 				<template #header><h4>Large Dialog</h4></template>
 				<p>This is a large dialog that can contain substantial content like forms, tables, or detailed information.</p>
 				<template #footer>

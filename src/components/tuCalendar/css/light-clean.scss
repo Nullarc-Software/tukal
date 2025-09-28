@@ -1,0 +1,256 @@
+/*
+Modern Calendar Theme - Consistent with Tukal Design System
+Uses CSS Custom Properties for better theming support
+*/
+
+.theme-default {
+	/* Calendar Container */
+	.cv-wrapper {
+		--calendar-bg: var(--tu-background);
+		--calendar-border: var(--tu-gray-4);
+		--calendar-shadow: var(--tu-elevated-2);
+		--calendar-radius: var(--tu-radius);
+		--calendar-text: var(--tu-text);
+		
+		background: var(--calendar-bg);
+		border-color: var(--calendar-border);
+		box-shadow: var(--calendar-shadow);
+		border-radius: var(--calendar-radius);
+		color: var(--calendar-text);
+	}
+	
+	/* Header Styling */
+	.cv-header {
+		background: var(--tu-component-background);
+		border-color: var(--tu-gray-4);
+		
+		.currentPeriod {
+			color: var(--tu-text);
+		}
+		
+		button {
+			color: var(--tu-text);
+			
+			&:hover {
+				background: rgba(var(--tu-primary-rgb), 0.1);
+				color: var(--tu-primary);
+			}
+			
+			&:focus {
+				outline-color: var(--tu-primary);
+			}
+		}
+		
+		.category-button {
+			color: var(--tu-text);
+		}
+	}
+	
+	/* Header Days */
+	.cv-header-days {
+		background: var(--tu-component-background);
+		border-color: var(--tu-gray-4);
+	}
+	
+	.cv-header-day {
+		background: var(--tu-component-background);
+		color: var(--tu-text);
+		border-color: var(--tu-gray-4);
+	}
+	
+	/* Week Numbers */
+	.cv-weeknumber {
+		background: var(--tu-gray-2);
+		color: var(--tu-text);
+		border-color: var(--tu-gray-4);
+		
+		span {
+			opacity: 0.7;
+		}
+	}
+	
+	/* Day Cells */
+	.cv-day {
+		background: var(--tu-background);
+		color: var(--tu-text);
+		border-color: var(--tu-gray-4);
+		
+		&:hover {
+			background: var(--tu-gray-1);
+			box-shadow: inset 0 0 0 2px rgba(var(--tu-primary-rgb), 0.1);
+		}
+		
+		&.past {
+			background: var(--tu-gray-2);
+			color: rgba(var(--tu-text-rgb), 0.6);
+			
+			&:hover {
+				background: var(--tu-gray-3);
+			}
+		}
+		
+		&.today {
+			background: rgba(var(--tu-primary-rgb), 0.05);
+			
+			.cv-day-number {
+				background: var(--tu-primary);
+				color: white;
+			}
+			
+			&:hover {
+				background: rgba(var(--tu-primary-rgb), 0.1);
+			}
+		}
+		
+		&.outsideMonth {
+			background: var(--tu-gray-1);
+			color: rgba(var(--tu-text-rgb), 0.4);
+			
+			&:hover {
+				background: var(--tu-gray-2);
+			}
+		}
+		
+		&[aria-selected="true"] {
+			background: rgba(var(--tu-warn-rgb), 0.1);
+			border-color: var(--tu-warn);
+		}
+		
+		&.draghover {
+			box-shadow: inset 0 0 0.2em 0.2em var(--tu-warn);
+		}
+	}
+	
+	/* Day Numbers */
+	.cv-day-number {
+		color: inherit;
+	}
+	
+	/* Event Items */
+	.cv-item {
+		background: rgba(var(--tu-primary-rgb), 0.1);
+		border-left-color: var(--tu-primary);
+		color: var(--tu-text);
+		
+		&:hover {
+			background: rgba(var(--tu-primary-rgb), 0.2);
+		}
+		
+		&.isHovered.hasUrl {
+			text-decoration: underline;
+		}
+		
+		&.continued {
+			&::before {
+				content: " \21e2 ";
+				color: rgba(var(--tu-text-rgb), 0.6);
+			}
+			border-left-style: none;
+			border-top-left-radius: 0;
+			border-bottom-left-radius: 0;
+		}
+		
+		&.toBeContinued {
+			&::after {
+				content: " \21e2 ";
+				color: rgba(var(--tu-text-rgb), 0.6);
+			}
+			border-right-style: none;
+			border-top-right-radius: 0;
+			border-bottom-right-radius: 0;
+		}
+		
+		/* Category-based styling */
+		&[data-category="work"] {
+			background: rgba(var(--tu-success-rgb), 0.1);
+			border-left-color: var(--tu-success);
+		}
+		
+		&[data-category="personal"] {
+			background: rgba(var(--tu-warn-rgb), 0.1);
+			border-left-color: var(--tu-warn);
+		}
+		
+		&[data-category="important"] {
+			background: rgba(var(--tu-danger-rgb), 0.1);
+			border-left-color: var(--tu-danger);
+		}
+		
+		.startTime,
+		.endTime {
+			font-weight: 600;
+			color: rgba(var(--tu-text-rgb), 0.8);
+		}
+	}
+	
+	/* Time Display */
+	.cv-time {
+		color: rgba(var(--tu-text-rgb), 0.7);
+	}
+	
+	/* Scrollbar Styling */
+	.cv-weeks {
+		scrollbar-color: var(--tu-gray-4) transparent;
+		
+		&::-webkit-scrollbar-thumb {
+			background: var(--tu-gray-4);
+			
+			&:hover {
+				background: var(--tu-gray-3);
+			}
+		}
+	}
+}
+
+/* Dark Theme Overrides */
+.theme-dark {
+	.cv-wrapper {
+		background: var(--tu-dark-3);
+		border-color: var(--tu-dark-1);
+		color: var(--tu-text-100);
+	}
+	
+	.cv-header,
+	.cv-header-day {
+		background: var(--tu-dark-2);
+		border-color: var(--tu-dark-1);
+		color: var(--tu-text-100);
+		
+		button {
+			color: var(--tu-text-100);
+			
+			&:hover {
+				background: rgba(var(--tu-primary-rgb), 0.2);
+			}
+		}
+	}
+	
+	.cv-weeknumber {
+		background: var(--tu-dark-4);
+		color: var(--tu-text-100);
+		border-color: var(--tu-dark-1);
+	}
+	
+	.cv-day {
+		background: var(--tu-dark-3);
+		color: var(--tu-text-100);
+		border-color: var(--tu-dark-1);
+		
+		&:hover {
+			background: var(--tu-dark-2);
+		}
+		
+		&.past {
+			background: var(--tu-dark-4);
+			color: rgba(255, 255, 255, 0.6);
+		}
+		
+		&.outsideMonth {
+			color: rgba(255, 255, 255, 0.4);
+		}
+	}
+	
+	.cv-item {
+		color: var(--tu-text-100);
+	}
+}

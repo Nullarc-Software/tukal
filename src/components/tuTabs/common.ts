@@ -4,16 +4,15 @@ export interface TuTabsChildData {
 	id?: number;
 	label: string;
 	name: string;
+	value?: string;
 	to?: string;
 	icon?: string;
 	iconPack?: string;
 	tag?: string;
-	attrs?: Object;
+	attrs?: Record<string, unknown>;
 	disabled?: boolean;
 	vnode?: VNode | undefined;
-	setActive?: Function;
-	setInvert?: Function;
-	setVertical?: Function;
+	setActive?: (value: boolean) => void;
 }
 
 export type TuTabsRouterParams = {

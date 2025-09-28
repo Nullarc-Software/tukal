@@ -9,6 +9,10 @@
 </template>
 
 <script setup lang="ts">
+defineOptions({
+	name: "TuRow"
+});
+
 interface Props {
 	w?: number;
 	justify?: string;
