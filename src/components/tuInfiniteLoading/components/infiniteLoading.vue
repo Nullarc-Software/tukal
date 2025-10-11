@@ -43,12 +43,12 @@ const stateWatcher = () =>
 		await nextTick();
 		if (newVal == "loaded" && top)
 			parentEl.scrollTop = parentEl.scrollHeight - params.prevHeight;
-		if (newVal == "loaded" && isVisible(infiniteLoading.value, params.parentEl)) {
+		if (newVal == "loaded" && isVisible(infiniteLoading.value, params.parentEl)) 
 			params.emit();
-		}
-		if (newVal == "complete") {
+		
+		if (newVal == "complete") 
 			observer.disconnect();
-		}
+		
 	});
 const identifierWatcher = () =>
 	watch(identifier, () => {
@@ -59,7 +59,7 @@ const identifierWatcher = () =>
 onMounted(() => {
 	observer = startObserver(params);
 	stateWatcher();
-	if (identifier) identifierWatcher();
+	if (identifier.value) identifierWatcher();
 });
 onUnmounted(() => {
 	observer.disconnect();

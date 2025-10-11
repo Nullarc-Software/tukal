@@ -68,7 +68,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, defineAsyncComponent } from "vue";
+import { defineComponent, ref, shallowRef, defineAsyncComponent } from "vue";
 import * as components from "./components";
 
 export default defineComponent({
@@ -78,7 +78,7 @@ export default defineComponent({
 	},
 	setup() {
 		const activeComponent = ref<string | null>(null);
-		const loadedComponent = ref<any>(null); // eslint-disable-line @typescript-eslint/no-explicit-any
+		const loadedComponent = shallowRef<any>(null); // eslint-disable-line @typescript-eslint/no-explicit-any
 		const isLoading = ref(false);
 		const isNavExpanded = ref(true);
 
@@ -222,6 +222,12 @@ export default defineComponent({
 					break;
 				case "chip":
 					component = defineAsyncComponent(() => import("./showcases/ChipShowcase.vue"));
+					break;
+				case "history":
+					component = defineAsyncComponent(() => import("./showcases/HistoryShowcase.vue"));
+					break;
+				case "cron":
+					component = defineAsyncComponent(() => import("./showcases/CronShowcase.vue"));
 					break;
 				default:
 					// For components not yet extracted, show a placeholder

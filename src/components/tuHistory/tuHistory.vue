@@ -1,5 +1,5 @@
 <template>
-	<div class="tu-hist-container">
+	<div class="tu-hist-container" :id="componentId">
 		<div :style="centerStyle()" :class="alternative ? 'alter' : 'default'">
 			<div class="tu-hist-center-line">
 			</div>
@@ -16,38 +16,36 @@
 					<p>{{ ev.description }}</p>
 				</section>
 			</div>
-			<tuInfiniteLoading v-if="model === 'server'" @infinite="load">
+			<TuInfiniteLoading v-if="model === 'server'" @infinite="load" :target="`#${componentId}`">
 				<template #complete>
 					<span class="tu-hist-complete-text">No more results!</span>
 				</template>
-			</tuInfiniteLoading>
+			</TuInfiniteLoading>
 		</div>
 	</div>
 </template>
 
 <script setup lang="ts">
-import { ref, inject, watchEffect } from "vue";
-import { Router } from "vue-router";
+import { ref, watchEffect } from "vue";
 import * as _color from "../../utils";
-import { useRouter } from "vue-router";
 import { serverRequest, TuHistoryEvent, TuHistoryServerModel } from "./utils";
-import { tuInfiniteLoading } from "../tuInfiniteLoading";
+import { tuInfiniteLoading as TuInfiniteLoading } from "../tuInfiniteLoading";
 
 defineOptions({
 	name: "TuHistory"
 });
 
 interface Props {
+	// Content
 	events?: TuHistoryEvent[];
+	
+	// Layout
 	alternative?: boolean;
 	center?: boolean;
-	model?: string;
+	
+	// Server functionality
+	model?: "local" | "server";
 	serverSideConfig?: TuHistoryServerModel;
-	// tuComponent props
-	color?: string;
-	active?: boolean;
-	colorSecondary?: string;
-	textColor?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -55,22 +53,16 @@ const props = withDefaults(defineProps<Props>(), {
 	alternative: false,
 	center: false,
 	model: "local",
-	serverSideConfig: () => ({}),
-	color: "primary",
-	active: false,
-	colorSecondary: "rgb(130, 207, 23)",
-	textColor: "#fff"
+	serverSideConfig: () => ({ ajaxUrl: "" })
 });
 
-// tuComponent functionality
-inject<Router | null>("appRouter", null);
-inject<string | null>("iconPackGlobal", null);
-
-const router = useRouter();
 const histEvents = ref<TuHistoryEvent[]>([]);
 const currentPage = ref(1);
 const scroll = ref();
 const lineHeight = ref();
+
+// Generate unique ID for this component instance
+const componentId = `tu-hist-${Math.random().toString(36).substr(2, 9)}`;
 
 watchEffect(() => {
 	if (props.model === "local")
@@ -99,78 +91,81 @@ const categoryColor = (ev: TuHistoryEvent) => {
 };
 
 const categoryColorIcon = (ev: TuHistoryEvent, index: number) => {
-	let color: string, height: string, width: string, left: string, right: string;
-	height = '20px !important'
-	width = '20px !important'
-	if (!props.alternative) {
-		left = '-30px'
-	}
+	let color: string;
+	const height = "20px !important";
+	const width = "20px !important";
+	let left = "";
+	let right = "";
+	
+	if (!props.alternative) 
+		left = "-30px";
 	else {
-		if (index % 2 === 0) {
-			right = '-50px !important'
-		}
-		else {
-			left = "-50px !important"
-		}
+		if (index % 2 === 0) 
+			right = "-50px !important";
+		else 
+			left = "-50px !important";
 	}
+	
 	if (!ev.icon) {
 		return {
-			background: 'var(--tu-gray-4)',
+			background: "var(--tu-gray-4)",
 			height: height,
 			width: width,
 			right: right,
 			left: left
-		}
+		};
 	}
-	else if (ev.color) {
+	else if (ev.color) 
 		color = `rgba(${_color.getColorAsRgb(ev.color, 0.9)})`;
-	}
-	else {
-		color = 'var(--tu-text)'
-	}
+	else 
+		color = "var(--tu-text)";
+	
 	return {
 		color: color,
-	}
-}
+	};
+};
 
 const centerStyle = () => {
 	if (props.center) {
 		return {
-			margin: 'auto',
-			width: '50vw',
-		}
+			margin: "auto",
+			width: "50vw",
+		};
 	}
 	else {
 		return {
-			margin: '40px auto',
-		}
+			margin: "40px auto",
+		};
 	}
+};
+
+interface InfiniteLoadingState {
+	loaded: () => void;
+	complete: () => void;
 }
 
-const redirect = (ev: TuHistoryEvent) => {
-	if (ev.url) {
-		router.replace(ev.url);
-	}
-}
-
-const load = async ($state: any) => {
-	console.log("loading")
-	serverRequest(props.serverSideConfig, `?page=${currentPage.value}`).then((data: TuHistoryEvent[]) => {
-		if (data.length > 0) {
-			for (let i = 0; i < data.length; i++) {
-				histEvents.value.push(data[i]);
+const load = async ($state: InfiniteLoadingState) => {
+	console.log("loading");
+	serverRequest(props.serverSideConfig, `?page=${currentPage.value}`)
+		.then((data: TuHistoryEvent[]) => {
+			if (data.length > 0) {
+				for (let i = 0; i < data.length; i++) 
+					histEvents.value.push(data[i]);
+				$state.loaded();
+				let val = (scroll.value.offSetHeight).toString();
+				console.log(scroll.value.clientHeight);
+				lineHeight.value = val as string + "px !important";
 			}
-			$state.loaded();
-			let val = (scroll.value.offSetHeight).toString()
-			console.log(scroll.value.clientHeight)
-			lineHeight.value = val as string + "px !important"
-		}
-		else {
+			else 
+				$state.complete();
+		})
+		.catch((error) => {
+			console.error("Server request failed:", error);
+			// For demo purposes, show completion message when server fails
 			$state.complete();
-		}
-	});
+		});
 	currentPage.value++;
-	console.log(currentPage.value)
+	console.log(currentPage.value);
 };
 </script>
 

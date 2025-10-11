@@ -3,25 +3,112 @@
 		<h3>Notifications:</h3>
 		<hr />
 		
-		<!-- Basic Notifications -->
+		<!-- All TuNotificationAttributes Features Demo -->
+		<div style="margin: 20px 0; padding: 20px; background: #fff3cd; border-radius: 8px;">
+			<h4>🎯 Complete TuNotificationAttributes Features Demo</h4>
+			<p style="margin: 5px 0;">Comprehensive demonstration of all notification properties and capabilities</p>
+		</div>
+
+		<!-- Colors & Styles -->
 		<div style="margin: 20px 0;">
-			<h4>Basic Notifications:</h4>
+			<h4>🎨 Colors & Visual Styles:</h4>
 			<div style="display: flex; flex-wrap: wrap; gap: 10px;">
-				<TuButton @click="showBasicNotification('success')" color="success">Success</TuButton>
-				<TuButton @click="showBasicNotification('info')" color="primary">Info</TuButton>
-				<TuButton @click="showBasicNotification('warning')" color="warning">Warning</TuButton>
-				<TuButton @click="showBasicNotification('error')" color="danger">Error</TuButton>
-				<TuButton @click="showBasicNotification('default')">Default</TuButton>
+				<TuButton @click="showStyleVariant('success', false, false)" color="success">Success</TuButton>
+				<TuButton @click="showStyleVariant('primary', false, false)" color="primary">Primary</TuButton>
+				<TuButton @click="showStyleVariant('warn', false, false)" color="warn">Warning</TuButton>
+				<TuButton @click="showStyleVariant('danger', false, false)" color="danger">Danger</TuButton>
+				<TuButton @click="showStyleVariant('success', true, false)" color="success" flat>Flat Style</TuButton>
+				<TuButton @click="showStyleVariant('primary', false, true)" color="primary">With Border</TuButton>
+				<TuButton @click="showSquareNotification()" color="primary">Square Corners</TuButton>
+				<TuButton @click="showCustomClassNotification()">Custom CSS</TuButton>
 			</div>
 		</div>
 
-		<!-- Notification with Actions -->
+		<!-- Positions (Grid Layout) -->
+		<div style="margin: 20px 0;">
+			<h4>📍 Positions (Click to see animations):</h4>
+			<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 600px;">
+				<TuButton @click="showPositionedNotification('top-left')" size="sm">↖ Top Left</TuButton>
+				<TuButton @click="showPositionedNotification('top-center')" size="sm">↑ Top Center</TuButton>
+				<TuButton @click="showPositionedNotification('top-right')" size="sm">↗ Top Right</TuButton>
+				<TuButton @click="showPositionedNotification('bottom-left')" size="sm">↙ Bottom Left</TuButton>
+				<TuButton @click="showPositionedNotification('bottom-center')" size="sm">↓ Bottom Center</TuButton>
+				<TuButton @click="showPositionedNotification('bottom-right')" size="sm">↘ Bottom Right</TuButton>
+			</div>
+		</div>
+
+		<!-- Icons & Content -->
+		<div style="margin: 20px 0;">
+			<h4>🎭 Icons & Content:</h4>
+			<div style="display: flex; flex-wrap: wrap; gap: 10px;">
+				<TuButton @click="showIconNotification('check_circle')" color="success">✓ With Icon</TuButton>
+				<TuButton @click="showNoIconNotification()">Without Icon</TuButton>
+				<TuButton @click="showCustomContentNotification()" color="primary">Custom Component</TuButton>
+			</div>
+		</div>
+
+		<!-- Sizes & Dimensions -->
+		<div style="margin: 20px 0;">
+			<h4>📏 Sizes & Dimensions:</h4>
+			<div style="display: flex; flex-wrap: wrap; gap: 10px;">
+				<TuButton @click="showWidthNotification('default')" color="primary">Default Width</TuButton>
+				<TuButton @click="showWidthNotification('auto')" color="primary">Auto Width</TuButton>
+				<TuButton @click="showWidthNotification('100%')" color="primary">Full Width</TuButton>
+			</div>
+		</div>
+
+		<!-- Duration & Behavior -->
+		<div style="margin: 20px 0;">
+			<h4>⏱️ Duration & Behavior:</h4>
+			<div style="display: flex; flex-wrap: wrap; gap: 10px;">
+				<TuButton @click="showDurationNotification(1000)" color="primary">Quick (1s)</TuButton>
+				<TuButton @click="showDurationNotification(5000)" color="primary">Normal (5s)</TuButton>
+				<TuButton @click="showDurationNotification(10000)" color="primary">Long (10s)</TuButton>
+				<TuButton @click="showStickyNotification()" color="warn">Sticky (Manual Close)</TuButton>
+				<TuButton @click="showButtonCloseNotification(false)" color="danger">No Close Button</TuButton>
+			</div>
+		</div>
+
+		<!-- Progress & Loading -->
+		<div style="margin: 20px 0;">
+			<h4>📊 Progress & Loading States:</h4>
+			<div style="display: flex; flex-wrap: wrap; gap: 10px;">
+				<TuButton @click="showProgressAutoNotification()" color="success">Auto Progress</TuButton>
+				<TuButton @click="showProgressNotification()" color="primary">Manual Progress</TuButton>
+				<TuButton @click="showLoadingWithTextNotification()" color="primary">Loading → Complete</TuButton>
+				<TuButton @click="showLoadingNotification()" color="primary">Loading Only</TuButton>
+			</div>
+		</div>
+
+		<!-- Callbacks & Events -->
+		<div style="margin: 20px 0;">
+			<h4>🔔 Callbacks & Events:</h4>
+			<div style="display: flex; flex-wrap: wrap; gap: 10px;">
+				<TuButton @click="showClickableNotification()" color="primary">onClick Event</TuButton>
+				<TuButton @click="showOnCloseCallbackNotification()" color="success">onClickClose Event</TuButton>
+				<TuButton @click="showOnDestroyNotification()" color="danger">onDestroy Event</TuButton>
+			</div>
+		</div>
+
+		<!-- Combined Features Demo -->
+		<div style="margin: 20px 0;">
+			<h4>🎪 Special Demos:</h4>
+			<div style="display: flex; flex-wrap: wrap; gap: 10px;">
+				<TuButton @click="showCombinedFeaturesNotification()" color="success" size="lg">� All Features Combined</TuButton>
+				<TuButton @click="showAllPositionsDemo()" color="primary">Show All Positions</TuButton>
+				<TuButton @click="clearAllNotifications" color="dark">Clear All</TuButton>
+			</div>
+		</div>
+
+		<hr style="margin: 40px 0; border: 2px solid #007bff;" />
+		
+		<!-- Additional Real-World Examples -->
 		<div style="margin: 20px 0;">
 			<h4>With Actions:</h4>
 			<div style="display: flex; flex-wrap: wrap; gap: 10px;">
 				<TuButton @click="showActionNotification" color="primary">With Action Button</TuButton>
-				<TuButton @click="showUndoNotification" color="warning">With Undo</TuButton>
-				<TuButton @click="showMultiActionNotification" color="info">Multiple Actions</TuButton>
+				<TuButton @click="showUndoNotification" color="warn">With Undo</TuButton>
+				<TuButton @click="showMultiActionNotification" color="primary">Multiple Actions</TuButton>
 			</div>
 		</div>
 
@@ -30,9 +117,9 @@
 			<h4>Persistent Notifications:</h4>
 			<div style="display: flex; flex-wrap: wrap; gap: 10px;">
 				<TuButton @click="showPersistentNotification" color="danger">Persistent Error</TuButton>
-				<TuButton @click="showStickyNotification" color="warning">Sticky Warning</TuButton>
+				<TuButton @click="showStickyNotification" color="warn">Sticky Warning</TuButton>
 				<TuButton @click="showProgressNotification" color="primary">With Progress</TuButton>
-				<TuButton @click="clearAllNotifications" color="secondary">Clear All</TuButton>
+				<TuButton @click="clearAllNotifications" color="dark">Clear All</TuButton>
 			</div>
 		</div>
 
@@ -42,8 +129,8 @@
 			<div style="display: flex; flex-wrap: wrap; gap: 10px;">
 				<TuButton @click="showRichNotification" color="primary">Rich Content</TuButton>
 				<TuButton @click="showFormNotification" color="success">With Form</TuButton>
-				<TuButton @click="showImageNotification" color="info">With Image</TuButton>
-				<TuButton @click="showListNotification" color="warning">With List</TuButton>
+				<TuButton @click="showImageNotification" color="primary">With Image</TuButton>
+				<TuButton @click="showListNotification" color="warn">With List</TuButton>
 			</div>
 		</div>
 
@@ -69,8 +156,8 @@
 					<TuButton @click="simulateUserLogin" color="success" size="sm">User Login</TuButton>
 					<TuButton @click="simulateFileUpload" color="primary" size="sm">File Upload</TuButton>
 					<TuButton @click="simulateSystemError" color="danger" size="sm">System Error</TuButton>
-					<TuButton @click="simulateMaintenanceMode" color="warning" size="sm">Maintenance</TuButton>
-					<TuButton @click="simulateNewMessage" color="info" size="sm">New Message</TuButton>
+					<TuButton @click="simulateMaintenanceMode" color="warn" size="sm">Maintenance</TuButton>
+					<TuButton @click="simulateNewMessage" color="primary" size="sm">New Message</TuButton>
 					<TuButton @click="simulatePaymentSuccess" color="success" size="sm">Payment Success</TuButton>
 				</div>
 			</div>
@@ -132,7 +219,7 @@
 									:key="action.label"
 									@click="executeNotificationAction(action)"
 									size="xs"
-									:color="action.color || 'primary'"
+									color="primary"
 									style="margin-right: 8px;"
 								>
 									{{ action.label }}
@@ -248,13 +335,40 @@
 </template>
 
 <script setup lang="ts">
+// ============================================================
+// Imports
+// ============================================================
 import { ref, computed } from "vue";
-
 import { tuButton as TuButton } from "../components/tuButton";
 import TuInput from "../components/tuInput";
 import TuSelect from "../components/tuSelect/tuSelect.vue";
+import { TuNotification, type TuNotificationAttributes, type NotificationPosition } from "../components/tuNotifications";
+
+// ============================================================
+// Types
+// ============================================================
+interface NotificationHistoryItem {
+	id: number;
+	type: string;
+	title: string;
+	message: string;
+	timestamp: number;
+	read: boolean;
+	actions?: Array<{ label: string; action: string; color: string }>;
+	persistent?: boolean;
+	sticky?: boolean;
+	progress?: number;
+	richContent?: Record<string, unknown>;
+	image?: string;
+	list?: string[];
+	position?: string;
+}
+
+// ============================================================
+// State
+// ============================================================
 // Notification history
-const notificationHistory = ref([
+const notificationHistory = ref<NotificationHistoryItem[]>([
 	{
 		id: 1,
 		type: "success",
@@ -322,9 +436,307 @@ const notificationsToday = computed(() => {
 	return notificationHistory.value.filter(n => new Date(n.timestamp) >= today).length;
 });
 
-// Methods
+// ============================================================
+// Methods - New Feature Demonstrations
+// ============================================================
+
+/**
+ * Combined style variant demonstration (color, flat, border)
+ */
+const showStyleVariant = (color: string, flat: boolean, border: boolean) => {
+	const styleType = flat ? "Flat" : border ? "Bordered" : "Standard";
+	new TuNotification({
+		title: `${styleType} ${color.charAt(0).toUpperCase() + color.slice(1)}`,
+		text: `${styleType} style notification with ${color} color`,
+		color,
+		flat,
+		border: border ? color : undefined,
+		icon: flat ? "layers" : border ? "border_color" : "star",
+		duration: 4000
+	});
+};
+
+/**
+ * Show all 6 positions at once
+ */
+const showAllPositionsDemo = () => {
+	const positions: NotificationPosition[] = ["top-left", "top-center", "top-right", "bottom-left", "bottom-center", "bottom-right"];
+	const icons = ["↖", "↑", "↗", "↙", "↓", "↘"];
+	
+	positions.forEach((position, index) => {
+		setTimeout(() => {
+			new TuNotification({
+				title: `${icons[index]} ${position.split("-").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ")}`,
+				text: "Notice the circular animation from corner!",
+				color: "primary",
+				position,
+				duration: 5000,
+				icon: "place"
+			});
+		}, index * 300);
+	});
+};
+
+/**
+ * Demonstrate icon property
+ */
+const showIconNotification = (icon: string) => {
+	new TuNotification({
+		title: "Icon Notification",
+		text: `This notification uses the "${icon}" icon`,
+		color: "primary",
+		icon,
+		duration: 4000
+	});
+};
+
+/**
+ * Demonstrate notification without icon
+ */
+const showNoIconNotification = () => {
+	new TuNotification({
+		title: "No Icon",
+		text: "This notification has no icon",
+		color: "primary",
+		duration: 4000
+	});
+};
+
+/**
+ * Demonstrate square property (no rounded corners)
+ */
+const showSquareNotification = () => {
+	new TuNotification({
+		title: "Square Corners",
+		text: "This notification has square corners instead of rounded",
+		color: "primary",
+		square: true,
+		icon: "crop_square",
+		duration: 4000
+	});
+};
+
+/**
+ * Demonstrate width property
+ */
+const showWidthNotification = (width: string) => {
+	new TuNotification({
+		title: "Width Variant",
+		text: `This notification has width set to "${width}"`,
+		color: "primary",
+		width,
+		icon: "width",
+		duration: 4000
+	});
+};
+
+/**
+ * Demonstrate buttonClose property
+ */
+const showButtonCloseNotification = (hasCloseButton: boolean) => {
+	new TuNotification({
+		title: hasCloseButton ? "With Close Button" : "No Close Button",
+		text: hasCloseButton 
+			? "Click the X button to close" 
+			: "This notification cannot be manually closed (wait 5s)",
+		color: hasCloseButton ? "primary" : "danger",
+		buttonClose: hasCloseButton,
+		icon: hasCloseButton ? "close" : "block",
+		duration: 5000
+	});
+};
+
+/**
+ * Demonstrate duration property
+ */
+const showDurationNotification = (duration: number) => {
+	new TuNotification({
+		title: "Duration Demo",
+		text: `This notification will stay for ${duration / 1000} second(s)`,
+		color: "primary",
+		icon: "schedule",
+		duration
+	});
+};
+
+/**
+ * Demonstrate progressAuto property
+ */
+const showProgressAutoNotification = () => {
+	new TuNotification({
+		title: "Auto Progress",
+		text: "Watch the progress bar fill automatically",
+		color: "success",
+		icon: "autorenew",
+		progressAuto: true,
+		duration: 5000
+	});
+};
+
+/**
+ * Demonstrate loading property
+ */
+const showLoadingNotification = () => {
+	new TuNotification({
+		title: "Loading",
+		text: "Loading state notification",
+		color: "primary",
+		loading: true,
+		sticky: true,
+		buttonClose: true
+	});
+};
+
+/**
+ * Demonstrate loading with completion
+ */
+const showLoadingWithTextNotification = () => {
+	const notif = new TuNotification({
+		title: "Processing...",
+		text: "Please wait while we process your request",
+		color: "primary",
+		loading: true,
+		sticky: true,
+		buttonClose: false
+	});
+	
+	// Simulate loading completion after 3 seconds
+	setTimeout(() => {
+		notif.close();
+		new TuNotification({
+			title: "Complete!",
+			text: "Your request has been processed successfully",
+			color: "success",
+			icon: "check_circle",
+			duration: 3000
+		});
+	}, 3000);
+};
+
+/**
+ * Demonstrate onClick callback
+ */
+const showClickableNotification = () => {
+	new TuNotification({
+		title: "Clickable Notification",
+		text: "Click anywhere on this notification to trigger an action",
+		color: "primary",
+		icon: "touch_app",
+		duration: 8000,
+		onClick: () => {
+			alert("Notification clicked! onClick callback triggered.");
+		}
+	});
+};
+
+/**
+ * Demonstrate onClickClose callback
+ */
+const showOnCloseCallbackNotification = () => {
+	new TuNotification({
+		title: "Close Callback Demo",
+		text: "Click the X button to see the close callback in action",
+		color: "success",
+		icon: "close",
+		duration: 10000,
+		onClickClose: () => {
+			console.log("Close button clicked! onClickClose callback triggered.");
+			alert("Close callback executed!");
+		}
+	});
+};
+
+/**
+ * Demonstrate onDestroy callback
+ */
+const showOnDestroyNotification = () => {
+	new TuNotification({
+		title: "Destroy Callback Demo",
+		text: "This notification logs when it's destroyed (after 3 seconds)",
+		color: "danger",
+		icon: "delete_forever",
+		duration: 3000,
+		onDestroy: () => {
+			console.log("Notification destroyed! onDestroy callback triggered.");
+			alert("Notification was destroyed!");
+		}
+	});
+};
+
+/**
+ * Demonstrate classNotification property (custom CSS)
+ */
+const showCustomClassNotification = () => {
+	new TuNotification({
+		title: "Custom Styled",
+		text: "This notification has custom CSS classes applied",
+		color: "primary",
+		icon: "brush",
+		classNotification: "custom-notification-style",
+		duration: 5000
+	});
+};
+
+/**
+ * Demonstrate content property (custom component)
+ */
+const showCustomContentNotification = () => {
+	new TuNotification({
+		title: "Custom Component",
+		text: "This notification contains a custom Vue component",
+		color: "primary",
+		icon: "widgets",
+		duration: 8000,
+		content: {
+			component: {
+				template: `
+					<div style="margin-top: 10px; padding: 10px; background: rgba(0,0,0,0.05); border-radius: 8px;">
+						<p style="margin: 0; font-weight: bold;">Custom Content Component</p>
+						<p style="margin: 5px 0 0 0; font-size: 12px;">This is a custom Vue component rendered inside the notification!</p>
+						<button style="margin-top: 8px; padding: 5px 10px; border: none; background: #007bff; color: white; border-radius: 4px; cursor: pointer;">
+							Custom Action
+						</button>
+					</div>
+				`
+			}
+		}
+	});
+};
+
+/**
+ * Demonstrate all features combined
+ */
+const showCombinedFeaturesNotification = () => {
+	new TuNotification({
+		title: "🎉 All Features Combined!",
+		text: "This notification showcases multiple TuNotificationAttributes properties working together",
+		color: "success",
+		icon: "stars",
+		border: "success",
+		square: false,
+		flat: false,
+		sticky: false,
+		buttonClose: true,
+		width: "auto",
+		progressAuto: true,
+		duration: 10000,
+		position: "top-center",
+		onClick: () => {
+			console.log("Combined features notification clicked!");
+		},
+		onClickClose: () => {
+			console.log("Combined features notification closed!");
+		}
+	});
+};
+
+// ============================================================
+// Methods - Original
+// ============================================================
 const showBasicNotification = (type: string) => {
-	if (!notificationSettings.value[`enable${type.charAt(0).toUpperCase() + type.slice(1)}`]) {
+	// Check if notification type is enabled
+	const settingKey = `enable${type.charAt(0).toUpperCase() + type.slice(1)}` as keyof typeof notificationSettings.value;
+	if (settingKey in notificationSettings.value && !notificationSettings.value[settingKey]) {
 		alert(`${type} notifications are disabled in settings`);
 		return;
 	}
@@ -666,27 +1078,64 @@ const simulatePaymentSuccess = () => {
 
 const clearAllNotifications = () => {
 	if (confirm("Clear all active notifications?")) {
-		// This would clear the UI notifications, not the history
-		alert("All active notifications cleared");
+		TuNotification.closeAll();
+		console.log("All active notifications cleared");
 	}
 };
 
-const addNotificationToHistory = (notification: any) => {
+// ============================================================
+// Helper Functions
+// ============================================================
+/**
+ * Add notification to history for tracking
+ */
+const addNotificationToHistory = (notification: NotificationHistoryItem) => {
 	notificationHistory.value.unshift(notification);
 	lastNotificationTime.value = new Date().toLocaleTimeString();
 };
 
-const showNotificationToast = (notification: any) => {
-	// This would trigger the actual notification component
-	console.log("Showing notification:", notification);
-	alert(`Notification: ${notification.title}\n${notification.message}`);
+/**
+ * Show notification toast using TuNotification class
+ */
+const showNotificationToast = (notification: NotificationHistoryItem) => {
+	// Map notification type to color
+	const colorMap: Record<string, string> = {
+		success: "success",
+		info: "primary",
+		warning: "warn",
+		error: "danger",
+		default: "primary"
+	};
+	
+	// Create notification attributes
+	const notificationAttrs: TuNotificationAttributes = {
+		title: notification.title as string,
+		text: notification.message as string,
+		color: colorMap[notification.type as string] || "primary",
+		position: (notification.position as NotificationPosition) || (notificationSettings.value.position as NotificationPosition),
+		duration: notificationSettings.value.duration * 1000,
+		flat: false,
+		sticky: notification.sticky as boolean || false,
+		progressAuto: notification.progress !== undefined,
+		icon: getNotificationIcon(notification.type as string),
+		
+		onClickClose: () => {
+			console.log("Notification closed:", notification.id);
+		},
+		
+		onClick: () => {
+			console.log("Notification clicked:", notification.id);
+			markAsRead(notification.id as number);
+		}
+	};
+	
+	// Create and show notification
+	new TuNotification(notificationAttrs);
 };
 
 const markAsRead = (notificationId: number) => {
 	const notification = notificationHistory.value.find(n => n.id === notificationId);
-	if (notification) {
-		notification.read = true;
-	}
+	if (notification) notification.read = true;
 };
 
 const markAllAsRead = () => {
@@ -700,7 +1149,7 @@ const clearNotificationHistory = () => {
 	}
 };
 
-const executeNotificationAction = (action: any) => {
+const executeNotificationAction = (action: { label: string; action: string; color: string }) => {
 	console.log("Executing action:", action);
 	alert(`Action executed: ${action.label}`);
 };
@@ -774,4 +1223,19 @@ const testNotificationSettings = () => {
 .icon-warning { background: #ffc107; color: #333; }
 .icon-error { background: #dc3545; }
 .icon-default { background: #6c757d; }
+</style>
+
+<style>
+/* Global styles for custom notification class */
+.custom-notification-style {
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+	color: white !important;
+	font-weight: bold;
+	border: 3px solid #ffffff !important;
+	box-shadow: 0 10px 40px rgba(102, 126, 234, 0.4) !important;
+}
+
+.custom-notification-style * {
+	color: white !important;
+}
 </style>

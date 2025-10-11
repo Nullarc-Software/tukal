@@ -15,6 +15,7 @@ export interface TuHeatmapCalendarItem {
 	date: Date;
 	count?: number;
 	colorIndex: number;
+	isEmpty?: boolean; // True for cells outside the actual date range (padding cells)
 }
 
 export type TuHeatmapCalendar = TuHeatmapCalendarItem[][];
@@ -68,8 +69,22 @@ export class Heatmap {
 
 	constructor(endDate: Date | string, values: TuHeatmapValue[], max?: number) {
 		this.endDate   = this.parseDate(endDate);
-		this.max       = max || Math.ceil((Math.max(...values.map(day => day.count)) / 5) * 4);
-		this.startDate = this.shiftDate(endDate, -Heatmap.DAYS_IN_ONE_YEAR);
+		this.max       = max || (values.length > 0 ? Math.ceil((Math.max(...values.map(day => day.count)) / 5) * 4) : 10);
+		
+		// Calculate startDate: For a full calendar year, use Jan 1 of the same year as endDate
+		// If endDate is Dec 31, startDate should be Jan 1 of that year
+		const endDateObj = this.parseDate(endDate);
+		
+		// Check if endDate is December 31st (or close to it)
+		if (endDateObj.getMonth() === 11 && endDateObj.getDate() >= 28) {
+			// It's a year-end date, so use Jan 1 of that year as start
+			this.startDate = new Date(endDateObj.getFullYear(), 0, 1);
+		}
+		else {
+			// Otherwise, go back 365 days from endDate
+			this.startDate = this.shiftDate(endDate, -Heatmap.DAYS_IN_ONE_YEAR);
+		}
+		
 		this._values   = values;
 	}
 
@@ -99,22 +114,33 @@ export class Heatmap {
 	}
 
 	get weekCount() {
-		return this.getDaysCount() / Heatmap.DAYS_IN_WEEK;
+		const days = this.getDaysCount();
+		const weeks = Math.ceil(days / Heatmap.DAYS_IN_WEEK);
+		// Ensure we have a valid positive number
+		return Math.max(1, weeks);
 	}
 
 	get calendar() {
 		if (!this._calendar) {
-			let date       = this.shiftDate(this.startDate, -this.getCountEmptyDaysAtStart());
-			date           = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+			// Create calendar starting from startDate's week beginning (Sunday)
+			// This creates the "imperfect" grid with empty cells before and after actual dates
+			const date     = this.shiftDate(this.startDate, -this.getCountEmptyDaysAtStart());
 			this._calendar = new Array(this.weekCount);
+			
 			for (let i = 0, len = this._calendar.length; i < len; i++) {
 				this._calendar[ i ] = new Array(Heatmap.DAYS_IN_WEEK);
 				for (let j = 0; j < Heatmap.DAYS_IN_WEEK; j++) {
-					const dayValues          = this.activities.get(this.keyDayParser(date));
+					const currentDate = new Date(date.valueOf());
+					
+					// Only add data if the date is within startDate and endDate range
+					const isInRange = currentDate >= this.startDate && currentDate <= this.endDate;
+					const dayValues = isInRange ? this.activities.get(this.keyDayParser(currentDate)) : undefined;
+					
 					this._calendar[ i ][ j ] = {
-						date      : new Date(date.valueOf()),
+						date      : currentDate,
 						count     : dayValues ? dayValues.count : undefined,
-						colorIndex: dayValues ? dayValues.colorIndex : 0
+						colorIndex: isInRange ? (dayValues ? dayValues.colorIndex : 0) : 0,
+						isEmpty   : !isInRange // Mark cells outside the range as empty
 					};
 					date.setDate(date.getDate() + 1);
 				}
@@ -128,8 +154,8 @@ export class Heatmap {
 			const cal                   = this.calendar;
 			this._firstFullWeekOfMonths = [];
 			for (let index = 1, len = cal.length; index < len; index++) {
-				const lastWeek    = cal[ index - 1 ][ 0 ].date,
-					  currentWeek = cal[ index ][ 0 ].date;
+				const lastWeek = cal[ index - 1 ][ 0 ].date;
+				const currentWeek = cal[ index ][ 0 ].date;
 				if (lastWeek.getFullYear() < currentWeek.getFullYear() || lastWeek.getMonth() < currentWeek.getMonth()) 
 					this._firstFullWeekOfMonths.push({ value: currentWeek.getMonth(), index });
 				
@@ -154,15 +180,22 @@ export class Heatmap {
 	}
 
 	getCountEmptyDaysAtStart() {
-		return this.startDate.getDay();
+		return this.startDate.getDay(); // Days before startDate to reach previous Sunday
 	}
 
 	getCountEmptyDaysAtEnd() {
-		return (Heatmap.DAYS_IN_WEEK - 1) - this.endDate.getDay();
+		return (Heatmap.DAYS_IN_WEEK - 1) - this.endDate.getDay(); // Days after endDate to reach next Saturday
 	}
 
 	getDaysCount() {
-		return Heatmap.DAYS_IN_ONE_YEAR + 1 + this.getCountEmptyDaysAtStart() + this.getCountEmptyDaysAtEnd();
+		// Calculate actual days between startDate and endDate
+		const msPerDay = 1000 * 60 * 60 * 24;
+		const startTime = this.startDate.getTime();
+		const endTime = this.endDate.getTime();
+		const actualDays = Math.round((endTime - startTime) / msPerDay) + 1;
+		
+		// Add padding days to complete the week grid
+		return actualDays + this.getCountEmptyDaysAtStart() + this.getCountEmptyDaysAtEnd();
 	}
 
 	private shiftDate(date: Date | string, numDays: number) {

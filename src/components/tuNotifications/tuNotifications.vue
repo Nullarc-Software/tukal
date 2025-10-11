@@ -1,8 +1,9 @@
 <template>
 	<Transition enter-from-class="notification-enter-from" enter-active-class="notification-enter-active"
 		enter-to-class="notification-enter-to" leave-to-class="notification-leave-to"
-		leave-from-class="notification-leave-from" leave-active-class="notification-leave-active" appear mode="out-in">
-		<div :id="`notification-${notifId}`" ref="notif" :class="[
+		leave-from-class="notification-leave-from" leave-active-class="notification-leave-active" appear mode="out-in"
+		@after-leave="onAfterLeave">
+		<div v-if="isVisibleInternal" :id="`notification-${notifId}`" ref="notif" :class="[
 			{ 'tu-notification--color': color },
 			{ 'tu-notification--border': border },
 			{ 'tu-notification--icon': icon },
@@ -15,15 +16,11 @@
 			{ 'tu-notification--width-auto': width == 'auto' },
 			{ 'tu-notification--loading': loading },
 			{ 'tu-notification--notPadding': notPadding },
-			`tu-notification--${isColor() ? color : null}`,
+			`tu-notification--${isColor ? color : null}`,
 			classNotification,
 			transitionClass
 		]" :style="{
-	['--tu-color']: color ? getColor(color) : '',
-	['--tu-color-secondary']: colorSecondary
-		? getColor(colorSecondary)
-		: '',
-	['--tu-color-text']: textColor ? getColor(textColor) : ''
+	['--tu-color']: color ? getColorValue(color) : ''
 }" class="tu-component tu-notification" @click="clickNoti">
 			<div v-if="!loading && icon">
 				<tu-icon>{{ icon }} </tu-icon>
@@ -53,46 +50,186 @@
 </template>
 
 <script setup lang="ts">
+// ============================================================
+// Imports
+// ============================================================
+import { onMounted, ref, onBeforeUnmount, computed } from "vue";
 import tuIcon from "../tuIcon/tuIcon.vue";
-import { isColor as checkIsColor } from "../../utils";
-import {
-	onMounted,
-	ref,
-	onBeforeUnmount,
-	inject
-} from "vue";
+import { isColor as checkIsColor, getColor } from "../../utils";
 
+// ============================================================
+// Component Options
+// ============================================================
 defineOptions({
 	name: "TuNotifications"
 });
 
+// ============================================================
+// Types
+// ============================================================
+/**
+ * @description Notification component that displays temporary messages with various styles
+ * @example 
+ * <tu-notifications 
+ *   title="Success" 
+ *   text="Operation completed"
+ *   color="success"
+ *   :duration="3000"
+ * />
+ */
 interface Props {
+	/**
+	 * Unique identifier for the notification
+	 * @default 0
+	 */
 	notifId?: number;
+	
+	/**
+	 * Position of the notification on screen
+	 * Options: 'top-right', 'top-left', 'top-center', 'bottom-right', 'bottom-left', 'bottom-center'
+	 * @default 'bottom-right'
+	 */
 	position?: string;
+	
+	/**
+	 * Whether the notification is visible
+	 * @default true
+	 */
 	isVisible?: boolean;
-	content?: object | null;
+	
+	/**
+	 * Custom content component to render
+	 * @default null
+	 */
+	content?: {
+		component: unknown;
+		props?: Record<string, unknown>;
+	} | null;
+	
+	/**
+	 * Title text of the notification
+	 * @default null
+	 */
 	title?: string | null;
+	
+	/**
+	 * Body text of the notification
+	 * @default null
+	 */
 	text?: string | null;
+	
+	/**
+	 * Color theme for the notification
+	 * @default 'primary'
+	 */
 	color?: string;
+	
+	/**
+	 * Border style configuration
+	 * @default null
+	 */
 	border?: string | null;
+	
+	/**
+	 * Icon to display in the notification
+	 * @default null
+	 */
 	icon?: string | null;
+	
+	/**
+	 * Callback function when close button is clicked
+	 * @default null
+	 */
 	onClickClose?: (() => void) | null;
+	
+	/**
+	 * Callback function when notification is clicked
+	 * @default null
+	 */
 	onClick?: (() => void) | null;
+	
+	/**
+	 * Whether to show close button
+	 * @default true
+	 */
 	buttonClose?: boolean;
+	
+	/**
+	 * Flat style without shadow
+	 * @default false
+	 */
 	flat?: boolean;
+	
+	/**
+	 * Callback function when notification is destroyed
+	 * @default null
+	 */
 	onDestroy?: (() => void) | null;
+	
+	/**
+	 * Whether notification stays permanently (doesn't auto-close)
+	 * @default false
+	 */
 	sticky?: boolean;
+	
+	/**
+	 * Square corners instead of rounded
+	 * @default false
+	 */
 	square?: boolean;
+	
+	/**
+	 * Width of the notification ('auto', '100%', or specific value)
+	 * @default null
+	 */
 	width?: string | null;
+	
+	/**
+	 * Show loading state
+	 * @default false
+	 */
 	loading?: boolean;
+	
+	/**
+	 * Auto-increment progress bar
+	 * @default false
+	 */
 	progressAuto?: boolean;
+	
+	/**
+	 * Initial progress value (0-100)
+	 * @default 0
+	 */
 	progress?: number;
+	
+	/**
+	 * Duration before auto-close in milliseconds
+	 * @default 5000
+	 */
 	duration?: number;
+	
+	/**
+	 * Remove padding from notification
+	 * @default null
+	 */
 	notPadding?: object | null;
+	
+	/**
+	 * Close notification when clicked anywhere
+	 * @default false
+	 */
 	clickClose?: boolean;
+	
+	/**
+	 * Additional CSS classes for the notification
+	 * @default null
+	 */
 	classNotification?: string | null;
 }
 
+// ============================================================
+// Props
+// ============================================================
 const props = withDefaults(defineProps<Props>(), {
 	notifId: 0,
 	position: "bottom-right",
@@ -120,109 +257,181 @@ const props = withDefaults(defineProps<Props>(), {
 	classNotification: null
 });
 
-const emit = defineEmits<{
+// ============================================================
+// Emits
+// ============================================================
+defineEmits<{
 	close: [];
 }>();
 
-// Inject tuComponent functionality  
-const $tukal = inject("$tukal");
-const $utils = inject("$utils");
+// ============================================================
+// Injections
+// ============================================================
+// Note: $tukal and $utils injected but not currently used
+// Kept for potential future use or external dependencies
+// const $tukal = inject("$tukal");
+// const $utils = inject("$utils");
 
-const internalProgress = ref(props.progress);
-const intervalProgress = ref<ReturnType<typeof setInterval>>();
+// ============================================================
+// Template Refs
+// ============================================================
 const notif = ref<HTMLDivElement>();
 
-		const transitionClass = ref<Array<String>>([]);
-		transitionClass.value = [];
+// ============================================================
+// State
+// ============================================================
+const internalProgress = ref<number>(props.progress);
+const intervalProgress = ref<ReturnType<typeof setInterval>>();
+const transitionClass = ref<string[]>([]);
+const isVisibleInternal = ref<boolean>(true);
 
-		const clickNoti = function () {
-			if (props.onClick) props.onClick();
-		};
+// ============================================================
+// Computed Properties
+// ============================================================
+/**
+ * Check if the color is a valid preset color
+ */
+const isColor = computed(() => checkIsColor(props.color));
 
-		const handleClickClose = function () {
-			transitionClass.value = [
-				"notification-leave-active",
-				"notification-leave-to"
-			];
-			setTimeout(() => {
-				if (props.clickClose)
-					if (props.onClickClose) props.onClickClose();
-			}, 100);
-		};
+// ============================================================
+// Methods
+// ============================================================
+/**
+ * Get color value for styling
+ * Exposed to template for use in style bindings
+ */
+const getColorValue = (color: string): string => {
+	return getColor(color);
+};
 
-		const beforeEnter = function (el: any) {
-			el.style.maxHeight = "0px";
-			el.style.padding = "0px 20px";
-		};
+/**
+ * Handle notification click
+ */
+const clickNoti = (): void => {
+	if (props.onClick) props.onClick();
+};
 
-		const enter = function (el: any, done: any) {
-			const h = el.scrollHeight;
-			el.style.maxHeight = `${h + 40}px`;
-			if (window.innerWidth < 600) el.style.padding = "15px";
-			else el.style.padding = "20px";
+/**
+ * Handle close button click with animation
+ */
+const handleClickClose = (): void => {
+	// Trigger the leave animation by setting isVisibleInternal to false
+	isVisibleInternal.value = false;
+};
 
-			done();
-		};
+/**
+ * Called after the leave animation completes
+ */
+const onAfterLeave = (): void => {
+	// Now call the actual close callback after animation is complete
+	if (props.clickClose && props.onClickClose) props.onClickClose();
+};
 
-		const leave = function (el: any, done: any) {
-			setTimeout(() => {
-				done();
-			}, 250);
-		};
+// ============================================================
+// Animation Handlers (kept for potential future use with transition hooks)
+// ============================================================
+/**
+ * Before enter transition hook
+ * @param el - The element being transitioned
+ */
+// const beforeEnter = (el: HTMLElement): void => {
+// 	el.style.maxHeight = "0px";
+// 	el.style.padding = "0px 20px";
+// };
 
-		const isColor = () => {
-			return checkIsColor(props.color);
-		};
-		onMounted(() => {
-			if (props.sticky === false) {
-				let value = 0;
-				intervalProgress.value = setInterval(() => {
-					if (props.progressAuto) internalProgress.value++;
-					else value++;
+/**
+ * Enter transition hook
+ * @param el - The element being transitioned
+ * @param done - Callback to signal completion
+ */
+// const enter = (el: HTMLElement, done: () => void): void => {
+// 	const h = el.scrollHeight;
+// 	el.style.maxHeight = `${h + 40}px`;
+// 	
+// 	if (window.innerWidth < 600)
+// 		el.style.padding = "15px";
+// 	else
+// 		el.style.padding = "20px";
+// 	
+// 	done();
+// };
 
-					if (internalProgress.value >= 100 || value >= 100) {
-						clearInterval(intervalProgress.value);
-						handleClickClose();
-					}
-				}, props.duration / 100);
+/**
+ * Leave transition hook
+ * @param el - The element being transitioned
+ * @param done - Callback to signal completion
+ */
+// const leave = (el: HTMLElement, done: () => void): void => {
+// 	setTimeout(() => {
+// 		done();
+// 	}, 250);
+// };
+
+// ============================================================
+// Lifecycle Hooks
+// ============================================================
+/**
+ * Initialize auto-close timer and progress bar
+ */
+onMounted(() => {
+	if (props.sticky === false) {
+		let value = 0;
+		
+		intervalProgress.value = setInterval(() => {
+			if (props.progressAuto)
+				internalProgress.value++;
+			else
+				value++;
+
+			if (internalProgress.value >= 100 || value >= 100) {
+				clearInterval(intervalProgress.value);
+				handleClickClose();
 			}
-		});
-
-onBeforeUnmount(() => {
-	clearInterval(intervalProgress.value);
+		}, props.duration / 100);
+	}
 });
 
-// Create close function alias
-const close = handleClickClose;
+/**
+ * Cleanup interval on component unmount
+ */
+onBeforeUnmount(() => {
+	if (intervalProgress.value) clearInterval(intervalProgress.value);
+});
 </script>
 
 <style lang="scss">
 @import "../../style/sass/_functions";
 
+// ============================================================
+// Base Notification Animations
+// ============================================================
 .notification-enter-active {
-	transition: all 0.3s ease 0.05s, transform 0.3s ease, margin 0.25s ease,
-		clip-path 1s ease 0.8s;
+	transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .notification-leave-active {
-	transition: all 0.25s ease !important;
+	transition: all 0.3s cubic-bezier(0.4, 0, 1, 1);
+}
+
+.notification-enter-from {
+	opacity: 0;
 }
 
 .notification-enter-to {
-	transform: none;
+	opacity: 1;
 }
 
 .notification-leave-from {
-	clip-path: circle(100% at 50% 50%) !important;
+	opacity: 1;
 }
 
 .notification-leave-to {
-
-	clip-path: circle(0% at 50% 50%) !important;
+	opacity: 0;
 }
 
-// transform: translate(0,10px) !important
-
+// ============================================================
+// Notification Parent Container
+// ============================================================
 .tu-notification-parent {
 	position: fixed;
 	right: 0px;
@@ -240,6 +449,39 @@ const close = handleClickClose;
 		top: 0px;
 		display: flex;
 		flex-direction: column-reverse;
+		
+		// Circle animation from top-right corner
+		.notification-enter-from {
+			clip-path: circle(0% at 100% 0%);
+			
+			.tu-notification__content {
+				opacity: 0;
+			}
+		}
+		
+		.notification-enter-to {
+			clip-path: circle(150% at 100% 0%);
+			
+			.tu-notification__content {
+				opacity: 1;
+			}
+		}
+		
+		.notification-leave-from {
+			clip-path: circle(150% at 100% 0%);
+
+			.tu-notification__content {
+				opacity: 1;
+			}
+		}
+		
+		.notification-leave-to {
+			clip-path: circle(0% at 100% 0%);
+
+			.tu-notification__content {
+				opacity: 0;
+			}
+		}
 	}
 
 	&--top-center {
@@ -262,37 +504,44 @@ const close = handleClickClose;
 		}
 
 		.tu-notification {
-			clip-path: circle(120% at 50% 0%);
-			transition: all 0.25s ease, transform 0.3s ease,
-				max-height 0.25s ease, clip-path 0.5s ease 0.1s;
-
 			&.tu-notification--border {
 				border: 3px solid transparent;
 				border-top: 3px solid getColor("border");
 			}
 		}
 
+		// Circle animation from top-center
 		.notification-enter-from {
-			transform: translate(0, -25%);
-			clip-path: circle(0% at 50% 0%) !important;
+			clip-path: circle(0% at 50% 0%);
 
 			.tu-notification__content {
 				opacity: 0;
-				transform: translate(0, -10%);
+			}
+		}
+		
+		.notification-enter-to {
+			clip-path: circle(150% at 50% 0%);
+
+			.tu-notification__content {
+				opacity: 1;
+			}
+		}
+
+		.notification-leave-from {
+			clip-path: circle(150% at 50% 0%);
+
+			.tu-notification__content {
+				opacity: 1;
 			}
 		}
 
 		.notification-leave-to {
-			transform: translate(0, -25%);
-			clip-path: circle(0% at 50% 0%) !important;
+			clip-path: circle(0% at 50% 0%);
 
 			.tu-notification__content {
 				opacity: 0;
-				transform: translate(0, -10%);
 			}
 		}
-
-
 	}
 
 	&--bottom-center {
@@ -310,36 +559,43 @@ const close = handleClickClose;
 			}
 		}
 
-
-
 		.tu-notification {
-			clip-path: circle(120% at 50% 100%) !important;
-			transition: all 0.25s ease, transform 0.3s ease,
-				max-height 0.25s ease, clip-path 0.5s ease 0.1s;
-
 			&.tu-notification--border {
 				border: 3px solid transparent;
 				border-bottom: 3px solid getColor("border");
 			}
 		}
 
+		// Circle animation from bottom-center
 		.notification-enter-from {
-			transform: translate(0, 25%);
-			clip-path: circle(0% at 50% 100%) !important;
+			clip-path: circle(0% at 50% 100%);
 
 			.tu-notification__content {
 				opacity: 0;
-				transform: translate(0, 10%);
+			}
+		}
+		
+		.notification-enter-to {
+			clip-path: circle(150% at 50% 100%);
+
+			.tu-notification__content {
+				opacity: 1;
+			}
+		}
+
+		.notification-leave-from {
+			clip-path: circle(150% at 50% 100%);
+
+			.tu-notification__content {
+				opacity: 1;
 			}
 		}
 
 		.notification-leave-to {
-			transform: translate(0, 25%);
-			clip-path: circle(0% at 50% 100%) !important;
+			clip-path: circle(0% at 50% 100%);
 
 			.tu-notification__content {
 				opacity: 0;
-				transform: translate(0, 10%);
 			}
 		}
 	}
@@ -360,31 +616,42 @@ const close = handleClickClose;
 		}
 
 		.tu-notification {
-			clip-path: circle(145% at 0% 50%) !important;
-
 			&.tu-notification--border {
 				border: 3px solid transparent;
 				border-left: 3px solid getColor("border");
 			}
 		}
 
+		// Circle animation from top-left corner
 		.notification-enter-from {
-			transform: translate(-25%);
-			clip-path: circle(0% at 20% 35%) !important;
+			clip-path: circle(0% at 0% 0%);
 
 			.tu-notification__content {
 				opacity: 0;
-				transform: translate(0, -10%);
+			}
+		}
+		
+		.notification-enter-to {
+			clip-path: circle(150% at 0% 0%);
+
+			.tu-notification__content {
+				opacity: 1;
+			}
+		}
+
+		.notification-leave-from {
+			clip-path: circle(150% at 0% 0%);
+
+			.tu-notification__content {
+				opacity: 1;
 			}
 		}
 
 		.notification-leave-to {
-			transform: translate(-25%);
-			clip-path: circle(0% at 20% 35%) !important;
+			clip-path: circle(0% at 0% 0%);
 
 			.tu-notification__content {
 				opacity: 0;
-				transform: translate(0, -10%);
 			}
 		}
 	}
@@ -398,57 +665,86 @@ const close = handleClickClose;
 			border-radius: 0px 20px 20px 0px;
 		}
 
-		.notification-enter-from {
-			transform: translate(-25%);
-			clip-path: circle(145% at 80% 30%) !important;
-
-			.tu-notification__content {
-				opacity: 0;
-				transform: translate(-10%);
-			}
-		}
-
-		.notification-leave-to {
-			transform: translate(-25%);
-			clip-path: circle(145% at 80% 30%) !important;
-
-			.tu-notification__content {
-				opacity: 0;
-				transform: translate(-10%);
-			}
-		}
-
 		.tu-notification {
 			&.tu-notification--border {
 				border: 3px solid transparent;
 				border-left: 3px solid getColor("border");
 			}
 		}
-	}
 
-	&--bottom-right {
+		// Circle animation from bottom-left corner
 		.notification-enter-from {
-			transform: translate(25%);
-			clip-path: circle(0% at 80% 35%) !important;
+			clip-path: circle(0% at 0% 100%);
 
 			.tu-notification__content {
 				opacity: 0;
-				transform: translate(10%);
+			}
+		}
+		
+		.notification-enter-to {
+			clip-path: circle(150% at 0% 100%);
+
+			.tu-notification__content {
+				opacity: 1;
+			}
+		}
+
+		.notification-leave-from {
+			clip-path: circle(150% at 0% 100%);
+
+			.tu-notification__content {
+				opacity: 1;
 			}
 		}
 
 		.notification-leave-to {
-			transform: translate(25%);
-			clip-path: circle(0% at 80% 35%) !important;
+			clip-path: circle(0% at 0% 100%);
 
 			.tu-notification__content {
 				opacity: 0;
-				transform: translate(10%);
+			}
+		}
+	}
+
+	&--bottom-right {
+		// Circle animation from bottom-right corner (default)
+		.notification-enter-from {
+			clip-path: circle(0% at 100% 100%);
+
+			.tu-notification__content {
+				opacity: 0;
+			}
+		}
+		
+		.notification-enter-to {
+			clip-path: circle(150% at 100% 100%);
+
+			.tu-notification__content {
+				opacity: 1;
+			}
+		}
+
+		.notification-leave-from {
+			clip-path: circle(150% at 100% 100%);
+
+			.tu-notification__content {
+				opacity: 1;
+			}
+		}
+
+		.notification-leave-to {
+			clip-path: circle(0% at 100% 100%);
+
+			.tu-notification__content {
+				opacity: 0;
 			}
 		}
 	}
 }
 
+// ============================================================
+// Notification Base Styles
+// ============================================================
 .tu-notification {
 	--tu-color: var(--tu-background);
 	--tu-border: var(--tu-background);
@@ -460,13 +756,14 @@ const close = handleClickClose;
 	border-radius: 20px;
 	box-shadow: 0px 10px 30px -5px rgba(0, 0, 0, tuVar("shadow-opacity"));
 	overflow: hidden;
-	clip-path: circle(145% at 100% 50%);
 	background: getColor("color");
 	color: getColor("text");
 	margin: 3px 10px;
-	transition: all 0.25s ease, transform 0.3s ease 0.1s, max-height 0.25s ease,
-		clip-path 0.5s ease 0.1s;
 	padding: 20px;
+	
+	// Smooth transitions for all properties
+	transition: box-shadow 0.25s ease, transform 0.25s ease, max-height 0.25s ease,
+		opacity 0.3s ease, clip-path 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 
 	&:hover:not(&--flat) {
 		box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, tuVar("shadow-opacity"));
@@ -678,7 +975,7 @@ const close = handleClickClose;
 		position: relative;
 		width: auto;
 		height: auto;
-		transition: all 0.25s ease 0.2s;
+		transition: opacity 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s;
 		opacity: 1;
 
 		&__text {
