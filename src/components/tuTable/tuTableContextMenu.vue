@@ -35,8 +35,8 @@ import { inject } from "vue";
 import { Router } from "vue-router";
 import { TuTableContextMenuEntry } from "./tuTableStore.refactored";
 import { useTableRowContext } from "./useTableRowContext";
-import { tuPopper, tuPopupMenu, tuPopupItem } from "../tuPopper";
-import tuIcon from "../tuIcon";
+import { TuPopper, TuPopupMenu, TuPopupItem } from "../tuPopper";
+import { TuIcon } from "../tuIcon";
 import { PlacementType } from "../tuPopper/tuPopper.vue";
 
 defineOptions({

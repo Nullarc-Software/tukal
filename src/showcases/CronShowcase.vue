@@ -88,7 +88,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from "vue";
-import TuCron from "../components/tuCron";
+import { TuCron } from "../components/tuCron";
 
 defineOptions({
 	name: "CronShowcase"

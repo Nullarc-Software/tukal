@@ -1,6 +1,6 @@
 import { describe, vi, it, expect} from "vitest";
 import { mount } from "@vue/test-utils";
-import { tuButton } from "../src/components/tuButton";
+import { TuButton } from "../src/components/tuButton";
 // import  Router  from "vue-router";
 // import { ComponentConstant } from "../src/components/tuComponent/utils.ts";
 
@@ -19,19 +19,19 @@ import { tuButton } from "../src/components/tuButton";
 // 	};
 // });
 
-describe("tuButton", () => {
+describe("TuButton", () => {
 	it("should trigger and emit event on click", async () => {
-		const wrapper = mount(tuButton);
+		const wrapper = mount(TuButton);
 		await wrapper.find(".tu-button").trigger("click");
 		expect(wrapper.emitted("click")).toBeTruthy();
 	});
 	it("should trigger and emit event on mousedown", async () => {
-		const wrapper = mount(tuButton);
+		const wrapper = mount(TuButton);
 		await wrapper.find(".tu-button").trigger("mousedown");
 		expect(wrapper.emitted("mousedown")).toBeTruthy();
 	});
 	it("disabled if activedisabled prop is passed", async () => {
-		const wrapper = mount(tuButton, {
+		const wrapper = mount(TuButton, {
 			props: {
 				activeDisabled: true
 			}
@@ -40,7 +40,7 @@ describe("tuButton", () => {
 	});
 	it("determine if page is opened via window.open api is called when href prop passed", async () => {
 		vi.spyOn(window, "open");
-		const wrapper = mount(tuButton, {
+		const wrapper = mount(TuButton, {
 			props: {
 				href: "https://www.google.com",
 				blank: true

@@ -20,7 +20,7 @@
 				<div v-if="loading" class="tu-dialog__loading">
 					<div class="tu-dialog__loading__load"></div>
 				</div>
-				<tu-button v-if="!notClose" color="#1e2023" class="tu-dialog__close" @click="closeClick">
+				<tu-button v-if="!notClose" color="dark" class="tu-dialog__close" @click="closeClick">
 					<tu-icon>close </tu-icon>
 				</tu-button>
 				<header v-if="$slots.header" class="tu-dialog__header">
@@ -43,8 +43,8 @@
 <script setup lang="ts">
 import { ref, watch, inject, computed } from "vue";
 import { Router } from "vue-router";
-import tuButton from "../tuButton/tuButton.vue";
-import tuIcon from "../tuIcon/tuIcon.vue";
+import { TuButton } from "../tuButton";
+import { TuIcon } from "../tuIcon";
 
 defineOptions({
 	name: "TuDialog"

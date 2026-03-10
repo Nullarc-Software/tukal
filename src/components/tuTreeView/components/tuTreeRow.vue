@@ -217,9 +217,9 @@ import {
 	TuTreeServerModel
 } from "./interface";
 import { recCallNodes, serverRequest } from "./helper";
-import tuCheckBox from "../../tuCheckBox";
-import tuIcon from "../../tuIcon";
-import tuInput from "../../tuInput";
+import { TuCheckbox } from "../../tuCheckBox";
+import { TuIcon } from "../../tuIcon";
+import { TuInput } from "../../tuInput";
 
 defineOptions({
 	name: "TuTreeRow"
@@ -364,8 +364,8 @@ function emitNodeSelected(nodeSelected: NodeData) {
 }
 
 // Redirect the event toward the Tree component
-function emitNodeExpanded(node: NodeData, state: boolean) {
-	emit("node-expanded", node, state);
+function emitNodeExpanded(node: NodeData, state?: boolean) {
+	emit("node-expanded", node, state as boolean);
 }
 
 function onNodeAdded(node: NodeData) {

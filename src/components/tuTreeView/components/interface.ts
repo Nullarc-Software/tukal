@@ -9,6 +9,8 @@ export interface NodeData {
 	text: string;
 	id: string;
 	icon?: string;
+
+	route?: string | object;
 	iconPack?: string;
 }
 

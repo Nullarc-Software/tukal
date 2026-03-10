@@ -53,7 +53,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 
-import TuCheckbox from "../components/tuCheckBox";
+import { TuCheckbox } from "../components/tuCheckBox";
 const checkBox1 = ref(false);
 const checkBox9 = ref(false);
 const checkBox2 = ref(["luis"]);

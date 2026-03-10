@@ -11,4 +11,4 @@ tuComponent.install = (vue: any) => {
 if (typeof window !== "undefined" && (<any>window).Vue)
 	tuComponent.install((<any>window).Vue);
 
-export { tuComponent as tuSidebar, tuComponent2 as tuSidebarItem, tuComponent3 as tuSidebarGroup };
+export { tuComponent as TuSidebar, tuComponent2 as TuSidebarItem, tuComponent3 as TuSidebarGroup };

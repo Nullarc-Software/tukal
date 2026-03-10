@@ -348,13 +348,13 @@
 <script setup lang="ts">
 import { ref } from "vue";
 
-import { tuButton as TuButton } from "../components/tuButton";
-import { tuTabs as TuTabs } from "../components/tuTabs";
-import { tuChip as TuChip } from "../components/tuChip";
-import TuInput from "../components/tuInput";
-import TuAvatar from "../components/tuAvatar";
-import TuSwitch from "../components/tuSwitch";
-import TuSelect from "../components/tuSelect/tuSelect.vue";
+import { TuButton } from "../components/tuButton";
+import { TuTabs } from "../components/tuTabs";
+import { TuChip } from "../components/tuChip";
+import { TuInput } from "../components/tuInput";
+import { TuAvatar } from "../components/tuAvatar";
+import { TuSwitch } from "../components/tuSwitch";
+import { TuSelect } from "../components/tuSelect";
 import TuTab from "@/components/tuTabs/tuTab.vue";
 // Tab values
 const basicTab = ref("tab1");

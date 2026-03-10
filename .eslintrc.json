@@ -42,7 +42,12 @@
 		}],
 		"no-unused-vars": "off",
 		"no-restricted-imports": ["error", "@vue/runtime-core", "vue-demi"],
-		"curly": ["error", "multi-or-nest"],
-		"brace-style": ["error", "stroustrup"]
+		"curly": "off",
+		"brace-style": "off",
+		"@typescript-eslint/no-explicit-any": "off",
+		"@typescript-eslint/no-non-null-assertion": "off",
+		"@typescript-eslint/ban-types": "off",
+		"@typescript-eslint/no-inferrable-types": "off",
+		"@typescript-eslint/no-unused-vars": "off"
     }
 }

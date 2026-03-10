@@ -11,4 +11,4 @@ if (typeof window !== "undefined" && (<any>window).Vue)
 	tuComponent.install((<any>window).Vue);  
 
 
-export {tuComponent as tuCollapse, tuComponent2 as tuCollapseItem};
+export {tuComponent as TuCollapse, tuComponent2 as TuCollapseItem};

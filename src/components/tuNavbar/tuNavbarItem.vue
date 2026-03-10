@@ -14,7 +14,7 @@ import {
 	watch
 } from "vue";
 import { Router } from "vue-router";
-import { ComponentConstants } from "../tuComponent";
+import { useTukal } from "../../composables/useTukal";
 import { getColor } from "../../utils";
 
 defineOptions({
@@ -46,8 +46,7 @@ const emit = defineEmits<{
 }>();
 
 // tuComponent functionality
-inject<Router | null>("appRouter", null);
-inject<string | null>("iconPackGlobal", null);
+const { router } = useTukal();
 
 const getColorSecondary = ref<string>("");
 
@@ -62,7 +61,6 @@ const setModel = inject<Function>("setModel");
 const item = ref<HTMLButtonElement>();
 const instance = getCurrentInstance();
 const internalActive = ref(false);
-const router = ComponentConstants.router;
 const parentName = instance?.parent?.type.name;
 
 const handleLine = function () {

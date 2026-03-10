@@ -29,7 +29,7 @@
 
 <script setup lang="ts">
 import { computed, inject, ref, onMounted } from "vue";
-import tuIcon from "../tuIcon";
+import { TuIcon } from "../tuIcon";
 import { Router } from "vue-router";
 import { getColor } from "../../utils";
 import { invert } from "lodash";

@@ -9,8 +9,7 @@ import "material-icons/iconfont/material-icons.css";
 import { createPinia } from "pinia";
 import { createRouter, createWebHashHistory } from "vue-router";
 import VueClickAway from "vue3-click-away";
-import Component1 from "../test/Component1.vue";
-import Component2 from "../test/Component2.vue";
+import TukalPlugin from "./plugins/tukalPlugin";
 
 const install = function (Vue : App, options : any = {}) {
 	// set default options
@@ -36,30 +35,7 @@ if (typeof window !== "undefined" && (<any>window).Vue)
 const pinia = createPinia();
 const router = createRouter({
 	routes: [
-		{
-			path: "/test",
-			components: {
-				tabs1: Component1
-			}
-		},
-		{
-			path: "/test2",
-			components: {
-				tabs1: Component2
-			}
-		},
-		{
-			path: "/test11",
-			components: {
-				tabs2: Component1
-			}
-		},
-		{
-			path: "/test22",
-			components: {
-				tabs2: Component2
-			}
-		}
+		
 	],
 	history: createWebHashHistory()
 });
@@ -67,6 +43,7 @@ const router = createRouter({
 appVm.use(VueClickAway);
 appVm.use(router);
 appVm.use(pinia);
+appVm.use(TukalPlugin, { router });
 appVm.mount("#app");
 
 export default install;

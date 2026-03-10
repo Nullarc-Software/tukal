@@ -72,5 +72,7 @@ class TuLoading {
 	}
 }
 
-export { TuLoading, tuComponent as tuLoading };	export type { TuLoadingAttributes, TuLoadingTypes };
+export { TuLoading };
+export { tuComponent as TuLoadingComponent };
+export type { TuLoadingAttributes, TuLoadingTypes };
 

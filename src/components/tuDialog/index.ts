@@ -7,4 +7,5 @@ tuComponent.install = (vue: any) => {
 if (typeof window !== "undefined" && (<any>window).Vue)
 	tuComponent.install((<any>window).Vue);
 
-export default tuComponent;
+export default tuComponent as typeof tuComponent & { name: "TuDialog" };
+export { tuComponent as TuDialog };

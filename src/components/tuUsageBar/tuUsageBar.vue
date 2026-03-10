@@ -76,7 +76,7 @@
 // Imports
 //====================================
 import { ref, watch, onMounted } from "vue";
-import { tuPopper } from "../tuPopper";
+import { TuPopper } from "../tuPopper";
 import { getColorAsRgb } from "../../utils";
 import type { UsageBarItem } from "./types";
 

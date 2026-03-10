@@ -34,20 +34,9 @@
 	</div>
 </template>
 
-<script setup lang="ts">
-import { computed, onBeforeUnmount, provide, watch, toRefs, useSlots, type InjectionKey } from "vue";
-import usePopper from "./composables/usePopper";
-
-defineOptions({
-	name: "TuPopper"
-});
-
-/**
- * The Popper component with comprehensive type safety.
- */
-
+<script lang="ts">
 // Strictly typed placement options
-const PLACEMENT_OPTIONS = [
+export const PLACEMENT_OPTIONS = [
 	"auto",
 	"auto-start", 
 	"auto-end",
@@ -66,19 +55,19 @@ const PLACEMENT_OPTIONS = [
 ] as const;
 
 export type PlacementType = typeof PLACEMENT_OPTIONS[number];
+</script>
+
+<script setup lang="ts">
+import { computed, onBeforeUnmount, provide, watch, toRefs, useSlots, type InjectionKey } from "vue";
+import usePopper from "./composables/usePopper";
+
+defineOptions({
+	name: "TuPopper"
+});
 
 /**
- * Re-export Props interface for external use
+ * The Popper component with comprehensive type safety.
  */
-export type TuPopperProps = Props;
-
-/**
- * Event emit types for TuPopper component
- */
-export interface TuPopperEmits {
-	"show:popper": [];
-	"hide:popper": [];
-}
 
 // Injection keys for type safety
 const BorderRadiusKey: InjectionKey<string | null> = Symbol("borderRadius");
@@ -278,7 +267,7 @@ onBeforeUnmount(() => {
 	width: 8px;
 	height: 8px;
 	visibility: hidden;
-	z-index: 0;
+	z-index: -1;
 }
 
 .popper-arrow::before {
@@ -289,7 +278,7 @@ onBeforeUnmount(() => {
 	background: var(--popper-theme-background-color, #ffffff);
 	transform: rotate(45deg);
 	visibility: visible;
-	z-index: 0;
+	z-index: -1;
 }
 
 /* Ensure popper content is above the arrow */

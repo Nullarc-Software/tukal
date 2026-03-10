@@ -54,7 +54,7 @@
 // Imports
 // ============================================================
 import { onMounted, ref, onBeforeUnmount, computed } from "vue";
-import tuIcon from "../tuIcon/tuIcon.vue";
+import { TuIcon } from "../tuIcon";
 import { isColor as checkIsColor, getColor } from "../../utils";
 
 // ============================================================

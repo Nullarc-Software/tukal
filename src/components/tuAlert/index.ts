@@ -8,4 +8,5 @@ if (typeof window !== 'undefined' && (<any>window).Vue) {
   tuComponent.install((<any>window).Vue)
 }
 
-export default tuComponent;
+export default tuComponent as typeof tuComponent & { name: "TuAlert" };
+export { tuComponent as TuAlert };

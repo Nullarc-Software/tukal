@@ -153,8 +153,8 @@
 <script setup lang="ts">
 import { ref } from "vue";
 
-import { tuButton as TuButton } from "../components/tuButton";
-import TuInput from "../components/tuInput";
+import { TuButton } from "../components/tuButton";
+import { TuInput } from "../components/tuInput";
 import TuSelect from "../components/tuSelect/tuSelect.vue";
 // Calendar view and theme
 const calendarView = ref("month");

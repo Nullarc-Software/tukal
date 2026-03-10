@@ -13,4 +13,4 @@ if (typeof window !== "undefined" && (<any>window).Vue)
 	tuComponent.install((<any>window).Vue);
 
 export * from "./common";
-export { tuComponent as tuSelect, tuComponent2 as tuSelectOptionGroup, tuComponent3 as tuSelectOption };
+export { tuComponent as TuSelect, tuComponent2 as TuSelectOptionGroup, tuComponent3 as TuSelectOption };

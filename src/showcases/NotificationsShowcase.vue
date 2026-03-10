@@ -339,9 +339,9 @@
 // Imports
 // ============================================================
 import { ref, computed } from "vue";
-import { tuButton as TuButton } from "../components/tuButton";
-import TuInput from "../components/tuInput";
-import TuSelect from "../components/tuSelect/tuSelect.vue";
+import { TuButton } from "../components/tuButton";
+import { TuInput } from "../components/tuInput";
+import { TuSelect } from "../components/tuSelect";
 import { TuNotification, type TuNotificationAttributes, type NotificationPosition } from "../components/tuNotifications";
 
 // ============================================================

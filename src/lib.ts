@@ -1,58 +1,58 @@
 import "./style/sass/vuesax.scss";
 
 // Form Components
-export { tuButton, tuButtonGroup } from "./components/tuButton";
-export { default as tuInput } from "./components/tuInput";
-export { default as tuTextArea } from "./components/tuTextArea";
-export { tuSelect, tuSelectOption, tuSelectOptionGroup } from "./components/tuSelect";
-export { default as tuSwitch } from "./components/tuSwitch";
-export { default as tuCheckbox } from "./components/tuCheckBox";
-export { default as tuRadio } from "./components/tuRadio";
-export { tuColorPicker } from "./components/tuColorPicker";
-export { tuUpload } from "./components/tuUpload";
-export { tuRichTextEditor } from "./components/tuRichTextEditor";
+export { TuButton, TuButtonGroup } from "./components/tuButton";
+export { TuInput } from "./components/tuInput";
+export { TuTextArea } from "./components/tuTextArea";
+export { TuSelect, TuSelectOption, TuSelectOptionGroup } from "./components/tuSelect";
+export { TuSwitch } from "./components/tuSwitch";
+export { TuCheckbox } from "./components/tuCheckBox";
+export { TuRadio } from "./components/tuRadio";
+export { TuColorPicker } from "./components/tuColorPicker";
+export { TuUpload } from "./components/tuUpload";
+export { TuRichTextEditor } from "./components/tuRichTextEditor";
 
 // Layout Components
-export { tuRow } from "./components/tuRow";
-export { tuCol } from "./components/tuCol";
-export { tuCard, tuCardGroup } from "./components/tuCard";
-export { default as tuDivider } from "./components/tuDivider";
-export { tuCollapse, tuCollapseItem } from "./components/tuCollapse";
+export { TuRow } from "./components/tuRow";
+export { TuCol } from "./components/tuCol";
+export { TuCard, TuCardGroup } from "./components/tuCard";
+export { TuDivider } from "./components/tuDivider";
+export { TuCollapse, TuCollapseItem } from "./components/tuCollapse";
 
 // Navigation Components
-export { tuNavbar, tuNavbarGroup, tuNavbarItem } from "./components/tuNavbar";
-export { tuSidebar, tuSidebarGroup, tuSidebarItem } from "./components/tuSideBar";
-export { default as tuBreadcrumb } from "./components/tuBreadcrumb";
-export { tuTab, tuTabs } from "./components/tuTabs";
+export { TuNavbar, TuNavbarGroup, TuNavbarItem } from "./components/tuNavbar";
+export { TuSidebar, TuSidebarItem, TuSidebarGroup } from "./components/tuSideBar";
+export { TuBreadcrumb } from "./components/tuBreadcrumb";
+export { TuTab, TuTabs } from "./components/tuTabs";
 
 // Display Components
-export { default as tuAvatar } from "./components/tuAvatar";
-export { default as tuIcon } from "./components/tuIcon";
-export { tuChip, tuChips } from "./components/tuChip";
-export { tuTag } from "./components/tuTag";
-export { default as tuAlert } from "./components/tuAlert";
-export { default as tuProgress } from "./components/tuProgress";
-export { tuUsageBar } from "./components/tuUsageBar";
-export { default as tuTimeline } from "./components/tuTimeline";
+export { TuAvatar } from "./components/tuAvatar";
+export { TuIcon } from "./components/tuIcon";
+export { TuChip, TuChips } from "./components/tuChip";
+export { TuTag } from "./components/tuTag";
+export { TuAlert } from "./components/tuAlert";
+export { TuProgress } from "./components/tuProgress";
+export { TuUsageBar } from "./components/tuUsageBar";
+export { TuTimeline } from "./components/tuTimeline";
 
 // Data Components
-export { tuTable, tuTd, tuTh, tuTr, tuTableContextMenu, type VirtualElement } from "./components/tuTable";
-export { tuTreeView } from "./components/tuTreeView";
-export { tuKanban } from "./components/tuKanban";
-export { tuCalendar } from "./components/tuCalendar";
-export { tuCalendarHeatMap } from "./components/tuCalendarHeatMap";
+export { TuTable, TuTd, TuTh, TuTr, TuTableContextMenu, type VirtualElement } from "./components/tuTable";
+export { TuTreeView } from "./components/tuTreeView";
+export { TuKanban } from "./components/tuKanban";
+export { TuCalendar } from "./components/tuCalendar";
+export { TuCalendarHeatMap } from "./components/tuCalendarHeatMap";
 
 // Interactive Components
-export { default as tuDialog } from "./components/tuDialog";
-export { tuPopper, tuPopupMenu, tuPopupItem } from "./components/tuPopper";
+export { TuDialog } from "./components/tuDialog";
+export { TuPopper, TuPopupMenu, TuPopupItem } from "./components/tuPopper";
 export { TuNotification } from "./components/tuNotifications";
-export { default as tuPagination } from "./components/tuPagination";
-export { default as tuCron } from "./components/tuCron";
+export { TuPagination } from "./components/tuPagination";
+export { TuCron } from "./components/tuCron";
 
 // Utility Components
-export { TuLoading, tuLoading } from "./components/tuLoading";
-export { tuInfiniteLoading } from "./components/tuInfiniteLoading";
-export { tuHistory } from "./components/tuHistory";
+export { TuLoading, TuLoadingComponent } from "./components/tuLoading";
+export { TuInfiniteLoading } from "./components/tuInfiniteLoading";
+export { TuHistory } from "./components/tuHistory";
 
 // Types
 export type { TuLoadingAttributes, TuLoadingTypes } from "./components/tuLoading";
@@ -70,3 +70,9 @@ export * from "./components/tuTreeView/types";
 // Utils
 export { getColor } from "./utils/index";
 export { TukalGlobals } from "./components/tukalGlobals";
+
+// Composables for <script setup>
+export { useTukal, useTukalColor, TUKAL_ROUTER_KEY, TUKAL_ICON_PACK_KEY } from "./composables/useTukal";
+
+// Plugin
+export { TukalPlugin, type TukalOptions } from "./plugins/tukalPlugin";

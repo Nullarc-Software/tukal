@@ -8,7 +8,7 @@
 			<h4>Type 1: Standard Cards</h4>
 			<p>Basic cards with simple hover effects and shadow elevation.</p>
 			<div class="card-grid">
-				<TuCard type="1">
+				<TuCard type="1" background-color="red">
 					<template #header>
 						<h3>Product Card</h3>
 					</template>
@@ -418,8 +418,8 @@
 </template>
 
 <script setup lang="ts">
-import { tuCard as TuCard } from "../components/tuCard";
-import { tuButton as TuButton } from "../components/tuButton";
+import { TuCard } from "../components/tuCard";
+import { TuButton } from "../components/tuButton";
 
 // This component demonstrates all card types and variations
 </script>

@@ -13,4 +13,4 @@ if (typeof window !== 'undefined' && (<any>window).Vue) {
   tuComponent.install((<any>window).Vue)  
 }
 
-export {tuComponent as tuNavbar, tuComponent2 as tuNavbarGroup, tuComponent3 as tuNavbarItem};
+export {tuComponent as TuNavbar, tuComponent2 as TuNavbarGroup, tuComponent3 as TuNavbarItem};

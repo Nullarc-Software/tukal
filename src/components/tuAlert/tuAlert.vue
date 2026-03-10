@@ -23,7 +23,7 @@
 <script setup lang="ts">
 import { computed, nextTick, onMounted, ref } from "vue";
 import { getColor, setColor } from "../../utils";
-import tuIcon from "../tuIcon";
+import { TuIcon } from "../tuIcon";
 
 defineOptions({
 	name: "TuAlert"

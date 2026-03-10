@@ -27,8 +27,8 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import RenderlessSelect from "./renderlessSelect.vue";
-import { tuButton } from "../tuButton";
-import { tuPopper } from "../tuPopper";
+import { TuButton } from "../tuButton";
+import { TuPopper } from "../tuPopper";
 
 defineOptions({
 	name: "CustomSelect",

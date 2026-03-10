@@ -2,12 +2,15 @@
 	<div class="tu-card-content" :class="{
 		[`tu-card-content--type-${type}`]: true,
 		'tu-card-content--fill-parent': fillParent
-	}">
+	}"
+	>
 		<div class="tu-card" :class="{
 			'tu-card--fit-content': fitContent,
 			'tu-card--content': content,
 			'tu-card--fill-parent': fillParent
-		}" v-bind="$attrs">
+		}" v-bind="$attrs"  :style="{
+		'background-color': backgroundColor
+	}">
 			<!-- Header slot (used by type 6) -->
 			<div v-if="$slots.header" class="tu-card__header" :style="{
 				'justify-content': justifyHeader
@@ -16,9 +19,7 @@
 			</div>
 			
 			<!-- Content slot -->
-			<div v-if="$slots.content" class="tu-card__content" :style="{
-				'background-color': backgroundColor
-			}">
+			<div v-if="$slots.content" class="tu-card__content" >
 				<slot name="content" />
 				<div v-if="$slots.interactions" class="tu-card__interactions">
 					<slot name="interactions" />

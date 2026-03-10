@@ -303,8 +303,8 @@
 
 <script setup lang="ts">
 import { ref, computed } from "vue";
-import { tuButton as TuButton } from "../components/tuButton";
-import TuCalendarHeatMap from "../components/tuCalendarHeatMap";
+import { TuButton } from "../components/tuButton";
+import { TuCalendarHeatMap } from "../components/tuCalendarHeatMap";
 import type { TuHeatmapValue, TuHeatmapCalendarItem } from "../components/tuCalendarHeatMap";
 
 defineOptions({

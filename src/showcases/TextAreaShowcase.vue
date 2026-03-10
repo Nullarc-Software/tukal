@@ -135,7 +135,7 @@
 						<TuButton 
 							v-for="rating in [1, 2, 3, 4, 5]" 
 							:key="rating"
-							:color="feedbackForm.rating >= rating ? 'warning' : 'default'"
+							:color="feedbackForm.rating >= rating ? 'warn' : 'dark'"
 							size="sm"
 							@click="feedbackForm.rating = rating"
 						>
@@ -181,10 +181,10 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
 
-import { tuButton as TuButton } from "../components/tuButton";
-import TuInput from "../components/tuInput";
-import TuCheckbox from "../components/tuCheckBox";
-import TuSelect from "../components/tuSelect/tuSelect.vue";
+import { TuButton } from "../components/tuButton";
+import { TuInput } from "../components/tuInput";
+import { TuCheckbox } from "../components/tuCheckBox";
+import { TuSelect } from "../components/tuSelect";
 // Basic text areas
 const basicText = ref("");
 const smallText = ref("");

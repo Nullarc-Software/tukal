@@ -172,10 +172,10 @@ import { getTableComponent } from "./componentRegistry";
 import tuTh from "./tuTh.vue";
 import tuTr from "./tuTr.vue";
 import tuTd from "./tuTd.vue";
-import tuCheckBox from "../tuCheckBox";
-import tuIcon from "../tuIcon";
-import { tuPopper } from "../tuPopper";
-import tuPagination from "../tuPagination";
+import { TuCheckbox } from "../tuCheckBox";
+import { TuIcon } from "../tuIcon";
+import { TuPopper } from "../tuPopper";
+import { TuPagination } from "../tuPagination";
 
 /**
  * Transform raw data to TuTableRow format

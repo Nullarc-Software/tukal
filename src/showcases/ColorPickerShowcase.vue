@@ -139,8 +139,7 @@
 							style="position: relative; width: 60px; height: 60px; border-radius: 8px; border: 2px solid #ddd; cursor: pointer; transition: transform 0.2s;"
 							:style="{ backgroundColor: color }"
 							@click="selectPaletteColor(color)"
-							@mouseenter="$event.target.style.transform = 'scale(1.1)'"
-							@mouseleave="$event.target.style.transform = 'scale(1)'"
+							
 						>
 							<button 
 								@click.stop="removePaletteColor(index)"
@@ -243,8 +242,8 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
 
-import { tuColorPicker as TuColorPicker } from "../components/tuColorPicker";
-import { tuButton as TuButton } from "../components/tuButton";
+import { TuColorPicker } from "../components/tuColorPicker";
+import { TuButton } from "../components/tuButton";
 import TuSelect from "../components/tuSelect/tuSelect.vue";
 // Basic colors
 const basicColor = ref("#3498db");

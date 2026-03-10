@@ -10,4 +10,4 @@ if (typeof window !== "undefined" && (<any>window).Vue)
 	tuComponent.install((<any>window).Vue);
 
 
-export { tuComponent as tuButton, tuComponent1 as tuButtonGroup };
+export { tuComponent as TuButton, tuComponent1 as TuButtonGroup };

@@ -365,9 +365,9 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { tuButton as TuButton } from "../components/tuButton";
-import { tuPopper as TuPopper, tuPopupMenu as TuPopupMenu, tuPopupItem as TuPopupItem } from "../components/tuPopper";
-import tuIcon from "../components/tuIcon";
+import { TuButton } from "../components/tuButton";
+import { TuPopper, TuPopupMenu, TuPopupItem } from "../components/tuPopper";
+import { TuIcon } from "../components/tuIcon";
 
 const lastEvent = ref<string>("None");
 

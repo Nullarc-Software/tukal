@@ -130,7 +130,7 @@ import {
 } from "vue";
 import tuSelectOption from "../tuSelect/tuSelectOption.vue";
 import { insertBody, removeBody, setCords } from "@/utils";
-import tuIcon from "../tuIcon";
+import { TuIcon } from "../tuIcon";
 import * as _ from "lodash";
 import { SelectOptionConstants } from ".";
 import { getColor } from "@/utils";
@@ -640,7 +640,7 @@ const getChips = computed(() => {
 					},
 					[
 						h(
-							tuIcon,
+							TuIcon,
 							{
 								hover: "less",
 								style: { "font-size": "0.5rem" }

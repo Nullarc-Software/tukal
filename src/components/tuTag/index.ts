@@ -8,4 +8,4 @@ if (typeof window !== "undefined" && (<any>window).Vue)
 	tuComponent.install((<any>window).Vue);
 
 
-export {tuComponent as tuTag};
+export {tuComponent as TuTag};

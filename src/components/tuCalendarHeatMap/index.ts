@@ -46,6 +46,6 @@ if (typeof window !== "undefined" && (window as GlobalVue).Vue) {
 	}
 }
 
-export { TuCalendarHeatMapComponent as tuCalendarHeatMap };
+export { TuCalendarHeatMapComponent as TuCalendarHeatMap };
 export type { TuHeatmapValue, TuHeatmapLocale, TuHeatmapTooltipFormatter, TuHeatmapCalendarItem } from "./Heatmap";
 export default TuCalendarHeatMapComponent;

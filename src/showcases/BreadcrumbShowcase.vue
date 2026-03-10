@@ -79,23 +79,31 @@
 <script setup lang="ts">
 import { ref } from "vue";
 
-import TuBreadcrumb from "../components/tuBreadcrumb";
-import { tuButton as TuButton } from "../components/tuButton";
-const basicItems = ref([
+import { TuBreadcrumb } from "../components/tuBreadcrumb";
+import { TuButton } from "../components/tuButton";
+
+interface BreadcrumbItem {
+	title: string;
+	url?: string;
+	active?: boolean;
+	disabled?: boolean;
+}
+
+const basicItems = ref<BreadcrumbItem[]>([
 	{ title: "Home", url: "/" },
 	{ title: "Library", url: "/library" },
 	{ title: "Components", url: "/components" },
 	{ title: "Breadcrumb", active: true }
 ]);
 
-const itemsWithDisabled = ref([
+const itemsWithDisabled = ref<BreadcrumbItem[]>([
 	{ title: "Home", url: "/" },
 	{ title: "Disabled", url: "/disabled", disabled: true },
 	{ title: "Components", url: "/components" },
 	{ title: "Current", active: true }
 ]);
 
-const dynamicItems = ref([
+const dynamicItems = ref<BreadcrumbItem[]>([
 	{ title: "Home", url: "/" },
 	{ title: "Current", active: true }
 ]);

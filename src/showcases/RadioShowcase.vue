@@ -174,8 +174,8 @@
 <script setup lang="ts">
 import { ref } from "vue";
 
-import { tuButton as TuButton } from "../components/tuButton";
-import TuRadio from "../components/tuRadio";
+import { TuButton } from "../components/tuButton";
+import { TuRadio } from "../components/tuRadio";
 // Radio values
 const basicRadio = ref("");
 const colorRadio = ref("");

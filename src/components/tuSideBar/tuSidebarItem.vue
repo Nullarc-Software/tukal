@@ -12,10 +12,6 @@
 			<div class="tu-sidebar__item__text" :class="{ reduced: reduced }" :title="tooltip">
 				<slot />
 			</div>
-			<div v-if="$slots.arrow || arrow" class="tu-sidebar__item__arrow">
-				<slot v-if="$slots.arrow" name="arrow" />
-				<tu-icon v-else>keyboard_arrow_down</tu-icon>
-			</div>
 		</button>
 	</a>
 </template>
@@ -26,10 +22,10 @@ import { computed, inject, onMounted, ref, watch, type Ref } from "vue";
 defineOptions({
 	name: "TuSidebarItem"
 });
-import { ComponentConstants } from "../tuComponent";
+import { useTukal } from "../../composables/useTukal";
 import * as _ from "lodash";
 import * as pathRegex from "path-to-regexp";
-import tuIcon from "../tuIcon";
+import { TuIcon } from "../tuIcon";
 import TuPopper from "../tuPopper/tuPopper.vue";
 
 interface RouteObject {
@@ -43,7 +39,6 @@ interface Props {
 	target?: string;
 	value?: string;
 	id?: string;
-	arrow?: boolean;
 	tooltip?: string;
 }
 
@@ -53,8 +48,7 @@ const props = withDefaults(defineProps<Props>(), {
 	target: "_blank",
 	value: undefined,
 	id: undefined,
-	tooltip: "",
-	arrow: false
+	tooltip: ""
 });
 
 const parentValue = inject<Ref<string | null>>("parentValue");
@@ -62,7 +56,7 @@ const handleClickItem = inject<((id: string) => void) | undefined>("handleClickI
 const reduced = inject<Ref<boolean>>("reduced");
 const internalActive = ref(false);
 const tooltipVisible = ref(false);
-const router = ComponentConstants.router;
+const { router } = useTukal();
 
 
 const isActive = computed(() => {
@@ -72,8 +66,13 @@ const isActive = computed(() => {
 });
 
 const handleClick = function () {
-	if (props.to) 
-		ComponentConstants.router.push(props.to as RouteObject | string);
+	if (props.to && router) {
+		if (typeof props.to === "string") {
+			router.push(props.to);
+		} else if (typeof props.to === "object" && props.to.path) {
+			router.push({ path: props.to.path });
+		}
+	}
 	else if (props.href)
 		window.open(props.href as string, props.target);
 };
@@ -100,7 +99,7 @@ const handleRouteChange = function () {
 				if (typeof props.to === "string") {
 					return pathRegex
 						.pathToRegexp(route.path)
-						.test(props.to as string) || pathRegex.pathToRegexp(route.path).test(props.href || "");
+						.regexp.test(props.to as string) || pathRegex.pathToRegexp(route.path).regexp.test(props.href || "");
 				}
 				else if (props.to && typeof props.to === "object") {
 					const routeObj = props.to as RouteObject;
@@ -113,7 +112,7 @@ const handleRouteChange = function () {
 							.pathToRegexp(
 								router.currentRoute.value.path
 							)
-							.test(routeObj.path || "") || pathRegex.pathToRegexp(router.currentRoute.value.path).test(props.href || "");
+							.regexp.test(routeObj.path || "") || pathRegex.pathToRegexp(router.currentRoute.value.path).regexp.test(props.href || "");
 					}
 				}
 				else return false;
@@ -144,7 +143,7 @@ onMounted(() => {
 
 // Variables
 $transition-ease: all 0.25s ease;
-$active-padding: 25px;
+$active-padding: 10px;
 $icon-padding: 8px;
 
 // Mixins
@@ -165,6 +164,15 @@ $icon-padding: 8px;
 	justify-content: start;
 	align-items: center;
 	width: 100%;
+	text-decoration: none;
+	color: inherit;
+	
+	&:hover,
+	&:visited,
+	&:active {
+		text-decoration: none;
+		color: inherit;
+	}
 }
 
 .tu-sidebar__item {
@@ -179,20 +187,23 @@ $icon-padding: 8px;
 	@include flex-center;
 	justify-content: flex-start;
 	position: relative;
+	left: 0;
+	
 	color: getColor("text");
 	border: 0;
 
 	// Active indicator line (base state)
 	&:after {
+		opacity: 0;
 		content: "";
 		position: absolute;
-		left: -4px;
+		left: 0;
 		top: 0;
-		width: 10px;
+		width: 5px;
 		height: 100%;
 		background: getColor("color");
 		border-radius: 0 20px 20px 0;
-		transform: translateX(-6px);
+		transform: translateX(-10px);
 		transition: $transition-ease;
 		z-index: 60;
 	}
@@ -216,11 +227,15 @@ $icon-padding: 8px;
 
 	&.active {
 		color: getColor("color");
-		&:after { transform: translateX(0); }
-	}	// Child elements
+		&:after { 
+			opacity: 1;
+			transform: translateX(0);
+		}
+	}
+	
+	// Child elements
 	&__icon {
-		min-width: 40px;
-		height: 47px;
+		padding: 5px 5px;
 		@include flex-center;
 		font-size: 1.2rem;
 		z-index: 50;
@@ -228,31 +243,16 @@ $icon-padding: 8px;
 	}
 
 	&__text {
+		
 		@include text-ellipsis;
+		padding: 5px 5px;
 		z-index: 10;
 		transition: $transition-ease;
 		font-size: 0.9rem;
 		opacity: 1;
+		margin-right: 10px;
 
 		&.reduced { display: none; }
-	}
-
-	&__arrow {
-		position: relative;
-		justify-self: flex-end;
-		margin-left: auto;
-		margin-right: 15px;
-		z-index: 80;
-
-		i { 
-			transition: $transition-ease;
-			transform: rotate(0deg) !important; 
-		}
-
-		.tu-icon-arrow {
-			&:before { width: 2px; }
-			&:after { height: 2px; }
-		}
 	}
 }
 </style>

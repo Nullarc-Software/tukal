@@ -78,8 +78,8 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from "vue";
 import type { TuKanbanItem, TuKanbanField } from "./utils";
-import tuInput from "../tuInput";
-import tuIcon from "../tuIcon";
+import { TuInput } from "../tuInput";
+import { TuIcon } from "../tuIcon";
 import { TuLoading, TuLoadingAttributes } from "../tuLoading";
 
 // ============================================================================

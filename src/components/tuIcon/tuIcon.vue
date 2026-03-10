@@ -15,10 +15,9 @@
 	</i>
 </template>
 <script setup lang="ts">
-import { computed, inject } from "vue";
-import { Router } from "vue-router";
+import { computed } from "vue";
 import { isColor as checkIsColor } from "../../utils";
-import { ComponentConstants } from "../tuComponent";
+import { useTukal } from "../../composables/useTukal";
 
 
 defineOptions({
@@ -53,8 +52,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 // tuComponent functionality
-inject<Router | null>("appRouter", null);
-const iconPackGlobal = inject<string | null>("iconPackGlobal", null) || ComponentConstants.iconPackGlobal;
+const { iconPackGlobal } = useTukal();
 
 const getIconPack = computed(() => {
 	if (props.iconPack) return props.iconPack;

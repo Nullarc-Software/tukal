@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { tuLoading } from "../../tuLoading";
+import { TuLoading } from "../../tuLoading";
 import { onMounted, ref, toRefs, onUnmounted, watch, nextTick } from "vue";
 import {
 	startObserver,
@@ -69,7 +69,7 @@ onUnmounted(() => {
 <template>
 	<div ref="infiniteLoading">
 		<slot v-if="state == 'loading'">
-			<tu-loading />
+			<TuLoading />
 		</slot>
 		<slot v-if="state == 'complete'" name="complete">
 			<span> {{ slots?.complete || "No more results!" }} </span>

@@ -157,7 +157,7 @@
 			</TuButton>
 
 			<TuButton circle border v-if="link" title="Horizontal Rule"
-				@click="editor.chain().focus().set().run()">
+				@click="editor.chain().focus().setHorizontalRule().run()">
 				<TuIcon size="1rem">remove</TuIcon>
 			</TuButton>
 

@@ -25,7 +25,7 @@ interface Props {
 	intervals?: number[];
 }
 
-interface IntervalTime {
+export interface IntervalTime {
 	text: string;
 	utc: number;
 }

@@ -73,8 +73,8 @@
 <script setup lang="ts">
 import { ref } from "vue";
 
-import { tuButton as TuButton } from "../components/tuButton";
-import { tuChip as TuChip } from "../components/tuChip";
+import { TuButton } from "../components/tuButton";
+import { TuChip } from "../components/tuChip";
 // Closable chips
 const tags = ref([
 	{ id: 1, name: "JavaScript", color: "warn" },

@@ -1,10 +1,10 @@
 import { describe, it, expect} from "vitest";
 import { mount } from "@vue/test-utils";
-import  tuCheckBox  from "../src/components/tuCheckBox";
+import { TuCheckbox } from "../src/components/TuCheckbox";
 
-describe("tuCheckBox", () => {
+describe("TuCheckbox", () => {
 	it("should emit modelValue on input", async () => {
-		const wrapper = mount(tuCheckBox, {
+		const wrapper = mount(TuCheckbox, {
 			props: {
 				modelValue: true
 			}
@@ -13,7 +13,7 @@ describe("tuCheckBox", () => {
 		expect(wrapper.emitted("update:modelValue")[0]).toEqual([false]);
 	});
 	it("should emit modelValue on input with an array  containing the val", async () => {
-		const wrapper = mount(tuCheckBox, {
+		const wrapper = mount(TuCheckbox, {
 			props: {
 				val: "carrot",
 				modelValue: ["potato"]
@@ -23,7 +23,7 @@ describe("tuCheckBox", () => {
 		expect(wrapper.emitted("update:modelValue")[0]).toEqual([ [ "potato", "carrot" ] ]);
 	});
 	it("should emit modelValue on input with an array not containing the val", async () => {
-		const wrapper = mount(tuCheckBox, {
+		const wrapper = mount(TuCheckbox, {
 			props: {
 				val: "carrot",
 				modelValue: ["carrot"]
@@ -33,7 +33,7 @@ describe("tuCheckBox", () => {
 		expect(wrapper.emitted("update:modelValue")[0]).toEqual([[]]);
 	});
 	it("when indeterminate is true checked should change on click", async () => {
-		const wrapper = mount(tuCheckBox, {
+		const wrapper = mount(TuCheckbox, {
 			props: {
 				indeterminate: true,
 				checked: true
@@ -43,7 +43,7 @@ describe("tuCheckBox", () => {
 		expect(wrapper.emitted("update:checked")[0]).toEqual([false]);
 	});
 	it("indeterminate icon should render on passing the prop true", async () => {
-		const wrapper = mount(tuCheckBox, {
+		const wrapper = mount(TuCheckbox, {
 			props: {
 				indeterminate: true
 			}
@@ -51,7 +51,7 @@ describe("tuCheckBox", () => {
 		expect(wrapper.find("i").text()).toBe("horizontal_rule");
 	});
 	it("notValue prop", async () => {
-		const wrapper = mount(tuCheckBox, {
+		const wrapper = mount(TuCheckbox, {
 			props: {
 				notValue: "Carols",
 				modelValue: ["louis"]
@@ -61,7 +61,7 @@ describe("tuCheckBox", () => {
 		expect(wrapper.emitted("update:modelValue")[0]).toEqual([["louis", ""]]);
 	});
 	it("disabled prop disables the checkbox", async () => {
-		const wrapper = mount(tuCheckBox, {
+		const wrapper = mount(TuCheckbox, {
 			props: {
 				disabled: true,
 			}
@@ -69,7 +69,7 @@ describe("tuCheckBox", () => {
 		expect(wrapper.find(".tu-checkbox--disabled")).toBeTruthy();
 	});
 	it("loading prop should show loading animation", async () => {
-		const wrapper = mount(tuCheckBox, {
+		const wrapper = mount(TuCheckbox, {
 			props: {
 				disabled: true,
 			}
@@ -78,7 +78,7 @@ describe("tuCheckBox", () => {
 		expect(wrapper.find(".tu-checkbox--loading")).toBeTruthy();
 	});
 	it("eventBubble prop when passed should emit click event", async () => {
-		const wrapper = mount(tuCheckBox, {
+		const wrapper = mount(TuCheckbox, {
 			props: {
 				eventBubble: true,
 			}
@@ -87,12 +87,12 @@ describe("tuCheckBox", () => {
 		expect(wrapper.emitted("click")).toBeTruthy();
 	});
 	it("should emit blur event", async () => {
-		const wrapper = mount(tuCheckBox);
+		const wrapper = mount(TuCheckbox);
 		await wrapper.find(".tu-checkbox").trigger("blur");
 		expect(wrapper.emitted("blur")).toBeTruthy();
 	});
 	it("should update checked prop on input event", async () => {
-		const wrapper = mount(tuCheckBox, {
+		const wrapper = mount(TuCheckbox, {
 			props: {
 				checked: false
 			}

@@ -10,7 +10,7 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
-import { tuTag } from "../tuTag";
+import { TuTag } from "../tuTag";
 import { useTableRowContext } from "../tuTable";
 
 interface Props {

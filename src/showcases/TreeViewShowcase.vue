@@ -161,15 +161,17 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { tuTreeView as TuTreeView } from "../components/tuTreeView";
-import { tuButton as TuButton } from "../components/tuButton";
-import { tuChip as TuChip } from "../components/tuChip";
-import { tuTag as TuTag } from "../components/tuTag";
-import TuInput from "../components/tuInput";
-import TuAvatar from "../components/tuAvatar";
+import { TuTreeView } from "../components/tuTreeView";
+import { TuButton } from "../components/tuButton";
+import { TuChip } from "../components/tuChip";
+import { TuTag } from "../components/tuTag";
+import { TuInput } from "../components/tuInput";
+import { TuAvatar } from "../components/tuAvatar";
+import type { NodeData } from "../components/tuTreeView/components/interface";
+
 // Selected states
-const selectedNode = ref(null);
-const checkedNodes = ref([]);
+const selectedNode = ref<NodeData | null>(null);
+const checkedNodes = ref<NodeData[]>([]);
 const lastClickedFile = ref("");
 const lastMenuAction = ref("");
 const newNodeName = ref("");
@@ -200,21 +202,19 @@ const basicTreeData = ref([
 ]);
 
 // File system data
-const fileSystemData = ref([
+const fileSystemData = ref<NodeData[]>([
 	{
 		id: "1",
 		text: "Documents",
-		type: "folder",
 		children: [
-			{ id: "2", text: "Resume.pdf", type: "file", size: "245 KB" },
-			{ id: "3", text: "Cover Letter.docx", type: "file", size: "127 KB" },
+			{ id: "2", text: "Resume.pdf" },
+			{ id: "3", text: "Cover Letter.docx" },
 			{
 				id: "4",
 				text: "Projects",
-				type: "folder",
 				children: [
-					{ id: "5", text: "Project1.zip", type: "file", size: "2.3 MB" },
-					{ id: "6", text: "Project2.zip", type: "file", size: "1.8 MB" }
+					{ id: "5", text: "Project1.zip" },
+					{ id: "6", text: "Project2.zip" }
 				]
 			}
 		]
@@ -222,19 +222,17 @@ const fileSystemData = ref([
 	{
 		id: "7",
 		text: "Images",
-		type: "folder",
 		children: [
-			{ id: "8", text: "vacation.jpg", type: "file", size: "3.2 MB" },
-			{ id: "9", text: "profile.png", type: "file", size: "567 KB" }
+			{ id: "8", text: "vacation.jpg" },
+			{ id: "9", text: "profile.png" }
 		]
 	},
 	{
 		id: "10",
 		text: "Music",
-		type: "folder",
 		children: [
-			{ id: "11", text: "song1.mp3", type: "file", size: "4.1 MB" },
-			{ id: "12", text: "song2.mp3", type: "file", size: "3.8 MB" }
+			{ id: "11", text: "song1.mp3" },
+			{ id: "12", text: "song2.mp3" }
 		]
 	}
 ]);
@@ -303,7 +301,7 @@ const checkboxTreeData = ref([
 ]);
 
 // Menu data
-const menuData = ref([
+const menuData = ref<NodeData[]>([
 	{
 		id: "1",
 		text: "Dashboard",
@@ -346,7 +344,19 @@ const menuData = ref([
 		icon: "settings",
 		route: "/settings"
 	}
-]);
+] as NodeData[]);
+
+// Clean menu data to remove children property from leaf nodes
+function cleanMenuData(nodes: any[]) {
+	for (const node of nodes) {
+		if (node.children && Array.isArray(node.children) && node.children.length > 0) {
+			cleanMenuData(node.children);
+		} else {
+			delete node.children;
+		}
+	}
+}
+cleanMenuData(menuData.value);
 
 // Dynamic tree data
 const dynamicTreeData = ref([
@@ -393,7 +403,7 @@ const projectStructure = ref([
 	},
 	{ id: "9", text: "package.json", type: "json", status: "clean" },
 	{ id: "10", text: "vite.config.ts", type: "typescript", status: "clean" }
-]);
+] as any);
 
 // Methods
 const onNodeClick = (node: any) => {

@@ -48,7 +48,7 @@
 </template>
 
 <script setup lang="ts">
-import { tuHistory as TuHistory } from "../components/tuHistory";
+import { TuHistory } from "../components/tuHistory";
 import type { TuHistoryEvent, TuHistoryServerModel } from "../components/tuHistory";
 
 const basicEvents: TuHistoryEvent[] = [

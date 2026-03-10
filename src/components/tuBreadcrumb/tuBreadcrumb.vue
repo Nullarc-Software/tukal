@@ -28,14 +28,14 @@ defineOptions({
 	name: "TuBreadcrumb"
 });
 
-interface BreadcrumbItem {
+export interface BreadcrumbItem {
 	title: string | ((params: Record<string, string | string[]>) => string);
 	url?: string;
 	active?: boolean;
 	disabled?: boolean;
 }
 
-interface ProcessedBreadcrumbItem {
+export interface ProcessedBreadcrumbItem {
 	title: string;
 	url?: string;
 	active?: boolean;

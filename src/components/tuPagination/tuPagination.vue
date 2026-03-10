@@ -177,7 +177,7 @@
 </template>
 <script setup lang="ts">
 import { computed, nextTick, ref, watch } from "vue";
-import tuIcon from "../tuIcon";
+import { TuIcon } from "../tuIcon";
 import { getColor, getColorAsRgb } from "../../utils";
 
 // Type definitions

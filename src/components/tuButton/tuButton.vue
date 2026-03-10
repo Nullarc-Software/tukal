@@ -21,7 +21,7 @@
 
 <script setup lang="ts">
 import { computed, ref, inject } from "vue";
-import { ComponentConstants } from "../tuComponent";
+import { useTukal } from "../../composables/useTukal";
 import ripple, { rippleCut, rippleReverse } from "../../utils/ripple";
 
 
@@ -150,6 +150,7 @@ const emit = defineEmits<{
 	click: [event: MouseEvent];
 }>();
 
+const { router } = useTukal();
 const rippleDir = ref("");
 const button = ref<HTMLButtonElement>();
 
@@ -253,8 +254,8 @@ const clickButton = function (event: MouseEvent) {
 	if (buttonGroup && buttonGroup.mutuallyExclusive)
 		buttonGroup.selectButton(buttonId.value);
 	
-	if (props.to)
-		ComponentConstants.router.push(props.to);
+	if (props.to && router)
+		router.push(props.to);
 	else if (props.href)
 		window.open(props.href, (props.blank && "_blank") || "_self");
 	emit("click", event);

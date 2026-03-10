@@ -92,7 +92,7 @@
 </template>
 
 <script setup lang="ts">
-import { tuNavbar as TuNavbar, tuNavbarItem as TuNavbarItem } from "../components/tuNavbar";
+import { TuNavbar, TuNavbarItem } from "../components/tuNavbar";
 </script>
 
 <style scoped>

@@ -225,11 +225,11 @@
 <script setup lang="ts">
 import { ref } from "vue";
 
-import TuTimeline from "../components/tuTimeline";
-import { tuButton as TuButton } from "../components/tuButton";
-import { tuChip as TuChip } from "../components/tuChip";
-import { tuTag as TuTag } from "../components/tuTag";
-import TuAvatar from "../components/tuAvatar";
+import { TuTimeline } from "../components/tuTimeline";
+import { TuButton } from "../components/tuButton";
+import { TuChip } from "../components/tuChip";
+import { TuTag } from "../components/tuTag";
+import { TuAvatar } from "../components/tuAvatar";
 // Interactive timeline
 const interactiveItems = ref([
 	{

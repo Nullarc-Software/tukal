@@ -11,4 +11,4 @@ tuComponent.install = (vue: any) => {
 if (typeof window !== "undefined" && (<any>window).Vue)
 	tuComponent.install((<any>window).Vue);
 
-export { tuComponent as tuPopper, tuComponent1 as tuPopupMenu, tuComponent2 as tuPopupItem };
+export { tuComponent as TuPopper, tuComponent1 as TuPopupMenu, tuComponent2 as TuPopupItem };

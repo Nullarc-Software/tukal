@@ -21,7 +21,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import tuIcon from "../tuIcon";
+import { TuIcon } from "../tuIcon";
 
 defineOptions({
 	name: "TuCardGroup"

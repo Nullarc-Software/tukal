@@ -285,34 +285,19 @@ const addValueOptions = ref([
 ]);
 
 const groupedOptions = ref([
-	{
-		group: "Frontend",
-		options: [
-			{ label: "HTML", value: "html" },
-			{ label: "CSS", value: "css" },
-			{ label: "JavaScript", value: "js" },
-			{ label: "Vue.js", value: "vue" },
-			{ label: "React", value: "react" }
-		]
-	},
-	{
-		group: "Backend",
-		options: [
-			{ label: "Node.js", value: "node" },
-			{ label: "Python", value: "python" },
-			{ label: "PHP", value: "php" },
-			{ label: "Java", value: "java" },
-			{ label: "C#", value: "csharp" }
-		]
-	},
-	{
-		group: "Database",
-		options: [
-			{ label: "MySQL", value: "mysql" },
-			{ label: "PostgreSQL", value: "postgresql" },
-			{ label: "MongoDB", value: "mongodb" },
-			{ label: "Redis", value: "redis" }
-		]
-	}
+	{ label: "HTML", value: "html", group: "Frontend" },
+	{ label: "CSS", value: "css", group: "Frontend" },
+	{ label: "JavaScript", value: "js", group: "Frontend" },
+	{ label: "Vue.js", value: "vue", group: "Frontend" },
+	{ label: "React", value: "react", group: "Frontend" },
+	{ label: "Node.js", value: "node", group: "Backend" },
+	{ label: "Python", value: "python", group: "Backend" },
+	{ label: "PHP", value: "php", group: "Backend" },
+	{ label: "Java", value: "java", group: "Backend" },
+	{ label: "C#", value: "csharp", group: "Backend" },
+	{ label: "MySQL", value: "mysql", group: "Database" },
+	{ label: "PostgreSQL", value: "postgresql", group: "Database" },
+	{ label: "MongoDB", value: "mongodb", group: "Database" },
+	{ label: "Redis", value: "redis", group: "Database" }
 ]);
 </script>

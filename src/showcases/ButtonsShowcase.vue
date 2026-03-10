@@ -20,7 +20,7 @@
       <TuButton danger> danger </TuButton>
       <TuButton warn> warn </TuButton>
       <TuButton dark> dark </TuButton>
-      <TuButton color="#7d33ff" dark> color </TuButton>
+      <TuButton color="primary" dark> color </TuButton>
       <TuButton gradient> gradient </TuButton>
     </div>
     <div style="display: flex; margin: 10px">
@@ -106,7 +106,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { tuButton as TuButton } from "../components/tuButton";
+import { TuButton } from "../components/tuButton";
 
 const buttonActive = ref(false);
 const loading = ref(false);

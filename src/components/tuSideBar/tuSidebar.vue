@@ -55,7 +55,7 @@
 </template>
 <script lang="ts" setup>
 import { setColor } from "@/utils";
-import { computed, inject, onMounted, provide, ref, watch } from "vue";
+import { computed, inject, nextTick, onMounted, provide, ref, watch } from "vue";
 import TuIcon from "../tuIcon/tuIcon.vue";
 
 defineOptions({
@@ -221,15 +221,99 @@ const getColor = inject<(color: string) => string>("getColor", () => "");
 const isColor = inject<boolean>("isColor", false);
 
 const reduceInternal = ref(props.reduce);
+const widthRecalcTrigger = ref(false);
 
 const sidebar = ref<HTMLDivElement>();
 
 // Computed properties for CSS custom properties - content-based sizing
 const sidebarWidth = computed(() => {
+	// Reactive trigger for recalculation - accessing the value makes this computed reactive to changes
+	const trigger = widthRecalcTrigger.value;
+	
 	// For reduced state, use minimal width for icons only
 	if (reduceInternal.value) return "60px";
-	// For expanded state, use fixed width or default
-	return props.fixedExpandWidth ? `${props.fixedExpandWidth}px` : "150px";
+	
+	// For expanded state, use fixed width if provided
+	if (props.fixedExpandWidth) return `${props.fixedExpandWidth}px`;
+	
+	// Otherwise, compute minimum width based on content
+	if (!sidebar.value) return "250px"; // Better fallback before mount
+	
+	try {
+		// Get all sidebar items including those in groups
+		const allSidebarItems = sidebar.value.querySelectorAll(".tu-sidebar__item");
+		if (!allSidebarItems.length) return "250px"; // Fallback if no items
+		
+		let maxWidth = 0;
+		
+		// Create a temporary element to measure text width accurately
+		const measureElement = document.createElement("div");
+		measureElement.style.cssText = `
+			position: absolute;
+			visibility: hidden;
+			height: auto;
+			width: auto;
+			white-space: nowrap;
+			font-size: 14px;
+			font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+			font-weight: bold;
+			padding: 0;
+			margin: 0;
+			border: none;
+		`;
+		document.body.appendChild(measureElement);
+		
+		allSidebarItems.forEach((item) => {
+			const textElement = item.querySelector(".tu-sidebar__item__text");
+			if (textElement) {
+				const text = textElement.textContent?.trim() || "";
+				if (text) {
+					// Check if this item has an icon to account for different padding
+					const hasIcon = item.querySelector(".tu-sidebar__item__icon");
+					
+					// Measure the text
+					measureElement.textContent = text;
+					let textWidth = measureElement.offsetWidth;
+					
+					// Account for different font sizes in groups
+					const isInGroup = item.closest(".tu-sidebar__group__content");
+					if (isInGroup) {
+						// Nested items have smaller font size (0.9rem)
+						measureElement.style.fontSize = "12.6px"; // 0.9 * 14px
+						measureElement.textContent = text;
+						textWidth = measureElement.offsetWidth;
+						measureElement.style.fontSize = "14px"; // Reset for next iteration
+					}
+					
+					// Add appropriate padding based on item type
+					let itemPadding = 0;
+					if (hasIcon) {
+						// Icon + text spacing + margins
+						itemPadding = 50; // icon width + padding
+					} else {
+						// Text-only items need left padding
+						itemPadding = 30;
+					}
+					
+					maxWidth = Math.max(maxWidth, textWidth + itemPadding);
+				}
+			}
+		});
+		
+		document.body.removeChild(measureElement);
+		
+		// Add additional padding for sidebar margins and scrollbar
+		const sidebarPadding = 40; // Sidebar internal padding + safety margin
+		const computedWidth = maxWidth + sidebarPadding;
+		
+		// Ensure minimum and maximum practical widths
+		const finalWidth = Math.max(Math.min(computedWidth, 400), 180);
+		
+		return `${finalWidth}px`;
+	} catch (error) {
+		console.warn("Error calculating sidebar width:", error);
+		return "250px"; // Safe fallback
+	}
 });
 
 const reducedWidth = computed(() => "60px");
@@ -237,6 +321,12 @@ const reducedWidth = computed(() => "60px");
 const toggleReduce = () => {
 	reduceInternal.value = !reduceInternal.value;
 	emit("update:expanded", !reduceInternal.value);
+};
+
+const recalculateWidth = () => {
+	nextTick(() => {
+		widthRecalcTrigger.value = !widthRecalcTrigger.value;
+	});
 };
 
 // Watch for changes to reduce prop
@@ -306,6 +396,10 @@ watch(
 
 watch(reduceInternal, (newVal) => {
 	emit("update:expanded", !newVal);
+	// Recalculate width when reduce state changes
+	nextTick(() => {
+		recalculateWidth();
+	});
 });
 
 watch(
@@ -368,6 +462,24 @@ onMounted(() => {
 	// Only set max-width if fixedExpandWidth is provided and not in reduced state
 	if (props.fixedExpandWidth && sidebar.value && !reduceInternal.value)
 		sidebar.value.style.setProperty("--tu-sidebar-width", `${props.fixedExpandWidth}px`);
+
+	// Recalculate width after mount and setup observer for content changes
+	nextTick(() => {
+		recalculateWidth();
+		
+		// Set up mutation observer to watch for content changes
+		if (sidebar.value) {
+			const observer = new MutationObserver(() => {
+				recalculateWidth();
+			});
+			
+			observer.observe(sidebar.value, {
+				childList: true,
+				subtree: true,
+				characterData: true
+			});
+		}
+	});
 });
 
 // Expose methods and properties for template refs and child components
@@ -375,7 +487,8 @@ defineExpose({
 	toggleReduce,
 	reduceInternal,
 	sidebarWidth,
-	reducedWidth
+	reducedWidth,
+	recalculateWidth
 });
 </script>
 
@@ -602,7 +715,7 @@ $reduced-width: 60px;
 		min-width: inherit;
 		overflow-y: auto;
 		overflow-x: hidden;
-		
+		align-items: flex-start;
 
 		&__footer {
 			@extend %flex-base;

@@ -16,7 +16,8 @@ if (typeof window !== "undefined" && (<any>window).Vue)
 	tuComponent.install((<any>window).Vue);
 
 export * from "./useTableRowContext";
+export * from "./tuTableStore.refactored";
 export type { TuTableRowContext } from "./tuTr.vue";
 export { ExportData } from "./export";
 export type {VirtualElement } from "@popperjs/core";
-export { tuComponent as tuTable, tuComponent2 as tuTh, tuComponent3 as tuTr, tuComponent4 as tuTd, tuComponent5 as tuTableContextMenu };
+export { tuComponent as TuTable, tuComponent2 as TuTh, tuComponent3 as TuTr, tuComponent4 as TuTd, tuComponent5 as TuTableContextMenu };

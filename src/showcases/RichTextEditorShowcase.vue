@@ -158,7 +158,7 @@
 					<h5>{{ documentData.title || 'Untitled Document' }}</h5>
 					<div style="display: flex; gap: 10px; align-items: center;">
 						<span style="font-size: 14px; color: #666;">{{ getWordCount(documentData.content) }} words</span>
-						<TuButton @click="exportDocument" size="sm" color="info">Export</TuButton>
+						<TuButton @click="exportDocument" size="sm" color="primary">Export</TuButton>
 						<TuButton @click="shareDocument" size="sm" color="success">Share</TuButton>
 					</div>
 				</div>
@@ -214,7 +214,7 @@
 							</div>
 							<div style="display: flex; gap: 5px;">
 								<TuButton @click="replyToComment(comment.id)" size="xs">Reply</TuButton>
-								<TuButton @click="editComment(comment.id)" size="xs" color="warning">Edit</TuButton>
+								<TuButton @click="editComment(comment.id)" size="xs" color="warn">Edit</TuButton>
 								<TuButton @click="deleteComment(comment.id)" size="xs" color="danger">Delete</TuButton>
 							</div>
 						</div>
@@ -326,12 +326,12 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
 
-import { tuButton as TuButton } from "../components/tuButton";
-import { tuChip as TuChip } from "../components/tuChip";
-import TuInput from "../components/tuInput";
-import TuAvatar from "../components/tuAvatar";
-import TuSelect from "../components/tuSelect/tuSelect.vue";
-import TuRichTextEditor from "@/components/tuRichTextEditor/tuRichTextEditor.vue";
+import { TuButton } from "../components/tuButton";
+import { TuChip } from "../components/tuChip";
+import { TuInput } from "../components/tuInput";
+import { TuAvatar } from "../components/tuAvatar";
+import { TuSelect } from "../components/tuSelect";
+import { TuRichTextEditor } from "@/components/tuRichTextEditor";
 // Basic content
 const basicContent = ref("<p>Welcome to the <strong>rich text editor</strong>! You can format your text with <em>italics</em>, <strong>bold</strong>, and much more.</p>");
 

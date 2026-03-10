@@ -215,10 +215,10 @@
 <script setup lang="ts">
 import { ref } from "vue";
 
-import { tuButton as TuButton } from "../components/tuButton";
-import { tuTag as TuTag } from "../components/tuTag";
-import TuInput from "../components/tuInput";
-import TuSelect from "../components/tuSelect/tuSelect.vue";
+import { TuButton } from "../components/tuButton";
+import { TuTag } from "../components/tuTag";
+import { TuInput } from "../components/tuInput";
+import { TuSelect } from "../components/tuSelect";
 // Closable tags
 const closableTags = ref([
 	{ id: 1, text: "JavaScript", color: "warning" },

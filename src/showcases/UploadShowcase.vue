@@ -216,11 +216,12 @@
 <script setup lang="ts">
 import { ref, reactive } from "vue";
 
-import { tuButton as TuButton } from "../components/tuButton";
-import TuProgress from "../components/tuProgress";
-import { tuChip as TuChip } from "../components/tuChip";
-import TuAvatar from "../components/tuAvatar";
-import TuAlert from "../components/tuAlert";
+import { TuButton } from "../components/tuButton";
+import { TuProgress } from "../components/tuProgress";
+import { TuChip } from "../components/tuChip";
+import { TuAvatar } from "../components/tuAvatar";
+import { TuAlert } from "../components/tuAlert";
+import { TuUpload } from "../components/tuUpload";
 // File arrays
 const basicFiles = ref([]);
 const dragDropFiles = ref([]);
@@ -254,13 +255,13 @@ const formatFileSize = (bytes: number) => {
 const getFileIcon = (filename: string) => {
 	const extension = filename.split(".").pop()?.toLowerCase();
 	switch (extension) {
-		case "pdf": return "picture_as_pdf";
-		case "doc":
-		case "docx": return "description";
-		case "xlsx":
-		case "xls": return "grid_on";
-		case "txt": return "text_snippet";
-		default: return "insert_drive_file";
+	case "pdf": return "picture_as_pdf";
+	case "doc":
+	case "docx": return "description";
+	case "xlsx":
+	case "xls": return "grid_on";
+	case "txt": return "text_snippet";
+	default: return "insert_drive_file";
 	}
 };
 
@@ -273,11 +274,11 @@ const getProgressColor = (progress: number) => {
 
 const getUploadStatusColor = (status: string) => {
 	switch (status) {
-		case "Pending": return "default";
-		case "Uploading": return "warning";
-		case "Complete": return "success";
-		case "Error": return "danger";
-		default: return "default";
+	case "Pending": return "default";
+	case "Uploading": return "warning";
+	case "Complete": return "success";
+	case "Error": return "danger";
+	default: return "default";
 	}
 };
 
@@ -316,15 +317,15 @@ const clearAllFiles = () => {
 };
 
 // Event handlers
-const onBasicUpload = (files: File[]) => {
+const onBasicUpload = (value: string, files: File[]) => {
 	console.log("Basic upload:", files);
 };
 
-const onDragDropUpload = (files: File[]) => {
+const onDragDropUpload = (value: string, files: File[]) => {
 	console.log("Drag drop upload:", files);
 };
 
-const onImageUpload = (files: File[]) => {
+const onImageUpload = (value: string, files: File[]) => {
 	files.forEach(file => {
 		if (file.type.startsWith("image/")) {
 			const preview = {
@@ -337,17 +338,17 @@ const onImageUpload = (files: File[]) => {
 	});
 };
 
-const onDocumentUpload = (files: File[]) => {
+const onDocumentUpload = (value: string, files: File[]) => {
 	console.log("Document upload:", files);
 };
 
-const onProgressUpload = (files: File[]) => {
+const onProgressUpload =  (value: string, files: File[]) => {
 	files.forEach(file => {
 		uploadProgress[file.name] = 0;
 	});
 };
 
-const onLimitedUpload = (files: File[]) => {
+const onLimitedUpload = (value: string, files: File[]) => {
 	console.log("Limited upload:", files);
 	uploadErrors.value = [];
 };
@@ -359,7 +360,7 @@ const onUploadError = (error: string) => {
 	}, 5000);
 };
 
-const onAvatarUpload = (files: File[]) => {
+const onAvatarUpload = (value: string, files: File[]) => {
 	if (files.length > 0) {
 		const file = files[0];
 		if (file.type.startsWith("image/")) {
@@ -368,7 +369,7 @@ const onAvatarUpload = (files: File[]) => {
 	}
 };
 
-const onBulkUpload = (files: File[]) => {
+const onBulkUpload = (value: string, files: File[]) => {
 	files.forEach(file => {
 		bulkUploadStatus[file.name] = "Pending";
 	});

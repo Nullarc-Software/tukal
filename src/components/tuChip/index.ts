@@ -11,5 +11,5 @@ if (typeof window !== 'undefined' && (<any>window).Vue) {
 	tuComponent.install((<any>window).Vue)
 }
   
-export {tuComponent as tuChip, tuComponent2 as tuChips};
+export {tuComponent as TuChip, tuComponent2 as TuChips};
   

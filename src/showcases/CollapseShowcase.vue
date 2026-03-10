@@ -132,10 +132,10 @@ VITE_APP_TITLE=My Vue App</pre>
 							<div v-if="faq.helpful !== undefined" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #dee2e6;">
 								<span style="font-size: 14px; color: #666;">Was this helpful?</span>
 								<div style="margin-top: 8px;">
-									<TuButton @click="markHelpful(faq.id, true)" size="xs" :color="faq.helpful === true ? 'success' : 'default'">
+									<TuButton @click="markHelpful(faq.id, true)" size="xs" :color="faq.helpful === true ? 'success' : 'primary'">
 										👍 Yes
 									</TuButton>
-									<TuButton @click="markHelpful(faq.id, false)" size="xs" :color="faq.helpful === false ? 'danger' : 'default'" style="margin-left: 8px;">
+									<TuButton @click="markHelpful(faq.id, false)" size="xs" :color="faq.helpful === false ? 'danger' : 'primary'" style="margin-left: 8px;">
 										👎 No
 									</TuButton>
 								</div>
@@ -235,13 +235,13 @@ VITE_APP_TITLE=My Vue App</pre>
 <script setup lang="ts">
 import { ref } from "vue";
 
-import { tuUsageBar as TuUsageBar } from "../components/tuUsageBar";
-import { tuButton as TuButton } from "../components/tuButton";
-import { tuCollapse as TuCollapse } from "../components/tuCollapse";
-import { tuCollapseItem as TuCollapseItem } from "../components/tuCollapse";
+import { TuUsageBar } from "../components/tuUsageBar";
+import { TuButton } from "../components/tuButton";
+import { TuCollapse } from "../components/tuCollapse";
+import { TuCollapseItem } from "../components/tuCollapse";
 
-import TuInput from "../components/tuInput";
-import TuSwitch from "../components/tuSwitch";
+import { TuInput } from "../components/tuInput";
+import { TuSwitch } from "../components/tuSwitch";
 import TuSelect from "../components/tuSelect/tuSelect.vue";
 // Accordion model
 const accordionValue = ref("setup");

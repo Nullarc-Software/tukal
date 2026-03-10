@@ -80,7 +80,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { tuButton as TuButton, tuButtonGroup as TuButtonGroup } from "../components/tuButton";
+import { TuButton, TuButtonGroup } from "../components/tuButton";
 
 // Reactive state for different button groups
 const selectedBasic = ref<string | number | null>("option1");

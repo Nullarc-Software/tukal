@@ -88,7 +88,7 @@
 </template>
 
 <script setup lang="ts">
-import TuAlert from "../components/tuAlert";
+import { TuAlert } from "../components/tuAlert";
 
 // This component doesn't need any reactive state
 </script>

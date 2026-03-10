@@ -353,10 +353,10 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
-import { tuTable as TuTable } from "../components/tuTable";
-import tuInput from "../components/tuInput";
-import { tuButton } from "../components/tuButton";
-import tuPagination from "../components/tuPagination";
+import { TuTable } from "../components/tuTable";
+import { TuInput } from "../components/tuInput";
+import { TuButton } from "../components/tuButton";
+import { TuPagination } from "../components/tuPagination";
 import type { TuHeaderDefn } from "../components/tuTable/tuTableStore.refactored";
 
 // =====================================

@@ -97,7 +97,7 @@
 </template>
 
 <script setup lang="ts">
-import TuAvatar from "../components/tuAvatar";
+import { TuAvatar } from "../components/tuAvatar";
 
 const showMessage = (message: string) => {
 	alert(message);

@@ -7,4 +7,4 @@ tuComponent.install = (vue: any) => {
 if (typeof window !== "undefined" && (<any>window).Vue)
 	tuComponent.install((<any>window).Vue);
 
-export { tuComponent as tuColorPicker };
+export { tuComponent as TuColorPicker };

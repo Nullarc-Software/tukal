@@ -534,15 +534,15 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
 
-import { tuButton as TuButton } from "../components/tuButton";
-import TuPagination from "../components/tuPagination";
-import { tuChip as TuChip } from "../components/tuChip";
-import { tuTable as TuTable } from "../components/tuTable";
-import TuInput from "../components/tuInput";
-import TuSelect from "../components/tuSelect/tuSelect.vue";
-import TuIcon from "../components/tuIcon";
-import { tuLoading as TuLoading } from "../components/tuLoading";
-import TuSwitch from "../components/tuSwitch";
+import { TuButton } from "../components/tuButton";
+import { TuPagination } from "../components/tuPagination";
+import { TuChip } from "../components/tuChip";
+import { TuTable } from "../components/tuTable";
+import { TuInput } from "../components/tuInput";
+import { TuSelect } from "../components/tuSelect";
+import { TuIcon } from "../components/tuIcon";
+import { TuLoading } from "../components/tuLoading";
+import { TuSwitch } from "../components/tuSwitch";
 
 // Types
 interface User {

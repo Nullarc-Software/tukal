@@ -83,7 +83,7 @@ const afterStyle = computed(() => {
 		"border-top-style": props.borderStyle,
 	};
 	if (!checkIsColor(props.color))
-		classes["border-top-color"] = borderColor;
+		classes["border-top-color"] = borderColor.value;
 	return classes;
 });
 
@@ -93,7 +93,7 @@ const beforeStyle = computed(() => {
 		"border-top-width": props.borderHeight,
 		"border-top-style": props.borderStyle,
 	};
-	if (!_color.isColor(props.color))
+	if (!checkIsColor(props.color))
 		classes["border-top-color"] = borderColor;
 	return classes;
 });

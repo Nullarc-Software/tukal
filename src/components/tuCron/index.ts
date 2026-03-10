@@ -46,4 +46,5 @@ if (typeof window !== "undefined" && (window as GlobalVue).Vue) {
 	}
 }
 
-export default TuCronComponent;
+export default tuComponent as typeof tuComponent & { name: "TuCron" };
+export { tuComponent as TuCron };

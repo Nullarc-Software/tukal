@@ -101,7 +101,7 @@
 
 <script lang="ts" setup>
 import { computed, ref, watch, useAttrs } from "vue";
-import tuIcon from "../tuIcon";
+import { TuIcon } from "../tuIcon";
 import { getColor, isColor } from "@/utils";
 
 defineOptions({
@@ -458,7 +458,7 @@ function editable(event: Event) {
 if (props.editableStatic) {
 	watch(editableStaticInternal, (value) => {
 		setTimeout(() => {
-			if (value === false)
+			if (!value)
 				document.addEventListener("click", editable);
 			else document.removeEventListener("click", editable);
 		}, 200);

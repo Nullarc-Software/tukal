@@ -1,9 +1,9 @@
 import { Component } from "vue";
 
 // Import your table cell components
-import { tuTag } from "../tuTag";
-import { tuButton } from "../tuButton";
-import tuSwitch from "../tuSwitch";
+import { TuTag } from "../tuTag";
+import { TuButton } from "../tuButton";
+import { TuSwitch } from "../tuSwitch";
 import tuTableContextMenu from "./tuTableContextMenu.vue";
 import StatusBadge from "./StatusBadge.vue";
 import StatusTag from "./StatusTag.vue";
@@ -16,15 +16,15 @@ export const tableComponentRegistry: Record<string, Component> = {
 	
 	// Action components
 	"ActionMenu": tuTableContextMenu,
-	"ActionButton": tuButton,
+	"ActionButton": TuButton,
 	
 	// Form components
-	"ToggleSwitch": tuSwitch,
+	"ToggleSwitch": TuSwitch,
 	
 	// Legacy components (for backward compatibility)
-	"tuTag": tuTag,
-	"tuButton": tuButton,
-	"tuSwitch": tuSwitch,
+	"tuTag": TuTag,
+	"tuButton": TuButton,
+	"tuSwitch": TuSwitch,
 	
 	// Add more components as your application grows
 };

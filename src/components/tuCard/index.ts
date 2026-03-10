@@ -10,4 +10,4 @@ if (typeof window !== "undefined" && (<any>window).Vue)
 	tuComponent.install((<any>window).Vue);
 
 
-export {tuComponent as tuCard, tuComponent2 as tuCardGroup};
+export {tuComponent as TuCard, tuComponent2 as TuCardGroup};

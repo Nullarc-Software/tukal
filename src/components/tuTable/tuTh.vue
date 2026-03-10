@@ -33,8 +33,8 @@ import {
 	watch,
 } from "vue";
 import { Router } from "vue-router";
-import tuIcon from "../tuIcon";
-import tuInput from "../tuInput";
+import { TuIcon } from "../tuIcon";
+import { TuInput } from "../tuInput";
 import type { TuTableSorterDefn } from "./tuTableStore.refactored";
 
 defineOptions({

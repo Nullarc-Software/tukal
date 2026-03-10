@@ -18,7 +18,7 @@ tuComponent.install = (vue: any) => {
 if (typeof window !== "undefined" && (<any>window).Vue) 
 	tuComponent.install((<any>window).Vue);  
 
-export {tuComponent as tuCalendar, tuComponent2 as tuCalendarDialog};
+export {tuComponent as TuCalendar, tuComponent2 as TuCalendarDialog};
 export type { 
 	ICalendarItem, 
 	TuCalendarServerModel, 

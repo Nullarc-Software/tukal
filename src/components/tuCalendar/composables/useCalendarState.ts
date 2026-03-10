@@ -12,7 +12,7 @@ interface NewEventForm {
 	isAllDay: boolean;
 }
 
-interface Category {
+export interface Category {
 	name: string;
 	color: string;
 }

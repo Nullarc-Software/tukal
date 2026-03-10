@@ -153,9 +153,9 @@
 <script setup lang="ts">
 import { ref } from "vue";
 
-import { tuButton as TuButton } from "../components/tuButton";
-import TuInput from "../components/tuInput";
-import TuDialog from "../components/tuDialog";
+import { TuButton } from "../components/tuButton";
+import { TuInput } from "../components/tuInput";
+import { TuDialog } from "../components/tuDialog";
 import TuSelect from "../components/tuSelect/tuSelect.vue";
 // Dialog states
 const basicDialog = ref(false);

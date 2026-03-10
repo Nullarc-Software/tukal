@@ -8,4 +8,4 @@ if (typeof window !== "undefined" && (<any>window).Vue)
 	tuComponent.install((<any>window).Vue);
 
 export type { TuHistoryEvent, TuHistoryServerModel } from "./utils";
-export { tuComponent as tuHistory };
+export { tuComponent as TuHistory };

@@ -149,7 +149,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from "vue";
-import TuInput from "../components/tuInput";
+import { TuInput } from "../components/tuInput";
 
 // Basic inputs
 const textInput = ref("");

@@ -76,10 +76,7 @@
 
 		<div class="con-slot-tabs" :class="{ 'tabs-fixed-height': fixedHeight ? true : false }">
 			<slot v-if="type === 'normal'" />
-
-			<router-view v-if="type === 'router' && routerModeParams.name !== null"
-				:name="routerModeParams.name"></router-view>
-			<router-view v-else-if="type === 'router'"></router-view>
+			<router-view v-if="type === 'router'" :name="routerModeParams.name || undefined"></router-view>
 		</div>
 	</div>
 </template>
@@ -99,9 +96,9 @@ import {
 } from "vue";
 import { TuTabsChildData, TabId, TuTabsRouterParams } from ".";
 import * as utils from "../../utils";
-import { ComponentConstants } from "../tuComponent";
-import tuIcon from "../tuIcon";
-import tuProgress from "../tuProgress";
+import { useTukal } from "../../composables/useTukal";
+import { TuIcon } from "../tuIcon";
+import { TuProgress } from "../tuProgress";
 
 interface TabData {
 	topx: string | number;
@@ -180,6 +177,7 @@ const data: TabData = {
 	invert: false
 };
 
+const { router } = useTukal();
 const activeIdx = ref(0);
 const reactiveData = reactive(data);
 let routerHook: (() => void) | null = null;
@@ -340,7 +338,6 @@ const activeChild = function (index: number, initialAnimation?: boolean) {
 		reactiveData.children[index]?.setActive?.(true);
 	}
 	if (props.type === "router") {
-		const router = ComponentConstants.router;
 		if (router) {
 			const childWithId = _.find(reactiveData.children, { id: index });
 			if (childWithId && childWithId.to) {
@@ -430,8 +427,8 @@ onMounted(() => {
 	let activeIndex = parseIndex(props.modelValue);
 
 	if (props.type === "router") {
-		if (ComponentConstants.router) {
-			const tabMatched = findMatchingPath(ComponentConstants.router.currentRoute.value.path, reactiveData.children
+		if (router) {
+			const tabMatched = findMatchingPath(router.currentRoute.value.path, reactiveData.children
 				.filter(child => child.to)
 				.map(child => {
 					const actualPath = props.routerModeParams.baseRoute && child.to ? utils.joinPath(props.routerModeParams.baseRoute, child.to) : child.to || "";
@@ -441,7 +438,7 @@ onMounted(() => {
 			if (tabMatched && reactiveData.childActive !== tabMatched.index) 
 				activeIndex = tabMatched.index;
 			
-			routerHook = ComponentConstants.router.afterEach((to) => {
+			routerHook = router.afterEach((to) => {
 				if (props.routerModeParams?.baseRoute) {
 					if (to.fullPath === props.routerModeParams.baseRoute && !props.routerModeParams.preventAutoRedirect) 
 						activeChild(0, true);

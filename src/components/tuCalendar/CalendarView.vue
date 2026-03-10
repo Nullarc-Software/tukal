@@ -246,7 +246,7 @@
 							</td>
 							<td>
 								<tu-select inline :disabled="!isEditEvent" v-model="selectedEvent.Category">
-									<tu-select-option v-for="category in categories" :key="category" :label="category.name"
+									<tu-select-option v-for="category in categories" :key="category.name" :label="category.name"
 										:value="category.name">
 										<span class="dot" :style="`background: rgba(${_color.getColorAsRgb(
 											category.color,
@@ -303,6 +303,8 @@ import {
 } from "./ICalendarItem";
 import { IHeaderProps } from "./IHeaderProps";
 import * as _color from "../../utils";
+import { TuDialog } from "../tuDialog";
+import { TuSelectOption } from "../tuSelect";
 
 defineOptions({
 	name: "CalendarView"
@@ -430,7 +432,7 @@ const emit = defineEmits<{
 	(e: "deleteItem", id: String): void;
 }>();
 
-interface ISelectedEvent {
+export interface ISelectedEvent {
 	Title: string;
 	StartDate: string;
 	EndDate: string;

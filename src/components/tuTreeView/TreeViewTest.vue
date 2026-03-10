@@ -43,7 +43,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { tuTreeView } from "../index";
+import { TuTreeView } from "../index";
 import type { NodeData, NodesProperties } from "../tuTreeView/components/interface";
 
 const basicTreeData = ref<NodeData[]>([

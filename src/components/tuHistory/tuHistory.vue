@@ -29,7 +29,7 @@
 import { ref, watchEffect } from "vue";
 import * as _color from "../../utils";
 import { serverRequest, TuHistoryEvent, TuHistoryServerModel } from "./utils";
-import { tuInfiniteLoading as TuInfiniteLoading } from "../tuInfiniteLoading";
+import { TuInfiniteLoading } from "../tuInfiniteLoading";
 
 defineOptions({
 	name: "TuHistory"

@@ -29,7 +29,7 @@ defineOptions({
 	name: "TuSelectOption"
 });
 import { SelectOptionConstants } from "./common";
-import tuCheckbox from "../tuCheckBox";
+import { TuCheckbox } from "../tuCheckBox";
 
 interface Props {
 	label?: string;

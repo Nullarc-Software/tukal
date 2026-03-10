@@ -26,7 +26,7 @@ export default defineConfig({
 			]
 		}),
 		dts({
-			include: ["src/components/**/*.vue", "src/components/**/*.ts", "src/components.d.ts"],
+			include: ["src/lib.ts","src/components/**/*.vue", "src/components/**/*.ts", "src/components.d.ts", "src/utils/**/*.ts"],
 			beforeWriteFile: (filePath, content) => {
 				// Auto-generate global component types
 				if (filePath.includes("components.d.ts")) {
@@ -43,6 +43,7 @@ export default defineConfig({
 	],
 	build: {
 		emptyOutDir: true,
+		minify: false,
 		lib: {
 			entry: "./src/lib.ts",
 			name: "tukal-vue",

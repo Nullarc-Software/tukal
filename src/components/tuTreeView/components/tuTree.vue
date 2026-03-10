@@ -71,8 +71,8 @@ import {
 import tuTreeRow from "./tuTreeRow.vue";
 import { recCallNodes, serverRequest } from "./helper";
 import { DFT } from "./dfs";
-import tuInput from "../../tuInput";
-import { tuButton } from "../../tuButton";
+import { TuInput } from "../../tuInput";
+import { TuButton } from "../../tuButton";
 
 interface Props {
 	checkNode?: boolean;

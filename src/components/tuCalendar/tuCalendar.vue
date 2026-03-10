@@ -38,7 +38,7 @@
 import { ref, onMounted, watch } from "vue";
 import CalendarView from "./CalendarView.vue";
 import CalendarViewHeader from "./CalendarViewHeader.vue";
-import TuCalendarDialog from "./TuCalendarDialog.vue";
+import TuCalendarDialog from "./tuCalendarDialog.vue";
 import { ICalendarItem, TuCalendarServerModel, CalendarCategory } from "./ICalendarItem";
 import { useCalendarApi } from "./composables/useCalendarApi";
 import { useCalendarState } from "./composables/useCalendarState";

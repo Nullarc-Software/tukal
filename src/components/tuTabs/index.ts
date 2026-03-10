@@ -12,4 +12,4 @@ if (typeof window !== "undefined" && (<any>window).Vue)
 
 
 export * from "./common";
-export { tuComponent as tuTabs, tuComponent2 as tuTab };
+export { tuComponent as TuTabs, tuComponent2 as TuTab };

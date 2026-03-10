@@ -177,8 +177,8 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from "vue";
 
-import { tuButton as TuButton } from "../components/tuButton";
-import TuProgress from "../components/tuProgress";
+import { TuButton } from "../components/tuButton";
+import { TuProgress } from "../components/tuProgress";
 // Basic progress
 const basicProgress = ref(45);
 
@@ -188,7 +188,7 @@ const colorProgress = ref(65);
 // Animated progress
 const animatedProgress = ref(0);
 const isAnimating = ref(false);
-let animationInterval: NodeJS.Timeout | null = null;
+let animationInterval: ReturnType<typeof setInterval> | null = null;
 
 // Text progress
 const textProgress = ref(73);
@@ -208,7 +208,7 @@ const tasks = ref([
 ]);
 
 const allTasksRunning = ref(false);
-let taskIntervals: NodeJS.Timeout[] = [];
+let taskIntervals: ReturnType<typeof setInterval>[] = [];
 
 // Files
 const files = ref([
@@ -337,7 +337,7 @@ const updateSystemResources = () => {
 };
 
 // Auto-update some progress values
-let autoUpdateInterval: NodeJS.Timeout | null = null;
+let autoUpdateInterval: ReturnType<typeof setInterval> | null = null;
 
 onMounted(() => {
 	autoUpdateInterval = setInterval(() => {
