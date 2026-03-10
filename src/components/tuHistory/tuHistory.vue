@@ -26,7 +26,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watchEffect } from "vue";
+import { ref, watchEffect, getCurrentInstance } from "vue";
 import * as _color from "../../utils";
 import { serverRequest, TuHistoryEvent, TuHistoryServerModel } from "./utils";
 import { TuInfiniteLoading } from "../tuInfiniteLoading";
@@ -61,8 +61,8 @@ const currentPage = ref(1);
 const scroll = ref();
 const lineHeight = ref();
 
-// Generate unique ID for this component instance
-const componentId = `tu-hist-${Math.random().toString(36).substr(2, 9)}`;
+// Stable unique ID for this component instance
+const componentId = `tu-hist-${getCurrentInstance()?.uid ?? 0}`;
 
 watchEffect(() => {
 	if (props.model === "local")
@@ -92,18 +92,18 @@ const categoryColor = (ev: TuHistoryEvent) => {
 
 const categoryColorIcon = (ev: TuHistoryEvent, index: number) => {
 	let color: string;
-	const height = "20px !important";
-	const width = "20px !important";
+	const height = "20px";
+	const width = "20px";
 	let left = "";
 	let right = "";
-	
-	if (!props.alternative) 
+
+	if (!props.alternative)
 		left = "-30px";
 	else {
-		if (index % 2 === 0) 
-			right = "-50px !important";
-		else 
-			left = "-50px !important";
+		if (index % 2 === 0)
+			right = "-50px";
+		else
+			left = "-50px";
 	}
 	
 	if (!ev.icon) {
@@ -145,27 +145,22 @@ interface InfiniteLoadingState {
 }
 
 const load = async ($state: InfiniteLoadingState) => {
-	console.log("loading");
 	serverRequest(props.serverSideConfig, `?page=${currentPage.value}`)
 		.then((data: TuHistoryEvent[]) => {
 			if (data.length > 0) {
-				for (let i = 0; i < data.length; i++) 
+				for (let i = 0; i < data.length; i++)
 					histEvents.value.push(data[i]);
 				$state.loaded();
-				let val = (scroll.value.offSetHeight).toString();
-				console.log(scroll.value.clientHeight);
-				lineHeight.value = val as string + "px !important";
+				const val = (scroll.value.offSetHeight).toString();
+				lineHeight.value = val + "px !important";
 			}
-			else 
+			else
 				$state.complete();
 		})
-		.catch((error) => {
-			console.error("Server request failed:", error);
-			// For demo purposes, show completion message when server fails
+		.catch(() => {
 			$state.complete();
 		});
 	currentPage.value++;
-	console.log(currentPage.value);
 };
 </script>
 

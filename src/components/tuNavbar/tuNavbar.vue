@@ -41,6 +41,7 @@
 import {
 	nextTick,
 	onMounted,
+	onBeforeUnmount,
 	provide,
 	ref,
 	watch,
@@ -254,13 +255,23 @@ onMounted(() => {
 				}
 			}
 		}
-		catch (error) {
-			console.log(error);
+		catch (_) {
+			// Layout measurement failed — non-critical, ignore
 		}
 	}, 150);
 
 	handleScroll();
 	window.addEventListener("resize", handleResize);
+});
+
+onBeforeUnmount(() => {
+	window.removeEventListener("resize", handleResize);
+	if (props.targetScroll) {
+		const scrollElement = document.querySelector(props.targetScroll);
+		scrollElement?.removeEventListener("scroll", scroll);
+	}
+	else
+		window.removeEventListener("scroll", scroll);
 });
 </script>
 <style lang="scss">

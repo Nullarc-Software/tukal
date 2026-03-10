@@ -220,13 +220,6 @@ const handleSubmitEvent = (eventData: {
 				endDateTime = dayjs(`${endDate} ${eventData.endTime || "10:00"}`).toDate();
 			}
 			
-			console.log("Creating event:", {
-				title: eventData.title,
-				startDate: startDateTime,
-				endDate: endDateTime,
-				sameDay: dayjs(startDateTime).format("YYYY-MM-DD") === dayjs(endDateTime).format("YYYY-MM-DD")
-			});
-			
 			addEvent({
 				title: eventData.title,
 				startDate: startDateTime,

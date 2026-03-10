@@ -28,20 +28,14 @@
 </template>
 
 <script setup lang="ts">
-import { computed, inject, ref, onMounted } from "vue";
+import { computed, inject, ref, onMounted, getCurrentInstance } from "vue";
 import { TuIcon } from "../tuIcon";
 import { Router } from "vue-router";
 import { getColor } from "../../utils";
-import { invert } from "lodash";
 
 defineOptions({
 	name: "TuCheckBox"
 });
-
-// Generate a random UID for each checkbox instance
-const generateRandomUID = () => {
-	return Math.random().toString(36).substr(2, 9) + Date.now().toString(36);
-};
 
 interface Props {
 	// Model and value props
@@ -119,7 +113,7 @@ onMounted(() => {
 	getColorSecondary.value = getColor(props.colorSecondary);
 });
 
-const uid = generateRandomUID();
+const uid = getCurrentInstance()?.uid ?? 0;
 
 const listeners = computed(() => {
 	return {
@@ -295,7 +289,6 @@ onMounted(() => {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		z-index: -1;
 
 		:deep(i:not(.tu-icon-check)) {
 			opacity: 0;

@@ -834,12 +834,6 @@ const getWeekItems = (weekStart: Date): INormalizedCalendarItem[] => {
 		if (CalendarMath.isSameDate(ep.startDate, ep.endDate)) {
 			// For events that start and end on the same day, span should always be 1
 			span = 1;
-			console.log("Single-day event detected:", {
-				title: ep.title,
-				startDate: ep.startDate,
-				endDate: ep.endDate,
-				span: span
-			});
 		} else {
 			// For multi-day events, use the original calculation
 			span = Math.min(
@@ -849,17 +843,6 @@ const getWeekItems = (weekStart: Date): INormalizedCalendarItem[] => {
 					ep.endDate
 				) + 1
 			);
-			console.log("Multi-day event detected:", {
-				title: ep.title,
-				startDate: ep.startDate,
-				endDate: ep.endDate,
-				span: span,
-				startOffset: startOffset,
-				dayDiff: CalendarMath.dayDiff(
-					CalendarMath.addDays(weekStart, startOffset),
-					ep.endDate
-				)
-			});
 		}
 		if (continued) ep.classes.push("continued");
 		if (CalendarMath.dayDiff(weekStart, ep.endDate) > 6)

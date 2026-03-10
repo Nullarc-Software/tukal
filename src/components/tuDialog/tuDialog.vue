@@ -41,7 +41,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, inject, computed } from "vue";
+import { ref, watch, inject, computed, onBeforeUnmount } from "vue";
 import { Router } from "vue-router";
 import { TuButton } from "../tuButton";
 import { TuIcon } from "../tuIcon";
@@ -89,7 +89,7 @@ const props = withDefaults(defineProps<Props>(), {
 	notCenter: false,
 	routerClose: false,
 	width: null,
-	heihgt: null,
+	height: null,
 	footerClasses: null,
 	color: "primary",
 	active: false,
@@ -137,13 +137,18 @@ watch(
 				document.body.style.overflow = "hidden";
 		}
 		else {
-			if (props.overflowHidden) {
+			window.removeEventListener("keydown", esc);
+			if (props.overflowHidden)
 				document.body.style.overflow = "";
-				window.removeEventListener("keydown", esc);
-			}
 		}
 	}
 );
+
+onBeforeUnmount(() => {
+	window.removeEventListener("keydown", esc);
+	if (props.overflowHidden)
+		document.body.style.overflow = "";
+});
 
 const click = function (evt: MouseEvent) {
 	if (!(evt.target as Element).closest(".tu-dialog") && !props.preventClose && !props.notClose) {
@@ -439,15 +444,6 @@ const closeClick = function () {
 				opacity: 1;
 			}
 		}
-	}
-}
-
-@keyframes loadingDialog {
-	0% {
-		transform: rotate(0deg);
-	}
-	100% {
-		transform: rotate(360deg);
 	}
 }
 

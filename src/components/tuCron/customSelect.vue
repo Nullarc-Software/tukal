@@ -25,7 +25,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, onBeforeUnmount } from "vue";
 import RenderlessSelect from "./renderlessSelect.vue";
 import { TuButton } from "../tuButton";
 import { TuPopper } from "../tuPopper";
@@ -40,6 +40,7 @@ defineEmits<{
 }>();
 
 const menu = ref(false);
+let _menuListenerTimer: ReturnType<typeof setTimeout> | null = null;
 
 function menuEvtListener() {
 	menu.value = false;
@@ -56,13 +57,25 @@ function getChildItems(itemRows: { text?: string }[][]) {
 function toggleMenu() {
 	menu.value = !menu.value;
 	if (menu.value) {
-		setTimeout(() => {
+		if (_menuListenerTimer !== null) clearTimeout(_menuListenerTimer);
+		_menuListenerTimer = setTimeout(() => {
 			document.addEventListener("click", menuEvtListener);
+			_menuListenerTimer = null;
 		}, 1);
 	}
-	else
+	else {
+		if (_menuListenerTimer !== null) {
+			clearTimeout(_menuListenerTimer);
+			_menuListenerTimer = null;
+		}
 		document.removeEventListener("click", menuEvtListener);
+	}
 }
+
+onBeforeUnmount(() => {
+	if (_menuListenerTimer !== null) clearTimeout(_menuListenerTimer);
+	document.removeEventListener("click", menuEvtListener);
+});
 </script>
 
 <style scoped>

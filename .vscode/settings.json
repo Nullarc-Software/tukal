@@ -5,5 +5,6 @@
 	"typescript.inlayHints.variableTypes.enabled": true,
 	"typescript.inlayHints.functionLikeReturnTypes.enabled": true,
 	"volar.autoCompleteRefs": true,
-	"typescript.suggest.autoImports": true
+	"typescript.suggest.autoImports": true,
+	"snyk.advanced.autoSelectOrganization": true
 }

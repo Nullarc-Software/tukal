@@ -1,10 +1,9 @@
 <template>
-	<button 
+	<button
 		:class="buttonClasses"
 		:style="buttonStyles"
-		v-bind="$attrs" 
-		v-on="listeners" 
-		ref="button"
+		v-bind="$attrs"
+		v-on="listeners"
 	>
 		<div class="tu-button__content">
 			<slot />
@@ -20,7 +19,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, inject } from "vue";
+import { computed, ref, inject, getCurrentInstance } from "vue";
 import { useTukal } from "../../composables/useTukal";
 import ripple, { rippleCut, rippleReverse } from "../../utils/ripple";
 
@@ -152,7 +151,6 @@ const emit = defineEmits<{
 
 const { router } = useTukal();
 const rippleDir = ref("");
-const button = ref<HTMLButtonElement>();
 
 // Button group integration
 const buttonGroup = inject<{
@@ -163,10 +161,10 @@ const buttonGroup = inject<{
 } | null>("buttonGroup", null);
 
 // Generate a unique ID for this button instance if none provided
+const _instanceUid = getCurrentInstance()?.uid ?? 0;
 const buttonId = computed(() => {
 	if (props.value !== undefined) return props.value;
-	// Fallback to instance uid if available, or generate a simple ID
-	return Math.random().toString(36).substr(2, 9);
+	return `tu-btn-${_instanceUid}`;
 });
 
 // Check if this button is selected in a mutually exclusive button group
@@ -313,333 +311,147 @@ const listeners = computed(() => {
 @use "../../style/sass/_tokens" as *;
 
 .tu-button {
-	// Base styles
+	// ─── Internal color tokens (overridden by color modifier classes) ─────────
+	--_c:     var(--tu-primary);
+	--_c-rgb: var(--tu-primary-rgb);
+
+	// ─── Internal appearance tokens (overridden by style modifier classes) ────
+	// These are declared once — background/color/border are never re-declared.
+	--_bg:              var(--_c);
+	--_text:            white;
+	--_border:          transparent;
+	--_hover-bg:        rgba(var(--_c-rgb), 0.9);
+	--_hover-shadow:    #{shadow('md')};
+	--_hover-transform: translateY(-1px);
+
+	// ─── Base layout ─────────────────────────────────────────────────────────
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
 	gap: spacing('xs');
-	
-	// Typography
 	font-weight: font-weight('medium');
 	text-decoration: none;
 	user-select: none;
-	
-	// Layout
-	border: 0;
 	border-radius: border-radius('lg');
 	cursor: pointer;
 	position: relative;
 	overflow: hidden;
 	margin: spacing('xs');
-	
-	// Default size
-	@include button-size('md');
-	
-	// Transitions and animations
 	transition: all transition('fast');
-	
-	// Default solid primary style - using direct CSS custom properties
-	background: var(--tu-primary);
-	color: white;
-	
-	// Focus state
+	@include button-size('md');
 	@include focus-ring;
-	
-	// Hover effect
+
+	// Applied once — the only declarations of these properties in this component
+	background: var(--_bg);
+	color: var(--_text);
+	border: 1px solid var(--_border);
+
 	&:hover:not(:disabled) {
-		background: rgba(var(--tu-primary-rgb), 0.9);
-		transform: translateY(-1px);
-		box-shadow: shadow('md');
+		background: var(--_hover-bg);
+		transform: var(--_hover-transform);
+		box-shadow: var(--_hover-shadow);
 	}
-	
-	// Disabled state
+
 	&:disabled,
 	&[aria-disabled="true"] {
 		opacity: 0.6;
 		cursor: not-allowed;
 		pointer-events: none;
-		transform: none !important;
-		box-shadow: none !important;
 	}
-	
-	// Size variants
+
+	// ─── Size variants ───────────────────────────────────────────────────────
 	&--xs { @include button-size('xs'); }
 	&--sm { @include button-size('sm'); }
 	&--lg { @include button-size('lg'); }
-	&--xl { 
-		@include button-size('xl'); 
-		border-radius: border-radius('xl');
-	}
-	
-	// Shape variants
+	&--xl { @include button-size('xl'); border-radius: border-radius('xl'); }
+
+	// ─── Shape variants ──────────────────────────────────────────────────────
 	&--circle { border-radius: border-radius('full'); }
-	&--square { border-radius: 0; }
-	
-	//Ripple 
-	&.ripple-anim {
-		color: rgb(var(--tu-button-text-color)) !important;
-	}
+	&--square  { border-radius: 0; }
 
+	// Ripple
+	&.ripple-anim { color: rgb(var(--tu-button-text-color)); }
 
-	// Style variants
-	&--flat {
-		background: rgba(var(--tu-primary-rgb), 0.1);
-		color: var(--tu-primary);
-		
-		&:hover:not(:disabled) {
-			background: rgba(var(--tu-primary-rgb), 0.3);
-			transform: none;
-			box-shadow: none;
-		}
+	// ─── Color variants — only set color tokens ───────────────────────────────
+	// Style variants below consume --_c-rgb, so they automatically adapt.
+	&--primary { --_c: var(--tu-primary); --_c-rgb: var(--tu-primary-rgb); }
+	&--success { --_c: var(--tu-success); --_c-rgb: var(--tu-success-rgb); }
+	&--danger  { --_c: var(--tu-danger);  --_c-rgb: var(--tu-danger-rgb); }
+	&--warn    { --_c: var(--tu-warn);    --_c-rgb: var(--tu-warn-rgb); --_text: black; }
+	&--dark    { --_c: var(--tu-dark);    --_c-rgb: var(--tu-dark-rgb); }
+
+	// ─── Style variants — only set appearance tokens ──────────────────────────
+	// Because these use var(--_c-rgb), they work with ANY color variant above
+	// without needing nested combinations like .tu-button--success.tu-button--flat.
+	&--flat,
+	&--transparent {
+		--_bg:              rgba(var(--_c-rgb), 0.1);
+		--_text:            var(--_c);
+		--_hover-bg:        rgba(var(--_c-rgb), 0.3);
+		--_hover-shadow:    none;
+		--_hover-transform: none;
 	}
 
 	&--transparent {
-		background: transparent;
-		color: var(--tu-primary);
-		box-shadow: 0px 0px 15px -7px rgba(var(--tu-primary-rgb), 0.5);
-		
-		&:hover:not(:disabled) {
-			background: transparent;
-			transform: none;
-			box-shadow: none;
-		}
+		--_bg: transparent;
+		box-shadow: 0px 0px 15px -7px rgba(var(--_c-rgb), 0.5);
+
+		&:hover:not(:disabled) { box-shadow: none; }
 	}
-	
+
 	&--outline {
-		background: transparent;
-		color: var(--tu-primary);
-		border: 1px solid var(--tu-primary);
-		
-		&:hover:not(:disabled) {
-			background: transparent;
-			transform: translateY(-1px);
-			box-shadow: shadow('md');
-		}
+		--_bg:        transparent;
+		--_text:      var(--_c);
+		--_border:    var(--_c);
+		--_hover-bg:  transparent;
 	}
-	
+
 	&--gradient {
-		background: linear-gradient(135deg, var(--tu-primary), rgba(var(--tu-primary-rgb), 0.8));
-		
-		&:hover:not(:disabled) {
-			transform: translateY(-2px);
-			box-shadow: shadow('lg');
-		}
+		--_bg:              linear-gradient(135deg, var(--_c), rgba(var(--_c-rgb), 0.8));
+		--_hover-transform: translateY(-2px);
+		--_hover-shadow:    #{shadow('lg')};
 	}
-	
+
 	&--relief {
-		box-shadow: 0 4px 0 rgba(var(--tu-primary-rgb), 0.8);
-		
+		// Box-shadow uses --_c-rgb so it updates with color variants automatically
+		--_hover-transform: none;
+		--_hover-shadow:    0 4px 0 rgba(var(--_c-rgb), 0.8);
+		box-shadow: 0 4px 0 rgba(var(--_c-rgb), 0.8);
+
 		&:active:not(:disabled) {
 			transform: translateY(2px);
-			box-shadow: 0 2px 0 rgba(var(--tu-primary-rgb), 0.8);
+			box-shadow: 0 2px 0 rgba(var(--_c-rgb), 0.8);
 		}
 	}
-	
+
 	&--shadow {
-		box-shadow: shadow('sm');
-		
-		&:hover:not(:disabled) {
-			box-shadow: shadow('md');
-		}
+		box-shadow: #{shadow('sm')};
+		--_hover-shadow: #{shadow('md')};
 	}
-	
+
 	&--floating {
-		box-shadow: shadow('lg');
-		
-		&:hover:not(:disabled) {
-			transform: translateY(-4px);
-			box-shadow: shadow('xl');
-		}
+		box-shadow: #{shadow('lg')};
+		--_hover-transform: translateY(-4px);
+		--_hover-shadow:    #{shadow('xl')};
 	}
-	
-	// Color variants - override CSS custom properties
-	&--success {
-		background: var(--tu-success);
-		
-		&:hover:not(:disabled) {
-			background: rgba(var(--tu-success-rgb), 0.9);
-		}
-		
-		&.tu-button--flat {
-			background: rgba(var(--tu-success-rgb), 0.1);
-			color: var(--tu-success);
-			
-			&:hover:not(:disabled) {
-				background: rgba(var(--tu-success-rgb), 0.3);
-			}
-		}
-		
-		&.tu-button--outline {
-			background: transparent;
-			color: var(--tu-success);
-			border-color: var(--tu-success);
-			
-			&:hover:not(:disabled) {
-				background: transparent;
-				transform: translateY(-1px);
-				box-shadow: shadow('md');
-			}
-		}
-		
-		&.tu-button--gradient {
-			background: linear-gradient(135deg, var(--tu-success), rgba(var(--tu-success-rgb), 0.8));
-		}
-		
-		&.tu-button--relief {
-			box-shadow: 0 4px 0 rgba(var(--tu-success-rgb), 0.8);
-			
-			&:active:not(:disabled) {
-				box-shadow: 0 2px 0 rgba(var(--tu-success-rgb), 0.8);
-			}
-		}
-	}
-	
-	&--danger {
-		background: var(--tu-danger);
-		
-		&:hover:not(:disabled) {
-			background: rgba(var(--tu-danger-rgb), 0.9);
-		}
-		
-		&.tu-button--flat {
-			background: rgba(var(--tu-danger-rgb), 0.1);
-			color: var(--tu-danger);
-			
-			&:hover:not(:disabled) {
-				background: rgba(var(--tu-danger-rgb), 0.3);
-			}
-		}
-		
-		&.tu-button--outline {
-			background: transparent;
-			color: var(--tu-danger);
-			border-color: var(--tu-danger);
-			
-			&:hover:not(:disabled) {
-				background: transparent;
-				transform: translateY(-1px);
-				box-shadow: shadow('md');
-			}
-		}
-		
-		&.tu-button--gradient {
-			background: linear-gradient(135deg, var(--tu-danger), rgba(var(--tu-danger-rgb), 0.8));
-		}
-		
-		&.tu-button--relief {
-			box-shadow: 0 4px 0 rgba(var(--tu-danger-rgb), 0.8);
-			
-			&:active:not(:disabled) {
-				box-shadow: 0 2px 0 rgba(var(--tu-danger-rgb), 0.8);
-			}
-		}
-	}
-	
-	&--warn {
-		background: var(--tu-warn);
-		color: black; // warn color is light, so use black text
-		
-		&:hover:not(:disabled) {
-			background: rgba(var(--tu-warn-rgb), 0.9);
-		}
-		
-		&.tu-button--flat {
-			background: rgba(var(--tu-warn-rgb), 0.1);
-			color: var(--tu-warn);
-			
-			&:hover:not(:disabled) {
-				background: rgba(var(--tu-warn-rgb), 0.3);
-			}
-		}
-		
-		&.tu-button--outline {
-			background: transparent;
-			color: var(--tu-warn);
-			border-color: var(--tu-warn);
-			
-			&:hover:not(:disabled) {
-				background: transparent;
-				transform: translateY(-1px);
-				box-shadow: shadow('md');
-			}
-		}
-		
-		&.tu-button--gradient {
-			background: linear-gradient(135deg, var(--tu-warn), rgba(var(--tu-warn-rgb), 0.8));
-		}
-		
-		&.tu-button--relief {
-			box-shadow: 0 4px 0 rgba(var(--tu-warn-rgb), 0.8);
-			
-			&:active:not(:disabled) {
-				box-shadow: 0 2px 0 rgba(var(--tu-warn-rgb), 0.8);
-			}
-		}
-	}
-	
-	&--dark {
-		background: var(--tu-dark);
-		
-		&:hover:not(:disabled) {
-			background: rgba(var(--tu-dark-rgb), 0.9);
-		}
-		
-		&.tu-button--flat {
-			background: rgba(var(--tu-dark-rgb), 0.1);
-			color: var(--tu-dark);
-			
-			&:hover:not(:disabled) {
-				background: rgba(var(--tu-dark-rgb), 0.3);
-			}
-		}
-		
-		&.tu-button--outline {
-			background: transparent;
-			color: var(--tu-dark);
-			border-color: var(--tu-dark);
-			
-			&:hover:not(:disabled) {
-				background: transparent;
-				transform: translateY(-1px);
-				box-shadow: shadow('md');
-			}
-		}
-		
-		&.tu-button--gradient {
-			background: linear-gradient(135deg, var(--tu-dark), rgba(var(--tu-dark-rgb), 0.8));
-		}
-		
-		&.tu-button--relief {
-			box-shadow: 0 4px 0 rgba(var(--tu-dark-rgb), 0.8);
-			
-			&:active:not(:disabled) {
-				box-shadow: 0 2px 0 rgba(var(--tu-dark-rgb), 0.8);
-			}
-		}
-	}
-	
-	// State modifiers
+
+	// ─── State modifiers ─────────────────────────────────────────────────────
 	&--active {
-		background: var(--tu-primary);
+		background: var(--_c);
 		color: white;
 	}
-	
+
 	&--block {
 		display: flex;
 		width: 100%;
 	}
-	
+
 	&--icon {
 		padding: spacing('sm');
-		
-		i {
-			font-size: 1.15rem;
-		}
+		i { font-size: 1.15rem; }
 	}
-	
-	&--inline {
-		margin: 0;
-	}
+
+	&--inline { margin: 0; }
 }
 
 .tu-button__content {
