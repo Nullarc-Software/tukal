@@ -316,10 +316,9 @@ const listeners = computed(() => {
 	--_c-rgb: var(--tu-primary-rgb);
 
 	// ─── Internal appearance tokens (overridden by style modifier classes) ────
-	// These are declared once — background/color/border are never re-declared.
+	// background, color, and border are each declared exactly once below.
 	--_bg:              var(--_c);
 	--_text:            white;
-	--_border:          transparent;
 	--_hover-bg:        rgba(var(--_c-rgb), 0.9);
 	--_hover-shadow:    #{shadow('md')};
 	--_hover-transform: translateY(-1px);
@@ -344,7 +343,7 @@ const listeners = computed(() => {
 	// Applied once — the only declarations of these properties in this component
 	background: var(--_bg);
 	color: var(--_text);
-	border: 1px solid var(--_border);
+	border: 0;
 
 	&:hover:not(:disabled) {
 		background: var(--_hover-bg);
@@ -393,17 +392,18 @@ const listeners = computed(() => {
 	}
 
 	&--transparent {
-		--_bg: transparent;
+		--_bg:       transparent;
+		--_hover-bg: transparent;
 		box-shadow: 0px 0px 15px -7px rgba(var(--_c-rgb), 0.5);
 
 		&:hover:not(:disabled) { box-shadow: none; }
 	}
 
 	&--outline {
-		--_bg:        transparent;
-		--_text:      var(--_c);
-		--_border:    var(--_c);
-		--_hover-bg:  transparent;
+		--_bg:       transparent;
+		--_text:     var(--_c);
+		--_hover-bg: transparent;
+		border: 1px solid var(--_c);
 	}
 
 	&--gradient {
@@ -437,8 +437,8 @@ const listeners = computed(() => {
 
 	// ─── State modifiers ─────────────────────────────────────────────────────
 	&--active {
-		background: var(--_c);
-		color: white;
+		--_bg:   var(--_c);
+		--_text: white;
 	}
 
 	&--block {
